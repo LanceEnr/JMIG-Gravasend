@@ -15,7 +15,7 @@
 }
 
 .navbar .leftSide img {
-  width: 175px;
+  width: 250px;
 }
 
 .navbar .rightSide {
@@ -30,6 +30,10 @@
   color: #343231;
   text-decoration: none;
   margin: 20px;
+}
+
+.navbar a:hover {
+  color: #004aad;
 }
 
 .navbar .rightSide button {

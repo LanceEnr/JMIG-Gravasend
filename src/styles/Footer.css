@@ -1,6 +1,6 @@
 .footer {
   width: 100%;
-  height: 200px;
+  height: 500px;
   background-color: #fafbf5;
   display: flex;
   justify-content: center;
@@ -9,13 +9,64 @@
   padding-top: 10px;
 }
 
-.socialMedia svg {
+.footer button {
+  border: none;
+  cursor: pointer;
+  justify-content: center;
+  background-color: #004aad;
+  height: 50px;
+  width: 180px;
+  color: white;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.footer button:hover {
+  background-color: #343231;
+  cursor: pointer;
+  transition: 0.3s ease-in;
+}
+
+.footer hr {
+  width: 80%; /* You can adjust this value as needed */
+  border: none;
+  border-top: 1px solid #343231; /* This creates a line */
+}
+
+.footer .container {
+  width: 80%;
+  display: flex; /* This will make the children of .upperRow line up horizontally */
+  justify-content: space-between; /* This will put as much space as possible between the children */
+}
+
+.footer .about {
+  max-width: 40%;
+}
+
+.footer img {
+  width: 250px;
+  margin-left: -30px;
+}
+
+.footer svg {
   color: #343231;
   margin: 20px;
-  font-size: 70px;
+  font-size: 20px;
   cursor: pointer;
 }
 
 .footer p {
   color: #343231;
+}
+
+.footer a {
+  color: #343231;
+  text-decoration: none;
+  margin: 16px;
+  margin-left: -0.5px;
+  display: block; /* This will make the <a> elements stack on top of each other */
+}
+
+.footer a:hover {
+  color: #004aad;
 }
