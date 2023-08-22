@@ -66,29 +66,29 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background-color: #121619;
-    color: white;
+    background-color: #fafbf5;
+    color: #343231;
   }
 
   .headerContainer h1 {
     font-size: 40px;
     height: 30px;
-    color: white;
+    color: #343231;
   }
 
   .headerContainer p {
     font-size: 30px;
-    color: white;
+    color: #343231;
   }
 
   .headerContainer button {
-    background-color: white;
-    color: #121619;
+    background-color: #004aad;
+    color: #fafbf5;
     margin-bottom: 30px;
   }
 
   .headerContainer button:hover {
-    background-color: rgb(225, 225, 225);
-    color: #121619;
+    background-color: #343231;
+    color: #fafbf5;
   }
 }
