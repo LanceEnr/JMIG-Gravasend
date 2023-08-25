@@ -12,6 +12,7 @@ import {
 } from "react-router-dom";
 import About from "./pages/About";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import authReducer from "./store/reducers/authReducer";
 
 const initialState = {
@@ -45,6 +46,7 @@ function App() {
               )
             }
           />
+          <Route path="/register" exact element={<Register />} />
         </Routes>
         <Footer />
       </Router>
