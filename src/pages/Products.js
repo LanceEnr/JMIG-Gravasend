@@ -2,7 +2,7 @@ import React from "react";
 import { MenuList } from "../helpers/MenuList";
 import MenuItem from "../components/MenuItem";
 import "../styles/Products.css";
-import BannerImage from "../assets/catalog.jpg";
+import BannerImage from "../assets/catalog.webp";
 
 function Products() {
   return (

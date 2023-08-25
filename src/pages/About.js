@@ -1,5 +1,5 @@
 import React from "react";
-import BannerImage from "../assets/about.jpg";
+import BannerImage from "../assets/about.webp";
 import "../styles/About.css";
 
 function About() {
