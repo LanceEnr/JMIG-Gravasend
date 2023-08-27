@@ -1,19 +1,16 @@
 import React from "react";
-import BannerImage from "../assets/about.jpg";
+import BannerImage from "../assets/about.webp";
+import Banner from "../components/Banner";
 import "../styles/About.css";
 
 function About() {
   return (
     <div className="about">
-      <div
-        className="aboutImage"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${BannerImage})`,
-        }}
-      >
-        <h1 className="aboutTitle">ABOUT US</h1>
-        <p className="aboutText">Discover our expertise</p>
-      </div>
+      <Banner
+        bannerImage={BannerImage}
+        title="ABOUT US"
+        text="Discover our expertise"
+      />
       <div className="aboutBottom">
         <h1>We serve all your material needs</h1>
         <p>

@@ -1,0 +1,33 @@
+.aboutImage {
+  width: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: 20px;
+  text-align: center;
+  color: #fafbf5;
+  padding: 160px;
+  box-sizing: border-box; /* Add this line */
+}
+
+.aboutTitle {
+  font-size: 60px;
+}
+
+.aboutText {
+  font-size: 21px;
+}
+
+/* For mobile screens */
+@media only screen and (max-width: 600px) {
+  .aboutTitle {
+    font-size: 30px;
+  }
+
+  .aboutText {
+    font-size: 16px;
+  }
+
+  .aboutImage {
+    padding: 80px;
+  }
+}

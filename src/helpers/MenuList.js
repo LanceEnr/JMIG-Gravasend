@@ -1,9 +1,9 @@
-import Gravel1 from "../assets/Gravel1.jpg";
-import Gravel2 from "../assets/Gravel2.jpg";
-import Gravel3 from "../assets/Gravel3.jpg";
-import Sand1 from "../assets/Sand1.jpg";
-import Sand2 from "../assets/Sand2.jpg";
-import Sand3 from "../assets/Sand3.jpg";
+import Gravel1 from "../assets/Gravel1.webp";
+import Gravel2 from "../assets/Gravel2.webp";
+import Gravel3 from "../assets/Gravel3.webp";
+import Sand1 from "../assets/Sand1.webp";
+import Sand2 from "../assets/Sand2.webp";
+import Sand3 from "../assets/Sand3.webp";
 
 export const MenuList = [
   {

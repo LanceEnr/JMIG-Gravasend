@@ -8,24 +8,6 @@
   background-color: #fafbf5;
 }
 
-.about .aboutTitle {
-  font-size: 60px;
-}
-
-.about .aboutText {
-  font-size: 21px;
-}
-
-.about .aboutImage {
-  width: 100%;
-  background-repeat: no-repeat;
-  background-size: cover;
-  padding: 20px;
-  text-align: center;
-  color: #fafbf5;
-  padding: 160px;
-}
-
 .aboutBottom {
   display: flex;
   flex-direction: column;

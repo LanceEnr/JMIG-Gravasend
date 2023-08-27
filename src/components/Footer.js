@@ -1,5 +1,4 @@
 import React from "react";
-import Logo from "../assets/JMIGlogo.png";
 import { Link } from "react-router-dom";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
@@ -12,7 +11,7 @@ function Footer() {
       <div className="socialMedia">
         <InstagramIcon /> <TwitterIcon /> <FacebookIcon />
       </div>
-      <div className="links">
+      <div className="footerLinks">
         <Link to="/">Home</Link>
         <Link to="/products">Products</Link>
         <Link to="/faqs">FAQs</Link>
