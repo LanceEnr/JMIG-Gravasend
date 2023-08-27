@@ -11,7 +11,7 @@ function Footer() {
       <div className="socialMedia">
         <InstagramIcon /> <TwitterIcon /> <FacebookIcon />
       </div>
-      <div className="links">
+      <div className="footerLinks">
         <Link to="/">Home</Link>
         <Link to="/products">Products</Link>
         <Link to="/faqs">FAQs</Link>

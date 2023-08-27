@@ -8,14 +8,6 @@
   background-color: #fafbf5;
 }
 
-.menu .menuTitle {
-  font-size: 60px;
-}
-
-.menu .menuText {
-  font-size: 21px;
-}
-
 .menuList {
   width: 65vw;
   height: auto;
@@ -25,31 +17,24 @@
   margin: 20px;
 }
 
-.menu .menuImage {
-  width: 100%;
-  background-repeat: no-repeat;
-  background-size: cover;
-  padding: 20px;
-  text-align: center;
-  color: #fafbf5;
-  padding: 160px;
-}
-
 /* MENU ITEM STYLING */
 
 .menuItem {
+  border-radius: 5px;
   width: 300px;
   height: 350px;
   margin: 20px;
-  box-shadow: 0px 3px 9px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2);
 }
 .menuItem:hover {
-  box-shadow: 0px 3px 13px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.5);
   transition: 0.3s ease-in;
   cursor: pointer;
 }
 
 .menuItem div {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
   width: 100%;
   height: 220px;
   background-position: center;
@@ -66,11 +51,13 @@
 @media only screen and (max-width: 1300px) {
   .menuList {
     grid-template-columns: 1fr 1fr;
+    justify-content: center; /* Add this line */
   }
 }
 
 @media only screen and (max-width: 800px) {
   .menuList {
     grid-template-columns: 1fr;
+    justify-content: center; /* Add this line */
   }
 }
