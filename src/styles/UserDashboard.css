@@ -1,0 +1,6 @@
+.userDashboard {
+  width: 100%;
+  height: auto;
+  background-color: #fafbf5;
+  overflow: hidden; /* Add this line */
+}
