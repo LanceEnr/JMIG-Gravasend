@@ -62,15 +62,19 @@ function preventDefault(event) {
 export default function Orders() {
   return (
     <React.Fragment>
-      <Typography>Your Order Requests</Typography>
+      <Typography variant="h6" sx={{ color: "#004aad", fontWeight: "bold" }}>
+        Your Order Requests
+      </Typography>{" "}
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>Date</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Address</TableCell>
-            <TableCell>Payment Method</TableCell>
-            <TableCell align="right">Order Amount</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Date</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Name</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Address</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Payment Method</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }} align="right">
+              Order Amount
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -85,7 +89,7 @@ export default function Orders() {
           ))}
         </TableBody>
       </Table>
-      <Link color="primary" href="#" onClick={preventDefault} sx={{ mt: 3 }}>
+      <Link color="#004aad" href="#" onClick={preventDefault} sx={{ mt: 3 }}>
         See more orders
       </Link>
     </React.Fragment>

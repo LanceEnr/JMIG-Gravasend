@@ -1,13 +1,15 @@
 import * as React from "react";
 import Container from "@mui/material/Container";
-import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography"; // Add this line
 import Orders from "../components/Orders";
 import Appointments from "../components/Appointments";
 import "../styles/UserDashboard.css";
+import { useTheme } from "@mui/material/styles";
 
 function UserDashboard() {
+  const theme = useTheme();
   return (
     <div className="userDashboard">
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>

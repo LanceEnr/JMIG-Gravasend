@@ -1,7 +1,7 @@
 import "./App.css";
 import React, { useReducer } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { ThemeProvider } from "@mui/styles";
+import { ThemeProvider, useTheme } from "@mui/styles";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -21,9 +21,10 @@ const initialState = {
 function App() {
   const [authState, authDispatch] = useReducer(authReducer, initialState);
 
+  const dashboardTheme = useTheme();
   return (
-    <div className="App">
-      <ThemeProvider theme={dashboardTheme}>
+    <ThemeProvider theme={dashboardTheme}>
+      <div className="App">
         <Router>
           <Navbar />
           <Routes>
@@ -52,8 +53,8 @@ function App() {
           </Routes>
           <Footer />
         </Router>
-      </ThemeProvider>
-    </div>
+      </div>
+    </ThemeProvider>
   );
 }
 

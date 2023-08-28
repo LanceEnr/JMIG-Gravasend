@@ -1,4 +1,6 @@
 import React from "react";
+import { useTheme } from "@mui/material/styles";
+
 import {
   Typography,
   Table,
@@ -59,17 +61,23 @@ const appointments = [
 ];
 
 export default function Appointments() {
+  const theme = useTheme();
   return (
     <React.Fragment>
-      <Typography>Your Appointments</Typography>
+      <Typography variant="h6" sx={{ color: "#004aad", fontWeight: "bold" }}>
+        Your Appointments
+      </Typography>
+
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>Date</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell>Contact</TableCell>
-            <TableCell align="right">Message</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Date</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Name</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Email</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Contact</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }} align="right">
+              Message
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -89,7 +97,7 @@ export default function Appointments() {
         </TableBody>
       </Table>
       <Link
-        color="primary"
+        color="#004aad"
         href="#"
         onClick={(e) => e.preventDefault()}
         sx={{ mt: 3 }}
