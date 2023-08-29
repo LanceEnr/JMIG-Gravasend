@@ -2,11 +2,10 @@ import * as React from "react";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
-import Orders from "../components/Orders";
 import Appointments from "../components/Appointments";
 import "../styles/UserDashboard.css";
 
-function UserDashboard() {
+function DisplayAppointment() {
   return (
     <div className="userDashboard">
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -18,9 +17,6 @@ function UserDashboard() {
             >
               <Appointments />
             </Paper>
-            <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-              <Orders />
-            </Paper>
           </Grid>
         </Grid>
       </Container>
@@ -28,4 +24,4 @@ function UserDashboard() {
   );
 }
 
-export default UserDashboard;
+export default DisplayAppointment;

@@ -1,6 +1,6 @@
 .footer {
   width: 100%;
-  height: 200px;
+  height: 150px;
   background-color: #fafbf5;
   display: flex;
   justify-content: center;
@@ -12,13 +12,13 @@
 .socialMedia svg {
   color: #343231;
   margin: 20px;
-  font-size: 30px;
+  font-size: 1.5rem;
   cursor: pointer;
 }
 
 .footer p {
   margin: 20px;
-  font-size: 12px;
+  font-size: 0.875rem;
   color: #aba9a8;
 }
 
@@ -26,6 +26,7 @@
   color: #343231;
   text-decoration: none;
   margin: 20px;
+  font-size: 1rem;
 }
 
 .footer a:hover,
