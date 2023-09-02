@@ -130,7 +130,6 @@ function ResponsiveAppBar() {
               ))}
             </Menu>
           </Box>
-
           <Typography
             variant="h5"
             noWrap
@@ -172,7 +171,10 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 0, mr: 2 }}>
             <Tooltip title="Notifications">
               <IconButton onClick={handleOpenNotificationsMenu}>
-                <Badge badgeContent={4} color="primary">
+                <Badge
+                  badgeContent={notifications ? notifications.length : 0}
+                  color="primary"
+                >
                   <NotificationsIcon color="action" />
                 </Badge>
               </IconButton>
@@ -235,7 +237,17 @@ function ResponsiveAppBar() {
               onClose={handleCloseSettingsMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseSettingsMenu}>
+                <MenuItem
+                  key={setting}
+                  onClick={() => {
+                    if (setting === "Logout") {
+                      // Handle logout
+                      // ...
+                    } else {
+                      window.location.href = `/${setting}`;
+                    }
+                  }}
+                >
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}

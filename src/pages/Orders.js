@@ -2,10 +2,10 @@ import * as React from "react";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
-import Orders from "../components/Orders";
+import OrdersTable from "../components/OrdersTable";
 import "../styles/UserDashboard.css";
 
-function DisplayOrders() {
+function Orders() {
   return (
     <div className="userDashboard">
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -15,7 +15,7 @@ function DisplayOrders() {
             <Paper
               sx={{ p: 2, mb: 2, display: "flex", flexDirection: "column" }}
             >
-              <Orders />
+              <OrdersTable />
             </Paper>
           </Grid>
         </Grid>
@@ -24,4 +24,4 @@ function DisplayOrders() {
   );
 }
 
-export default DisplayOrders;
+export default Orders;
