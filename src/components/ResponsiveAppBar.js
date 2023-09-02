@@ -37,8 +37,9 @@ const notifications = [
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElNotifications, setAnchorElNotifications] =
-    React.useState(null);
+  const [anchorElNotifications, setAnchorElNotifications] = React.useState(
+    null
+  );
   const [anchorElSettings, setAnchorElSettings] = React.useState(null);
 
   const handleOpenNavMenu = (event) => {

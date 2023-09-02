@@ -32,9 +32,6 @@ const appointments = [
   {
     id: 1,
     date: "16 Mar, 2019",
-    name: "John Doe",
-    email: "lance@gmail.com",
-    contactNumber: "09774584232",
     message:
       "Interested in bulk purchase of gravel. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum condimentum diam a neque rutrum, in fermentum diam luctus. Sed risus tortor, dignissim id tortor sit amet, scelerisque scelerisque sapien. Nulla convallis eleifend lorem eget vulputate. Cras in nibh volutpat, sagittis neque sed, dictum nisi. ",
     status: "upcoming",
@@ -42,9 +39,6 @@ const appointments = [
   {
     id: 1,
     date: "16 Mar, 2019",
-    name: "John Doe",
-    email: "lance@gmail.com",
-    contactNumber: "09774584232",
     message:
       "Interested in bulk purchase of gravel. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum condimentum diam a neque rutrum, in fermentum diam luctus. Sed risus tortor, dignissim id tortor sit amet, scelerisque scelerisque sapien. Nulla convallis eleifend lorem eget vulputate. Cras in nibh volutpat, sagittis neque sed, dictum nisi. ",
     status: "cancelled",
@@ -52,9 +46,6 @@ const appointments = [
   {
     id: 1,
     date: "16 Mar, 2019",
-    name: "John Doe",
-    email: "lance@gmail.com",
-    contactNumber: "09774584232",
     message:
       "Interested in bulk purchase of gravel. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum condimentum diam a neque rutrum, in fermentum diam luctus. Sed risus tortor, dignissim id tortor sit amet, scelerisque scelerisque sapien. Nulla convallis eleifend lorem eget vulputate. Cras in nibh volutpat, sagittis neque sed, dictum nisi. ",
     status: "completed",
@@ -62,9 +53,6 @@ const appointments = [
   {
     id: 1,
     date: "16 Mar, 2019",
-    name: "John Doe",
-    email: "lance@gmail.com",
-    contactNumber: "09774584232",
     message:
       "Interested in bulk purchase of gravel. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum condimentum diam a neque rutrum, in fermentum diam luctus. Sed risus tortor, dignissim id tortor sit amet, scelerisque scelerisque sapien. Nulla convallis eleifend lorem eget vulputate. Cras in nibh volutpat, sagittis neque sed, dictum nisi. ",
     status: "completed",
@@ -72,9 +60,6 @@ const appointments = [
   {
     id: 1,
     date: "16 Mar, 2019",
-    name: "John Doe",
-    email: "lance@gmail.com",
-    contactNumber: "09774584232",
     message:
       "Interested in bulk purchase of gravel. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum condimentum diam a neque rutrum, in fermentum diam luctus. Sed risus tortor, dignissim id tortor sit amet, scelerisque scelerisque sapien. Nulla convallis eleifend lorem eget vulputate. Cras in nibh volutpat, sagittis neque sed, dictum nisi. ",
     status: "completed",
@@ -92,10 +77,7 @@ export default function AppointmentsTable() {
           <TableHead>
             <TableRow>
               <TableCell sx={{ fontWeight: "bold" }}>Date</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Name</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Email</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Contact</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Message</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Inquiry</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
               <TableCell sx={{ fontWeight: "bold" }} align="right">
                 Actions
@@ -106,13 +88,12 @@ export default function AppointmentsTable() {
             {appointments.map((appointment) => (
               <TableRow key={appointment.id}>
                 <TableCell>{appointment.date}</TableCell>
-                <TableCell>{appointment.name}</TableCell>
-                <TableCell>{appointment.email}</TableCell>
-                <TableCell>{appointment.contactNumber}</TableCell>
                 <Tooltip title={appointment.message}>
                   <TableCell>
-                    {appointment.message.split(" ").slice(0, 5).join(" ") +
-                      "..."}
+                    {appointment.message
+                      .split(" ")
+                      .slice(0, 15)
+                      .join(" ") + "..."}
                   </TableCell>
                 </Tooltip>
                 <TableCell>

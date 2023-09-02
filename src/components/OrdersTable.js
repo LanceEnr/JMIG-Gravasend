@@ -8,24 +8,14 @@ import TableRow from "@mui/material/TableRow";
 import { Typography, Box, TableContainer } from "@mui/material";
 
 // Generate Order Data
-function createData(
-  id,
-  date,
-  name,
-  paymentMethod,
-  product,
-  qty,
-  amount,
-  status
-) {
-  return { id, date, name, paymentMethod, product, qty, amount, status };
+function createData(id, date, paymentMethod, product, qty, amount, status) {
+  return { id, date, paymentMethod, product, qty, amount, status };
 }
 
 const rows = [
   createData(
     0,
     "16 Mar, 2019",
-    "Elvis Presley",
     "VISA ⠀•••• 3719",
     "Gravel",
     "100",
@@ -35,7 +25,6 @@ const rows = [
   createData(
     1,
     "16 Mar, 2019",
-    "Paul McCartney",
     "VISA ⠀•••• 2574",
     "Sand",
     "100",
@@ -45,7 +34,6 @@ const rows = [
   createData(
     2,
     "16 Mar, 2019",
-    "Tom Scholz",
     "Cash on Pickup",
     "Gravel",
     "100",
@@ -55,7 +43,6 @@ const rows = [
   createData(
     3,
     "16 Mar, 2019",
-    "Michael Jackson",
     "Cash on Pickup",
     "Sand",
     "100",
@@ -65,7 +52,6 @@ const rows = [
   createData(
     4,
     "15 Mar, 2019",
-    "Bruce Springsteen",
     "VISA ⠀•••• 5919",
     "Gravel",
     "100",
@@ -102,7 +88,6 @@ export default function OrdersTable() {
           <TableHead>
             <TableRow>
               <TableCell sx={{ fontWeight: "bold" }}>Date</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Name</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>Payment Method</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>Product</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>Quantity</TableCell>
@@ -116,7 +101,6 @@ export default function OrdersTable() {
             {rows.map((row) => (
               <TableRow key={row.id}>
                 <TableCell>{row.date}</TableCell>
-                <TableCell>{row.name}</TableCell>
                 <TableCell>{row.paymentMethod}</TableCell>
                 <TableCell>{row.product}</TableCell>
                 <TableCell>{row.qty} cubic mt.</TableCell>

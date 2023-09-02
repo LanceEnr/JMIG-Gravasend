@@ -1,8 +1,8 @@
 import * as React from "react";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
-import OrdersTable from "../components/OrdersTable";
+import { Typography, Pagination, Box } from "@mui/material";
+import OrdersTable1 from "../components/OrdersTable1";
 import "../styles/UserDashboard.css";
 
 function Orders() {
@@ -10,13 +10,12 @@ function Orders() {
     <div className="userDashboard">
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
         <Grid container spacing={3}>
-          {/* Recent Orders */}
           <Grid item xs={12}>
-            <Paper
-              sx={{ p: 2, mb: 2, display: "flex", flexDirection: "column" }}
-            >
-              <OrdersTable />
-            </Paper>
+            <Typography variant="h6">Your Orders</Typography>
+            <OrdersTable1 />
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+              <Pagination count={5} color="primary" />
+            </Box>
           </Grid>
         </Grid>
       </Container>
