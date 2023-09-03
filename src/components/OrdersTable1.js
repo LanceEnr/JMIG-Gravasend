@@ -8,25 +8,12 @@ import {
   ListItem,
   Tooltip,
   Typography,
+  Avatar,
 } from "@mui/material";
 import MainCard from "./common/MainCard";
-import CircleIcon from "@mui/icons-material/Circle";
-
-const avatarSX = {
-  width: 36,
-  height: 36,
-  fontSize: "1rem",
-};
-
-const actionSX = {
-  mt: 0.75,
-  ml: 1,
-  top: "auto",
-  right: "auto",
-  alignSelf: "flex-start",
-  transform: "none",
-};
-
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 const data = [
   {
     status: "Pending",
@@ -89,11 +76,11 @@ const data = [
 const getColor = (status) => {
   switch (status) {
     case "Arrived":
-      return { main: "success.main", lighter: "success.lighter" };
+      return { main: "success.main", lighter: "#8dd290" };
     case "Failed":
-      return { main: "error.main", lighter: "error.lighter" };
+      return { main: "error.main", lighter: "#f5c9c9" };
     case "Pending":
-      return { main: "warning.main", lighter: "warning.lighter" };
+      return { main: "warning.main", lighter: "#ffc890" };
     default:
       return { main: "", lighter: "" };
   }
@@ -110,29 +97,28 @@ export default function OrdersTable1() {
           border: "1px solid",
           borderColor: "#E6EBF1",
           borderRadius: 1,
-          "& .MuiListItemButton-root": {
-            py: 1.5,
-            "& .MuiAvatar-root": avatarSX,
-            "& .MuiListItemSecondaryAction-root": {
-              ...actionSX,
-              position: "relative",
-            },
-          },
         }}
       >
         {data.map((item, index) => (
           <ListItem key={item.orderNumber} divider={index !== data.length - 1}>
             <ListItemAvatar>
               <Tooltip title={item.status}>
-                <CircleIcon
+                <Avatar
                   sx={{
-                    color: getColor(item.status).main,
                     bgcolor: getColor(item.status).lighter,
-                    "&:hover": {
-                      color: getColor(item.status).main,
-                    },
+                    color: getColor(item.status).main,
                   }}
-                />
+                >
+                  {item.status === "Arrived" && (
+                    <CheckIcon sx={{ pointerEvents: "none" }} />
+                  )}
+                  {item.status === "Failed" && (
+                    <CloseIcon sx={{ pointerEvents: "none" }} />
+                  )}
+                  {item.status === "Pending" && (
+                    <AccessTimeIcon sx={{ pointerEvents: "none" }} />
+                  )}
+                </Avatar>
               </Tooltip>
             </ListItemAvatar>
 
@@ -145,10 +131,10 @@ export default function OrdersTable1() {
             <ListItemSecondaryAction>
               <Stack alignItems="flex-end">
                 <Typography variant="subtitle1" noWrap>
-                  &nbsp;{item.materialType} - &nbsp;{item.quantity} cu. mt.
-                </Typography>
-                <Typography variant="h6" color="primary" noWrap>
                   PHP{Number(item.price).toLocaleString("en-US")}
+                </Typography>
+                <Typography variant="subtitle2" color="textSecondary" noWrap>
+                   {item.materialType} -  {item.quantity} cu. mt.
                 </Typography>
               </Stack>
             </ListItemSecondaryAction>
