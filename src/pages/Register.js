@@ -4,34 +4,18 @@ import "../styles/Register.css";
 import axios from "axios";
 
 function Register() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [mobileNumber, setMobileNumber] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [address, setAddress] = useState("");
-  const [gender, setGender] = useState("");
+  const [firstName, setFirstName] = useState();
 
-  const handleRegister = async () => {
+  const handleRegister = (e) => {
+    e.preventDefault();
     try {
-      const response = await axios.post("./api/Register.js", {
+      const response = axios.post("http://localhost:3000/routes/items", {
         firstName,
-        lastName,
-        email,
-        username,
-        mobileNumber,
-        password,
-        address,
-        gender,
       });
 
-      // Handle success or show a success message
       console.log("Registration successful:", response.data);
     } catch (error) {
-      // Handle error or show an error message
-      console.error("Registration failed:", error.response.data.error);
+      console.log("Registration failed:", error.response.data.error);
     }
   };
 
@@ -48,74 +32,6 @@ function Register() {
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
               />
-            </div>
-            <div className="input-container">
-              <label>Last Name:</label>
-              <input
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-              />
-            </div>
-            <div className="input-container">
-              <label>Email Address:</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div className="input-container">
-              <label>Username:</label>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </div>
-            <div className="input-container">
-              <label>Mobile Number:</label>
-              <input
-                type="tel"
-                value={mobileNumber}
-                onChange={(e) => setMobileNumber(e.target.value)}
-              />
-            </div>
-            <div className="input-container">
-              <label>Password:</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            <div className="input-container">
-              <label>Confirm Password:</label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </div>
-            <div className="input-container">
-              <label>Address:</label>
-              <input
-                type="text"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-              />
-            </div>
-            <div className="input-container">
-              <label>Gender:</label>
-              <select
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
-              >
-                <option value="">Select Gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
             </div>
             <button>Register</button>
           </form>
