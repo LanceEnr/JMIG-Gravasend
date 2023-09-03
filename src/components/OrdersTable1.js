@@ -1,15 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import {
-  Avatar,
   List,
   ListItemAvatar,
-  ListItemButton,
   ListItemSecondaryAction,
   ListItemText,
-  MenuItem,
   Stack,
   ListItem,
-  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -124,8 +120,8 @@ export default function OrdersTable1() {
           },
         }}
       >
-        {data.map((item) => (
-          <ListItem divider key={item.orderNumber}>
+        {data.map((item, index) => (
+          <ListItem key={item.orderNumber} divider={index !== data.length - 1}>
             <ListItemAvatar>
               <Tooltip title={item.status}>
                 <CircleIcon
