@@ -1,7 +1,6 @@
 import "./App.css";
 import React, { useReducer } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Navbar from "./components/Navbar";
 import ResponsiveAppBar from "./components/ResponsiveAppBar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -11,7 +10,8 @@ import About from "./pages/About";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import authReducer from "./store/reducers/authReducer";
-import UserDashboard from "./pages/DisplayAppointment";
+import Orders from "./pages/Orders";
+import Appointments from "./pages/Appointments";
 const initialState = {
   isAuthenticated: false,
 };
@@ -27,7 +27,8 @@ function App() {
           <Route path="/products" exact element={<Products />} />
           <Route path="/about" exact element={<About />} />
           <Route path="/contact" exact element={<Contact />} />
-          <Route path="/userdashboard" exact element={<UserDashboard />} />
+          <Route path="/orders" exact element={<Orders />} />
+          <Route path="/appointments" exact element={<Appointments />} />
           <Route
             path="/login"
             exact
