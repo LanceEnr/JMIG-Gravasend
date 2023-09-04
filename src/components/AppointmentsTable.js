@@ -90,10 +90,8 @@ export default function AppointmentsTable() {
                 <TableCell>{appointment.date}</TableCell>
                 <Tooltip title={appointment.message}>
                   <TableCell>
-                    {appointment.message
-                      .split(" ")
-                      .slice(0, 15)
-                      .join(" ") + "..."}
+                    {appointment.message.split(" ").slice(0, 15).join(" ") +
+                      "..."}
                   </TableCell>
                 </Tooltip>
                 <TableCell>

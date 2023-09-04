@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
-import AppointmentsTable from "../components/AppointmentsTable";
+import { Typography, Box, Pagination } from "@mui/material";
+import AppointmentsTable1 from "../components/AppointmentsTable1";
 import "../styles/UserDashboard.css";
 import axios from "axios";
 
@@ -27,11 +28,11 @@ function Appointments() {
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <Paper
-              sx={{ p: 2, mb: 2, display: "flex", flexDirection: "column" }}
-            >
-              <AppointmentsTable />
-            </Paper>
+            <Typography variant="h6">Your Appointments</Typography>
+            <AppointmentsTable1 />
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+              <Pagination count={5} color="primary" />
+            </Box>
           </Grid>
         </Grid>
       </Container>
