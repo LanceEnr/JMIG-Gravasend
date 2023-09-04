@@ -4,14 +4,17 @@ import "../styles/Register.css";
 import axios from "axios";
 
 function Register() {
-  const [firstName, setFirstName] = useState();
+  const [firstName, setFirstName] = useState([]);
 
   const handleRegister = (e) => {
     e.preventDefault();
     try {
-      const response = axios.post("http://localhost:3000/routes/items", {
-        firstName,
-      });
+      const response = axios
+        .get("http://localhost:3001/register")
+        .then((response) => {
+          // Set the user data in the state
+          setFirstName(response.data);
+        });
 
       console.log("Registration successful:", response.data);
     } catch (error) {
