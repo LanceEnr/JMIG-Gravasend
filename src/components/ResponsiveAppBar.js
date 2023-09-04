@@ -18,7 +18,7 @@ import EventIcon from "@mui/icons-material/Event";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { Link } from "react-router-dom";
 
-const pages = ["Home", "Products", "FAQs", "About", "Contact"];
+const pages = ["Home", "Products", "FAQs", "About", "Contact", "SignIn"];
 
 const settings = ["Account", "Orders", "Appointments", "Logout"];
 
@@ -37,9 +37,8 @@ const notifications = [
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElNotifications, setAnchorElNotifications] = React.useState(
-    null
-  );
+  const [anchorElNotifications, setAnchorElNotifications] =
+    React.useState(null);
   const [anchorElSettings, setAnchorElSettings] = React.useState(null);
 
   const handleOpenNavMenu = (event) => {

@@ -1,6 +1,7 @@
 import "./App.css";
 import React, { useReducer } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import "@fontsource/roboto";
 import ResponsiveAppBar from "./components/ResponsiveAppBar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -8,6 +9,7 @@ import Products from "./pages/Products";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import Login from "./pages/Login";
+import SignIn from "./pages/SignIn";
 import Register from "./pages/Register";
 import authReducer from "./store/reducers/authReducer";
 import Orders from "./pages/Orders";
@@ -28,6 +30,7 @@ function App() {
           <Route path="/about" exact element={<About />} />
           <Route path="/contact" exact element={<Contact />} />
           <Route path="/orders" exact element={<Orders />} />
+          <Route path="/signin" exact element={<SignIn />} />
           <Route path="/appointments" exact element={<Appointments />} />
           <Route
             path="/login"
