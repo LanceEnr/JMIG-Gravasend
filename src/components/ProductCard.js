@@ -64,14 +64,19 @@ const MyCard = ({ card }) => (
         >
           {card.name}
         </Typography>
-        <Typography color="primary" variant="subtitle1">
+        <Typography
+          sx={{ color: "#004aad", fontWeight: "bold" }}
+          variant="subtitle1"
+        >
           PHP {card.price.toLocaleString()} per cu. mt.
         </Typography>
       </CardContent>
       <CardActions>
         <Button
-          size="small"
+          fullWidth
           variant="outlined"
+          size="small"
+          sx={{ color: "#004aad" }}
           endIcon={<VisibilityOutlinedIcon />}
         >
           View

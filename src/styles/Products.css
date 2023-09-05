@@ -7,17 +7,3 @@
   flex-direction: column;
   background-color: #fafbf5;
 }
-
-@media only screen and (max-width: 1300px) {
-  .menuList {
-    grid-template-columns: 1fr 1fr;
-    justify-content: center; /* Add this line */
-  }
-}
-
-@media only screen and (max-width: 800px) {
-  .menuList {
-    grid-template-columns: 1fr;
-    justify-content: center; /* Add this line */
-  }
-}

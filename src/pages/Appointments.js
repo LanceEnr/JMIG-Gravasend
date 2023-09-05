@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
 import { Typography, Box, Pagination } from "@mui/material";
 import AppointmentsTable1 from "../components/AppointmentsTable1";
 import "../styles/UserDashboard.css";

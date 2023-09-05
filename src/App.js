@@ -9,8 +9,8 @@ import Products from "./pages/Products";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import Login from "./pages/Login";
-import SignIn from "./pages/SignIn";
 import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
 import authReducer from "./store/reducers/authReducer";
 import Orders from "./pages/Orders";
 import Appointments from "./pages/Appointments";
@@ -30,8 +30,8 @@ function App() {
           <Route path="/about" exact element={<About />} />
           <Route path="/contact" exact element={<Contact />} />
           <Route path="/orders" exact element={<Orders />} />
-          <Route path="/signin" exact element={<SignIn />} />
           <Route path="/appointments" exact element={<Appointments />} />
+          <Route path="/forgotpassword" exact element={<ForgotPassword />} />
           <Route
             path="/login"
             exact

@@ -18,7 +18,16 @@ import EventIcon from "@mui/icons-material/Event";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { Link } from "react-router-dom";
 
-const pages = ["Home", "Products", "FAQs", "About", "Contact", "SignIn"];
+const pages = [
+  "Home",
+  "Products",
+  "FAQs",
+  "About",
+  "Contact",
+  "Login",
+  "Register",
+  "ForgotPassword",
+];
 
 const settings = ["Account", "Orders", "Appointments", "Logout"];
 
