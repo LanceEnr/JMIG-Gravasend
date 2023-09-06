@@ -11,6 +11,7 @@ import {
   Avatar,
   Menu,
   MenuItem,
+  Grid,
 } from "@mui/material";
 import MainCard from "./common/MainCard";
 import CheckIcon from "@mui/icons-material/Check";
@@ -152,51 +153,61 @@ export default function OrdersTable1() {
               }
               secondary={`${item.dayOfWeek}, ${item.date}`}
             />
-            <ListItemSecondaryAction>
-              <Box display="flex" alignItems="center" spacing={5}>
-                <Typography variant="subtitle1" noWrap sx={{ marginRight: 2 }}>
-                  {`${item.startTime} - ${item.endTime}`}
-                </Typography>
-                <Tooltip title={item.status === "Upcoming" ? "Actions" : ""}>
-                  <MoreVertIcon
-                    onClick={item.status === "Upcoming" ? handleClick : null}
+            <Grid item xs={12} sm="auto">
+              <ListItemSecondaryAction>
+                <Box display="flex" alignItems="center" spacing={5}>
+                  <Typography
+                    variant="subtitle1"
+                    noWrap
+                    sx={{ marginRight: 2 }}
+                  >
+                    {`${item.startTime} - ${item.endTime}`}
+                  </Typography>
+
+                  <Tooltip title={item.status === "Upcoming" ? "Actions" : ""}>
+                    <MoreVertIcon
+                      onClick={item.status === "Upcoming" ? handleClick : null}
+                      sx={{
+                        cursor:
+                          item.status === "Upcoming" ? "pointer" : "default",
+                        color:
+                          item.status === "Upcoming"
+                            ? "text.secondary"
+                            : "text.disabled",
+                        pointerEvents:
+                          item.status === "Upcoming" ? "auto" : "none",
+                      }}
+                    />
+                  </Tooltip>
+                  <Menu
                     sx={{
-                      cursor:
-                        item.status === "Upcoming" ? "pointer" : "default",
-                      color:
-                        item.status === "Upcoming"
-                          ? "text.secondary"
-                          : "text.disabled",
-                      pointerEvents:
-                        item.status === "Upcoming" ? "auto" : "none",
+                      mt: "45px",
                     }}
-                  />
-                </Tooltip>
-                <Menu
-                  sx={{
-                    mt: "45px",
-                  }}
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Boolean(anchorEl)}
-                  onClose={handleClose}
-                  elevation={1}
-                >
-                  <MenuItem onClick={handleClose}>Edit</MenuItem>
-                  <MenuItem onClick={handleClose} sx={{ color: "error.main" }}>
-                    Cancel
-                  </MenuItem>
-                </Menu>
-              </Box>
-            </ListItemSecondaryAction>
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}
+                    elevation={1}
+                  >
+                    <MenuItem onClick={handleClose}>Edit</MenuItem>
+                    <MenuItem
+                      onClick={handleClose}
+                      sx={{ color: "error.main" }}
+                    >
+                      Cancel
+                    </MenuItem>
+                  </Menu>
+                </Box>
+              </ListItemSecondaryAction>
+            </Grid>
           </ListItem>
         ))}
       </List>

@@ -11,6 +11,7 @@ import About from "./pages/About";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
+import Faqs from "./pages/Faqs";
 import authReducer from "./store/reducers/authReducer";
 import Orders from "./pages/Orders";
 import Appointments from "./pages/Appointments";
@@ -32,6 +33,7 @@ function App() {
           <Route path="/orders" exact element={<Orders />} />
           <Route path="/appointments" exact element={<Appointments />} />
           <Route path="/forgotpassword" exact element={<ForgotPassword />} />
+          <Route path="/faqs" exact element={<Faqs />} />
           <Route
             path="/login"
             exact

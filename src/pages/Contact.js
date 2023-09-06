@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { TextField, Button, Grid, Typography, Box } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Grid,
+  Typography,
+  Box,
+  Container,
+} from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import PhoneIcon from "@mui/icons-material/Phone";
 import EmailIcon from "@mui/icons-material/Email";
@@ -20,7 +27,7 @@ function Contact() {
   return (
     <div className="contact">
       <Banner bannerImage={BannerImage} title="CONTACT US" text="Talk to us!" />
-      <div className="contactLower">
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
         <Box
           component="iframe"
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3859.336009504322!2d121.0196
@@ -151,7 +158,7 @@ ph!4v1693048413304!5m2!1sen!2sph"
             </Box>
           </Grid>
         </Grid>
-      </div>
+      </Container>
     </div>
   );
 }
