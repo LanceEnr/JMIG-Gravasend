@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   List,
   ListItemAvatar,
@@ -21,49 +22,49 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 const data = [
   {
-    status: "Upcoming",
+    _status: "Upcoming",
     appointmentNumber: "#002434",
     date: "5 August",
     startTime: "10:00 AM",
     endTime: "12:00 PM",
   },
   {
-    status: "Cancelled",
+    _status: "Cancelled",
     appointmentNumber: "#002435",
     date: "6 August",
     startTime: "10:00 AM",
     endTime: "12:00 PM",
   },
   {
-    status: "Completed",
+    _status: "Completed",
     appointmentNumber: "#002436",
     date: "7 August",
     startTime: "10:00 AM",
     endTime: "12:00 PM",
   },
   {
-    status: "Completed",
+    _status: "Completed",
     appointmentNumber: "#002436",
     date: "7 August",
     startTime: "10:00 AM",
     endTime: "12:00 PM",
   },
   {
-    status: "Completed",
+    _status: "Completed",
     appointmentNumber: "#002436",
     date: "7 August",
     startTime: "10:00 AM",
     endTime: "12:00 PM",
   },
   {
-    status: "Completed",
+    _status: "Completed",
     appointmentNumber: "#002436",
     date: "7 August",
     startTime: "10:00 AM",
     endTime: "12:00 PM",
   },
   {
-    status: "Completed",
+    _status: "Completed",
     appointmentNumber: "#002436",
     date: "7 August",
     startTime: "10:00 AM",
@@ -87,8 +88,8 @@ data.forEach((item) => {
   item.dayOfWeek = daysOfWeek[day];
 });
 
-const getColor = (status) => {
-  switch (status) {
+const getColor = (_status) => {
+  switch (_status) {
     case "Completed":
       return { main: "success.main", lighter: "#8dd290" };
     case "Cancelled":
@@ -110,6 +111,14 @@ export default function OrdersTable1() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const [appointments, setAppointments] = useState([]);
+  useEffect(() => {
+    // Fetch users from the backend when the component mounts
+    axios.get("http://localhost:3001/appointment").then((response) => {
+      setAppointments(response.data);
+    });
+  }, []);
   return (
     <MainCard sx={{ mt: 2 }} content={false}>
       <List
@@ -122,26 +131,26 @@ export default function OrdersTable1() {
           borderRadius: 1,
         }}
       >
-        {data.map((item, index) => (
+        {appointments.map((item, index) => (
           <ListItem
             key={item.appointmentNumber}
             divider={index !== data.length - 1}
           >
             <ListItemAvatar>
-              <Tooltip title={item.status}>
+              <Tooltip title={item._status}>
                 <Avatar
                   sx={{
-                    bgcolor: getColor(item.status).lighter,
-                    color: getColor(item.status).main,
+                    bgcolor: getColor(item._status).lighter,
+                    color: getColor(item._status).main,
                   }}
                 >
-                  {item.status === "Completed" && (
+                  {item._status === "Completed" && (
                     <CheckIcon sx={{ pointerEvents: "none" }} />
                   )}
-                  {item.status === "Cancelled" && (
+                  {item._status === "Cancelled" && (
                     <CloseIcon sx={{ pointerEvents: "none" }} />
                   )}
-                  {item.status === "Upcoming" && (
+                  {item._status === "Upcoming" && (
                     <AccessTimeIcon sx={{ pointerEvents: "none" }} />
                   )}
                 </Avatar>
@@ -150,27 +159,27 @@ export default function OrdersTable1() {
 
             <ListItemText
               primary={
-                <Typography variant="subtitle1">{`Appointment ${item.appointmentNumber}`}</Typography>
+                <Typography variant="subtitle1">{`Appointment ${item._id}`}</Typography>
               }
-              secondary={`${item.dayOfWeek}, ${item.date}`}
+              secondary={`${item.dayOfWeek}, ${item._date}`}
             />
             <ListItemSecondaryAction>
               <Box display="flex" alignItems="center" spacing={5}>
                 <Typography variant="subtitle1" noWrap sx={{ marginRight: 2 }}>
-                  {`${item.startTime} - ${item.endTime}`}
+                  {`${item._startTime} - ${item._endTime}`}
                 </Typography>
-                <Tooltip title={item.status === "Upcoming" ? "Actions" : ""}>
+                <Tooltip title={item._status === "Upcoming" ? "Actions" : ""}>
                   <MoreVertIcon
-                    onClick={item.status === "Upcoming" ? handleClick : null}
+                    onClick={item._status === "Upcoming" ? handleClick : null}
                     sx={{
                       cursor:
-                        item.status === "Upcoming" ? "pointer" : "default",
+                        item._status === "Upcoming" ? "pointer" : "default",
                       color:
-                        item.status === "Upcoming"
+                        item._status === "Upcoming"
                           ? "text.secondary"
                           : "text.disabled",
                       pointerEvents:
-                        item.status === "Upcoming" ? "auto" : "none",
+                        item._status === "Upcoming" ? "auto" : "none",
                     }}
                   />
                 </Tooltip>

@@ -5,8 +5,10 @@ const appointmentSchema = new mongoose.Schema(
     _name: String,
     _contactNum: String,
     _date: String,
-    _time: String,
     _note: String,
+    _status: String,
+    _endTime: String,
+    _startTime: String,
   },
   { collection: "appointment" }
 );
