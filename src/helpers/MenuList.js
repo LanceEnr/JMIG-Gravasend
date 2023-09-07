@@ -10,30 +10,36 @@ export const MenuList = [
     name: "Pea Gravel",
     image: Gravel1,
     price: 3000,
+    status: "Available",
   },
   {
     name: "Crushed Stone",
     image: Gravel2,
     price: 4000,
+    status: "Available",
   },
   {
     name: "Quarry Process",
     image: Gravel3,
     price: 5000,
+    status: "Available",
   },
   {
     name: "Concrete Sand",
     image: Sand1,
     price: 4000,
+    status: "Available",
   },
   {
     name: "Masonry Sand",
     image: Sand2,
     price: 3400,
+    status: "Unavailable",
   },
   {
     name: "Crushed Sand",
     image: Sand3,
     price: 3400,
+    status: "Unavailable",
   },
 ];

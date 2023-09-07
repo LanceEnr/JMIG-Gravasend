@@ -6,7 +6,7 @@ const Banner = ({ bannerImage, title, text }) => {
     <div
       className="aboutImage"
       style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${bannerImage})`,
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${bannerImage})`,
       }}
     >
       <h1 className="aboutTitle">{title}</h1>

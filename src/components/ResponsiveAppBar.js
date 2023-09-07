@@ -170,7 +170,11 @@ function ResponsiveAppBar() {
                 onClick={handleCloseNavMenu}
                 component={Link}
                 to={page === "Home" ? "/" : `/${page}`}
-                sx={{ color: "#343231", fontWeight: "bold" }}
+                sx={{
+                  color: "#343231",
+                  borderRadius: 0,
+                  "&:hover": { borderBottom: "3px solid #004aad" },
+                }}
               >
                 {page}
               </Button>
