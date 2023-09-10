@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Container,
   Grid,
   Card,
   CardMedia,
@@ -14,7 +13,7 @@ import {
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 
 const MyCard = ({ card }) => (
-  <Grid item key={card.name} xs={12} sm={6} md={4}>
+  <Grid item key={card.name} xs={12} sm={6} md={3}>
     <Card
       sx={{
         height: "100%",
@@ -65,14 +64,4 @@ const MyCard = ({ card }) => (
   </Grid>
 );
 
-const MyCards = ({ cards }) => (
-  <Container sx={{ py: 8 }} maxWidth="md">
-    <Grid container spacing={4}>
-      {cards.map((card) => (
-        <MyCard card={card} />
-      ))}
-    </Grid>
-  </Container>
-);
-
-export default MyCards;
+export default MyCard;

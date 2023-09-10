@@ -1,10 +1,11 @@
 import React from "react";
 import { Box, Button, Typography, LinearProgress } from "@mui/material";
-import { useState } from "react";
 import { withStyles } from "@mui/styles";
 import Sand1 from "../assets/Sand1.webp";
 import { Container } from "react-bootstrap";
 import "../styles/UserDashboard.css";
+import { MenuList } from "../helpers/MenuList";
+import MoreProducts from "../components/MoreProducts";
 
 const ColoredLinearProgress = withStyles({
   colorPrimary: {
@@ -16,8 +17,6 @@ const ColoredLinearProgress = withStyles({
 })(LinearProgress);
 
 const ProductDetails = () => {
-  const [count, setCount] = useState(1);
-  const [value, setValue] = useState("description");
   const stocksLeft = 50;
   const totalStocks = 100;
 
@@ -26,13 +25,17 @@ const ProductDetails = () => {
       <Container>
         <Box width="80%" m="80px auto">
           <Box display="flex" flexWrap="wrap" columnGap="40px">
-            <Box flex="1 1 40%" mb="40px">
+            <Box
+              flex="1 1 40%"
+              mb="40px"
+              style={{ borderRadius: "5px", overflow: "hidden" }}
+            >
               <img
                 alt="Sand"
                 src={Sand1}
                 width="100%"
                 height="100%"
-                style={{ objectFit: "contain" }}
+                style={{ objectFit: "contain", transform: "scale(1.1)" }}
               />
             </Box>
 
@@ -107,15 +110,11 @@ const ProductDetails = () => {
 
           <Box mt="50px" width="100%">
             <Typography variant="h4" fontWeight="bold">
-              Related Products
+              More Products
             </Typography>
-            <Box
-              mt="20px"
-              display="flex"
-              flexWrap="wrap"
-              columnGap="1.33%"
-              justifyContent="space-between"
-            ></Box>
+            <Box mt="20px">
+              <MoreProducts cards={MenuList} />
+            </Box>
           </Box>
         </Box>
       </Container>
