@@ -1,11 +1,11 @@
-import * as React from "react";
+import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
 import AddIcon from "@mui/icons-material/Add";
+import SearchIcon from "@mui/icons-material/Search";
 import MuiAccordion from "@mui/material/Accordion";
 import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
-import Typography from "@mui/material/Typography";
+import { TextField, Typography, Box, InputAdornment } from "@mui/material";
 
 export const items = [
   {
@@ -82,6 +82,10 @@ const Accordion = styled((props) => (
   "&:before": {
     display: "none",
   },
+  "&:hover": {
+    borderLeft: "5px solid #004aad", // Add a line to the right side of the border
+    backgroundColor: "#F4F4F4", // Add a darker color
+  },
 }));
 
 const AccordionSummary = styled((props) => (
@@ -109,7 +113,8 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 }));
 
 export default function CustomizedAccordions() {
-  const [expanded, setExpanded] = React.useState("panel1");
+  const [expanded, setExpanded] = React.useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
@@ -117,23 +122,50 @@ export default function CustomizedAccordions() {
 
   return (
     <div>
-      {items.map((item) => (
-        <Accordion
-          key={item.id}
-          expanded={expanded === item.id}
-          onChange={handleChange(item.id)}
+      <Box mb={2}>
+        <Typography
+          component="h1"
+          variant="h5"
+          sx={{ color: "#004aad", fontWeight: "bold" }}
         >
-          <AccordionSummary
-            aria-controls={`${item.id}-content`}
-            id={`${item.id}-header`}
+          How can we help you?
+        </Typography>
+      </Box>
+      <TextField
+        label="Search for a question"
+        variant="outlined"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        style={{ marginBottom: "1rem", width: "100%" }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+      />
+      {items
+        .filter((item) =>
+          item.title.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .map((item) => (
+          <Accordion
+            key={item.id}
+            expanded={expanded === item.id}
+            onChange={handleChange(item.id)}
           >
-            <Typography>{item.title}</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>{item.content}</Typography>
-          </AccordionDetails>
-        </Accordion>
-      ))}
+            <AccordionSummary
+              aria-controls={`${item.id}-content`}
+              id={`${item.id}-header`}
+            >
+              <Typography>{item.title}</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>{item.content}</Typography>
+            </AccordionDetails>
+          </Accordion>
+        ))}
     </div>
   );
 }
