@@ -25,7 +25,7 @@ export default function Register() {
 
   return (
     <div className="signin">
-      <Container component="main" maxWidth="sm">
+      <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
         <Box
           sx={{
             marginTop: 8,
