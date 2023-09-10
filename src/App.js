@@ -14,6 +14,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Faqs from "./pages/Faqs";
 import authReducer from "./store/reducers/authReducer";
 import Orders from "./pages/Orders";
+import ProductDetails from "./pages/ProductDetails";
 import Appointments from "./pages/Appointments";
 const initialState = {
   isAuthenticated: false,
@@ -33,6 +34,7 @@ function App() {
           <Route path="/orders" exact element={<Orders />} />
           <Route path="/appointments" exact element={<Appointments />} />
           <Route path="/forgotpassword" exact element={<ForgotPassword />} />
+          <Route path="/productdetails" exact element={<ProductDetails />} />
           <Route path="/faqs" exact element={<Faqs />} />
           <Route
             path="/login"

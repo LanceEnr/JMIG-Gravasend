@@ -37,7 +37,7 @@ const MyCard = ({ card }) => (
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography
-            sx={{ color: "#004aad", fontWeight: "bold" }}
+            sx={{ color: "#bd8512", fontWeight: "bold" }}
             variant="subtitle2"
           >
             PHP {card.price.toLocaleString()} per cu. mt.
