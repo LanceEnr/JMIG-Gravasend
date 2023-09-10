@@ -5,15 +5,14 @@ import {
   ListItemAvatar,
   ListItemSecondaryAction,
   ListItemText,
-  Stack,
   Box,
   ListItem,
   Tooltip,
   Typography,
   Avatar,
-  IconButton,
   Menu,
   MenuItem,
+  Grid,
 } from "@mui/material";
 import MainCard from "./common/MainCard";
 import CheckIcon from "@mui/icons-material/Check";
@@ -166,20 +165,20 @@ export default function OrdersTable1() {
             <ListItemSecondaryAction>
               <Box display="flex" alignItems="center" spacing={5}>
                 <Typography variant="subtitle1" noWrap sx={{ marginRight: 2 }}>
-                  {`${item._startTime} - ${item._endTime}`}
+                  {`${item.startTime} - ${item.endTime}`}
                 </Typography>
-                <Tooltip title={item._status === "Upcoming" ? "Actions" : ""}>
+                <Tooltip title={item.status === "Upcoming" ? "Actions" : ""}>
                   <MoreVertIcon
-                    onClick={item._status === "Upcoming" ? handleClick : null}
+                    onClick={item.status === "Upcoming" ? handleClick : null}
                     sx={{
                       cursor:
-                        item._status === "Upcoming" ? "pointer" : "default",
+                        item.status === "Upcoming" ? "pointer" : "default",
                       color:
-                        item._status === "Upcoming"
+                        item.status === "Upcoming"
                           ? "text.secondary"
                           : "text.disabled",
                       pointerEvents:
-                        item._status === "Upcoming" ? "auto" : "none",
+                        item.status === "Upcoming" ? "auto" : "none",
                     }}
                   />
                 </Tooltip>

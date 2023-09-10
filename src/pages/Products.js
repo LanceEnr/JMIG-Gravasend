@@ -1,6 +1,6 @@
 import React from "react";
 import { MenuList } from "../helpers/MenuList";
-import MenuItem from "../components/MenuItem";
+import MyCards from "../components/ProductCard";
 import "../styles/Products.css";
 import Banner from "../components/Banner";
 import BannerImage from "../assets/catalog.webp";
@@ -15,18 +15,7 @@ function Products() {
 
         "
       />
-      <div className="menuList">
-        {MenuList.map((menuItem, key) => {
-          return (
-            <MenuItem
-              key={key}
-              image={menuItem.image}
-              name={menuItem.name}
-              price={menuItem.price}
-            />
-          );
-        })}
-      </div>
+      <MyCards cards={MenuList} />
     </div>
   );
 }
