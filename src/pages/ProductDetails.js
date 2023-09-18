@@ -49,8 +49,8 @@ const ProductDetails = () => {
                 <Typography variant="h3" sx={{ color: "#004aad" }}>
                   Concrete Sand
                 </Typography>
-                <Typography sx={{ color: "#bd8512", fontWeight: "bold" }}>
-                  PHP 4,000 per cu. mt.
+                <Typography sx={{ color: "#bd8512" }}>
+                  ₱4,000 per cu. mt.
                 </Typography>
                 <Typography sx={{ mt: "20px" }}>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi

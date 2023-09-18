@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   List,
   ListItemAvatar,
@@ -9,11 +9,16 @@ import {
   Tooltip,
   Typography,
   Avatar,
+  Paper,
+  Box,
+  Pagination,
+  useMediaQuery,
 } from "@mui/material";
-import MainCard from "./common/MainCard";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import UserDrawer from "./common/UserDrawer";
 
 const data = [
   {
@@ -88,60 +93,91 @@ const getColor = (status) => {
 };
 
 export default function OrdersTable1() {
-  return (
-    <MainCard sx={{ mt: 2 }} content={false}>
-      <List
-        component="nav"
-        sx={{
-          px: 0,
-          py: 0,
-          border: "1px solid",
-          borderColor: "#E6EBF1",
-          borderRadius: 1,
-        }}
-      >
-        {data.map((item, index) => (
-          <ListItem key={item.orderNumber} divider={index !== data.length - 1}>
-            <ListItemAvatar>
-              <Tooltip title={item.status}>
-                <Avatar
-                  sx={{
-                    bgcolor: getColor(item.status).lighter,
-                    color: getColor(item.status).main,
-                  }}
-                >
-                  {item.status === "Arrived" && (
-                    <CheckIcon sx={{ pointerEvents: "none" }} />
-                  )}
-                  {item.status === "Failed" && (
-                    <CloseIcon sx={{ pointerEvents: "none" }} />
-                  )}
-                  {item.status === "Pending" && (
-                    <AccessTimeIcon sx={{ pointerEvents: "none" }} />
-                  )}
-                </Avatar>
-              </Tooltip>
-            </ListItemAvatar>
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 6;
 
-            <ListItemText
-              primary={
-                <Typography variant="subtitle1">{`Order ${item.orderNumber}`}</Typography>
-              }
-              secondary={item.date}
-            />
-            <ListItemSecondaryAction>
-              <Stack alignItems="flex-end">
-                <Typography variant="subtitle1" noWrap>
-                  PHP{Number(item.price).toLocaleString("en-US")}
-                </Typography>
-                <Typography variant="subtitle2" color="textSecondary" noWrap>
-                   {item.materialType} -  {item.quantity} cu. mt.
-                </Typography>
-              </Stack>
-            </ListItemSecondaryAction>
-          </ListItem>
+  const handleChange = (event, value) => {
+    setPage(value);
+  };
+
+  const isMobile = useMediaQuery("(max-width:600px)");
+
+  return (
+    <List
+      component="nav"
+      sx={{
+        px: 0,
+        py: 0,
+      }}
+    >
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography
+          component="h1"
+          variant="h5"
+          sx={{ color: "#004aad", fontWeight: "bold" }}
+        >
+          <ShoppingCartIcon sx={{ mr: 1, verticalAlign: "middle" }} />
+          My Orders
+        </Typography>
+        {isMobile && <UserDrawer />}
+      </Box>
+      {data
+        .slice((page - 1) * itemsPerPage, page * itemsPerPage)
+        .map((item, index) => (
+          <Paper elevation={2} sx={{ my: 1 }}>
+            <ListItem key={item.orderNumber}>
+              <ListItemAvatar>
+                <Tooltip title={item.status}>
+                  <Avatar
+                    sx={{
+                      bgcolor: getColor(item.status).lighter,
+                      color: getColor(item.status).main,
+                    }}
+                  >
+                    {item.status === "Arrived" && (
+                      <CheckIcon sx={{ pointerEvents: "none" }} />
+                    )}
+                    {item.status === "Failed" && (
+                      <CloseIcon sx={{ pointerEvents: "none" }} />
+                    )}
+                    {item.status === "Pending" && (
+                      <AccessTimeIcon sx={{ pointerEvents: "none" }} />
+                    )}
+                  </Avatar>
+                </Tooltip>
+              </ListItemAvatar>
+
+              <ListItemText
+                primary={
+                  <Typography variant="subtitle1">{`Order ${item.orderNumber}`}</Typography>
+                }
+                secondary={item.date}
+              />
+              <ListItemSecondaryAction>
+                <Stack alignItems="flex-end">
+                  <Typography
+                    variant="subtitle1"
+                    noWrap
+                    sx={{ color: "#bd8512" }}
+                  >
+                    ₱{Number(item.price).toLocaleString("en-US")}
+                  </Typography>
+                  <Typography variant="subtitle2" color="textSecondary" noWrap>
+                     {item.materialType} -  {item.quantity} cu. mt.
+                  </Typography>
+                </Stack>
+              </ListItemSecondaryAction>
+            </ListItem>
+          </Paper>
         ))}
-      </List>
-    </MainCard>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+        <Pagination
+          count={Math.ceil(data.length / itemsPerPage)}
+          page={page}
+          onChange={handleChange}
+          shape="rounded"
+        />
+      </Box>
+    </List>
   );
 }

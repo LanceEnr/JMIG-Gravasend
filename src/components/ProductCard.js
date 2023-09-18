@@ -35,11 +35,8 @@ const MyCard = ({ card }) => (
           {card.name}
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography
-            sx={{ color: "#bd8512", fontWeight: "bold" }}
-            variant="subtitle2"
-          >
-            PHP {card.price.toLocaleString()} per cu. mt.
+          <Typography sx={{ color: "#bd8512" }} variant="subtitle2">
+            ₱{card.price.toLocaleString()} per cu. mt.
           </Typography>
           <Chip
             label={card.status}
