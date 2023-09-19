@@ -51,7 +51,7 @@ const MyCard = ({ card }) => (
           fullWidth
           variant="outlined"
           size="small"
-          sx={{ color: "#004aad" }}
+          sx={{ color: "#004aad", borderColor: "#004aad" }}
           endIcon={<VisibilityOutlinedIcon />}
         >
           View

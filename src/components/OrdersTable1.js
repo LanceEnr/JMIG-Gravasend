@@ -117,7 +117,7 @@ export default function OrdersTable1() {
           sx={{ color: "#004aad", fontWeight: "bold" }}
         >
           <ShoppingCartIcon sx={{ mr: 1, verticalAlign: "middle" }} />
-          My Orders
+          Orders
         </Typography>
         {isMobile && <UserDrawer />}
       </Box>

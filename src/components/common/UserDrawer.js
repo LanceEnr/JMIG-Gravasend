@@ -1,5 +1,6 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
+import { withStyles } from "@mui/styles";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
@@ -8,7 +9,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
-import { ListSubheader } from "@mui/material";
+import { ListSubheader, Badge } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -34,6 +35,14 @@ export default function UserDrawer() {
     setState({ ...state, [anchor]: open });
   };
 
+  const ColoredBadge = withStyles({
+    badge: {
+      backgroundColor: "#bd8512",
+      color: "#fafbf5",
+      marginRight: 12,
+    },
+  })(Badge);
+
   const list = (anchor) => (
     <Box
       sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
@@ -57,6 +66,7 @@ export default function UserDrawer() {
                 {index % 2 === 0 ? <ShoppingCartIcon /> : <EventNoteIcon />}
               </ListItemIcon>
               <ListItemText primary={text} />
+              <ColoredBadge badgeContent={4} />
             </ListItemButton>
           </ListItem>
         ))}

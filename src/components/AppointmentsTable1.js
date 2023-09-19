@@ -15,6 +15,7 @@ import {
   Paper,
   Pagination,
   useMediaQuery,
+  Button,
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
@@ -138,8 +139,19 @@ export default function AppointmentsTable1() {
           sx={{ color: "#004aad", fontWeight: "bold" }}
         >
           <EventNoteIcon sx={{ mr: 1, verticalAlign: "middle" }} />
-          My Appointments
+          Appointments
         </Typography>
+        <Button
+          variant="outlined"
+          sx={{
+            color: "#004aad",
+            borderColor: "#004aad",
+            padding: isMobile ? "6px 8px" : "10px 16px",
+            fontSize: isMobile ? "0.75rem" : "0.875rem",
+          }}
+        >
+          Set Appointment
+        </Button>
         {isMobile && <UserDrawer />}
       </Box>
 
