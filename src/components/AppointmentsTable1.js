@@ -178,15 +178,19 @@ export default function AppointmentsTable1() {
                 }
                 secondary={`${item.dayOfWeek}, ${item._date}`}
               />
-              <ListItemSecondaryAction>
-                <Box display="flex" alignItems="center" spacing={5}>
-                  <Typography
-                    variant="subtitle1"
-                    noWrap
-                    sx={{ marginRight: 2 }}
-                  >
-                    {`${item.startTime} - ${item.endTime}`}
-                  </Typography>
+              {isMobile && (
+                <ListItemText
+                  sx={{ ml: 4 }}
+                  primary={
+                    <Typography variant="subtitle1">
+                      {" "}
+                      {`${item.startTime} - ${item.endTime}`}
+                    </Typography>
+                  }
+                />
+              )}
+              {isMobile && (
+                <ListItemSecondaryAction>
                   <Tooltip title={item._status === "Upcoming" ? "Actions" : ""}>
                     <MoreVertIcon
                       onClick={item._status === "Upcoming" ? handleClick : null}
@@ -228,8 +232,67 @@ export default function AppointmentsTable1() {
                       Cancel
                     </MenuItem>
                   </Menu>
-                </Box>
-              </ListItemSecondaryAction>
+                </ListItemSecondaryAction>
+              )}
+              {!isMobile && (
+                <ListItemSecondaryAction>
+                  <Box display="flex" alignItems="center">
+                    <Typography
+                      variant="subtitle1"
+                      noWrap
+                      sx={{ marginRight: isMobile ? 0 : 2 }}
+                    >
+                      {`${item.startTime} - ${item.endTime}`}
+                    </Typography>
+
+                    <Tooltip
+                      title={item._status === "Upcoming" ? "Actions" : ""}
+                    >
+                      <MoreVertIcon
+                        onClick={
+                          item._status === "Upcoming" ? handleClick : null
+                        }
+                        sx={{
+                          cursor:
+                            item._status === "Upcoming" ? "pointer" : "default",
+                          color:
+                            item._status === "Upcoming"
+                              ? "text.secondary"
+                              : "text.disabled",
+                          pointerEvents:
+                            item._status === "Upcoming" ? "auto" : "none",
+                        }}
+                      />
+                    </Tooltip>
+                    <Menu
+                      sx={{
+                        mt: "45px",
+                      }}
+                      anchorEl={anchorEl}
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      keepMounted
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      open={Boolean(anchorEl)}
+                      onClose={handleClose}
+                      elevation={2}
+                    >
+                      <MenuItem onClick={handleClose}>Edit</MenuItem>
+                      <MenuItem
+                        onClick={handleClose}
+                        sx={{ color: "error.main" }}
+                      >
+                        Cancel
+                      </MenuItem>
+                    </Menu>
+                  </Box>
+                </ListItemSecondaryAction>
+              )}
             </ListItem>
           </Paper>
         ))}

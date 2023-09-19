@@ -22,7 +22,7 @@ const ColoredBadge = withStyles({
 })(Badge);
 function SidePanel() {
   return (
-    <Paper elevation={2} sx={{ pt: 2, pb: 2 }}>
+    <Paper elevation={2} sx={{ pt: 2, pb: 2, width: "100%" }}>
       {" "}
       <List
         component="nav"

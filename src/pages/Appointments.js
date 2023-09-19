@@ -14,7 +14,7 @@ function Appointments() {
       <Container sx={{ minHeight: "80vh", mt: 2 }}>
         <Grid container spacing={2}>
           {!isMobile && (
-            <Grid item xs={6} md={3}>
+            <Grid item xs={12} md={3}>
               <UserSidePanel />
             </Grid>
           )}
