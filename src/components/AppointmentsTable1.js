@@ -132,13 +132,23 @@ export default function AppointmentsTable1() {
         py: 0,
       }}
     >
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center" // Align items along the cross axis
+      >
         <Typography
           component="h1"
           variant="h5"
-          sx={{ color: "#004aad", fontWeight: "bold" }}
+          sx={{
+            color: "#004aad",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            my: 1,
+          }}
         >
-          <EventNoteIcon sx={{ mr: 1, verticalAlign: "middle" }} />
+          <EventNoteIcon sx={{ mr: 2, verticalAlign: "middle" }} />
           Appointments
         </Typography>
         <Button
@@ -146,8 +156,9 @@ export default function AppointmentsTable1() {
           sx={{
             color: "#004aad",
             borderColor: "#004aad",
-            padding: isMobile ? "6px 8px" : "10px 16px",
+            padding: isMobile ? "4px 6px" : "6px 8px",
             fontSize: isMobile ? "0.75rem" : "0.875rem",
+            mx: isMobile ? 1 : 0,
           }}
         >
           Set Appointment

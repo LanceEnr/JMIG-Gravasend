@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Paper,
   List,
@@ -14,6 +14,7 @@ import EventNoteIcon from "@mui/icons-material/EventNote";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import { withStyles } from "@mui/styles";
+import { Link } from "react-router-dom";
 
 const ColoredBadge = withStyles({
   badge: {
@@ -22,7 +23,14 @@ const ColoredBadge = withStyles({
     marginRight: 12,
   },
 })(Badge);
-function SidePanel() {
+function SidePanel({ setActiveComponent }) {
+  const [selected, setSelected] = useState("");
+
+  const handleClick = (text) => {
+    setActiveComponent(text);
+    setSelected(text);
+  };
+
   return (
     <Paper elevation={2} sx={{ pt: 2, pb: 2, width: "100%" }}>
       <List
@@ -35,12 +43,27 @@ function SidePanel() {
         }
       >
         {["Orders", "Appointments"].map((text, index) => (
-          <ListItem key={text} disablePadding>
+          <ListItem
+            key={text}
+            disablePadding
+            onClick={() => handleClick(text)}
+            sx={{
+              borderLeft: text === selected ? "4px solid #004aad" : "none",
+            }}
+          >
             <ListItemButton sx={{ justifyContent: "space-between" }}>
-              <ListItemIcon>
+              <ListItemIcon
+                sx={{
+                  pointerEvents: "none",
+                  color: text === selected ? "#004aad" : "inherit",
+                }}
+              >
                 {index % 2 === 0 ? <ShoppingCartIcon /> : <EventNoteIcon />}
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText
+                primary={text}
+                sx={{ color: text === selected ? "#004aad" : "inherit" }}
+              />
               <ColoredBadge badgeContent={4} />
             </ListItemButton>
           </ListItem>
@@ -56,12 +79,27 @@ function SidePanel() {
         }
       >
         {["Profile Info", "Edit Profile"].map((text, index) => (
-          <ListItem key={text} disablePadding>
+          <ListItem
+            key={text}
+            disablePadding
+            onClick={() => handleClick(text)}
+            sx={{
+              borderLeft: text === selected ? "4px solid #004aad" : "none",
+            }}
+          >
             <ListItemButton>
-              <ListItemIcon>
+              <ListItemIcon
+                sx={{
+                  pointerEvents: "none",
+                  color: text === selected ? "#004aad" : "inherit",
+                }}
+              >
                 {index % 2 === 0 ? <AccountCircleIcon /> : <EditIcon />}
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText
+                primary={text}
+                sx={{ color: text === selected ? "#004aad" : "inherit" }}
+              />
             </ListItemButton>
           </ListItem>
         ))}

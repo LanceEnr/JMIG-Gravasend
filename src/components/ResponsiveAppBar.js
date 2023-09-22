@@ -38,7 +38,7 @@ const pages = [
   "ProductDetails",
 ];
 
-const settings = ["Account", "Orders", "Appointments", "Logout"];
+const settings = ["Dashboard", "Logout"];
 
 const notifications = [
   {
@@ -264,6 +264,8 @@ function ResponsiveAppBar() {
                     if (setting === "Logout") {
                       // Handle logout
                       // ...
+                    } else if (setting === "Account") {
+                      window.location.href = "/ProfileInfo";
                     } else {
                       window.location.href = `/${setting}`;
                     }

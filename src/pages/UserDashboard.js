@@ -4,11 +4,15 @@ import Grid from "@mui/material/Grid";
 import { useMediaQuery } from "@mui/material";
 import OrdersTable1 from "../components/OrdersTable1";
 import UserSidePanel from "../components/UserSidePanel";
+import AppointmentsTable1 from "../components/AppointmentsTable1";
+import ProfileInfo from "../components/ProfileInfo";
+import EditProfile from "../components/EditProfile";
 import "../styles/UserDashboard.css";
 import axios from "axios";
 
-function Orders() {
+function UserDashboard() {
   const [orders, setOrders] = useState([]);
+  const [activeComponent, setActiveComponent] = useState("Orders");
   const isMobile = useMediaQuery("(max-width:600px)");
 
   useEffect(() => {
@@ -17,6 +21,21 @@ function Orders() {
       setOrders(response.data);
     });
   }, []);
+
+  const renderComponent = () => {
+    switch (activeComponent) {
+      case "Orders":
+        return <OrdersTable1 />;
+      case "Appointments":
+        return <AppointmentsTable1 />;
+      case "Profile Info":
+        return <ProfileInfo />;
+      case "Edit Profile":
+        return <EditProfile />;
+      default:
+        return <OrdersTable1 />;
+    }
+  };
 
   return (
     <div className="userDashboard">
@@ -31,11 +50,11 @@ function Orders() {
         <Grid container spacing={2}>
           {!isMobile && (
             <Grid item xs={12} md={3}>
-              <UserSidePanel />
+              <UserSidePanel setActiveComponent={setActiveComponent} />
             </Grid>
           )}
           <Grid item xs={12} md={isMobile ? 12 : 9}>
-            <OrdersTable1 />
+            {renderComponent()}
           </Grid>
         </Grid>
       </Container>
@@ -43,4 +62,4 @@ function Orders() {
   );
 }
 
-export default Orders;
+export default UserDashboard;

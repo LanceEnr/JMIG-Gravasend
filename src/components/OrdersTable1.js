@@ -104,7 +104,6 @@ export default function OrdersTable1() {
 
   return (
     <List
-      component="nav"
       sx={{
         px: 0,
         py: 0,
@@ -114,9 +113,9 @@ export default function OrdersTable1() {
         <Typography
           component="h1"
           variant="h5"
-          sx={{ color: "#004aad", fontWeight: "bold" }}
+          sx={{ color: "#004aad", fontWeight: "bold", my: 1 }}
         >
-          <ShoppingCartIcon sx={{ mr: 1, verticalAlign: "middle" }} />
+          <ShoppingCartIcon sx={{ mr: 2, verticalAlign: "middle" }} />
           Orders
         </Typography>
         {isMobile && <UserDrawer />}
