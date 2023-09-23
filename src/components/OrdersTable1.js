@@ -92,7 +92,7 @@ const getColor = (status) => {
   }
 };
 
-export default function OrdersTable1() {
+export default function OrdersTable1(props) {
   const [page, setPage] = useState(1);
   const itemsPerPage = 6;
 
@@ -118,7 +118,9 @@ export default function OrdersTable1() {
           <ShoppingCartIcon sx={{ mr: 2, verticalAlign: "middle" }} />
           Orders
         </Typography>
-        {isMobile && <UserDrawer />}
+        {isMobile && (
+          <UserDrawer onActiveComponentChange={props.onActiveComponentChange} />
+        )}
       </Box>
       {data
         .slice((page - 1) * itemsPerPage, page * itemsPerPage)

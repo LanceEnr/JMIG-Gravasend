@@ -105,7 +105,7 @@ const getColor = (_status) => {
   }
 };
 
-export default function AppointmentsTable1() {
+export default function AppointmentsTable1(props) {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
@@ -163,7 +163,9 @@ export default function AppointmentsTable1() {
         >
           Set Appointment
         </Button>
-        {isMobile && <UserDrawer />}
+        {isMobile && (
+          <UserDrawer onActiveComponentChange={props.onActiveComponentChange} />
+        )}
       </Box>
 
       {data
