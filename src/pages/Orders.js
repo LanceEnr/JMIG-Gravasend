@@ -7,23 +7,8 @@ import "../styles/UserDashboard.css";
 import axios from "axios";
 
 function Orders() {
-  const [orders, setOrders] = useState([]);
-  useEffect(() => {
-    // Fetch users from the backend when the component mounts
-    axios.get("http://localhost:3001/order").then((response) => {
-      setOrders(response.data);
-    });
-  }, []);
-
   return (
     <div className="userDashboard">
-      <ul>
-        {orders.map((order) => (
-          <li key={order._id}>
-            Product: {order._name}, Quantity: {order._status}
-          </li>
-        ))}
-      </ul>
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
         <Grid container spacing={3}>
           <Grid item xs={12}>

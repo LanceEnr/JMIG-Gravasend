@@ -1,27 +1,45 @@
-import * as React from "react";
-import Button from "@mui/material/Button";
+import React, { useState } from "react";
+import axios from "axios";
 import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import Container from "@mui/material/Container";
+import Box from "@mui/material/Box"; // Import Box component
+import Typography from "@mui/material/Typography";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import "../styles/Login.css";
-import { useTheme } from "@mui/material/styles";
 
 export default function Register() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
     });
   };
 
-  const theme = useTheme();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/register",
+        formData
+      );
+      console.log("Registration successful", response.data);
+      // You can redirect the user or show a success message here.
+    } catch (error) {
+      console.error("Registration failed", error);
+      // Handle registration failure (e.g., show an error message).
+    }
+  };
 
   return (
     <div className="signin">
@@ -36,7 +54,7 @@ export default function Register() {
             borderRadius: 2,
             px: 4,
             py: 6,
-            backgroundColor: theme.palette.background.paper, // set background color
+            backgroundColor: "#ffffff", // set background color
           }}
         >
           <Typography
@@ -49,53 +67,47 @@ export default function Register() {
           <Typography component="h1" variant="body1" color="textSecondary">
             Create your account by filling the form below.
           </Typography>
-          <Box
-            component="form"
-            noValidate
-            onSubmit={handleSubmit}
-            sx={{ mt: 3 }}
-          >
+          <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  autoComplete="given-name"
                   name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
                   label="First Name"
-                  autoFocus
+                  fullWidth
+                  onChange={handleChange}
+                  value={formData.firstName}
+                  required
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
                   name="lastName"
-                  autoComplete="family-name"
+                  label="Last Name"
+                  fullWidth
+                  onChange={handleChange}
+                  value={formData.lastName}
+                  required
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
                   name="email"
-                  autoComplete="email"
+                  label="Email Address"
+                  fullWidth
+                  onChange={handleChange}
+                  value={formData.email}
+                  required
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  required
-                  fullWidth
                   name="password"
                   label="Password"
+                  fullWidth
                   type="password"
-                  id="password"
-                  autoComplete="new-password"
+                  onChange={handleChange}
+                  value={formData.password}
+                  required
                 />
               </Grid>
               <Grid item xs={12}>
@@ -107,20 +119,21 @@ export default function Register() {
             </Grid>
             <Button
               type="submit"
-              fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2, backgroundColor: "#004aad" }}
+              color="primary"
+              fullWidth
+              sx={{ mt: 3, mb: 2 }}
             >
               Sign Up
             </Button>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Link href="#" variant="body2">
-                  Already have an account? Sign in
-                </Link>
-              </Grid>
+          </form>
+          <Grid container justifyContent="flex-end">
+            <Grid item>
+              <Link href="#" variant="body2">
+                Already have an account? Sign in
+              </Link>
             </Grid>
-          </Box>
+          </Grid>
         </Box>
       </Container>
     </div>

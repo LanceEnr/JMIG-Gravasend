@@ -8,6 +8,9 @@ const orderSchema = new mongoose.Schema(
     _contactNum: String,
     _status: String,
     _date: String,
+    _materialType: String,
+    _quantity: String,
+    _price: String,
   },
   { collection: "order" }
 );

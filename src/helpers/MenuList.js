@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Gravel1 from "../assets/Gravel1.webp";
 import Gravel2 from "../assets/Gravel2.webp";
 import Gravel3 from "../assets/Gravel3.webp";

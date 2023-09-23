@@ -3,28 +3,18 @@ const router = express.Router();
 const User = require("../models/user");
 const Order = require("../models/order");
 const Appointment = require("../models/appointment");
+const mongoose = require("mongoose");
 
-router.get("/register", async (req, res) => {
-  try {
-    const users = await User.find({});
-    console.log("Found users:", users); // Add this line for logging
-    res.json(users);
-  } catch (error) {
-    console.error("Error fetching listings:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-router.post("/register2", async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
     // Extract data from the request body
-    const { _email, _mobile, _name, _pwd, _uname } = req.body;
-    console.log(_email);
-    // Create a new user with the extracted data
-    const newUser = new User({ _email, _mobile, _name, _pwd, _uname });
+    const { _email, _pwd, _firstName, _lastName } = req.body;
+    const newUser = new User({ _email, _pwd, _firstName, _lastName });
 
-    await newUser.save();
+    mongoose.connection.collection("user").insertOne(newUser);
 
     res.json({ message: "User registered successfully" });
+    // The rest of your code to create a new user and handle the response
   } catch (error) {
     console.error("Error registering user:", error);
     res.status(500).json({ error: "Internal server error" });

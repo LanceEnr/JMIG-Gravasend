@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   List,
   ListItemAvatar,
@@ -88,6 +89,13 @@ const getColor = (status) => {
 };
 
 export default function OrdersTable1() {
+  const [orders, setOrders] = useState([]);
+  useEffect(() => {
+    // Fetch users from the backend when the component mounts
+    axios.get("http://localhost:3001/order").then((response) => {
+      setOrders(response.data);
+    });
+  }, []);
   return (
     <MainCard sx={{ mt: 2 }} content={false}>
       <List
@@ -100,23 +108,23 @@ export default function OrdersTable1() {
           borderRadius: 1,
         }}
       >
-        {data.map((item, index) => (
-          <ListItem key={item.orderNumber} divider={index !== data.length - 1}>
+        {orders.map((item, index) => (
+          <ListItem key={item._id} divider={index !== orders.length - 1}>
             <ListItemAvatar>
               <Tooltip title={item.status}>
                 <Avatar
                   sx={{
-                    bgcolor: getColor(item.status).lighter,
-                    color: getColor(item.status).main,
+                    bgcolor: getColor(item._status).lighter,
+                    color: getColor(item._status).main,
                   }}
                 >
-                  {item.status === "Arrived" && (
+                  {item._status === "Arrived" && (
                     <CheckIcon sx={{ pointerEvents: "none" }} />
                   )}
-                  {item.status === "Failed" && (
+                  {item._status === "Failed" && (
                     <CloseIcon sx={{ pointerEvents: "none" }} />
                   )}
-                  {item.status === "Pending" && (
+                  {item._status === "Pending" && (
                     <AccessTimeIcon sx={{ pointerEvents: "none" }} />
                   )}
                 </Avatar>
@@ -125,17 +133,17 @@ export default function OrdersTable1() {
 
             <ListItemText
               primary={
-                <Typography variant="subtitle1">{`Order ${item.orderNumber}`}</Typography>
+                <Typography variant="subtitle1">{`Order ${item._id}`}</Typography>
               }
-              secondary={item.date}
+              secondary={item._date}
             />
             <ListItemSecondaryAction>
               <Stack alignItems="flex-end">
                 <Typography variant="subtitle1" noWrap>
-                  PHP{Number(item.price).toLocaleString("en-US")}
+                  PHP{Number(item._price).toLocaleString("en-US")}
                 </Typography>
                 <Typography variant="subtitle2" color="textSecondary" noWrap>
-                   {item.materialType} -  {item.quantity} cu. mt.
+                   {item._materialType} -  {item._quantity} cu. mt.
                 </Typography>
               </Stack>
             </ListItemSecondaryAction>

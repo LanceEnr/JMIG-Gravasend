@@ -1,10 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 const cors = require("cors");
 const itemsRouter = require("./routes/items"); // Import your route handlers
 const User = require("./models/user");
 const Order = require("./models/order");
 const Appointment = require("./models/appointment");
+const { Tune } = require("@mui/icons-material");
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -12,9 +14,10 @@ const port = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 app.use(itemsRouter);
+app.use(bodyParser.urlencoded({ extended: true }));
 
 mongoose.connect(
-  "mongodb://johnnikkodelacruzcics:dRxdqtOQYFTxNPyS@atlas-sql-64f295afdbcd3517fdfe51a9-il682.a.query.mongodb.net/gravasend?ssl=true&authSource=admin",
+  "mongodb://johnnikkodelacruzcics:dRxdqtOQYFTxNPyS@atlas-sql-64f295afdbcd3517fdfe51a9-il682.a.query.mongodb.net/gravasend?retryWrites=true&w=majority",
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
