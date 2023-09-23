@@ -44,4 +44,16 @@ export const MenuList = [
     price: 3400,
     status: "Unavailable",
   },
+  {
+    name: "Pea Gravel",
+    image: Gravel1,
+    price: 3000,
+    status: "Available",
+  },
+  {
+    name: "Crushed Stone",
+    image: Gravel2,
+    price: 4000,
+    status: "Available",
+  },
 ];

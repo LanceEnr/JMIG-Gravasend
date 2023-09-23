@@ -6,6 +6,7 @@ import MuiAccordion from "@mui/material/Accordion";
 import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import { TextField, Typography, Box, InputAdornment } from "@mui/material";
+import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
 
 export const items = [
   {
@@ -82,15 +83,18 @@ const Accordion = styled((props) => (
   "&:before": {
     display: "none",
   },
-  "&:hover": {
+  "&.Mui-expanded": {
     borderLeft: "5px solid #004aad", // Add a line to the right side of the border
     backgroundColor: "#F4F4F4", // Add a darker color
+  },
+  "&:hover": {
+    backgroundColor: "#E0E0E0", // Darken color on hover
   },
 }));
 
 const AccordionSummary = styled((props) => (
   <MuiAccordionSummary
-    expandIcon={<AddIcon sx={{ fontSize: "0.9rem" }} />}
+    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />}
     {...props}
   />
 ))(({ theme }) => ({

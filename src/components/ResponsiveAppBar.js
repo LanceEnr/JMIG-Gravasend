@@ -1,4 +1,5 @@
 import * as React from "react";
+import { withStyles } from "@mui/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -18,6 +19,13 @@ import EventIcon from "@mui/icons-material/Event";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { Link } from "react-router-dom";
 
+const ColoredBadge = withStyles({
+  badge: {
+    backgroundColor: "#bd8512",
+    color: "#fafbf5",
+  },
+})(Badge);
+
 const pages = [
   "Home",
   "Products",
@@ -27,9 +35,10 @@ const pages = [
   "Login",
   "Register",
   "ForgotPassword",
+  "ProductDetails",
 ];
 
-const settings = ["Account", "Orders", "Appointments", "Logout"];
+const settings = ["Dashboard", "Logout"];
 
 const notifications = [
   {
@@ -184,12 +193,11 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 0, mr: 2 }}>
             <Tooltip title="Notifications">
               <IconButton onClick={handleOpenNotificationsMenu}>
-                <Badge
+                <ColoredBadge
                   badgeContent={notifications ? notifications.length : 0}
-                  color="primary"
                 >
                   <NotificationsIcon color="action" />
-                </Badge>
+                </ColoredBadge>
               </IconButton>
             </Tooltip>
             <Menu
@@ -256,6 +264,8 @@ function ResponsiveAppBar() {
                     if (setting === "Logout") {
                       // Handle logout
                       // ...
+                    } else if (setting === "Account") {
+                      window.location.href = "/ProfileInfo";
                     } else {
                       window.location.href = `/${setting}`;
                     }

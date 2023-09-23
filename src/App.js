@@ -13,8 +13,11 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import Faqs from "./pages/Faqs";
 import authReducer from "./store/reducers/authReducer";
-import Orders from "./pages/Orders";
-import Appointments from "./pages/Appointments";
+
+import ProductDetails from "./pages/ProductDetails";
+
+import UserDashboard from "./pages/UserDashboard";
+
 const initialState = {
   isAuthenticated: false,
 };
@@ -30,9 +33,10 @@ function App() {
           <Route path="/products" exact element={<Products />} />
           <Route path="/about" exact element={<About />} />
           <Route path="/contact" exact element={<Contact />} />
-          <Route path="/orders" exact element={<Orders />} />
-          <Route path="/appointments" exact element={<Appointments />} />
           <Route path="/forgotpassword" exact element={<ForgotPassword />} />
+          <Route path="/productdetails" exact element={<ProductDetails />} />
+          <Route path="/dashboard" exact element={<UserDashboard />} />
+
           <Route path="/faqs" exact element={<Faqs />} />
           <Route
             path="/login"

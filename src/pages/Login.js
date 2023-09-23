@@ -24,7 +24,7 @@ export default function Login() {
 
   return (
     <div className="signin">
-      <Container component="main" maxWidth="sm">
+      <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
         <Box
           sx={{
             boxShadow: 3,

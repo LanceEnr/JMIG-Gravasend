@@ -12,13 +12,82 @@ import {
   Avatar,
   Menu,
   MenuItem,
-  Grid,
+  Paper,
+  Pagination,
+  useMediaQuery,
+  Button,
 } from "@mui/material";
-import MainCard from "./common/MainCard";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+const data = [
+  {
+    _status: "Upcoming",
+    appointmentNumber: "#002434",
+    date: "5 August",
+    startTime: "10:00 AM",
+    endTime: "12:00 PM",
+  },
+  {
+    _status: "Cancelled",
+    appointmentNumber: "#002435",
+    date: "6 August",
+    startTime: "10:00 AM",
+    endTime: "12:00 PM",
+  },
+  {
+    _status: "Completed",
+    appointmentNumber: "#002436",
+    date: "7 August",
+    startTime: "10:00 AM",
+    endTime: "12:00 PM",
+  },
+  {
+    _status: "Completed",
+    appointmentNumber: "#002436",
+    date: "7 August",
+    startTime: "10:00 AM",
+    endTime: "12:00 PM",
+  },
+  {
+    _status: "Completed",
+    appointmentNumber: "#002436",
+    date: "7 August",
+    startTime: "10:00 AM",
+    endTime: "12:00 PM",
+  },
+  {
+    _status: "Completed",
+    appointmentNumber: "#002436",
+    date: "7 August",
+    startTime: "10:00 AM",
+    endTime: "12:00 PM",
+  },
+  {
+    _status: "Completed",
+    appointmentNumber: "#002436",
+    date: "7 August",
+    startTime: "10:00 AM",
+    endTime: "12:00 PM",
+  },
+];
+
+const daysOfWeek = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
+data.forEach((item) => {
+  const date = new Date(item.date + " " + new Date().getFullYear());
+  const day = date.getDay();
+  item.dayOfWeek = daysOfWeek[day];
+});
 
 const getColor = (_status) => {
   switch (_status) {
@@ -33,7 +102,7 @@ const getColor = (_status) => {
   }
 };
 
-export default function OrdersTable1() {
+export default function AppointmentsTable1() {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
@@ -51,21 +120,6 @@ export default function OrdersTable1() {
       setAppointments(response.data);
     });
   }, []);
-  const daysOfWeek = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-
-  appointments.forEach((item) => {
-    const date = new Date(item.date + " " + new Date().getFullYear());
-    const day = date.getDay();
-    item.dayOfWeek = daysOfWeek[day];
-  });
   return (
     <MainCard sx={{ mt: 2 }} content={false}>
       <List
@@ -81,7 +135,7 @@ export default function OrdersTable1() {
         {appointments.map((item, index) => (
           <ListItem
             key={item.appointmentNumber}
-            divider={index !== appointments.length - 1}
+            divider={index !== data.length - 1}
           >
             <ListItemAvatar>
               <Tooltip title={item._status}>
@@ -113,7 +167,7 @@ export default function OrdersTable1() {
             <ListItemSecondaryAction>
               <Box display="flex" alignItems="center" spacing={5}>
                 <Typography variant="subtitle1" noWrap sx={{ marginRight: 2 }}>
-                  {`${item._startTime} - ${item._endTime}`}
+                  {`${item.startTime} - ${item.endTime}`}
                 </Typography>
                 <Tooltip title={item.status === "Upcoming" ? "Actions" : ""}>
                   <MoreVertIcon
@@ -157,7 +211,14 @@ export default function OrdersTable1() {
             </ListItemSecondaryAction>
           </ListItem>
         ))}
-      </List>
-    </MainCard>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+        <Pagination
+          count={Math.ceil(data.length / itemsPerPage)}
+          page={page}
+          onChange={handleChange}
+          shape="rounded"
+        />
+      </Box>
+    </List>
   );
 }

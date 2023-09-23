@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React from "react";
 import {
   List,
   ListItemAvatar,
@@ -10,11 +9,16 @@ import {
   Tooltip,
   Typography,
   Avatar,
+  Paper,
+  Box,
+  Pagination,
+  useMediaQuery,
 } from "@mui/material";
-import MainCard from "./common/MainCard";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import UserDrawer from "./common/UserDrawer";
 
 const data = [
   {
@@ -89,13 +93,6 @@ const getColor = (status) => {
 };
 
 export default function OrdersTable1() {
-  const [orders, setOrders] = useState([]);
-  useEffect(() => {
-    // Fetch users from the backend when the component mounts
-    axios.get("http://localhost:3001/order").then((response) => {
-      setOrders(response.data);
-    });
-  }, []);
   return (
     <MainCard sx={{ mt: 2 }} content={false}>
       <List
@@ -108,23 +105,23 @@ export default function OrdersTable1() {
           borderRadius: 1,
         }}
       >
-        {orders.map((item, index) => (
-          <ListItem key={item._id} divider={index !== orders.length - 1}>
+        {data.map((item, index) => (
+          <ListItem key={item.orderNumber} divider={index !== data.length - 1}>
             <ListItemAvatar>
               <Tooltip title={item.status}>
                 <Avatar
                   sx={{
-                    bgcolor: getColor(item._status).lighter,
-                    color: getColor(item._status).main,
+                    bgcolor: getColor(item.status).lighter,
+                    color: getColor(item.status).main,
                   }}
                 >
-                  {item._status === "Arrived" && (
+                  {item.status === "Arrived" && (
                     <CheckIcon sx={{ pointerEvents: "none" }} />
                   )}
-                  {item._status === "Failed" && (
+                  {item.status === "Failed" && (
                     <CloseIcon sx={{ pointerEvents: "none" }} />
                   )}
-                  {item._status === "Pending" && (
+                  {item.status === "Pending" && (
                     <AccessTimeIcon sx={{ pointerEvents: "none" }} />
                   )}
                 </Avatar>
@@ -133,23 +130,30 @@ export default function OrdersTable1() {
 
             <ListItemText
               primary={
-                <Typography variant="subtitle1">{`Order ${item._id}`}</Typography>
+                <Typography variant="subtitle1">{`Order ${item.orderNumber}`}</Typography>
               }
-              secondary={item._date}
+              secondary={item.date}
             />
             <ListItemSecondaryAction>
               <Stack alignItems="flex-end">
                 <Typography variant="subtitle1" noWrap>
-                  PHP{Number(item._price).toLocaleString("en-US")}
+                  PHP{Number(item.price).toLocaleString("en-US")}
                 </Typography>
                 <Typography variant="subtitle2" color="textSecondary" noWrap>
-                   {item._materialType} -  {item._quantity} cu. mt.
+                   {item.materialType} -  {item.quantity} cu. mt.
                 </Typography>
               </Stack>
             </ListItemSecondaryAction>
           </ListItem>
         ))}
-      </List>
-    </MainCard>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+        <Pagination
+          count={Math.ceil(data.length / itemsPerPage)}
+          page={page}
+          onChange={handleChange}
+          shape="rounded"
+        />
+      </Box>
+    </List>
   );
 }

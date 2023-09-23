@@ -1,6 +1,6 @@
 import React from "react";
 import { MenuList } from "../helpers/MenuList";
-import MyCards from "../components/ProductCard";
+import ProductList from "../components/ProductList";
 import "../styles/Products.css";
 import Banner from "../components/Banner";
 import BannerImage from "../assets/catalog.webp";
@@ -15,7 +15,7 @@ function Products() {
 
         "
       />
-      <MyCards cards={MenuList} />
+      <ProductList cards={MenuList} />
     </div>
   );
 }
