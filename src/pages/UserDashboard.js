@@ -63,7 +63,7 @@ function UserDashboard() {
         ))}
       </ul>
       <Container sx={{ minHeight: "80vh" }}>
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
           {!isMobile && (
             <Grid item xs={12} md={3}>
               <UserSidePanel setActiveComponent={setActiveComponent} />
