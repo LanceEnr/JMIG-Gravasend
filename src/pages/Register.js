@@ -16,6 +16,7 @@ export default function Register() {
     lastName: "",
     email: "",
     password: "",
+    userName: "",
   });
 
   const handleChange = (event) => {
@@ -91,6 +92,17 @@ export default function Register() {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  name="userName"
+                  label="Username"
+                  fullWidth
+                  onChange={handleChange}
+                  value={formData.userName}
+                  required
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
                   name="email"
                   label="Email Address"
                   fullWidth
@@ -99,6 +111,7 @@ export default function Register() {
                   required
                 />
               </Grid>
+
               <Grid item xs={12}>
                 <TextField
                   name="password"

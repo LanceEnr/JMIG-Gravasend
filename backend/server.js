@@ -1,11 +1,13 @@
 require("dotenv").config();
+const jwt = require("jsonwebtoken");
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const itemsRouter = require("./routes/items"); // Import your route handlers
+const itemsRouter = require("./routes/items");
 const User = require("./models/user");
 const Order = require("./models/order");
+
 const Appointment = require("./models/appointment");
 const { Tune } = require("@mui/icons-material");
 

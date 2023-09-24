@@ -1,0 +1,11 @@
+const mongoose = require("mongoose");
+
+const counterSchema = new mongoose.Schema(
+  {
+    _id: String, // Use a custom _id for the counter document
+    seq: { type: Number, default: 100000001 }, // Set the initial value to 100000001
+  },
+  { collection: "counter" } // Collection name for counters
+);
+
+module.exports = mongoose.model("Counter", counterSchema);

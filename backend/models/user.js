@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema(
     _pwd: String,
     _firstName: String,
     _lastName: String,
+    _userName: String,
   },
   { collection: "user" }
 );
