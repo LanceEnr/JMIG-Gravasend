@@ -14,7 +14,6 @@ import EventNoteIcon from "@mui/icons-material/EventNote";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import { withStyles } from "@mui/styles";
-import { Link } from "react-router-dom";
 
 const ColoredBadge = withStyles({
   badge: {

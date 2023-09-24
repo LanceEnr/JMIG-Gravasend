@@ -15,25 +15,48 @@ function UserDashboard() {
   const [activeComponent, setActiveComponent] = useState("Orders");
   const isMobile = useMediaQuery("(max-width:600px)");
 
+  const handleActiveComponentChange = (newComponent) => {
+    setActiveComponent(newComponent);
+  };
+
+  useEffect(() => {
+    // Fetch users from the backend when the component mounts
+    axios.get("http://localhost:3001/order").then((response) => {
+      setOrders(response.data);
+    });
+  }, []);
+
   const renderComponent = () => {
     switch (activeComponent) {
       case "Orders":
-        return <OrdersTable1 />;
+        return (
+          <OrdersTable1 onActiveComponentChange={handleActiveComponentChange} />
+        );
       case "Appointments":
-        return <AppointmentsTable1 />;
+        return (
+          <AppointmentsTable1
+            onActiveComponentChange={handleActiveComponentChange}
+          />
+        );
       case "Profile Info":
-        return <ProfileInfo />;
+        return (
+          <ProfileInfo onActiveComponentChange={handleActiveComponentChange} />
+        );
       case "Edit Profile":
-        return <EditProfile />;
+        return (
+          <EditProfile onActiveComponentChange={handleActiveComponentChange} />
+        );
       default:
-        return <OrdersTable1 />;
+        return (
+          <OrdersTable1 onActiveComponentChange={handleActiveComponentChange} />
+        );
     }
   };
 
   return (
     <div className="userDashboard">
       <Container sx={{ minHeight: "80vh" }}>
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
           {!isMobile && (
             <Grid item xs={12} md={3}>
               <UserSidePanel setActiveComponent={setActiveComponent} />

@@ -15,13 +15,15 @@ import EventNoteIcon from "@mui/icons-material/EventNote";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import EditIcon from "@mui/icons-material/Edit";
 
-export default function UserDrawer() {
+export default function UserDrawer(props) {
   const [state, setState] = React.useState({
     top: false,
     left: false,
     bottom: false,
     right: false,
   });
+
+  const [selectedItem, setSelectedItem] = React.useState("");
 
   const toggleDrawer = (anchor, open) => (event) => {
     if (
@@ -61,12 +63,24 @@ export default function UserDrawer() {
       >
         {["Orders", "Appointments"].map((text, index) => (
           <ListItem key={text} disablePadding>
-            <ListItemButton>
+            <ListItemButton
+              onClick={() => {
+                props.onActiveComponentChange(text);
+                setSelectedItem(text);
+              }}
+              sx={{
+                borderLeft:
+                  selectedItem === text ? "4px solid #004aad" : "none",
+                color: selectedItem === text ? "#004aad" : "inherit",
+                "& .MuiListItemIcon-root": {
+                  color: selectedItem === text ? "#004aad" : "inherit",
+                },
+              }}
+            >
               <ListItemIcon>
                 {index % 2 === 0 ? <ShoppingCartIcon /> : <EventNoteIcon />}
               </ListItemIcon>
               <ListItemText primary={text} />
-              <ColoredBadge badgeContent={4} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -82,7 +96,20 @@ export default function UserDrawer() {
       >
         {["Profile Info", "Edit Profile"].map((text, index) => (
           <ListItem key={text} disablePadding>
-            <ListItemButton>
+            <ListItemButton
+              onClick={() => {
+                props.onActiveComponentChange(text);
+                setSelectedItem(text);
+              }}
+              sx={{
+                borderLeft:
+                  selectedItem === text ? "4px solid #004aad" : "none",
+                color: selectedItem === text ? "#004aad" : "inherit",
+                "& .MuiListItemIcon-root": {
+                  color: selectedItem === text ? "#004aad" : "inherit",
+                },
+              }}
+            >
               <ListItemIcon>
                 {index % 2 === 0 ? <AccountCircleIcon /> : <EditIcon />}
               </ListItemIcon>

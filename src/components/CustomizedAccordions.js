@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 import MuiAccordion from "@mui/material/Accordion";
 import MuiAccordionSummary from "@mui/material/AccordionSummary";

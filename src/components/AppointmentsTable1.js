@@ -46,7 +46,7 @@ const getColor = (_status) => {
   }
 };
 
-export default function AppointmentsTable1() {
+export default function AppointmentsTable1(props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const itemsPerPage = 10; // Set your desired items per page
   const [page, setPage] = useState(1); // Set the initial page number
