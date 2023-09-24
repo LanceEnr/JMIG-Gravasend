@@ -11,6 +11,8 @@ const orderSchema = new mongoose.Schema(
     _materialType: String,
     _quantity: String,
     _price: String,
+    _orderNum: Number,
+    _time: String,
   },
   { collection: "order" }
 );

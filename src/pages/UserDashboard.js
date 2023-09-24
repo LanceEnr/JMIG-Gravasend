@@ -15,13 +15,6 @@ function UserDashboard() {
   const [activeComponent, setActiveComponent] = useState("Orders");
   const isMobile = useMediaQuery("(max-width:600px)");
 
-  useEffect(() => {
-    // Fetch users from the backend when the component mounts
-    axios.get("http://localhost:3001/order").then((response) => {
-      setOrders(response.data);
-    });
-  }, []);
-
   const renderComponent = () => {
     switch (activeComponent) {
       case "Orders":
@@ -39,13 +32,6 @@ function UserDashboard() {
 
   return (
     <div className="userDashboard">
-      <ul>
-        {orders.map((order) => (
-          <li key={order._id}>
-            Product: {order._name}, Quantity: {order._status}
-          </li>
-        ))}
-      </ul>
       <Container sx={{ minHeight: "80vh" }}>
         <Grid container spacing={2}>
           {!isMobile && (

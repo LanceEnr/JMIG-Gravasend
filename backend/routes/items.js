@@ -8,10 +8,15 @@ const mongoose = require("mongoose");
 router.post("/register", async (req, res) => {
   try {
     // Extract data from the request body
-    const { _email, _pwd, _firstName, _lastName } = req.body;
-    const newUser = new User({ _email, _pwd, _firstName, _lastName });
+    const { _email, _pwd, _fName, _lName } = req.body;
+    const newUser = new User({ _email, _pwd, _fName, _lName });
 
-    mongoose.connection.collection("user").insertOne(newUser);
+    mongoose.connection.collection("user").insertOne({
+      _email: req.body.email,
+      _pwd: req.body.password,
+      _fName: req.body.firstName,
+      _lName: req.body.lastName,
+    });
 
     res.json({ message: "User registered successfully" });
     // The rest of your code to create a new user and handle the response

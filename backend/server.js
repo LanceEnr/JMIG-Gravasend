@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
@@ -16,13 +17,10 @@ app.use(express.json());
 app.use(itemsRouter);
 app.use(bodyParser.urlencoded({ extended: true }));
 
-mongoose.connect(
-  "mongodb://johnnikkodelacruzcics:dRxdqtOQYFTxNPyS@atlas-sql-64f295afdbcd3517fdfe51a9-il682.a.query.mongodb.net/gravasend?retryWrites=true&w=majority",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-);
+mongoose.connect(process.env.URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 const db = mongoose.connection;
 

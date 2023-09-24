@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+
 import {
   List,
   ListItemAvatar,
@@ -21,57 +22,6 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-const data = [
-  {
-    _status: "Upcoming",
-    appointmentNumber: "#002434",
-    date: "5 August",
-    startTime: "10:00 AM",
-    endTime: "12:00 PM",
-  },
-  {
-    _status: "Cancelled",
-    appointmentNumber: "#002435",
-    date: "6 August",
-    startTime: "10:00 AM",
-    endTime: "12:00 PM",
-  },
-  {
-    _status: "Completed",
-    appointmentNumber: "#002436",
-    date: "7 August",
-    startTime: "10:00 AM",
-    endTime: "12:00 PM",
-  },
-  {
-    _status: "Completed",
-    appointmentNumber: "#002436",
-    date: "7 August",
-    startTime: "10:00 AM",
-    endTime: "12:00 PM",
-  },
-  {
-    _status: "Completed",
-    appointmentNumber: "#002436",
-    date: "7 August",
-    startTime: "10:00 AM",
-    endTime: "12:00 PM",
-  },
-  {
-    _status: "Completed",
-    appointmentNumber: "#002436",
-    date: "7 August",
-    startTime: "10:00 AM",
-    endTime: "12:00 PM",
-  },
-  {
-    _status: "Completed",
-    appointmentNumber: "#002436",
-    date: "7 August",
-    startTime: "10:00 AM",
-    endTime: "12:00 PM",
-  },
-];
 
 const daysOfWeek = [
   "Sunday",
@@ -82,12 +32,6 @@ const daysOfWeek = [
   "Friday",
   "Saturday",
 ];
-
-data.forEach((item) => {
-  const date = new Date(item.date + " " + new Date().getFullYear());
-  const day = date.getDay();
-  item.dayOfWeek = daysOfWeek[day];
-});
 
 const getColor = (_status) => {
   switch (_status) {
@@ -104,6 +48,8 @@ const getColor = (_status) => {
 
 export default function AppointmentsTable1() {
   const [anchorEl, setAnchorEl] = useState(null);
+  const itemsPerPage = 10; // Set your desired items per page
+  const [page, setPage] = useState(1); // Set the initial page number
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -111,6 +57,10 @@ export default function AppointmentsTable1() {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  const handleChange = (event, value) => {
+    // Handle page change here, e.g., update the displayed data
+    setPage(value);
   };
 
   const [appointments, setAppointments] = useState([]);
@@ -120,100 +70,103 @@ export default function AppointmentsTable1() {
       setAppointments(response.data);
     });
   }, []);
+  appointments.forEach((item) => {
+    const date = new Date(item.date + " " + new Date().getFullYear());
+    const day = date.getDay();
+    item.dayOfWeek = daysOfWeek[day];
+  });
   return (
-    <MainCard sx={{ mt: 2 }} content={false}>
-      <List
-        component="nav"
-        sx={{
-          px: 0,
-          py: 0,
-          border: "1px solid",
-          borderColor: "#E6EBF1",
-          borderRadius: 1,
-        }}
-      >
-        {appointments.map((item, index) => (
-          <ListItem
-            key={item.appointmentNumber}
-            divider={index !== data.length - 1}
-          >
-            <ListItemAvatar>
-              <Tooltip title={item._status}>
-                <Avatar
-                  sx={{
-                    bgcolor: getColor(item._status).lighter,
-                    color: getColor(item._status).main,
-                  }}
-                >
-                  {item._status === "Completed" && (
-                    <CheckIcon sx={{ pointerEvents: "none" }} />
-                  )}
-                  {item._status === "Cancelled" && (
-                    <CloseIcon sx={{ pointerEvents: "none" }} />
-                  )}
-                  {item._status === "Upcoming" && (
-                    <AccessTimeIcon sx={{ pointerEvents: "none" }} />
-                  )}
-                </Avatar>
-              </Tooltip>
-            </ListItemAvatar>
+    <List
+      component="nav"
+      sx={{
+        px: 0,
+        py: 0,
+        border: "1px solid",
+        borderColor: "#E6EBF1",
+        borderRadius: 1,
+      }}
+    >
+      {appointments.map((item, index) => (
+        <ListItem
+          key={item._appointmentId}
+          divider={index !== appointments.length - 1}
+        >
+          <ListItemAvatar>
+            <Tooltip title={item._status}>
+              <Avatar
+                sx={{
+                  bgcolor: getColor(item._status).lighter,
+                  color: getColor(item._status).main,
+                }}
+              >
+                {item._status === "Completed" && (
+                  <CheckIcon sx={{ pointerEvents: "none" }} />
+                )}
+                {item._status === "Cancelled" && (
+                  <CloseIcon sx={{ pointerEvents: "none" }} />
+                )}
+                {item._status === "Upcoming" && (
+                  <AccessTimeIcon sx={{ pointerEvents: "none" }} />
+                )}
+              </Avatar>
+            </Tooltip>
+          </ListItemAvatar>
 
-            <ListItemText
-              primary={
-                <Typography variant="subtitle1">{`Appointment ${item._id}`}</Typography>
-              }
-              secondary={`${item.dayOfWeek}, ${item._date}`}
-            />
-            <ListItemSecondaryAction>
-              <Box display="flex" alignItems="center" spacing={5}>
-                <Typography variant="subtitle1" noWrap sx={{ marginRight: 2 }}>
-                  {`${item.startTime} - ${item.endTime}`}
-                </Typography>
-                <Tooltip title={item.status === "Upcoming" ? "Actions" : ""}>
-                  <MoreVertIcon
-                    onClick={item.status === "Upcoming" ? handleClick : null}
-                    sx={{
-                      cursor:
-                        item.status === "Upcoming" ? "pointer" : "default",
-                      color:
-                        item.status === "Upcoming"
-                          ? "text.secondary"
-                          : "text.disabled",
-                      pointerEvents:
-                        item.status === "Upcoming" ? "auto" : "none",
-                    }}
-                  />
-                </Tooltip>
-                <Menu
+          <ListItemText
+            primary={
+              <Typography variant="subtitle1">{`Appointment ${item._appointmentNum}`}</Typography>
+            }
+            secondary={`${item.dayOfWeek}, ${item._date}`}
+          />
+          <ListItemSecondaryAction>
+            <Box display="flex" alignItems="center" spacing={5}>
+              <Typography variant="subtitle1" noWrap sx={{ marginRight: 2 }}>
+                {`${item._startTime} - ${item._endTime}`}
+              </Typography>
+              <Tooltip title={item._status === "Upcoming" ? "Actions" : ""}>
+                <MoreVertIcon
+                  onClick={item._status === "Upcoming" ? handleClick : null}
                   sx={{
-                    mt: "45px",
+                    cursor: item._status === "Upcoming" ? "pointer" : "default",
+                    color:
+                      item._status === "Upcoming"
+                        ? "text.secondary"
+                        : "text.disabled",
+                    pointerEvents:
+                      item._status === "Upcoming" ? "auto" : "none",
                   }}
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Boolean(anchorEl)}
-                  onClose={handleClose}
-                  elevation={1}
-                >
-                  <MenuItem onClick={handleClose}>Edit</MenuItem>
-                  <MenuItem onClick={handleClose} sx={{ color: "error.main" }}>
-                    Cancel
-                  </MenuItem>
-                </Menu>
-              </Box>
-            </ListItemSecondaryAction>
-          </ListItem>
-        ))}
+                />
+              </Tooltip>
+              <Menu
+                sx={{
+                  mt: "45px",
+                }}
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+                elevation={1}
+              >
+                <MenuItem onClick={handleClose}>Edit</MenuItem>
+                <MenuItem onClick={handleClose} sx={{ color: "error.main" }}>
+                  Cancel
+                </MenuItem>
+              </Menu>
+            </Box>
+          </ListItemSecondaryAction>
+        </ListItem>
+      ))}
       <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
         <Pagination
-          count={Math.ceil(data.length / itemsPerPage)}
+          count={Math.ceil(appointments.length / itemsPerPage)}
           page={page}
           onChange={handleChange}
           shape="rounded"

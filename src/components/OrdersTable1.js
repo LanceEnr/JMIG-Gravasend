@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   List,
   ListItemAvatar,
@@ -20,65 +21,6 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import UserDrawer from "./common/UserDrawer";
 
-const data = [
-  {
-    status: "Pending",
-    orderNumber: "#002434",
-    date: "5 August, 1:45 PM",
-    materialType: "Gravel",
-    quantity: 100,
-    price: 50000,
-  },
-  {
-    status: "Failed",
-    orderNumber: "#002435",
-    date: "6 August, 2:45 PM",
-    materialType: "Sand",
-    quantity: 200,
-    price: 40000,
-  },
-  {
-    status: "Arrived",
-    orderNumber: "#002436",
-    date: "7 August, 3:45 PM",
-    materialType: "Gravel",
-    quantity: 300,
-    price: 30000,
-  },
-  {
-    status: "Arrived",
-    orderNumber: "#002436",
-    date: "7 August, 3:45 PM",
-    materialType: "Gravel",
-    quantity: 300,
-    price: 30000,
-  },
-  {
-    status: "Arrived",
-    orderNumber: "#002436",
-    date: "7 August, 3:45 PM",
-    materialType: "Gravel",
-    quantity: 300,
-    price: 30000,
-  },
-  {
-    status: "Arrived",
-    orderNumber: "#002436",
-    date: "7 August, 3:45 PM",
-    materialType: "Gravel",
-    quantity: 300,
-    price: 30000,
-  },
-  {
-    status: "Arrived",
-    orderNumber: "#002436",
-    date: "7 August, 3:45 PM",
-    materialType: "Gravel",
-    quantity: 300,
-    price: 30000,
-  },
-];
-
 const getColor = (status) => {
   switch (status) {
     case "Arrived":
@@ -93,62 +35,84 @@ const getColor = (status) => {
 };
 
 export default function OrdersTable1() {
-  return (
-    <MainCard sx={{ mt: 2 }} content={false}>
-      <List
-        component="nav"
-        sx={{
-          px: 0,
-          py: 0,
-          border: "1px solid",
-          borderColor: "#E6EBF1",
-          borderRadius: 1,
-        }}
-      >
-        {data.map((item, index) => (
-          <ListItem key={item.orderNumber} divider={index !== data.length - 1}>
-            <ListItemAvatar>
-              <Tooltip title={item.status}>
-                <Avatar
-                  sx={{
-                    bgcolor: getColor(item.status).lighter,
-                    color: getColor(item.status).main,
-                  }}
-                >
-                  {item.status === "Arrived" && (
-                    <CheckIcon sx={{ pointerEvents: "none" }} />
-                  )}
-                  {item.status === "Failed" && (
-                    <CloseIcon sx={{ pointerEvents: "none" }} />
-                  )}
-                  {item.status === "Pending" && (
-                    <AccessTimeIcon sx={{ pointerEvents: "none" }} />
-                  )}
-                </Avatar>
-              </Tooltip>
-            </ListItemAvatar>
+  const [anchorEl, setAnchorEl] = useState(null);
+  const itemsPerPage = 10; // Set your desired items per page
+  const [page, setPage] = useState(1); // Set the initial page number
 
-            <ListItemText
-              primary={
-                <Typography variant="subtitle1">{`Order ${item.orderNumber}`}</Typography>
-              }
-              secondary={item.date}
-            />
-            <ListItemSecondaryAction>
-              <Stack alignItems="flex-end">
-                <Typography variant="subtitle1" noWrap>
-                  PHP{Number(item.price).toLocaleString("en-US")}
-                </Typography>
-                <Typography variant="subtitle2" color="textSecondary" noWrap>
-                   {item.materialType} -  {item.quantity} cu. mt.
-                </Typography>
-              </Stack>
-            </ListItemSecondaryAction>
-          </ListItem>
-        ))}
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleChange = (event, value) => {
+    // Handle page change here, e.g., update the displayed data
+    setPage(value);
+  };
+
+  const [orders, setOrders] = useState([]);
+  useEffect(() => {
+    // Fetch users from the backend when the component mounts
+    axios.get("http://localhost:3001/order").then((response) => {
+      setOrders(response.data);
+    });
+  }, []);
+  return (
+    <List
+      component="nav"
+      sx={{
+        px: 0,
+        py: 0,
+        border: "1px solid",
+        borderColor: "#E6EBF1",
+        borderRadius: 1,
+      }}
+    >
+      {orders.map((item, index) => (
+        <ListItem key={item._orderNum} divider={index !== orders.length - 1}>
+          <ListItemAvatar>
+            <Tooltip title={item._status}>
+              <Avatar
+                sx={{
+                  bgcolor: getColor(item._status).lighter,
+                  color: getColor(item._status).main,
+                }}
+              >
+                {item._status === "Arrived" && (
+                  <CheckIcon sx={{ pointerEvents: "none" }} />
+                )}
+                {item._status === "Failed" && (
+                  <CloseIcon sx={{ pointerEvents: "none" }} />
+                )}
+                {item._status === "Pending" && (
+                  <AccessTimeIcon sx={{ pointerEvents: "none" }} />
+                )}
+              </Avatar>
+            </Tooltip>
+          </ListItemAvatar>
+
+          <ListItemText
+            primary={
+              <Typography variant="subtitle1">{`Order ${item._orderNum}`}</Typography>
+            }
+            secondary={item._date}
+          />
+          <ListItemSecondaryAction>
+            <Stack alignItems="flex-end">
+              <Typography variant="subtitle1" noWrap>
+                PHP{Number(item._price).toLocaleString("en-US")}
+              </Typography>
+              <Typography variant="subtitle2" color="textSecondary" noWrap>
+                 {item._materialType} -  {item._quantity} cu. mt.
+              </Typography>
+            </Stack>
+          </ListItemSecondaryAction>
+        </ListItem>
+      ))}
       <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
         <Pagination
-          count={Math.ceil(data.length / itemsPerPage)}
+          count={Math.ceil(orders.length / itemsPerPage)}
           page={page}
           onChange={handleChange}
           shape="rounded"

@@ -9,6 +9,7 @@ const appointmentSchema = new mongoose.Schema(
     _status: String,
     _endTime: String,
     _startTime: String,
+    _appointmentNum: Number,
   },
   { collection: "appointment" }
 );
