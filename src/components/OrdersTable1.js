@@ -19,7 +19,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import UserDrawer from "./common/UserDrawer";
-
 const data = [
   {
     status: "Pending",
@@ -113,7 +112,7 @@ export default function OrdersTable1(props) {
         <Typography
           component="h1"
           variant="h5"
-          sx={{ color: "#004aad", fontWeight: "bold", my: 1 }}
+          sx={{ color: "#004aad", fontWeight: "bold", my: 2 }}
         >
           <ShoppingCartIcon sx={{ mr: 2, verticalAlign: "middle" }} />
           Orders

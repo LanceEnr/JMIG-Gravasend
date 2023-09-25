@@ -37,14 +37,6 @@ export default function UserDrawer(props) {
     setState({ ...state, [anchor]: open });
   };
 
-  const ColoredBadge = withStyles({
-    badge: {
-      backgroundColor: "#bd8512",
-      color: "#fafbf5",
-      marginRight: 12,
-    },
-  })(Badge);
-
   const list = (anchor) => (
     <Box
       sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
@@ -73,7 +65,7 @@ export default function UserDrawer(props) {
                   selectedItem === text ? "4px solid #004aad" : "none",
                 color: selectedItem === text ? "#004aad" : "inherit",
                 "& .MuiListItemIcon-root": {
-                  color: selectedItem === text ? "#004aad" : "inherit",
+                  color: selectedItem === text ? "#004aad" : "#808080",
                 },
               }}
             >
@@ -106,7 +98,7 @@ export default function UserDrawer(props) {
                   selectedItem === text ? "4px solid #004aad" : "none",
                 color: selectedItem === text ? "#004aad" : "inherit",
                 "& .MuiListItemIcon-root": {
-                  color: selectedItem === text ? "#004aad" : "inherit",
+                  color: selectedItem === text ? "#004aad" : "#808080",
                 },
               }}
             >

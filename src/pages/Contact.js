@@ -120,7 +120,7 @@ ph!4v1693048413304!5m2!1sen!2sph"
                 style={{ marginBottom: "20px" }}
               >
                 <Grid item xs={2}>
-                  <HomeIcon style={{ fontSize: 30 }} />
+                  <HomeIcon style={{ fontSize: 30, color: "#808080" }} />
                 </Grid>
                 <Grid item xs={10}>
                   <Typography variant="h7">
@@ -136,7 +136,7 @@ ph!4v1693048413304!5m2!1sen!2sph"
                 style={{ marginBottom: "20px" }}
               >
                 <Grid item xs={2}>
-                  <PhoneIcon style={{ fontSize: 30 }} />
+                  <PhoneIcon style={{ fontSize: 30, color: "#808080" }} />
                 </Grid>
                 <Grid item xs={10}>
                   <Typography variant="h7">+63 9774548585</Typography>
@@ -149,7 +149,7 @@ ph!4v1693048413304!5m2!1sen!2sph"
                 style={{ marginBottom: "20px" }}
               >
                 <Grid item xs={2}>
-                  <EmailIcon style={{ fontSize: 30 }} />
+                  <EmailIcon style={{ fontSize: 30, color: "#808080" }} />
                 </Grid>
                 <Grid item xs={10}>
                   <Typography variant="h7">jmig@gmail.com</Typography>
