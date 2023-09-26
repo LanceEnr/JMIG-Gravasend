@@ -17,7 +17,11 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import EventIcon from "@mui/icons-material/Event";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import DonutLargeSharpIcon from "@mui/icons-material/DonutLargeSharp";
+import DiamondSharpIcon from "@mui/icons-material/DiamondSharp";
+import DonutSmallSharpIcon from "@mui/icons-material/DonutSmallSharp";
+import { SiRockylinux } from "react-icons/si";
 
 const ColoredBadge = withStyles({
   badge: {
@@ -84,9 +88,22 @@ function ResponsiveAppBar() {
   };
 
   return (
-    <AppBar position="static" style={{ backgroundColor: "#fafbf5" }}>
+    <AppBar position="sticky" style={{ backgroundColor: "#fafbf5" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
+          <Link to="/">
+            <DonutSmallSharpIcon
+              sx={{
+                mr: 1,
+                position: "relative",
+                display: { xs: "none", md: "flex" },
+                color: "#bd8512",
+                pointerEvents: "none",
+                fontSize: "40px",
+              }}
+            />
+          </Link>
+
           <Typography
             variant="h5"
             noWrap
@@ -95,14 +112,14 @@ function ResponsiveAppBar() {
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
+              fontFamily: "sans-serif",
               fontWeight: 700,
-              letterSpacing: ".3rem",
+              letterSpacing: ".2rem",
               color: "#004aad",
               textDecoration: "none",
             }}
           >
-            JMIG Gravel & Sand Co.
+            JMIG Gravel & Sand
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -148,16 +165,27 @@ function ResponsiveAppBar() {
               ))}
             </Menu>
           </Box>
+          <Link to="/">
+            <DonutSmallSharpIcon
+              sx={{
+                ml: 3,
+                mr: 1,
+                display: { xs: "flex", md: "none" },
+                color: "#bd8512",
+                pointerEvents: "none",
+                fontSize: "40px",
+              }}
+            />
+          </Link>
           <Typography
             variant="h5"
             noWrap
             component="a"
             href="/"
             sx={{
-              mr: 2,
               display: { xs: "flex", md: "none" },
               flexGrow: 1,
-              fontFamily: "monospace",
+              fontFamily: "sans-serif",
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "#004aad",
@@ -166,6 +194,7 @@ function ResponsiveAppBar() {
           >
             JMIG
           </Typography>
+
           <Box
             sx={{
               flexGrow: 1,

@@ -68,16 +68,6 @@ ph!4v1693048413304!5m2!1sen!2sph"
                 required
                 type="email"
               />
-              <TextField
-                fullWidth
-                label="Date and Time"
-                type="datetime-local"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                margin="normal"
-                required
-              />
 
               <TextField
                 fullWidth
@@ -94,7 +84,7 @@ ph!4v1693048413304!5m2!1sen!2sph"
                 type="submit"
                 sx={{
                   mt: 2,
-                  width: "200px", // adjust this value as needed
+                  width: "100px", // adjust this value as needed
                   backgroundColor: "#004aad",
                   color: "#fff", // adjust text color as needed
                   "&:hover": {
