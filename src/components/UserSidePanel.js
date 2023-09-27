@@ -54,7 +54,7 @@ function SidePanel({ setActiveComponent }) {
               <ListItemIcon
                 sx={{
                   pointerEvents: "none",
-                  color: text === selected ? "#004aad" : "inherit",
+                  color: text === selected ? "#004aad" : "#808080",
                 }}
               >
                 {index % 2 === 0 ? <ShoppingCartIcon /> : <EventNoteIcon />}
@@ -90,7 +90,7 @@ function SidePanel({ setActiveComponent }) {
               <ListItemIcon
                 sx={{
                   pointerEvents: "none",
-                  color: text === selected ? "#004aad" : "inherit",
+                  color: text === selected ? "#004aad" : "#808080",
                 }}
               >
                 {index % 2 === 0 ? <AccountCircleIcon /> : <EditIcon />}

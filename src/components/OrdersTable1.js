@@ -64,33 +64,46 @@ export default function OrdersTable1() {
       sx={{
         px: 0,
         py: 0,
-        border: "1px solid",
-        borderColor: "#E6EBF1",
-        borderRadius: 1,
       }}
     >
-      {orders.map((item, index) => (
-        <ListItem key={item._orderNum} divider={index !== orders.length - 1}>
-          <ListItemAvatar>
-            <Tooltip title={item._status}>
-              <Avatar
-                sx={{
-                  bgcolor: getColor(item._status).lighter,
-                  color: getColor(item._status).main,
-                }}
-              >
-                {item._status === "Arrived" && (
-                  <CheckIcon sx={{ pointerEvents: "none" }} />
-                )}
-                {item._status === "Failed" && (
-                  <CloseIcon sx={{ pointerEvents: "none" }} />
-                )}
-                {item._status === "Pending" && (
-                  <AccessTimeIcon sx={{ pointerEvents: "none" }} />
-                )}
-              </Avatar>
-            </Tooltip>
-          </ListItemAvatar>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography
+          component="h1"
+          variant="h5"
+          sx={{ color: "#004aad", fontWeight: "bold", my: 1 }}
+        >
+          <ShoppingCartIcon sx={{ mr: 2, verticalAlign: "middle" }} />
+          Orders
+        </Typography>
+        {isMobile && (
+          <UserDrawer onActiveComponentChange={props.onActiveComponentChange} />
+        )}
+      </Box>
+      {data
+        .slice((page - 1) * itemsPerPage, page * itemsPerPage)
+        .map((item, index) => (
+          <Paper elevation={2} sx={{ my: 1 }}>
+            <ListItem key={item.orderNumber}>
+              <ListItemAvatar>
+                <Tooltip title={item.status}>
+                  <Avatar
+                    sx={{
+                      bgcolor: getColor(item.status).lighter,
+                      color: getColor(item.status).main,
+                    }}
+                  >
+                    {item.status === "Arrived" && (
+                      <CheckIcon sx={{ pointerEvents: "none" }} />
+                    )}
+                    {item.status === "Failed" && (
+                      <CloseIcon sx={{ pointerEvents: "none" }} />
+                    )}
+                    {item.status === "Pending" && (
+                      <AccessTimeIcon sx={{ pointerEvents: "none" }} />
+                    )}
+                  </Avatar>
+                </Tooltip>
+              </ListItemAvatar>
 
           <ListItemText
             primary={

@@ -5,28 +5,29 @@ import {
   Paper,
   Box,
   useMediaQuery,
-  Avatar,
   List,
   Button,
   TextField,
-  Badge,
-  IconButton,
 } from "@mui/material";
 import UserDrawer from "./common/UserDrawer";
-import CameraEnhanceIcon from "@mui/icons-material/CameraEnhance";
-import EditIcon from "@mui/icons-material/Edit";
+import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 
-export default function ProfileInfo(props) {
+export default function EditAppointmentForm(props) {
   const isMobile = useMediaQuery("(max-width:600px)");
-  const userAvatarUrl = "https://example.com/avatar.jpg";
   const userData = {
-    "First Name": "John",
-    "Last Name": "Doe",
-    Email: "john.doe@example.com",
-    Phone: "123-456-7890",
-    Birthdate: "1990-01-01",
-    Address: "123 Main St, Anytown, USA",
+    "First Name": "",
+    "Last Name": "",
+    Email: "",
+    Phone: "",
+    Reason: "",
+    Schedule: "",
   };
+
+  console.log(props.goBack); // Add this line
 
   return (
     <List
@@ -48,8 +49,8 @@ export default function ProfileInfo(props) {
             my: 2,
           }}
         >
-          <EditIcon sx={{ mr: 2, verticalAlign: "middle" }} />
-          Edit Profile
+          <EditCalendarIcon sx={{ mr: 2, verticalAlign: "middle" }} />
+          Edit Appointment
         </Typography>
         {isMobile && (
           <UserDrawer onActiveComponentChange={props.onActiveComponentChange} />
@@ -59,43 +60,18 @@ export default function ProfileInfo(props) {
         <Grid item xs={12}>
           <Paper elevation={2} style={{ padding: "24px" }}>
             <Grid container spacing={3} alignItems="center">
-              <Grid item xs={12}>
-                <Badge
-                  overlap="circular"
-                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                  badgeContent={
-                    <IconButton
-                      size="small"
-                      style={{
-                        backgroundColor: "#bd8512",
-                        color: "#fafbf5",
-                      }}
-                    >
-                      <CameraEnhanceIcon
-                        style={{ pointerEvents: "none", fontSize: "24px" }}
-                      />
-                    </IconButton>
-                  }
-                >
-                  <Avatar
-                    alt="User Avatar"
-                    src={userAvatarUrl}
-                    style={{ width: "60px", height: "60px" }}
-                  />
-                </Badge>
-              </Grid>
               {Object.entries(userData).map(([key, value]) => (
                 <Grid item xs={12} sm={6} key={key}>
-                  {key === "Birthdate" ? (
-                    <TextField
-                      label={key}
-                      type="date"
-                      defaultValue={value}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      fullWidth
-                    />
+                  {key === "Schedule" ? (
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DateTimePicker
+                        label={key}
+                        slotProps={{ textField: { fullWidth: true } }}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    </LocalizationProvider>
                   ) : (
                     <TextField label={key} defaultValue={value} fullWidth />
                   )}
@@ -103,6 +79,19 @@ export default function ProfileInfo(props) {
               ))}
 
               <Grid item xs={12}>
+                <Button
+                  variant="outlined"
+                  onClick={props.goBack}
+                  sx={{
+                    mt: 2,
+                    marginRight: 2,
+                    color: "#004aad",
+                    borderColor: "#004aad",
+                  }}
+                >
+                  Go Back
+                </Button>
+
                 <Button
                   variant="primary"
                   type="submit"

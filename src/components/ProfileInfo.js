@@ -43,7 +43,7 @@ export default function ProfileInfo(props) {
             fontWeight: "bold",
             display: "flex",
             alignItems: "center",
-            my: 1,
+            my: 2,
           }}
         >
           <AccountCircleIcon sx={{ mr: 2, verticalAlign: "middle" }} />
