@@ -1,4 +1,5 @@
-import * as React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -10,15 +11,45 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import "../styles/Login.css";
 import { useTheme } from "@mui/material/styles";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+  const navigate = useNavigate();
+  const [loginData, setLoginData] = useState({
+    _userName: "",
+    _pwd: "",
+  });
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setLoginData({
+      ...loginData,
+      [name]: value,
     });
+  };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/login",
+        loginData
+      );
+
+      if (response.status === 200) {
+        console.log("Login successful", response.data);
+        toast.success("Login successful", {
+          autoClose: 500,
+          onClose: () => {
+            navigate("/Dashboard");
+          },
+        });
+      } else {
+        console.error("Login failed", response.data);
+      }
+    } catch (error) {
+      console.error("Login failed", error);
+    }
   };
   const theme = useTheme();
 
@@ -58,20 +89,24 @@ export default function Login() {
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+              id="_userName"
+              label="Username"
+              name="_userName"
+              onChange={handleChange}
+              value={loginData._userName}
+              autoComplete="username"
               autoFocus
             />
             <TextField
               margin="normal"
               required
               fullWidth
-              name="password"
+              name="_pwd"
+              onChange={handleChange}
+              value={loginData._pwd}
               label="Password"
               type="password"
-              id="password"
+              id="_pwd"
               autoComplete="current-password"
             />
             <FormControlLabel
@@ -93,7 +128,7 @@ export default function Login() {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/register" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>

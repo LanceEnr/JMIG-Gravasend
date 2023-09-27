@@ -5,8 +5,8 @@ const userSchema = new mongoose.Schema(
   {
     _email: String,
     _pwd: String,
-    _firstName: String,
-    _lastName: String,
+    _fName: String,
+    _lName: String,
     _userName: String,
   },
   { collection: "user" }

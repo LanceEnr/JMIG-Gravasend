@@ -18,6 +18,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import EventIcon from "@mui/icons-material/Event";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 const ColoredBadge = withStyles({
   badge: {
@@ -34,8 +35,6 @@ const pages = [
   "Contact",
   "Login",
   "Register",
-  "ForgotPassword",
-  "ProductDetails",
 ];
 
 const settings = ["Dashboard", "Logout"];
@@ -262,8 +261,8 @@ function ResponsiveAppBar() {
                   key={setting}
                   onClick={() => {
                     if (setting === "Logout") {
-                      // Handle logout
-                      // ...
+                      localStorage.removeItem("token");
+                      console.log("Removed Token");
                     } else if (setting === "Account") {
                       window.location.href = "/ProfileInfo";
                     } else {
