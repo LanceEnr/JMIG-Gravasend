@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import {
   TextField,
   Button,
@@ -13,15 +15,43 @@ import EmailIcon from "@mui/icons-material/Email";
 import BannerImage from "../assets/about.webp";
 import Banner from "../components/Banner";
 import "../styles/Contact.css";
+import { toast } from "react-toastify";
 
 function Contact() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  const [inquiryData, SetInquiryData] = useState({
+    _name: "",
+    _email: "",
+    _message: "",
+  });
+  const navigate = useNavigate();
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    SetInquiryData({
+      ...inquiryData,
+      [name]: value,
+    });
+  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    //
+    const { _name, _email, _message } = inquiryData;
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/inquiry",
+        inquiryData
+      );
+      console.log("Inquiry submitted successfully", response.data);
+      toast.success("Inquiry submitted successfully", {
+        autoClose: 500,
+        onClose: () => {
+          navigate("/");
+        },
+      });
+    } catch (error) {
+      console.error("Registration failed", error);
+      // Handle registration failure (e.g., show an error message).
+    }
   };
 
   return (
@@ -54,16 +84,18 @@ ph!4v1693048413304!5m2!1sen!2sph"
               <TextField
                 fullWidth
                 label="Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                name="_name"
+                onChange={handleChange}
+                value={inquiryData._name}
                 margin="normal"
                 required
               />
               <TextField
                 fullWidth
                 label="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                name="_email"
+                onChange={handleChange}
+                value={inquiryData._email}
                 margin="normal"
                 required
                 type="email"
@@ -72,8 +104,9 @@ ph!4v1693048413304!5m2!1sen!2sph"
               <TextField
                 fullWidth
                 label="Message"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                name="_message"
+                onChange={handleChange}
+                value={inquiryData._message}
                 margin="normal"
                 required
                 multiline

@@ -3,39 +3,75 @@ const router = express.Router();
 const User = require("../models/user");
 const Order = require("../models/order");
 const Appointment = require("../models/appointment");
+const Inquiry = require("../models/inquiry");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  service: "Gmail", // Use a valid email service (e.g., Gmail, Outlook, etc.)
+  auth: {
+    user: "gravelandsandsupplyjmig@gmail.com", // Your email address
+    pass: "JMIGGravelAndSandSupply", // Your email password
+  },
+});
 
 router.post("/register", async (req, res) => {
   const saltRounds = 10;
 
   try {
-    const { _email, _pwd, _fName, _lName, _userName } = req.body;
-    bcrypt.hash(_pwd, saltRounds, async (err, hashedPassword) => {
-      if (err) {
-        console.error("Error hashing password:", err);
-        res.status(500).json({ error: "Internal server error" });
-      } else {
-        bcrypt.hash(_email, saltRounds, async (err, hashedEmail) => {
-          if (err) {
-            console.error("Error hashing email:", err);
-            res.status(500).json({ error: "Internal server error" });
-          } else {
-            const newUser = new User({
-              _email: hashedEmail,
-              _pwd: hashedPassword,
-              _fName,
-              _lName,
-              _userName,
-            });
+    const { _email, _pwd, _fName, _lName, _userName, _phone, _bday, _address } =
+      req.body;
 
-            await newUser.save();
-            res.json({ message: "User registered successfully" });
-          }
-        });
-      }
+    const hashedPassword = await bcrypt.hash(_pwd, saltRounds);
+    const hashedEmail = await bcrypt.hash(_email, saltRounds);
+    const existingUsernameUser = await User.findOne({ _userName });
+    const existingEmailUser = await User.findOne({ _email: hashedEmail });
+
+    if (existingUsernameUser) {
+      return res
+        .status(409)
+        .json({ field: "username", message: "Username already in use" });
+    }
+
+    if (existingEmailUser) {
+      return res
+        .status(409)
+        .json({ field: "email", message: "Email already in use" });
+    }
+
+    const newUser = new User({
+      _email: hashedEmail,
+      _pwd: hashedPassword,
+      _fName,
+      _lName,
+      _userName,
+      _phone,
+      _bday,
+      _address,
     });
+
+    await newUser.save();
+    res.json({ message: "User registered successfully" });
+  } catch (error) {
+    console.error("Error registering user:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.post("/inquiry", async (req, res) => {
+  try {
+    const { _name, _email, _message } = req.body;
+
+    const newInquiry = new Inquiry({
+      _name,
+      _email,
+      _message,
+    });
+
+    await newInquiry.save();
+    res.json({ message: "User registered successfully" });
   } catch (error) {
     console.error("Error registering user:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -55,7 +91,7 @@ router.post("/login", async (req, res) => {
 
     if (passwordMatch) {
       const token = jwt.sign({ userId: user._id }, "JMIGGravelandSand", {
-        expiresIn: "1h",
+        expiresIn: "7d",
       });
       res.status(200).json({ message: "Authentication successful", token });
     } else {
@@ -70,7 +106,7 @@ router.post("/login", async (req, res) => {
 router.get("/order", async (req, res) => {
   try {
     const orders = await Order.find({});
-    console.log("Found orders:", orders); // Add this line for logging
+    console.log("Found orders:", orders);
     res.json(orders);
   } catch (error) {
     console.error("Error fetching listings:", error);
