@@ -22,12 +22,13 @@ export default function Banner() {
       <Typography
         variant="h4"
         sx={{
+          width: "70%",
           color: "#fff",
           textAlign: { xs: "center", sm: "left" },
           fontSize: { xs: "h6.fontSize", sm: "h4.fontSize" }, // smaller font size on small screens
         }}
       >
-        Are you looking for a supplier?
+        Looking for a supplier? Set an appointment with us!
       </Typography>
       <Link to="/contact">
         <Button

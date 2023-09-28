@@ -15,6 +15,7 @@ import Faqs from "./pages/Faqs";
 import authReducer from "./store/reducers/authReducer";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 import ProductDetails from "./pages/ProductDetails";
 
@@ -38,6 +39,8 @@ function App() {
           <Route path="/forgotpassword" exact element={<ForgotPassword />} />
           <Route path="/productdetails" exact element={<ProductDetails />} />
           <Route path="/dashboard" exact element={<UserDashboard />} />
+          <Route path="/admindashboard" exact element={<AdminDashboard />} />
+
           <Route path="/faqs" exact element={<Faqs />} />
           <Route
             path="/login"
