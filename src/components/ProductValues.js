@@ -4,83 +4,104 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
 import { Typography } from "@mui/material";
-
+import Avatar from "@mui/material/Avatar";
+import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
+import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
+import SupportAgentOutlinedIcon from "@mui/icons-material/SupportAgentOutlined";
 const item = {
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  px: 5,
+  px: 2,
 };
 
 function ProductValues() {
   return (
     <Box
       component="section"
-      sx={{ display: "flex", overflow: "hidden", bgcolor: "secondary.light" }}
+      sx={{ display: "flex", overflow: "hidden", bgcolor: "#fafbf5" }}
     >
-      <Container sx={{ mt: 15, mb: 30, display: "flex", position: "relative" }}>
-        <Box
-          component="img"
-          src="../assets/about.webp"
-          sx={{ pointerEvents: "none", position: "absolute", top: -180 }}
-        />
+      <Container sx={{ display: "flex", position: "relative" }}>
         <Grid container spacing={5}>
           <Grid item xs={12} md={4}>
             <Box sx={item}>
-              <Box
-                component="img"
-                src="/static/themes/onepirate/productValues1.svg"
-                alt="suitcase"
-                sx={{ height: 55 }}
-              />
-              <Typography variant="h6" sx={{ my: 5 }}>
-                The best luxury hotels
+              <Avatar
+                style={{
+                  backgroundColor: "#EBDAB7",
+                  height: "70px",
+                  width: "70px",
+                }}
+              >
+                <LocalShippingOutlinedIcon
+                  fontSize="large"
+                  style={{ color: "#bd8512" }}
+                />
+              </Avatar>
+              <Typography variant="h6" sx={{ my: 2, color: "#004aad" }}>
+                Premium Gravel and Sand
               </Typography>
-              <Typography variant="h5">
-                {
-                  "From the latest trendy boutique hotel to the iconic palace with XXL pool"
-                }
-
-                {
-                  ", go for a mini-vacation just a few subway stops away from your home."
-                }
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Box sx={item}>
-              <Box
-                component="img"
-                src="/static/themes/onepirate/productValues2.svg"
-                alt="graph"
-                sx={{ height: 55 }}
-              />
-              <Typography variant="h6" sx={{ my: 5 }}>
-                New experiences
-              </Typography>
-              <Typography variant="h5">
-                {
-                  "Privatize a pool, take a Japanese bath or wake up in 900m2 of garden… "
-                }
-
-                {"your Sundays will not be alike."}
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                style={{ textAlign: "center" }}
+              >
+                Supplying the highest quality gravel and sand for all your
+                construction needs. Just a few clicks away from delivery to your
+                site.
               </Typography>
             </Box>
           </Grid>
           <Grid item xs={12} md={4}>
             <Box sx={item}>
-              <Box
-                component="img"
-                src="/static/themes/onepirate/productValues3.svg"
-                alt="clock"
-                sx={{ height: 55 }}
-              />
-              <Typography variant="h6" sx={{ my: 5 }}>
-                Exclusive rates
+              <Avatar
+                style={{
+                  backgroundColor: "#EBDAB7",
+                  height: "70px",
+                  width: "70px",
+                }}
+              >
+                <VerifiedOutlinedIcon
+                  fontSize="large"
+                  style={{ color: "#bd8512" }}
+                />
+              </Avatar>
+              <Typography variant="h6" sx={{ my: 2, color: "#004aad" }}>
+                Quality Guarantee
               </Typography>
-              <Typography variant="h5">
-                {"By registering, you will access specially negotiated rates "}
-                {"that you will not find anywhere else."}
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                style={{ textAlign: "center" }}
+              >
+                We guarantee the highest quality in all our products to meet
+                your construction needs.
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Box sx={item}>
+              <Avatar
+                style={{
+                  backgroundColor: "#EBDAB7",
+                  height: "70px",
+                  width: "70px",
+                }}
+              >
+                <SupportAgentOutlinedIcon
+                  fontSize="large"
+                  style={{ color: "#bd8512" }}
+                />
+              </Avatar>
+              <Typography variant="h6" sx={{ my: 2, color: "#004aad" }}>
+                Reliable Customer Service
+              </Typography>
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                style={{ textAlign: "center" }}
+              >
+                Our customer service team is always ready to assist you with
+                your needs.
               </Typography>
             </Box>
           </Grid>

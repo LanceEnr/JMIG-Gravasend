@@ -19,8 +19,7 @@ import EventIcon from "@mui/icons-material/Event";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { Link, NavLink } from "react-router-dom";
 import { useHistory } from "react-router-dom";
-import DonutLargeSharpIcon from "@mui/icons-material/DonutLargeSharp";
-import DiamondSharpIcon from "@mui/icons-material/DiamondSharp";
+
 import DonutSmallSharpIcon from "@mui/icons-material/DonutSmallSharp";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -34,14 +33,7 @@ const ColoredBadge = withStyles({
 
 const token = localStorage.getItem("token");
 
-const pages = [
-  "Home",
-  "Products",
-  "FAQs",
-  "About",
-  "Contact",
-  ...(token ? [] : ["Login", "Register"]),
-];
+const pages = ["Home", "Products", "FAQs", "About", "Contact"];
 
 const settings = ["Dashboard", "Logout"];
 
@@ -221,6 +213,16 @@ function ResponsiveAppBar() {
                 {page}
               </Button>
             ))}
+            {!hasToken && (
+              <Button
+                component={Link}
+                to={"/login"}
+                variant="outlined"
+                sx={{ ml: 2, color: "#004aad", borderColor: "#004aad" }}
+              >
+                Login
+              </Button>
+            )}
           </Box>
           {hasToken && (
             <Box sx={{ flexGrow: 0, mr: 2 }}>
