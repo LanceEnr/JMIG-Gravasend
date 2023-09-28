@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
 import {
   List,
   ListItemAvatar,
@@ -29,6 +28,8 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import UserDrawer from "./common/UserDrawer";
+import SetAppointmentForm from "./SetAppointmentForm";
+import EditAppointmentForm from "./EditAppointmentForm";
 
 const data = [
   {
@@ -92,6 +93,12 @@ const daysOfWeek = [
   "Saturday",
 ];
 
+data.forEach((item) => {
+  const date = new Date(item.date + " " + new Date().getFullYear());
+  const day = date.getDay();
+  item.dayOfWeek = daysOfWeek[day];
+});
+
 const getColor = (_status) => {
   switch (_status) {
     case "Completed":
@@ -142,12 +149,10 @@ export default function AppointmentsTable1(props) {
     setShowEditForm(false);
     setMenuOpen(false); // Close the menu
   };
-
   const [page, setPage] = useState(1);
   const itemsPerPage = 6;
 
   const handleChange = (event, value) => {
-    // Handle page change here, e.g., update the displayed data
     setPage(value);
   };
   const [appointments, setAppointments] = useState([]);
@@ -159,6 +164,14 @@ export default function AppointmentsTable1(props) {
   }, []);
 
   const isMobile = useMediaQuery("(max-width:600px)");
+
+  if (showForm) {
+    return <SetAppointmentForm goBack={handleClose} />; // Pass the handleClose function
+  }
+
+  if (showEditForm) {
+    return <EditAppointmentForm goBack={handleClose} />;
+  }
 
   return (
     <List
@@ -181,7 +194,7 @@ export default function AppointmentsTable1(props) {
             fontWeight: "bold",
             display: "flex",
             alignItems: "center",
-            my: 1,
+            my: 2,
           }}
         >
           <EventNoteIcon sx={{ mr: 2, verticalAlign: "middle" }} />
@@ -189,12 +202,14 @@ export default function AppointmentsTable1(props) {
         </Typography>
         <Button
           variant="outlined"
+          onClick={handleSetAppointmentClick} // Use handleSetAppointmentClick here
           sx={{
             color: "#004aad",
             borderColor: "#004aad",
             padding: isMobile ? "4px 6px" : "6px 8px",
-            fontSize: isMobile ? "0.75rem" : "0.875rem",
-            mx: isMobile ? 1 : 0,
+            fontSize: isMobile ? "0.55rem" : "0.875rem",
+            mx: isMobile ? 2 : 0,
+            my: 0,
           }}
         >
           Set Appointment
@@ -250,8 +265,17 @@ export default function AppointmentsTable1(props) {
                   }
                 />
               )}
-              {isMobile && (
-                <ListItemSecondaryAction>
+              <ListItemSecondaryAction>
+                <Box display="flex" alignItems="center">
+                  {!isMobile && (
+                    <Typography
+                      variant="subtitle1"
+                      noWrap
+                      sx={{ marginRight: 2 }}
+                    >
+                      {`${item.startTime} - ${item.endTime}`}
+                    </Typography>
+                  )}
                   <Tooltip title={item._status === "Upcoming" ? "Actions" : ""}>
                     <MoreVertIcon
                       onClick={item._status === "Upcoming" ? handleClick : null}
@@ -268,98 +292,31 @@ export default function AppointmentsTable1(props) {
                     />
                   </Tooltip>
                   <Menu
-                    sx={{
-                      mt: "45px",
-                    }}
+                    sx={{ mt: "45px" }}
                     anchorEl={anchorEl}
-                    anchorOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
+                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
                     keepMounted
-                    transformOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
-                    open={Boolean(anchorEl)}
+                    transformOrigin={{ vertical: "top", horizontal: "right" }}
+                    open={menuOpen}
                     onClose={handleClose}
                     elevation={2}
                   >
-                    <MenuItem onClick={handleClose}>Edit</MenuItem>
+                    <MenuItem onClick={handleEditClick}>Edit</MenuItem>
                     <MenuItem
-                      onClick={handleClose}
+                      onClick={handleOpenDialog}
                       sx={{ color: "error.main" }}
                     >
                       Cancel
                     </MenuItem>
                   </Menu>
-                </ListItemSecondaryAction>
-              )}
-              {!isMobile && (
-                <ListItemSecondaryAction>
-                  <Box display="flex" alignItems="center">
-                    <Typography
-                      variant="subtitle1"
-                      noWrap
-                      sx={{ marginRight: isMobile ? 0 : 2 }}
-                    >
-                      {`${item.startTime} - ${item.endTime}`}
-                    </Typography>
-
-                    <Tooltip
-                      title={item._status === "Upcoming" ? "Actions" : ""}
-                    >
-                      <MoreVertIcon
-                        onClick={
-                          item._status === "Upcoming" ? handleClick : null
-                        }
-                        sx={{
-                          cursor:
-                            item._status === "Upcoming" ? "pointer" : "default",
-                          color:
-                            item._status === "Upcoming"
-                              ? "text.secondary"
-                              : "text.disabled",
-                          pointerEvents:
-                            item._status === "Upcoming" ? "auto" : "none",
-                        }}
-                      />
-                    </Tooltip>
-                    <Menu
-                      sx={{
-                        mt: "45px",
-                      }}
-                      anchorEl={anchorEl}
-                      anchorOrigin={{
-                        vertical: "top",
-                        horizontal: "right",
-                      }}
-                      keepMounted
-                      transformOrigin={{
-                        vertical: "top",
-                        horizontal: "right",
-                      }}
-                      open={Boolean(anchorEl)}
-                      onClose={handleClose}
-                      elevation={2}
-                    >
-                      <MenuItem onClick={handleClose}>Edit</MenuItem>
-                      <MenuItem
-                        onClick={handleClose}
-                        sx={{ color: "error.main" }}
-                      >
-                        Cancel
-                      </MenuItem>
-                    </Menu>
-                  </Box>
-                </ListItemSecondaryAction>
-              )}
+                </Box>
+              </ListItemSecondaryAction>
             </ListItem>
           </Paper>
         ))}
       <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
         <Pagination
-          count={Math.ceil(appointments.length / itemsPerPage)}
+          count={Math.ceil(data.length / itemsPerPage)}
           page={page}
           onChange={handleChange}
           shape="rounded"

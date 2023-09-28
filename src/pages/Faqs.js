@@ -6,7 +6,7 @@ import "../styles/Faqs.css";
 import { Container, Box } from "@mui/material";
 import Banner from "../components/Banner";
 
-import BannerImage from "../assets/catalog.webp";
+import BannerImage from "../assets/faqs.webp";
 
 function Faqs() {
   return (

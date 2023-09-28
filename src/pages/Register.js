@@ -13,12 +13,17 @@ import Link from "@mui/material/Link";
 import { toast } from "react-toastify";
 
 export default function Register() {
+  const [emailUsed, setEmailUsed] = useState(false);
+  const [usernameUsed, setUsernameUsed] = useState(false);
   const [formData, setFormData] = useState({
     _fName: "",
     _lName: "",
     _email: "",
     _pwd: "",
     _userName: "",
+    _phone: "",
+    _bday: "",
+    _address: "",
   });
   const navigate = useNavigate();
   const handleChange = (event) => {
@@ -93,7 +98,17 @@ export default function Register() {
       });
     } catch (error) {
       console.error("Registration failed", error);
-      // Handle registration failure (e.g., show an error message).
+      if (error.response && error.response.status === 409) {
+        const { field } = error.response.data;
+        if (field === "email") {
+          setEmailUsed(true);
+        } else if (field === "username") {
+          setUsernameUsed(true);
+        }
+      } else {
+        console.error("Registration failed", error);
+        toast.error("Registration failed. Please try again later.");
+      }
     }
   };
 
@@ -145,6 +160,43 @@ export default function Register() {
                   required
                 />
               </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  name="_phone"
+                  label="Phone Number"
+                  fullWidth
+                  onChange={handleChange}
+                  value={formData._phone}
+                  required
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  type="date"
+                  name="_bday"
+                  label="Birthday"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  fullWidth
+                  onChange={handleChange}
+                  value={formData._bday}
+                  required
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  name="_address"
+                  label="Address"
+                  fullWidth
+                  onChange={handleChange}
+                  value={formData._address}
+                  required
+                />
+              </Grid>
+
               <Grid item xs={12}>
                 <TextField
                   name="_userName"
@@ -153,7 +205,9 @@ export default function Register() {
                   onChange={handleChange}
                   value={formData._userName}
                   required
-                  autoComplete="off"
+                  autoComplete="username"
+                  error={usernameUsed}
+                  helperText={usernameUsed ? "Username is already used" : ""}
                 />
               </Grid>
 
@@ -165,6 +219,9 @@ export default function Register() {
                   onChange={handleChange}
                   value={formData._email}
                   required
+                  autoComplete="email"
+                  error={emailUsed}
+                  helperText={emailUsed ? "Email is already used" : ""}
                 />
               </Grid>
 
@@ -177,6 +234,7 @@ export default function Register() {
                   onChange={handleChange}
                   value={formData._pwd}
                   required
+                  autoComplete="email"
                 />
               </Grid>
               <Grid item xs={12}>

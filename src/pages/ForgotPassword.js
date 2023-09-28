@@ -1,4 +1,5 @@
-import * as React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
@@ -9,14 +10,31 @@ import Container from "@mui/material/Container";
 import "../styles/Login.css";
 import { useTheme } from "@mui/material/styles";
 
-export default function Register() {
-  const handleSubmit = (event) => {
+export default function ForgetPassword() {
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleEmailSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    try {
+      const response = await axios.post("http://localhost:3001/check-email", {
+        email,
+      });
+      if (response.data.exists) {
+        const otpResponse = await axios.post("http://localhost:3001/send-otp", {
+          email,
+        });
+        if (otpResponse.data.success) {
+          setMessage("OTP sent to your email.");
+        } else {
+          setMessage("Failed to send OTP.");
+        }
+      } else {
+        setMessage("Email not found.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const theme = useTheme();
@@ -50,18 +68,20 @@ export default function Register() {
           <Box
             component="form"
             noValidate
-            onSubmit={handleSubmit}
+            onSubmit={handleEmailSubmit}
             sx={{ mt: 3, width: "100%" }}
           >
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
+                  type="email"
                   required
                   fullWidth
                   id="email"
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </Grid>
             </Grid>

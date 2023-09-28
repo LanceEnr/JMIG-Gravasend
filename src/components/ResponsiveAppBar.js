@@ -17,10 +17,13 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import EventIcon from "@mui/icons-material/Event";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import DonutLargeSharpIcon from "@mui/icons-material/DonutLargeSharp";
 import DiamondSharpIcon from "@mui/icons-material/DiamondSharp";
 import DonutSmallSharpIcon from "@mui/icons-material/DonutSmallSharp";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const ColoredBadge = withStyles({
   badge: {
@@ -29,14 +32,15 @@ const ColoredBadge = withStyles({
   },
 })(Badge);
 
+const token = localStorage.getItem("token");
+
 const pages = [
   "Home",
   "Products",
   "FAQs",
   "About",
   "Contact",
-  "Login",
-  "Register",
+  ...(token ? [] : ["Login", "Register"]),
 ];
 
 const settings = ["Dashboard", "Logout"];
@@ -55,6 +59,8 @@ const notifications = [
 ];
 
 function ResponsiveAppBar() {
+  const navigate = useNavigate();
+  const hasToken = localStorage.getItem("token") !== null;
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElNotifications, setAnchorElNotifications] =
     React.useState(null);
@@ -91,6 +97,7 @@ function ResponsiveAppBar() {
           <Link to="/">
             <DonutSmallSharpIcon
               sx={{
+                ml: 2,
                 mr: 1,
                 position: "relative",
                 display: { xs: "none", md: "flex" },
@@ -102,7 +109,7 @@ function ResponsiveAppBar() {
           </Link>
 
           <Typography
-            variant="h5"
+            variant="h6"
             noWrap
             component="a"
             href="/"
@@ -116,7 +123,7 @@ function ResponsiveAppBar() {
               textDecoration: "none",
             }}
           >
-            JMIG
+            JMIG Gravel & Sand
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -215,93 +222,107 @@ function ResponsiveAppBar() {
               </Button>
             ))}
           </Box>
+          {hasToken && (
+            <Box sx={{ flexGrow: 0, mr: 2 }}>
+              <Tooltip title="Notifications">
+                <IconButton onClick={handleOpenNotificationsMenu}>
+                  <ColoredBadge
+                    badgeContent={notifications ? notifications.length : 0}
+                  >
+                    <NotificationsIcon color="action" />
+                  </ColoredBadge>
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="notification-appbar"
+                anchorEl={anchorElNotifications}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElNotifications)}
+                onClose={handleCloseNotificationsMenu}
+              >
+                {notifications.map((notification) => (
+                  <MenuItem
+                    key={notification.heading}
+                    onClick={handleCloseNotificationsMenu}
+                  >
+                    <ListItemIcon>
+                      <notification.icon fontSize="small" />
+                    </ListItemIcon>
+                    <div>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{ fontWeight: "bold" }}
+                      >
+                        {notification.heading}
+                      </Typography>
+                      <Typography variant="body2">
+                        {notification.text}
+                      </Typography>
+                    </div>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          )}
+          {hasToken && (
+            <Box sx={{ flexGrow: 0, mr: 2 }}>
+              <Tooltip title="Settings">
+                <IconButton onClick={handleOpenSettingsMenu} sx={{ p: 0 }}>
+                  <Avatar alt="User" src="/static/images/avatar/2.jpg" />
+                </IconButton>
+              </Tooltip>
 
-          <Box sx={{ flexGrow: 0, mr: 2 }}>
-            <Tooltip title="Notifications">
-              <IconButton onClick={handleOpenNotificationsMenu}>
-                <ColoredBadge
-                  badgeContent={notifications ? notifications.length : 0}
-                >
-                  <NotificationsIcon color="action" />
-                </ColoredBadge>
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="notification-appbar"
-              anchorEl={anchorElNotifications}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElNotifications)}
-              onClose={handleCloseNotificationsMenu}
-            >
-              {notifications.map((notification) => (
-                <MenuItem
-                  key={notification.heading}
-                  onClick={handleCloseNotificationsMenu}
-                >
-                  <ListItemIcon>
-                    <notification.icon fontSize="small" />
-                  </ListItemIcon>
-                  <div>
-                    <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
-                      {notification.heading}
-                    </Typography>
-                    <Typography variant="body2">{notification.text}</Typography>
-                  </div>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-
-          <Box sx={{ flexGrow: 0, mr: 2 }}>
-            <Tooltip title="Settings">
-              <IconButton onClick={handleOpenSettingsMenu} sx={{ p: 0 }}>
-                <Avatar alt="User" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElSettings}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElSettings)}
-              onClose={handleCloseSettingsMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem
-                  key={setting}
-                  onClick={() => {
-                    if (setting === "Logout") {
-                      localStorage.removeItem("token");
-                      console.log("Removed Token");
-                    } else if (setting === "Account") {
-                      window.location.href = "/ProfileInfo";
-                    } else {
-                      window.location.href = `/${setting}`;
-                    }
-                  }}
-                >
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElSettings}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElSettings)}
+                onClose={handleCloseSettingsMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem
+                    key={setting}
+                    onClick={() => {
+                      if (setting === "Logout") {
+                        localStorage.removeItem("token");
+                        console.log("Removed Token");
+                        toast.success("Logout successfully", {
+                          autoClose: 500,
+                          onClose: () => {
+                            navigate("/");
+                          },
+                        });
+                      } else if (setting === "Account") {
+                        window.location.href = "/ProfileInfo";
+                      } else {
+                        window.location.href = `/${setting}`;
+                      }
+                    }}
+                  >
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          )}
         </Toolbar>
       </Container>
     </AppBar>
