@@ -11,8 +11,8 @@ export default function Banner() {
       sx={{
         height: "40vh",
         display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
+        flexDirection: { xs: "column", sm: "row" },
+        justifyContent: { xs: "center", sm: "space-between" },
         alignItems: "center",
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${BannerImage})`,
         backgroundSize: "cover",
@@ -32,6 +32,7 @@ export default function Banner() {
       <Link to="/contact">
         <Button
           variant="contained"
+          size={window.innerWidth <= 600 ? "small" : "large"}
           sx={{
             backgroundColor: "#004aad",
             color: "#fff",

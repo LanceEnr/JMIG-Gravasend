@@ -5,11 +5,7 @@ import "../styles/About.css";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
-import ImageList from "@mui/material/ImageList";
-import ImageListItem from "@mui/material/ImageListItem";
+import ChooseBanner from "../components/ChooseBanner";
 import ProductValues from "../components/ProductValues";
 import TestimoniesHero from "../components/TestimoniesHero";
 import ContactBanner from "../components/ContactBanner";
@@ -52,7 +48,14 @@ function About() {
             fames ac ante ipsum primis in faucibus. Nulla at auctor quam, eu
             cursus odio. Sed lacinia mollis ex, vitae accumsan enim porta quis.
             Nam lobortis scelerisque cursus. Donec id vestibulum felis. Morbi
-            augue diam, ornare quis ipsum at, aliquet feugiat orci.
+            augue diam, ornare quis ipsum at, aliquet feugiat orci. Lorem ipsum
+            dolor sit amet, consectetur adipiscing elit. Vestibulum posuere
+            elementum orci ac fermentum. Vestibulum tempor consequat eros, non
+            ultricies sapien pharetra eget. Interdum et malesuada fames ac ante
+            ipsum primis in faucibus. Nulla at auctor quam, eu cursus odio. Sed
+            lacinia mollis ex, vitae accumsan enim porta quis. Nam lobortis
+            scelerisque cursus. Donec id vestibulum felis. Morbi augue diam,
+            ornare quis ipsum at, aliquet feugiat orci.
           </Typography>
         </Container>
       </Box>

@@ -213,17 +213,17 @@ function ResponsiveAppBar() {
                 {page}
               </Button>
             ))}
-            {!hasToken && (
-              <Button
-                component={Link}
-                to={"/login"}
-                variant="outlined"
-                sx={{ ml: 2, color: "#004aad", borderColor: "#004aad" }}
-              >
-                Login
-              </Button>
-            )}
           </Box>
+          {!hasToken && (
+            <Button
+              component={Link}
+              to={"/login"}
+              variant="outlined"
+              sx={{ ml: 2, color: "#004aad", borderColor: "#004aad" }}
+            >
+              Login
+            </Button>
+          )}
           {hasToken && (
             <Box sx={{ flexGrow: 0, mr: 2 }}>
               <Tooltip title="Notifications">
