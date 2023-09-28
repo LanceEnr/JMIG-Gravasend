@@ -17,12 +17,10 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import EventIcon from "@mui/icons-material/Event";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { Link, NavLink } from "react-router-dom";
-import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import DonutLargeSharpIcon from "@mui/icons-material/DonutLargeSharp";
 import DiamondSharpIcon from "@mui/icons-material/DiamondSharp";
 import DonutSmallSharpIcon from "@mui/icons-material/DonutSmallSharp";
-import { SiRockylinux } from "react-icons/si";
 
 const ColoredBadge = withStyles({
   badge: {
@@ -118,7 +116,7 @@ function ResponsiveAppBar() {
               textDecoration: "none",
             }}
           >
-            JMIG Gravel & Sand
+            JMIG
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton

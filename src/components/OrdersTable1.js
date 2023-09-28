@@ -34,10 +34,11 @@ const getColor = (status) => {
   }
 };
 
-export default function OrdersTable1() {
+export default function OrdersTable1(props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const itemsPerPage = 10; // Set your desired items per page
   const [page, setPage] = useState(1); // Set the initial page number
+  const isMobile = useMediaQuery("(max-width:600px)");
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -79,7 +80,7 @@ export default function OrdersTable1() {
           <UserDrawer onActiveComponentChange={props.onActiveComponentChange} />
         )}
       </Box>
-      {data
+      {orders
         .slice((page - 1) * itemsPerPage, page * itemsPerPage)
         .map((item, index) => (
           <Paper elevation={2} sx={{ my: 1 }}>
@@ -105,24 +106,25 @@ export default function OrdersTable1() {
                 </Tooltip>
               </ListItemAvatar>
 
-          <ListItemText
-            primary={
-              <Typography variant="subtitle1">{`Order ${item._orderNum}`}</Typography>
-            }
-            secondary={item._date}
-          />
-          <ListItemSecondaryAction>
-            <Stack alignItems="flex-end">
-              <Typography variant="subtitle1" noWrap>
-                PHP{Number(item._price).toLocaleString("en-US")}
-              </Typography>
-              <Typography variant="subtitle2" color="textSecondary" noWrap>
-                 {item._materialType} -  {item._quantity} cu. mt.
-              </Typography>
-            </Stack>
-          </ListItemSecondaryAction>
-        </ListItem>
-      ))}
+              <ListItemText
+                primary={
+                  <Typography variant="subtitle1">{`Order ${item._orderNum}`}</Typography>
+                }
+                secondary={item._date}
+              />
+              <ListItemSecondaryAction>
+                <Stack alignItems="flex-end">
+                  <Typography variant="subtitle1" noWrap>
+                    PHP{Number(item._price).toLocaleString("en-US")}
+                  </Typography>
+                  <Typography variant="subtitle2" color="textSecondary" noWrap>
+                     {item._materialType} -  {item._quantity} cu. mt.
+                  </Typography>
+                </Stack>
+              </ListItemSecondaryAction>
+            </ListItem>
+          </Paper>
+        ))}
       <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
         <Pagination
           count={Math.ceil(orders.length / itemsPerPage)}

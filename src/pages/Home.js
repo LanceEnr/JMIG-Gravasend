@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import BannerImage from "../assets/homeBG.webp";
 import "../styles/Home.css";
+import ProductValues from "../components/ProductValues";
 
 function Home() {
   return (
@@ -23,6 +24,7 @@ function Home() {
           <button>Learn More</button>
         </Link>
       </div>
+      <ProductValues />
     </div>
   );
 }

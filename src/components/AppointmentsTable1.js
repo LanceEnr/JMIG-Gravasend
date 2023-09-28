@@ -109,6 +109,27 @@ export default function AppointmentsTable1(props) {
   const [openDialog, setOpenDialog] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const [showForm, setShowForm] = useState(false); // Add this line
+  const [showEditForm, setShowEditForm] = useState(false);
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleEditClick = () => {
+    setAnchorEl(null);
+    setShowEditForm(true);
+  };
+
+  const handleSetAppointmentClick = () => {
+    setShowForm(true);
+  };
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -129,6 +150,14 @@ export default function AppointmentsTable1(props) {
     // Handle page change here, e.g., update the displayed data
     setPage(value);
   };
+  const [appointments, setAppointments] = useState([]);
+  useEffect(() => {
+    // Fetch users from the backend when the component mounts
+    axios.get("http://localhost:3001/order").then((response) => {
+      setAppointments(response.data);
+    });
+  }, []);
+
   const isMobile = useMediaQuery("(max-width:600px)");
 
   return (
