@@ -155,6 +155,14 @@ export default function AppointmentsTable1(props) {
   const handleChange = (event, value) => {
     setPage(value);
   };
+  const [appointments, setAppointments] = useState([]);
+  useEffect(() => {
+    // Fetch users from the backend when the component mounts
+    axios.get("http://localhost:3001/order").then((response) => {
+      setAppointments(response.data);
+    });
+  }, []);
+
   const isMobile = useMediaQuery("(max-width:600px)");
 
   if (showForm) {

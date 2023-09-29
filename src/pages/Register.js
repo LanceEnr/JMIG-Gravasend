@@ -144,7 +144,7 @@ export default function Register() {
             Create your account by filling the form below.
           </Typography>
           <form onSubmit={handleSubmit}>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} sx={{ mt: 1 }}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   name="_fName"
@@ -255,10 +255,9 @@ export default function Register() {
             </Grid>
             <Button
               type="submit"
-              variant="contained"
-              color="primary"
               fullWidth
-              sx={{ mt: 3, mb: 2 }}
+              variant="contained"
+              sx={{ mt: 3, mb: 2, backgroundColor: "#004aad" }}
             >
               Sign Up
             </Button>

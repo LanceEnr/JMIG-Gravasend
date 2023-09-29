@@ -55,7 +55,7 @@ function UserDashboard() {
 
   return (
     <div className="userDashboard">
-      <Container sx={{ minHeight: "80vh" }}>
+      <Container sx={{ my: 4, minHeight: "80vh" }}>
         <Grid container spacing={3}>
           {!isMobile && (
             <Grid item xs={12} md={3}>

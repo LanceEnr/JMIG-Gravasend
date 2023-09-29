@@ -13,7 +13,9 @@ import {
   Paper,
   Box,
   Pagination,
+  useMediaQuery,
 } from "@mui/material";
+
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -33,10 +35,11 @@ const getColor = (status) => {
   }
 };
 
-export default function OrdersTable1() {
+export default function OrdersTable1(props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const itemsPerPage = 10; // Set your desired items per page
   const [page, setPage] = useState(1); // Set the initial page number
+  const isMobile = useMediaQuery("(max-width:600px)");
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -76,7 +79,11 @@ export default function OrdersTable1() {
             <ShoppingCartIcon sx={{ mr: 2, verticalAlign: "middle" }} />
             Orders
           </Typography>
-          <UserDrawer />
+          {isMobile && (
+            <UserDrawer
+              onActiveComponentChange={props.onActiveComponentChange}
+            />
+          )}
         </Box>
         {orders
           .slice((page - 1) * itemsPerPage, page * itemsPerPage)

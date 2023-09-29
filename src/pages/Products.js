@@ -4,18 +4,22 @@ import ProductList from "../components/ProductList";
 import "../styles/Products.css";
 import Banner from "../components/Banner";
 import BannerImage from "../assets/catalog.webp";
+import ContactBanner from "../components/ContactBanner";
 
 function Products() {
   return (
-    <div className="menu">
-      <Banner
-        bannerImage={BannerImage}
-        title="PRODUCT CATALOG"
-        text="Solid foundations begin with quality gravel and sand
+    <div>
+      <div className="menu">
+        <Banner
+          bannerImage={BannerImage}
+          title="PRODUCT CATALOG"
+          text="Solid foundations begin with quality gravel and sand
 
         "
-      />
-      <ProductList cards={MenuList} />
+        />
+        <ProductList cards={MenuList} />
+      </div>
+      <ContactBanner />
     </div>
   );
 }

@@ -12,7 +12,7 @@ import {
 import HomeIcon from "@mui/icons-material/Home";
 import PhoneIcon from "@mui/icons-material/Phone";
 import EmailIcon from "@mui/icons-material/Email";
-import BannerImage from "../assets/about.webp";
+import BannerImage from "../assets/contact.webp";
 import Banner from "../components/Banner";
 import "../styles/Contact.css";
 import { toast } from "react-toastify";

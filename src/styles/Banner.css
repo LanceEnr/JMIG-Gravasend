@@ -8,9 +8,9 @@
   padding: 90px;
   box-sizing: border-box; /* Add this line */
 }
-
 .aboutTitle {
-  font-size: 60px;
+  font-size: 50px;
+  letter-spacing: 3px; /* Adjust as needed */
 }
 
 .aboutText {
@@ -21,6 +21,7 @@
 @media only screen and (max-width: 600px) {
   .aboutTitle {
     font-size: 30px;
+    letter-spacing: 1px; /* Adjust as needed */
   }
 
   .aboutText {
