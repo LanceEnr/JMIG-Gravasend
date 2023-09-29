@@ -50,6 +50,9 @@ export default function Login() {
         console.error("Login failed", response.data);
       }
     } catch (error) {
+      if (error.response && error.response.status === 401) {
+        toast.error("Incorrect Login Credentials");
+      }
       console.error("Login failed", error);
     }
   };

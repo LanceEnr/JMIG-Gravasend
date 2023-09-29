@@ -27,7 +27,12 @@ router.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(_pwd, saltRounds);
     const hashedEmail = await bcrypt.hash(_email, saltRounds);
     const existingUsernameUser = await User.findOne({ _userName });
-    const existingEmailUser = await User.findOne({ _email: hashedEmail });
+
+    const emails = await User.distinct("_email");
+    const isEmailUsed = emails.some(async (hashedEmailFromDB) => {
+      const isMatch = await bcrypt.compare(_email, hashedEmailFromDB);
+      return isMatch;
+    });
 
     if (existingUsernameUser) {
       return res
@@ -35,7 +40,7 @@ router.post("/register", async (req, res) => {
         .json({ field: "username", message: "Username already in use" });
     }
 
-    if (existingEmailUser) {
+    if (isEmailUsed) {
       return res
         .status(409)
         .json({ field: "email", message: "Email already in use" });
@@ -96,6 +101,7 @@ router.post("/login", async (req, res) => {
       res.status(200).json({ message: "Authentication successful", token });
     } else {
       res.status(401).json({ message: "Authentication failed" });
+      res.json({ field: "email", message: "Email already in use" });
     }
   } catch (error) {
     console.error("Error authenticating user:", error);

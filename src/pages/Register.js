@@ -111,6 +111,11 @@ export default function Register() {
       }
     }
   };
+  const calculateEighteenYearsAgo = () => {
+    const currentDate = new Date();
+    currentDate.setFullYear(currentDate.getFullYear() - 18);
+    return currentDate.toISOString().slice(0, 10); // Format as YYYY-MM-DD
+  };
 
   return (
     <div className="signin">
@@ -183,6 +188,9 @@ export default function Register() {
                   onChange={handleChange}
                   value={formData._bday}
                   required
+                  inputProps={{
+                    max: calculateEighteenYearsAgo(), // Set the max date to 18 years ago
+                  }}
                 />
               </Grid>
 
