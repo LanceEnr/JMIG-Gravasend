@@ -32,7 +32,6 @@ function App() {
   return (
     <div className="App">
       <Router>
-        <ResponsiveAppBar />
         <Routes>
           <Route path="/" exact element={<Home />} />
           <Route path="/products" exact element={<Products />} />
@@ -64,7 +63,6 @@ function App() {
           />
           <Route path="/register" exact element={<Register />} />
         </Routes>
-        <Footer />
         <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
       </Router>
     </div>
