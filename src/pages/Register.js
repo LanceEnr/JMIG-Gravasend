@@ -97,7 +97,6 @@ export default function Register() {
         },
       });
     } catch (error) {
-      console.error("Registration failed", error);
       if (error.response && error.response.status === 409) {
         const { field } = error.response.data;
         if (field === "email") {

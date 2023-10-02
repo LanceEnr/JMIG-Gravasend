@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Typography,
   Grid,
@@ -15,6 +16,14 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 export default function ProfileInfo(props) {
   const isMobile = useMediaQuery("(max-width:600px)");
   const userAvatarUrl = "https://example.com/avatar.jpg";
+
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    axios.get("http://localhost:3001/user").then((response) => {
+      setUsers(response.data);
+    });
+  }, []);
+
   const userName = "John Doe";
   const totalOrders = 10;
   const pendingOrders = 2;

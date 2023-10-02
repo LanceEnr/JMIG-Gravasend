@@ -24,8 +24,6 @@ router.post("/register", async (req, res) => {
     const { _email, _pwd, _fName, _lName, _userName, _phone, _bday, _address } =
       req.body;
 
-    const hashedPassword = await bcrypt.hash(_pwd, saltRounds);
-    const hashedEmail = await bcrypt.hash(_email, saltRounds);
     const existingUsernameUser = await User.findOne({ _userName });
 
     const emails = await User.distinct("_email");
@@ -45,7 +43,8 @@ router.post("/register", async (req, res) => {
         .status(409)
         .json({ field: "email", message: "Email already in use" });
     }
-
+    const hashedPassword = await bcrypt.hash(_pwd, saltRounds);
+    const hashedEmail = await bcrypt.hash(_email, saltRounds);
     const newUser = new User({
       _email: hashedEmail,
       _pwd: hashedPassword,
@@ -112,7 +111,6 @@ router.post("/login", async (req, res) => {
 router.get("/order", async (req, res) => {
   try {
     const orders = await Order.find({});
-    console.log("Found orders:", orders);
     res.json(orders);
   } catch (error) {
     console.error("Error fetching listings:", error);
@@ -123,8 +121,17 @@ router.get("/order", async (req, res) => {
 router.get("/appointment", async (req, res) => {
   try {
     const appointments = await Appointment.find({});
-    console.log("Found appointments:", appointments); // Add this line for logging
     res.json(appointments);
+  } catch (error) {
+    console.error("Error fetching listings:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.get("/user", async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.json(users);
   } catch (error) {
     console.error("Error fetching listings:", error);
     res.status(500).json({ error: "Internal server error" });
