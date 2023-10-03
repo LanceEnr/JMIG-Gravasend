@@ -19,6 +19,8 @@ import EventIcon from "@mui/icons-material/Event";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { Link, NavLink } from "react-router-dom";
 import { useHistory } from "react-router-dom";
+import { logout } from "../store/reducers/authReducer";
+import { useDispatch } from "react-redux";
 
 import DonutSmallSharpIcon from "@mui/icons-material/DonutSmallSharp";
 import { toast } from "react-toastify";
@@ -52,6 +54,7 @@ const notifications = [
 
 function ResponsiveAppBar() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const hasToken = localStorage.getItem("token") !== null;
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElNotifications, setAnchorElNotifications] =
@@ -305,11 +308,11 @@ function ResponsiveAppBar() {
                     onClick={() => {
                       if (setting === "Logout") {
                         localStorage.removeItem("token");
-                        console.log("Removed Token");
+                        dispatch({ type: "LOGOUT" });
                         toast.success("Logout successfully", {
-                          autoClose: 500,
+                          autoClose: 50,
                           onClose: () => {
-                            navigate("/");
+                            navigate("/login");
                           },
                         });
                       } else if (setting === "Account") {

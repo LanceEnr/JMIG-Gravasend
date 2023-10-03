@@ -18,24 +18,40 @@ export default function ProfileInfo(props) {
   const userAvatarUrl = "https://example.com/avatar.jpg";
 
   const [users, setUsers] = useState([]);
-  useEffect(() => {
-    axios.get("http://localhost:3001/user").then((response) => {
-      setUsers(response.data);
-    });
-  }, []);
+  const [userData, setUserData] = useState({
+    "First Name": "",
+    "Last Name": "",
+    Email: "",
+    Phone: "",
+    Birthdate: "",
+    Address: "",
+  });
 
-  const userName = "John Doe";
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("userName");
+    axios
+      .get(`http://localhost:3001/user?userName=${storedUsername}`)
+      .then((response) => {
+        setUsers(response.data);
+
+        if (response.data.length > 0) {
+          const user = response.data[0];
+
+          setUserData({
+            "First Name": user._fName,
+            "Last Name": user._lName,
+            Email: user._email,
+            Phone: user._phone,
+            Birthdate: user._bday,
+            Address: user._address,
+          });
+        }
+      });
+  }, []);
+  const userName = localStorage.getItem("userName");
   const totalOrders = 10;
   const pendingOrders = 2;
 
-  const userData = {
-    "First Name": "John",
-    "Last Name": "Doe",
-    Email: "john.doe@example.com",
-    Phone: "123-456-7890",
-    Birthdate: "1990-01-01",
-    Address: "Sampaloc, Manila",
-  };
   return (
     <List
       sx={{

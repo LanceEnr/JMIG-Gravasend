@@ -8,6 +8,9 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const crypto = require("crypto");
+const iv = crypto.randomBytes(16);
+const encryptionKey = crypto.randomBytes(32);
 
 const transporter = nodemailer.createTransport({
   service: "Gmail", // Use a valid email service (e.g., Gmail, Outlook, etc.)
@@ -27,26 +30,43 @@ router.post("/register", async (req, res) => {
     const existingUsernameUser = await User.findOne({ _userName });
 
     const emails = await User.distinct("_email");
-    const isEmailUsed = emails.some(async (hashedEmailFromDB) => {
-      const isMatch = await bcrypt.compare(_email, hashedEmailFromDB);
-      return isMatch;
-    });
+    let isEmailUsed = false;
+
+    for (const hashedEmailFromDB of emails) {
+      const cipher = crypto.createCipheriv("aes-256-cbc", encryptionKey, iv);
+      const encryptedEmail = Buffer.concat([
+        cipher.update(_email, "utf8"),
+        cipher.final(),
+      ]);
+
+      if (hashedEmailFromDB === encryptedEmail) {
+        isEmailUsed = true;
+        break;
+      }
+    }
 
     if (existingUsernameUser) {
       return res
         .status(409)
         .json({ field: "username", message: "Username already in use" });
     }
-
     if (isEmailUsed) {
       return res
         .status(409)
         .json({ field: "email", message: "Email already in use" });
     }
+
     const hashedPassword = await bcrypt.hash(_pwd, saltRounds);
-    const hashedEmail = await bcrypt.hash(_email, saltRounds);
+
+    const cipher = crypto.createCipheriv(
+      "aes-256-cbc",
+      encryptionKey, // Replace with your actual secret key
+      iv // Replace with your IV
+    );
+    const encryptedEmail =
+      cipher.update(_email, "utf8", "hex") + cipher.final("hex");
     const newUser = new User({
-      _email: hashedEmail,
+      _email: encryptedEmail,
       _pwd: hashedPassword,
       _fName,
       _lName,
@@ -97,7 +117,12 @@ router.post("/login", async (req, res) => {
       const token = jwt.sign({ userId: user._id }, "JMIGGravelandSand", {
         expiresIn: "7d",
       });
-      res.status(200).json({ message: "Authentication successful", token });
+
+      res.status(200).json({
+        message: "Authentication successful",
+        token,
+        userName: user._userName,
+      });
     } else {
       res.status(401).json({ message: "Authentication failed" });
       res.json({ field: "email", message: "Email already in use" });
@@ -110,7 +135,8 @@ router.post("/login", async (req, res) => {
 
 router.get("/order", async (req, res) => {
   try {
-    const orders = await Order.find({});
+    const storedUsername = req.query.userName;
+    const orders = await Order.find({ _userName: storedUsername });
     res.json(orders);
   } catch (error) {
     console.error("Error fetching listings:", error);
@@ -120,7 +146,8 @@ router.get("/order", async (req, res) => {
 
 router.get("/appointment", async (req, res) => {
   try {
-    const appointments = await Appointment.find({});
+    const storedUsername = req.query.userName;
+    const appointments = await Appointment.find({ _userName: storedUsername });
     res.json(appointments);
   } catch (error) {
     console.error("Error fetching listings:", error);
@@ -130,10 +157,45 @@ router.get("/appointment", async (req, res) => {
 
 router.get("/user", async (req, res) => {
   try {
-    const users = await User.find({});
-    res.json(users);
+    const storedUsername = req.query.userName;
+    const users = await User.find({ _userName: storedUsername });
+
+    const decryptedUsers = users.map((user) => {
+      try {
+        // Ensure user.encryptedData is defined and not empty
+        if (!user.encryptedData) {
+          throw new Error("Encrypted data is missing.");
+        }
+
+        // Extract IV and encryption key from the user's data (modify this part based on your storage)
+        const userDataParts = user.encryptedData.split(":");
+        if (userDataParts.length !== 2) {
+          throw new Error("Invalid encrypted data format.");
+        }
+
+        const iv = Buffer.from(userDataParts[0], "hex");
+        const encryptionKey = Buffer.from(userDataParts[1], "hex");
+
+        const decipher = crypto.createDecipheriv(
+          "aes-256-cbc",
+          encryptionKey,
+          iv
+        );
+
+        const decryptedEmail =
+          decipher.update(user._email, "hex", "utf8") + decipher.final("utf8");
+
+        return { ...user._doc, _email: decryptedEmail };
+      } catch (decryptionError) {
+        console.error("Decryption error:", decryptionError);
+        // Handle decryption error here, e.g., log it or skip the user
+        return { ...user._doc, _email: "Decryption error" };
+      }
+    });
+
+    res.json(decryptedUsers);
   } catch (error) {
-    console.error("Error fetching listings:", error);
+    console.error("Error fetching users:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });

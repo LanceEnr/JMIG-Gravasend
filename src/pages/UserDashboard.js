@@ -19,13 +19,6 @@ function UserDashboard() {
     setActiveComponent(newComponent);
   };
 
-  useEffect(() => {
-    // Fetch users from the backend when the component mounts
-    axios.get("http://localhost:3001/order").then((response) => {
-      setOrders(response.data);
-    });
-  }, []);
-
   const renderComponent = () => {
     switch (activeComponent) {
       case "Orders":

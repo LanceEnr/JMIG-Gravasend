@@ -49,18 +49,23 @@ export default function OrdersTable1(props) {
     setAnchorEl(null);
   };
   const handleChange = (event, value) => {
-    // Handle page change here, e.g., update the displayed data
     setPage(value);
   };
 
   const [orders, setOrders] = useState([]);
   useEffect(() => {
-    // Fetch users from the backend when the component mounts
-    axios.get("http://localhost:3001/order").then((response) => {
-      setOrders(response.data);
-    });
+    const storedUsername = localStorage.getItem("userName");
+    if (storedUsername) {
+      axios
+        .get(`http://localhost:3001/order?userName=${storedUsername}`)
+        .then((response) => {
+          setOrders(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching orders:", error);
+        });
+    }
   }, []);
-
   return (
     <div>
       <List
@@ -94,17 +99,17 @@ export default function OrdersTable1(props) {
                   <Tooltip title={item.status}>
                     <Avatar
                       sx={{
-                        bgcolor: getColor(item.status).lighter,
-                        color: getColor(item.status).main,
+                        bgcolor: getColor(item._status).lighter,
+                        color: getColor(item._status).main,
                       }}
                     >
-                      {item.status === "Arrived" && (
+                      {item._status === "Arrived" && (
                         <CheckIcon sx={{ pointerEvents: "none" }} />
                       )}
-                      {item.status === "Failed" && (
+                      {item._status === "Failed" && (
                         <CloseIcon sx={{ pointerEvents: "none" }} />
                       )}
-                      {item.status === "Pending" && (
+                      {item._status === "Pending" && (
                         <AccessTimeIcon sx={{ pointerEvents: "none" }} />
                       )}
                     </Avatar>

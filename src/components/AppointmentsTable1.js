@@ -31,58 +31,6 @@ import UserDrawer from "./common/UserDrawer";
 import SetAppointmentForm from "./SetAppointmentForm";
 import EditAppointmentForm from "./EditAppointmentForm";
 
-const data = [
-  {
-    _status: "Upcoming",
-    appointmentNumber: "#002434",
-    date: "5 August",
-    startTime: "10:00 AM",
-    endTime: "12:00 PM",
-  },
-  {
-    _status: "Cancelled",
-    appointmentNumber: "#002435",
-    date: "6 August",
-    startTime: "10:00 AM",
-    endTime: "12:00 PM",
-  },
-  {
-    _status: "Completed",
-    appointmentNumber: "#002436",
-    date: "7 August",
-    startTime: "10:00 AM",
-    endTime: "12:00 PM",
-  },
-  {
-    _status: "Completed",
-    appointmentNumber: "#002436",
-    date: "7 August",
-    startTime: "10:00 AM",
-    endTime: "12:00 PM",
-  },
-  {
-    _status: "Completed",
-    appointmentNumber: "#002436",
-    date: "7 August",
-    startTime: "10:00 AM",
-    endTime: "12:00 PM",
-  },
-  {
-    _status: "Completed",
-    appointmentNumber: "#002436",
-    date: "7 August",
-    startTime: "10:00 AM",
-    endTime: "12:00 PM",
-  },
-  {
-    _status: "Completed",
-    appointmentNumber: "#002436",
-    date: "7 August",
-    startTime: "10:00 AM",
-    endTime: "12:00 PM",
-  },
-];
-
 const daysOfWeek = [
   "Sunday",
   "Monday",
@@ -92,12 +40,6 @@ const daysOfWeek = [
   "Friday",
   "Saturday",
 ];
-
-data.forEach((item) => {
-  const date = new Date(item.date + " " + new Date().getFullYear());
-  const day = date.getDay();
-  item.dayOfWeek = daysOfWeek[day];
-});
 
 const getColor = (_status) => {
   switch (_status) {
@@ -157,11 +99,23 @@ export default function AppointmentsTable1(props) {
   };
   const [appointments, setAppointments] = useState([]);
   useEffect(() => {
-    // Fetch users from the backend when the component mounts
-    axios.get("http://localhost:3001/order").then((response) => {
-      setAppointments(response.data);
-    });
+    const storedUsername = localStorage.getItem("userName");
+    if (storedUsername) {
+      axios
+        .get(`http://localhost:3001/appointment?userName=${storedUsername}`)
+        .then((response) => {
+          setAppointments(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching appointments:", error);
+        });
+    }
   }, []);
+  appointments.forEach((item) => {
+    const date = new Date(item.date + " " + new Date().getFullYear());
+    const day = date.getDay();
+    item.dayOfWeek = daysOfWeek[day];
+  });
 
   const isMobile = useMediaQuery("(max-width:600px)");
 
@@ -219,13 +173,13 @@ export default function AppointmentsTable1(props) {
         )}
       </Box>
 
-      {data
+      {appointments
         .slice((page - 1) * itemsPerPage, page * itemsPerPage)
         .map((item, index) => (
           <Paper elevation={2} sx={{ my: 1 }}>
             <ListItem
               key={item.appointmentNumber}
-              divider={index !== data.length - 1}
+              divider={index !== appointments.length - 1}
             >
               <ListItemAvatar>
                 <Tooltip title={item._status}>
@@ -250,9 +204,9 @@ export default function AppointmentsTable1(props) {
 
               <ListItemText
                 primary={
-                  <Typography variant="subtitle1">{`Appointment ${item._id}`}</Typography>
+                  <Typography variant="subtitle1">{`Appointment ${item._appointmentNum}`}</Typography>
                 }
-                secondary={`${item.dayOfWeek}, ${item._date}`}
+                secondary={`${item._dayOfWeek}, ${item._date}`}
               />
               {isMobile && (
                 <ListItemText
@@ -260,7 +214,7 @@ export default function AppointmentsTable1(props) {
                   primary={
                     <Typography variant="subtitle1">
                       {" "}
-                      {`${item.startTime} - ${item.endTime}`}
+                      {`${item._startTime} - ${item._endTime}`}
                     </Typography>
                   }
                 />
@@ -273,7 +227,7 @@ export default function AppointmentsTable1(props) {
                       noWrap
                       sx={{ marginRight: 2 }}
                     >
-                      {`${item.startTime} - ${item.endTime}`}
+                      {`${item._startTime} - ${item._endTime}`}
                     </Typography>
                   )}
                   <Tooltip title={item._status === "Upcoming" ? "Actions" : ""}>
@@ -316,7 +270,7 @@ export default function AppointmentsTable1(props) {
         ))}
       <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
         <Pagination
-          count={Math.ceil(data.length / itemsPerPage)}
+          count={Math.ceil(appointments.length / itemsPerPage)}
           page={page}
           onChange={handleChange}
           shape="rounded"

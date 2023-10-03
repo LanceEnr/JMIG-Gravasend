@@ -63,7 +63,7 @@ function SidePanel({ setActiveComponent }) {
                 primary={text}
                 sx={{ color: text === selected ? "#004aad" : "inherit" }}
               />
-              <ColoredBadge badgeContent={4} />
+              <ColoredBadge badgeContent={1} />
             </ListItemButton>
           </ListItem>
         ))}

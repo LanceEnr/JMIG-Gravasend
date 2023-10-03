@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -9,23 +9,45 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+
 import "../styles/Login.css";
 import { useTheme } from "@mui/material/styles";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-export default function Login() {
+export default function Login({ dispatch }) {
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [passwordInputType, setPasswordInputType] = useState("password");
+  const handleShowPasswordToggle = () => {
+    setShowPassword(!showPassword);
+    setPasswordInputType(showPassword ? "password" : "text");
+  };
   const [loginData, setLoginData] = useState({
     _userName: "",
     _pwd: "",
+    rememberMe: false,
   });
+  useEffect(() => {
+    const rememberMeData = localStorage.getItem("rememberMeData");
+    if (rememberMeData) {
+      setLoginData(JSON.parse(rememberMeData));
+    }
+  }, []);
   const handleChange = (event) => {
     const { name, value } = event.target;
     setLoginData({
       ...loginData,
       [name]: value,
     });
+  };
+  const handleRememberChange = () => {
+    setRememberMe(!rememberMe);
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -38,14 +60,24 @@ export default function Login() {
 
       if (response.status === 200) {
         console.log("Login successful", response.data);
-        const { token } = response.data;
+        const { token, userName } = response.data;
+        console.log(userName);
         localStorage.setItem("token", token);
+        localStorage.setItem("userName", userName);
+
+        if (loginData.rememberMe) {
+          localStorage.setItem("rememberMeData", JSON.stringify(loginData));
+        } else {
+          localStorage.removeItem("rememberMeData");
+        }
+
         toast.success("Login successful", {
           autoClose: 50,
           onClose: () => {
             navigate("/Dashboard");
           },
         });
+        dispatch({ type: "LOGIN" });
       } else {
         console.error("Login failed", response.data);
       }
@@ -71,7 +103,7 @@ export default function Login() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            backgroundColor: theme.palette.background.paper, // set background color
+            backgroundColor: theme.palette.background.paper,
           }}
         >
           <Typography
@@ -110,12 +142,33 @@ export default function Login() {
               onChange={handleChange}
               value={loginData._pwd}
               label="Password"
-              type="password"
+              type={passwordInputType}
               id="_pwd"
               autoComplete="current-password"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      edge="end"
+                      onClick={handleShowPasswordToggle}
+                      aria-label="toggle password visibility"
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
+
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
+              control={
+                <Checkbox
+                  name="rememberMe"
+                  color="primary"
+                  onChange={handleRememberChange}
+                  checked={rememberMe}
+                />
+              }
               label="Remember me"
             />
             <Button
