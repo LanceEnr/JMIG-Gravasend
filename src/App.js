@@ -91,7 +91,6 @@ function App() {
             }
           />
         </Routes>
-        <Footer />
         <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
       </Router>
     </div>

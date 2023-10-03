@@ -29,15 +29,24 @@ import ReportIcon from "@mui/icons-material/Report";
 import PeopleIcon from "@mui/icons-material/People";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import WebIcon from "@mui/icons-material/Web";
-import Chart from "./Chart";
-import Deposits from "./Deposits";
-import Orders from "./Orders";
 import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import AdminProfileInfo from "./AdminProfileInfo";
+import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import FleetInformation from "./FleetInformation";
+import Maintenance from "./Maintenance";
+import Inspection from "./Inspection";
+import Trips from "./Trips";
+import Inventory from "./Inventory";
+import ManageOrders from "./ManageOrders";
+import DriverManagement from "./DriverManagement";
+import UserManagement from "./UserManagement";
+import ManageAppointments from "./ManageAppointments";
+import DeliveryMonitoring from "./DeliveryMonitoring";
+import JobOrderSystem from "./JobOrderSystem";
+import Reports from "./Reports";
 
 function Copyright(props) {
   return (
@@ -198,40 +207,17 @@ export default function AdminDashboard() {
                 <ListItemIcon>
                   <FiberManualRecordIcon sx={{ fontSize: "7px" }} />
                 </ListItemIcon>
-                <ListItemText primary="Maintenance Scheduling" />
+                <ListItemText primary="Maintenance" />
               </ListItemButton>
               <ListItemButton sx={{ pl: 4 }}>
                 <ListItemIcon>
                   <FiberManualRecordIcon sx={{ fontSize: "7px" }} />
                 </ListItemIcon>
-                <ListItemText primary="Inspection Scheduling" />
-              </ListItemButton>
-              <ListItemButton sx={{ pl: 4 }}>
-                <ListItemIcon>
-                  <FiberManualRecordIcon sx={{ fontSize: "7px" }} />
-                </ListItemIcon>
-                <ListItemText primary="Inspection Records" />
-              </ListItemButton>
-              <ListItemButton sx={{ pl: 4 }}>
-                <ListItemIcon>
-                  <FiberManualRecordIcon sx={{ fontSize: "7px" }} />
-                </ListItemIcon>
-                <ListItemText primary="Maintenance History" />
-              </ListItemButton>
-              <ListItemButton sx={{ pl: 4 }}>
-                <ListItemIcon>
-                  <FiberManualRecordIcon sx={{ fontSize: "7px" }} />
-                </ListItemIcon>
-                <ListItemText primary="Trip Verification" />
+                <ListItemText primary="Inspection" />
               </ListItemButton>
             </List>
           </Collapse>
-          <ListItemButton>
-            <ListItemIcon>
-              <DeliveryDiningIcon />
-            </ListItemIcon>
-            <ListItemText primary="Delivery Monitoring" />
-          </ListItemButton>
+
           <ListItemButton>
             <ListItemIcon>
               <AssignmentIcon />
@@ -240,9 +226,15 @@ export default function AdminDashboard() {
           </ListItemButton>
           <ListItemButton>
             <ListItemIcon>
+              <AssignmentTurnedInIcon />
+            </ListItemIcon>
+            <ListItemText primary="Trip Verification" />
+          </ListItemButton>
+          <ListItemButton>
+            <ListItemIcon>
               <TrackChangesIcon />
             </ListItemIcon>
-            <ListItemText primary="Order Tracking" />
+            <ListItemText primary="Manage Orders" />
           </ListItemButton>
           <Divider sx={{ my: 1 }} />
           <ListSubheader component="div" inset>
@@ -262,19 +254,31 @@ export default function AdminDashboard() {
           </ListItemButton>
           <ListItemButton>
             <ListItemIcon>
+              <ReportIcon />
+            </ListItemIcon>
+            <ListItemText primary="Appointments" />
+          </ListItemButton>
+          <ListItemButton>
+            <ListItemIcon>
               <Inventory2Icon />
             </ListItemIcon>
             <ListItemText primary="Inventory" />
           </ListItemButton>
           <Divider sx={{ my: 1 }} />
           <ListSubheader component="div" inset>
-            Content
+            Website
           </ListSubheader>
           <ListItemButton>
             <ListItemIcon>
               <WebIcon />
             </ListItemIcon>
-            <ListItemText primary="Manage Website" />
+            <ListItemText primary="Content" />
+          </ListItemButton>
+          <ListItemButton>
+            <ListItemIcon>
+              <PeopleIcon />
+            </ListItemIcon>
+            <ListItemText primary="Users" />
           </ListItemButton>
         </List>
       </Drawer>
@@ -292,12 +296,21 @@ export default function AdminDashboard() {
       >
         <Toolbar />
 
-        <Container maxWidth="lg">
+        <Container maxWidth="lg" sx={{ my: 3 }}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-                <FleetInformation />
-              </Paper>
+              <FleetInformation />
+              <Maintenance />
+              <Inspection />
+              <Trips />
+              <Inventory />
+              <ManageOrders />
+              <DriverManagement />
+              <UserManagement />
+              <ManageAppointments />
+
+              <JobOrderSystem />
+              <Reports />
             </Grid>
           </Grid>
         </Container>
