@@ -84,7 +84,7 @@ function ResponsiveAppBar() {
   const handleCloseSettingsMenu = () => {
     setAnchorElSettings(null);
   };
-
+  const userName = localStorage.getItem("userName");
   return (
     <AppBar position="sticky" style={{ backgroundColor: "#fafbf5" }}>
       <Container maxWidth="xl">
@@ -282,7 +282,7 @@ function ResponsiveAppBar() {
             <Box sx={{ flexGrow: 0, mr: 2 }}>
               <Tooltip title="Settings">
                 <IconButton onClick={handleOpenSettingsMenu} sx={{ p: 0 }}>
-                  <Avatar alt="User" src="/static/images/avatar/2.jpg" />
+                  <Avatar alt={userName} src="/static/images/avatar/2.jpg" />
                 </IconButton>
               </Tooltip>
 
@@ -313,6 +313,7 @@ function ResponsiveAppBar() {
                           autoClose: 50,
                           onClose: () => {
                             navigate("/login");
+                            window.location.reload();
                           },
                         });
                       } else if (setting === "Account") {

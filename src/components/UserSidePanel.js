@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Paper,
   List,
@@ -22,8 +23,38 @@ const ColoredBadge = withStyles({
     marginRight: 12,
   },
 })(Badge);
+
 function SidePanel({ setActiveComponent }) {
   const [selected, setSelected] = useState("");
+
+  const userName = localStorage.getItem("userName");
+  const [counts, setCounts] = useState({
+    totalOrders: "",
+    totalAppointments: "",
+  });
+
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("userName");
+    axios
+      .get(`http://localhost:3001/get-counts?userName=${storedUsername}`)
+      .then((response) => {
+        setCounts(response.data);
+
+        if (response.data.length > 0) {
+          const user = response.data[0];
+
+          setCounts({
+            totalOrders: user.totalOrders,
+            totalAppointments: user.totalCounts,
+          });
+        }
+      });
+  }, []);
+
+  const badgeContentMap = {
+    Orders: counts.totalOrders,
+    Appointments: counts.totalAppointments,
+  };
 
   const handleClick = (text) => {
     setActiveComponent(text);
@@ -63,7 +94,7 @@ function SidePanel({ setActiveComponent }) {
                 primary={text}
                 sx={{ color: text === selected ? "#004aad" : "inherit" }}
               />
-              <ColoredBadge badgeContent={1} />
+              <ColoredBadge badgeContent={badgeContentMap[text]} />
             </ListItemButton>
           </ListItem>
         ))}

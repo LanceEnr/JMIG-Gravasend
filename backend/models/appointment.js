@@ -2,14 +2,20 @@ const mongoose = require("mongoose");
 
 const appointmentSchema = new mongoose.Schema(
   {
-    _name: String,
-    _contactNum: String,
+    _appointmentNum: {
+      type: Number,
+      unique: true,
+    },
     _date: String,
-    _note: String,
     _status: String,
-    _endTime: String,
-    _startTime: String,
-    _appointmentNum: Number,
+    _userName: String,
+    _dayOfWeek: String,
+    _time: String,
+    _fname: String,
+    _lName: String,
+    _email: String,
+    _note: String,
+    _phone: String,
   },
   { collection: "appointment" }
 );

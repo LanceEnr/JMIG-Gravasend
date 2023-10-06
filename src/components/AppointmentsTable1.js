@@ -30,16 +30,7 @@ import EventNoteIcon from "@mui/icons-material/EventNote";
 import UserDrawer from "./common/UserDrawer";
 import SetAppointmentForm from "./SetAppointmentForm";
 import EditAppointmentForm from "./EditAppointmentForm";
-
-const daysOfWeek = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
+import { toast } from "react-toastify";
 
 const getColor = (_status) => {
   switch (_status) {
@@ -56,10 +47,9 @@ const getColor = (_status) => {
 
 export default function AppointmentsTable1(props) {
   const [openDialog, setOpenDialog] = useState(false);
-
+  const [appointmentNum, setAppointmentNumber] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
-
   const [showForm, setShowForm] = useState(false); // Add this line
   const [showEditForm, setShowEditForm] = useState(false);
 
@@ -74,15 +64,30 @@ export default function AppointmentsTable1(props) {
   const handleEditClick = () => {
     setAnchorEl(null);
     setShowEditForm(true);
+    setAppointmentNumber(appointmentNum);
   };
 
   const handleSetAppointmentClick = () => {
     setShowForm(true);
   };
-
-  const handleClick = (event) => {
+  const handleClick = (event, appointmentNum) => {
     setAnchorEl(event.currentTarget);
-    setMenuOpen(true); // Open the menu
+    setMenuOpen(true);
+    setAppointmentNumber(appointmentNum);
+  };
+  const handleCancel = async () => {
+    axios
+      .post("http://localhost:3001/cancel-appointment", {
+        _appointmentNum: appointmentNum,
+        _status: "Cancelled",
+      })
+      .then((response) => {
+        toast.success("Appointment canceled successfully");
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error("Error canceling appointment:", error);
+      });
   };
 
   const handleClose = () => {
@@ -111,11 +116,6 @@ export default function AppointmentsTable1(props) {
         });
     }
   }, []);
-  appointments.forEach((item) => {
-    const date = new Date(item.date + " " + new Date().getFullYear());
-    const day = date.getDay();
-    item.dayOfWeek = daysOfWeek[day];
-  });
 
   const isMobile = useMediaQuery("(max-width:600px)");
 
@@ -124,7 +124,12 @@ export default function AppointmentsTable1(props) {
   }
 
   if (showEditForm) {
-    return <EditAppointmentForm goBack={handleClose} />;
+    return (
+      <EditAppointmentForm
+        goBack={handleClose}
+        appointmentNum={appointmentNum}
+      />
+    );
   }
 
   return (
@@ -206,7 +211,7 @@ export default function AppointmentsTable1(props) {
                 primary={
                   <Typography variant="subtitle1">{`Appointment ${item._appointmentNum}`}</Typography>
                 }
-                secondary={`${item._dayOfWeek}, ${item._date}`}
+                secondary={`${item._note}, ${item._date}`}
               />
               {isMobile && (
                 <ListItemText
@@ -214,7 +219,7 @@ export default function AppointmentsTable1(props) {
                   primary={
                     <Typography variant="subtitle1">
                       {" "}
-                      {`${item._startTime} - ${item._endTime}`}
+                      {`${item._time} `}
                     </Typography>
                   }
                 />
@@ -227,12 +232,16 @@ export default function AppointmentsTable1(props) {
                       noWrap
                       sx={{ marginRight: 2 }}
                     >
-                      {`${item._startTime} - ${item._endTime}`}
+                      {`${item._time} `}
                     </Typography>
                   )}
                   <Tooltip title={item._status === "Upcoming" ? "Actions" : ""}>
                     <MoreVertIcon
-                      onClick={item._status === "Upcoming" ? handleClick : null}
+                      onClick={(event) =>
+                        item._status === "Upcoming"
+                          ? handleClick(event, item._appointmentNum)
+                          : null
+                      }
                       sx={{
                         cursor:
                           item._status === "Upcoming" ? "pointer" : "default",
@@ -245,6 +254,7 @@ export default function AppointmentsTable1(props) {
                       }}
                     />
                   </Tooltip>
+
                   <Menu
                     sx={{ mt: "45px" }}
                     anchorEl={anchorEl}
@@ -255,7 +265,9 @@ export default function AppointmentsTable1(props) {
                     onClose={handleClose}
                     elevation={2}
                   >
-                    <MenuItem onClick={handleEditClick}>Edit</MenuItem>
+                    <MenuItem onClick={() => handleEditClick(appointmentNum)}>
+                      Edit
+                    </MenuItem>
                     <MenuItem
                       onClick={handleOpenDialog}
                       sx={{ color: "error.main" }}
@@ -287,7 +299,10 @@ export default function AppointmentsTable1(props) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>No</Button>
-          <Button onClick={handleClose} sx={{ color: "error.main" }}>
+          <Button
+            onClick={() => handleCancel(appointmentNum)}
+            sx={{ color: "error.main" }}
+          >
             Yes
           </Button>
         </DialogActions>

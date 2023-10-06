@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Typography,
   Grid,
@@ -15,19 +16,128 @@ import {
 import UserDrawer from "./common/UserDrawer";
 import CameraEnhanceIcon from "@mui/icons-material/CameraEnhance";
 import EditIcon from "@mui/icons-material/Edit";
+import { toast } from "react-toastify";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import InputAdornment from "@mui/material/InputAdornment";
 
 export default function ProfileInfo(props) {
   const isMobile = useMediaQuery("(max-width:600px)");
   const userAvatarUrl = "https://example.com/avatar.jpg";
-  const userData = {
-    "First Name": "John",
-    "Last Name": "Doe",
-    Email: "john.doe@example.com",
-    Phone: "123-456-7890",
-    Birthdate: "1990-01-01",
-    Address: "123 Main St, Anytown, USA",
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordInputType, setPasswordInputType] = useState("password");
+  const handleShowPasswordToggle = () => {
+    setShowPassword(!showPassword);
+    setPasswordInputType(showPassword ? "password" : "text");
   };
 
+  const [userData, setUserData] = useState({
+    userName: "", // You should set the username here
+    Phone: "",
+    Address: "",
+    CurrentPassword: "",
+    NewPassword: "",
+  });
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("userName");
+    axios
+      .get(`http://localhost:3001/setuser?userName=${storedUsername}`)
+      .then((response) => {
+        if (response.data.length > 0) {
+          const user = response.data[0];
+
+          setUserData({
+            userName: user.userName, // Set the username if available
+            Phone: user.Phone,
+            Address: user.Address,
+            CurrentPassword: "", // Add this line if you want to reset the password fields
+            NewPassword: "", // Add this line if you want to reset the password fields
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+      });
+  }, []);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setUserData({ ...userData, [name]: value });
+  };
+
+  const handlePasswordChange = () => {
+    const userName = localStorage.getItem("userName");
+    const { CurrentPassword, NewPassword } = userData;
+
+    axios
+      .post("http://localhost:3001/changepassword", {
+        userName,
+        currentPassword: CurrentPassword,
+        newPassword: NewPassword,
+      })
+      .then((response) => {
+        const lowercaseRegex = /[a-z]/;
+        const uppercaseRegex = /[A-Z]/;
+        const digitRegex = /[0-9]/;
+        const specialCharRegex = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/;
+
+        if (NewPassword.length < 8) {
+          toast.error("New Password must be at least 8 characters long");
+          return;
+        }
+        if (!lowercaseRegex.test(NewPassword)) {
+          toast.error("New Password must contain a lowercase character");
+          return;
+        }
+        if (!uppercaseRegex.test(NewPassword)) {
+          toast.error("New Password must contain an uppercase character");
+          return;
+        }
+        if (!digitRegex.test(NewPassword)) {
+          toast.error("New Password must contain a number");
+          return;
+        }
+        if (!specialCharRegex.test(NewPassword)) {
+          toast.error("New Password must contain a special character");
+          return;
+        }
+        toast.success("New Password updated successfully", {
+          autoClose: 50,
+          onClose: () => {
+            window.location.reload();
+          },
+        });
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          toast.error("Incorrect current password");
+        } else {
+          toast.error("Error updating password");
+        }
+        setUserData({ ...userData, NewPassword: "", CurrentPassword: "" });
+      });
+  };
+
+  const handlePhoneAddressChange = () => {
+    const userName = localStorage.getItem("userName");
+    const { Phone, Address } = userData;
+
+    axios
+      .post("http://localhost:3001/updatephoneaddress", {
+        userName,
+        phone: Phone,
+        address: Address,
+      })
+      .then((response) => {
+        toast.success("Phone and address updated successfully");
+        console.log("Phone and address updated successfully");
+      })
+      .catch((error) => {
+        // Handle error
+        console.error("Error updating phone and address:", error);
+      });
+  };
+  const userName = localStorage.getItem("userName");
   return (
     <List
       sx={{
@@ -78,30 +188,36 @@ export default function ProfileInfo(props) {
                   }
                 >
                   <Avatar
-                    alt="User Avatar"
+                    alt={userName}
                     src={userAvatarUrl}
                     style={{ width: "60px", height: "60px" }}
                   />
                 </Badge>
               </Grid>
-              {Object.entries(userData).map(([key, value]) => (
-                <Grid item xs={12} sm={6} key={key}>
-                  {key === "Birthdate" ? (
-                    <TextField
-                      label={key}
-                      type="date"
-                      defaultValue={value}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      fullWidth
-                    />
-                  ) : (
-                    <TextField label={key} defaultValue={value} fullWidth />
-                  )}
-                </Grid>
-              ))}
-
+              <Grid item xs={12} sm={6}>
+                <Typography variant="subtitle1" gutterBottom>
+                  Phone
+                </Typography>
+                <TextField
+                  label="Phone"
+                  name="Phone"
+                  value={userData.Phone}
+                  fullWidth
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography variant="subtitle1" gutterBottom>
+                  Address
+                </Typography>
+                <TextField
+                  label="Address"
+                  name="Address"
+                  value={userData.Address}
+                  fullWidth
+                  onChange={handleChange}
+                />
+              </Grid>
               <Grid item xs={12}>
                 <Button
                   variant="primary"
@@ -109,11 +225,65 @@ export default function ProfileInfo(props) {
                   sx={{
                     mt: 2,
                     backgroundColor: "#004aad",
-                    color: "#fff", // adjust text color as needed
+                    color: "#fff",
                     "&:hover": {
-                      backgroundColor: "#003882", // darker shade for hover state
+                      backgroundColor: "#003882",
                     },
                   }}
+                  onClick={handlePhoneAddressChange} // Call the appropriate function here
+                >
+                  Save phone and address
+                </Button>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="subtitle1" gutterBottom>
+                  Change Password
+                </Typography>
+                <TextField
+                  label="Current Password"
+                  name="CurrentPassword"
+                  type="password"
+                  value={userData.CurrentPassword}
+                  fullWidth
+                  onChange={handleChange}
+                  required
+                />
+                <TextField
+                  label="New Password"
+                  name="NewPassword"
+                  type={passwordInputType}
+                  value={userData.NewPassword}
+                  fullWidth
+                  onChange={handleChange}
+                  required
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          edge="end"
+                          onClick={handleShowPasswordToggle}
+                          aria-label="toggle password visibility"
+                        >
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  variant="primary"
+                  type="submit"
+                  sx={{
+                    mt: 2,
+                    backgroundColor: "#004aad",
+                    color: "#fff",
+                    "&:hover": {
+                      backgroundColor: "#003882",
+                    },
+                  }}
+                  onClick={handlePasswordChange} // Call the appropriate function here
                 >
                   Save changes
                 </Button>

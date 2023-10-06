@@ -18,6 +18,7 @@ export default function ProfileInfo(props) {
   const userAvatarUrl = "https://example.com/avatar.jpg";
 
   const [users, setUsers] = useState([]);
+  const [orders, setOrders] = useState({ totalOrders: "", pendingOrders: "" });
   const [userData, setUserData] = useState({
     "First Name": "",
     "Last Name": "",
@@ -45,12 +46,14 @@ export default function ProfileInfo(props) {
             Birthdate: user._bday,
             Address: user._address,
           });
+          setOrders({
+            totalOrders: user.totalOrders,
+            pendingOrders: user.pendingOrders,
+          });
         }
       });
   }, []);
   const userName = localStorage.getItem("userName");
-  const totalOrders = 10;
-  const pendingOrders = 2;
 
   return (
     <List
@@ -112,7 +115,7 @@ export default function ProfileInfo(props) {
             }}
           >
             <Typography variant="h4" style={{ color: "#bd8512" }}>
-              {totalOrders}
+              {orders.totalOrders}
             </Typography>
             <Typography variant="subtitle1" color="textSecondary">
               Total Orders
@@ -131,7 +134,7 @@ export default function ProfileInfo(props) {
             }}
           >
             <Typography variant="h4" style={{ color: "#bd8512" }}>
-              {pendingOrders}
+              {orders.pendingOrders}
             </Typography>
             <Typography variant="subtitle1" color="textSecondary">
               Pending Orders

@@ -1,13 +1,10 @@
 const mongoose = require("mongoose");
 
-const counterSchema = new mongoose.Schema(
-  {
-    _id: { type: mongoose.Types.ObjectId, default: null }, // Use a custom _id for the counter document
-    userseq: { type: Number, default: 100000001 }, // Set the initial value to 100000001
-    appointmentSeq: { type: Number, default: 200000001 }, // Set the initial value for appointments
-    orderSeq: { type: Number, default: 300000001 }, // Set the initial value for orders
-  },
-  { collection: "counter" } // Collection name for counters
-);
+const counterSchema = new mongoose.Schema({
+  name: String,
+  value: Number,
+});
 
-module.exports = mongoose.model("Counter", counterSchema);
+const Counter = mongoose.model("counter", counterSchema);
+
+module.exports = Counter;

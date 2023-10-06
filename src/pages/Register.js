@@ -11,10 +11,20 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import { toast } from "react-toastify";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
 
 export default function Register() {
   const [emailUsed, setEmailUsed] = useState(false);
   const [usernameUsed, setUsernameUsed] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordInputType, setPasswordInputType] = useState("password");
+  const handleShowPasswordToggle = () => {
+    setShowPassword(!showPassword);
+    setPasswordInputType(showPassword ? "password" : "text");
+  };
   const [formData, setFormData] = useState({
     _fName: "",
     _lName: "",
@@ -237,11 +247,24 @@ export default function Register() {
                   name="_pwd"
                   label="Password"
                   fullWidth
-                  type="password"
+                  type={passwordInputType}
                   onChange={handleChange}
                   value={formData._pwd}
                   required
-                  autoComplete="email"
+                  autoComplete="password"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          edge="end"
+                          onClick={handleShowPasswordToggle}
+                          aria-label="toggle password visibility"
+                        >
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>

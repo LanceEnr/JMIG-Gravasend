@@ -13,6 +13,7 @@ const orderSchema = new mongoose.Schema(
     _price: String,
     _orderNum: Number,
     _time: String,
+    _userName: String,
   },
   { collection: "order" }
 );

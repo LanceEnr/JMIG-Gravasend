@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import {
   Typography,
   Grid,
@@ -10,26 +9,107 @@ import {
   List,
   Button,
   TextField,
+  TextareaAutosize,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  FormControl,
+  FormLabel,
+  Select,
+  MenuItem,
+  InputLabel,
 } from "@mui/material";
 import UserDrawer from "./common/UserDrawer";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { toast } from "react-toastify";
+import moment from "moment";
 
 export default function SetAppointmentForm(props) {
   const isMobile = useMediaQuery("(max-width:600px)");
-  const userData = {
-    "First Name": "",
-    "Last Name": "",
+
+  const userName = localStorage.getItem("userName");
+  const [userData, setUserData] = useState({
+    First: "",
+    Last: "",
     Email: "",
     Phone: "",
-    Reason: "",
-    Schedule: "",
+    Agenda: "",
+    Schedule: null,
+    time: null,
+    IsAM: true,
+  });
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("userName");
+    axios
+      .get(`http://localhost:3001/user?userName=${storedUsername}`)
+      .then((response) => {
+        if (response.data.length > 0) {
+          const user = response.data[0];
+
+          setUserData({
+            First: user._fName,
+            Last: user._lName,
+            Email: user._email,
+            Phone: user._phone,
+          });
+        }
+      });
+  }, []);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setUserData({
+      ...userData,
+      [name]: value,
+    });
+  };
+  const handleSaveAppointment = () => {
+    const userName = localStorage.getItem("userName");
+    const { Agenda, Schedule, First, Last, Email, Phone, time, IsAM } =
+      userData;
+    const formattedSchedule = moment(userData.Schedule).format("M-D-YYYY");
+    const formattedTime = moment(time, "HH:mm").format(
+      `h:mm ${IsAM ? "AM" : "PM"}`
+    );
+    axios
+      .post("http://localhost:3001/save-appointment", {
+        _userName: userName,
+        _note: userData.Agenda,
+        _date: formattedSchedule,
+        _fName: userData.First,
+        _lName: userData.Last,
+        _phone: userData.Phone,
+        _time: formattedTime,
+        _email: userData.Email,
+      })
+      .then((response) => {
+        toast.success("Appointment submitted successfully");
+        window.location.reload();
+      })
+      .catch((error) => {
+        toast.error("Appointment already full");
+        console.error("Error appointment schedule", error);
+      });
   };
 
-  console.log(props.goBack); // Add this line
+  const validateTimeSlot = (selectedTime) => {
+    const startTimeAM = "08:00";
+    const endTimeAM = "11:00";
+    const startTimePM = "13:00";
+    const endTimePM = "16:00";
+
+    const selectedTimeStr = moment(selectedTime).format("HH:mm");
+
+    if (userData.IsAM) {
+      return selectedTimeStr >= startTimeAM && selectedTimeStr <= endTimeAM;
+    } else {
+      return selectedTimeStr >= startTimePM && selectedTimeStr <= endTimePM;
+    }
+  };
 
   return (
     <List
@@ -58,59 +138,136 @@ export default function SetAppointmentForm(props) {
           <UserDrawer onActiveComponentChange={props.onActiveComponentChange} />
         )}
       </Box>
-      <Grid container spacing={3}>
+      <Grid container spacing={3} alignItems="center">
+        <Grid item xs={12} sm={4}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="Date"
+              name="Schedule"
+              required
+              value={userData.Schedule}
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+              shouldDisableDate={(day) => {
+                // Disable weekends (Saturday = 6, Sunday = 0)
+                return day.day() === 0 || day.day() === 6;
+              }}
+              minDate={moment().add(1, "day")} // Set the minimum date to tomorrow
+              onChange={(date) => {
+                setUserData({
+                  ...userData,
+                  Schedule: date,
+                });
+              }}
+            />
+          </LocalizationProvider>
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <TimePicker
+              label="Time"
+              value={userData.time}
+              minutesStep={60}
+              required
+              ampm={false}
+              minTime={
+                userData.IsAM
+                  ? moment("08:00", "HH:mm")
+                  : moment("13:00", "HH:mm")
+              }
+              maxTime={
+                userData.IsAM
+                  ? moment("11:00", "HH:mm")
+                  : moment("16:00", "HH:mm")
+              }
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(date) => {
+                setUserData({
+                  ...userData,
+                  time: date.format("HH:mm"), // Format the selected time
+                });
+              }}
+            />
+          </LocalizationProvider>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Select Time</FormLabel>
+            <RadioGroup
+              aria-label="Time"
+              name="time"
+              value={userData.IsAM ? "AM" : "PM"}
+              onChange={(e) => {
+                setUserData({ ...userData, IsAM: e.target.value === "AM" });
+              }}
+            >
+              <FormControlLabel value="AM" control={<Radio />} label="AM" />
+              <FormControlLabel value="PM" control={<Radio />} label="PM" />
+            </RadioGroup>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <FormLabel component="legend">Appointment Type</FormLabel>
+          <FormControl fullWidth>
+            <Select
+              value={userData.Agenda}
+              required
+              onChange={(e) => {
+                setUserData({ ...userData, Agenda: e.target.value });
+              }}
+            >
+              <MenuItem value="Product Inquiry and Pricing">
+                Product Inquiry and Pricing
+              </MenuItem>
+              <MenuItem value="Order Placement">Order Placement</MenuItem>
+              <MenuItem value="Delivery Scheduling">
+                Delivery Scheduling
+              </MenuItem>
+              <MenuItem value="Site Visit and Assessment">
+                Site Visit and Assessment
+              </MenuItem>
+              <MenuItem value="Payment">Payment</MenuItem>
+              <MenuItem value="Complaints and Issue Resolution">
+                Complaints and Issue Resolution
+              </MenuItem>
+              <MenuItem value="Consultation">Consultation</MenuItem>
+              <MenuItem value="Inventory Availability">
+                Inventory Availability
+              </MenuItem>
+              <MenuItem value="Follow Up">Follow Up</MenuItem>
+              <MenuItem value="Others">Others</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
         <Grid item xs={12}>
-          <Paper elevation={2} style={{ padding: "24px" }}>
-            <Grid container spacing={3} alignItems="center">
-              {Object.entries(userData).map(([key, value]) => (
-                <Grid item xs={12} sm={6} key={key}>
-                  {key === "Schedule" ? (
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DateTimePicker
-                        label={key}
-                        slotProps={{ textField: { fullWidth: true } }}
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                      />
-                    </LocalizationProvider>
-                  ) : (
-                    <TextField label={key} defaultValue={value} fullWidth />
-                  )}
-                </Grid>
-              ))}
-
-              <Grid item xs={12}>
-                <Button
-                  variant="outlined"
-                  onClick={props.goBack}
-                  sx={{
-                    mt: 2,
-                    marginRight: 2,
-                    color: "#004aad",
-                    borderColor: "#004aad",
-                  }}
-                >
-                  Go Back
-                </Button>
-
-                <Button
-                  variant="primary"
-                  type="submit"
-                  sx={{
-                    mt: 2,
-                    backgroundColor: "#004aad",
-                    color: "#fff", // adjust text color as needed
-                    "&:hover": {
-                      backgroundColor: "#003882", // darker shade for hover state
-                    },
-                  }}
-                >
-                  Save changes
-                </Button>
-              </Grid>
-            </Grid>
-          </Paper>
+          <Button
+            variant="outlined"
+            onClick={props.goBack}
+            sx={{
+              mt: 2,
+              marginRight: 2,
+              color: "#004aad",
+              borderColor: "#004aad",
+            }}
+          >
+            Go Back
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            sx={{
+              mt: 2,
+            }}
+            onClick={handleSaveAppointment}
+          >
+            Submit
+          </Button>
         </Grid>
       </Grid>
     </List>
