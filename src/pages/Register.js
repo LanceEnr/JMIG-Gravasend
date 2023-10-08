@@ -15,12 +15,19 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 export default function Register() {
   const [emailUsed, setEmailUsed] = useState(false);
   const [usernameUsed, setUsernameUsed] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [passwordInputType, setPasswordInputType] = useState("password");
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [openTermsDialog, setOpenTermsDialog] = useState(false);
   const handleShowPasswordToggle = () => {
     setShowPassword(!showPassword);
     setPasswordInputType(showPassword ? "password" : "text");
@@ -42,6 +49,17 @@ export default function Register() {
       ...formData,
       [name]: value,
     });
+  };
+  const handleAgreeToTermsChange = (event) => {
+    setAgreeToTerms(event.target.checked);
+  };
+
+  const handleOpenTermsDialog = () => {
+    setOpenTermsDialog(true);
+  };
+
+  const handleCloseTermsDialog = () => {
+    setOpenTermsDialog(false);
   };
 
   const handleSubmit = async (event) => {
@@ -92,6 +110,10 @@ export default function Register() {
     }
     if (!specialCharRegex.test(_pwd)) {
       toast.error("Password must contain a special character");
+      return;
+    }
+    if (!agreeToTerms) {
+      toast.error("Please agree to the terms and conditions.");
       return;
     }
     try {
@@ -222,7 +244,7 @@ export default function Register() {
                   onChange={handleChange}
                   value={formData._userName}
                   required
-                  autoComplete="username"
+                  autoComplete="userName"
                   error={usernameUsed}
                   helperText={usernameUsed ? "Username is already used" : ""}
                 />
@@ -269,9 +291,17 @@ export default function Register() {
               </Grid>
               <Grid item xs={12}>
                 <FormControlLabel
-                  control={<Checkbox value="agreeToTerms" color="primary" />}
+                  control={
+                    <Checkbox
+                      checked={agreeToTerms}
+                      onChange={handleAgreeToTermsChange}
+                      value="agreeToTerms"
+                      color="primary"
+                    />
+                  }
                   label="I agree to the terms and conditions."
                   required
+                  onClick={handleOpenTermsDialog} // Open terms dialog when clicked
                 />
               </Grid>
             </Grid>
@@ -293,6 +323,107 @@ export default function Register() {
           </Grid>
         </Box>
       </Container>
+      {/* Terms and conditions dialog */}
+      <Dialog open={openTermsDialog} onClose={handleCloseTermsDialog}>
+        <DialogTitle>Terms and Conditions</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <p>
+              <strong>Terms and Conditions</strong>
+            </p>
+            <p>
+              By creating an account with JMIG, you agree to the following terms
+              and conditions:
+            </p>
+            <ol>
+              <li>
+                <strong>Eligibility:</strong>
+                <ul>
+                  <li>
+                    You must be at least 18 years of age to register for an
+                    account on JMIG.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <strong>Account Information:</strong>
+                <ul>
+                  <li>
+                    You are responsible for providing accurate and complete
+                    information during registration.
+                  </li>
+                  <li>
+                    You must choose a secure password and keep it confidential.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <strong>User Conduct:</strong>
+                <ul>
+                  <li>
+                    You agree not to engage in any unlawful, abusive, or harmful
+                    behavior on JMIG.
+                  </li>
+                  <li>
+                    You will not use JMIG for any unauthorized or illegal
+                    purposes.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <strong>Privacy:</strong>
+                <ul>
+                  <li>
+                    JMIG may collect and use your personal information as
+                    described in our Privacy Policy.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <strong>Account Termination:</strong>
+                <ul>
+                  <li>
+                    JMIG reserves the right to terminate or suspend your account
+                    at any time for violations of these terms and conditions.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <strong>Disclaimer:</strong>
+                <ul>
+                  <li>
+                    JMIG is provided "as is" without any warranties or
+                    guarantees.
+                  </li>
+                  <li>
+                    JMIG is not responsible for any user-generated content or
+                    actions.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <strong>Changes to Terms:</strong>
+                <ul>
+                  <li>
+                    JMIG may update these terms and conditions from time to
+                    time. It is your responsibility to review them periodically.
+                  </li>
+                </ul>
+              </li>
+            </ol>
+            <p>
+              By clicking "I agree to the terms and conditions," you acknowledge
+              that you have read and accept these terms.
+            </p>
+            <p>Last Updated: [Date]</p>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseTermsDialog} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

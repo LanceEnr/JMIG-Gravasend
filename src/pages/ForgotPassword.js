@@ -11,18 +11,21 @@ import "../styles/Login.css";
 import { useTheme } from "@mui/material/styles";
 
 export default function ForgetPassword() {
-  const [email, setEmail] = useState("");
+  const [_email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [otp, setOtp] = useState("");
+  const [resetInProgress, setResetInProgress] = useState(false);
 
   const handleEmailSubmit = async (event) => {
     event.preventDefault();
     try {
       const response = await axios.post("http://localhost:3001/check-email", {
-        email,
+        _email: _email,
       });
       if (response.data.exists) {
         const otpResponse = await axios.post("http://localhost:3001/send-otp", {
-          email,
+          _email: _email,
         });
         if (otpResponse.data.success) {
           setMessage("OTP sent to your email.");
@@ -34,6 +37,32 @@ export default function ForgetPassword() {
       }
     } catch (error) {
       console.error("Error:", error);
+    }
+  };
+
+  const handleResetPasswordSubmit = async (event) => {
+    event.preventDefault();
+    setResetInProgress(true);
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/reset-password",
+        {
+          _email,
+          newPassword,
+          otp,
+        }
+      );
+      if (response.data.success) {
+        setMessage("Password reset successfully.");
+        // Redirect to login page or handle success as needed
+      } else {
+        setMessage(response.data.message || "Failed to reset password.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setMessage("Failed to reset password.");
+    } finally {
+      setResetInProgress(false);
     }
   };
 
@@ -52,7 +81,7 @@ export default function ForgetPassword() {
             borderRadius: 2,
             px: 4,
             py: 6,
-            backgroundColor: theme.palette.background.paper, // set background color
+            backgroundColor: theme.palette.background.paper,
           }}
         >
           <Typography
@@ -62,45 +91,101 @@ export default function ForgetPassword() {
           >
             Reset your Password
           </Typography>
-          <Typography component="h1" variant="body1" color="textSecondary">
-            Provide your email below.
-          </Typography>
-          <Box
-            component="form"
-            noValidate
-            onSubmit={handleEmailSubmit}
-            sx={{ mt: 3, width: "100%" }}
-          >
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  type="email"
-                  required
+          {message && (
+            <Typography variant="body1" color="textSecondary">
+              {message}
+            </Typography>
+          )}
+          {!otp ? (
+            <>
+              <Typography variant="body1" color="textSecondary">
+                Provide your email below.
+              </Typography>
+              <Box
+                component="form"
+                noValidate
+                onSubmit={handleEmailSubmit}
+                sx={{ mt: 3, width: "100%" }}
+              >
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <TextField
+                      type="email"
+                      required
+                      fullWidth
+                      id="email"
+                      label="Email Address"
+                      name="_email"
+                      autoComplete="email"
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </Grid>
+                </Grid>
+                <Button
+                  type="submit"
                   fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </Grid>
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2, backgroundColor: "#004aad" }}
+                >
+                  Send OTP
+                </Button>
+              </Box>
+            </>
+          ) : (
+            <>
+              <Typography variant="body1" color="textSecondary">
+                Enter the OTP received on your email and set your new password.
+              </Typography>
+              <Box
+                component="form"
+                noValidate
+                onSubmit={handleResetPasswordSubmit}
+                sx={{ mt: 3, width: "100%" }}
+              >
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <TextField
+                      required
+                      fullWidth
+                      id="otp"
+                      label="OTP"
+                      name="otp"
+                      autoComplete="otp"
+                      onChange={(e) => setOtp(e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      type="password"
+                      required
+                      fullWidth
+                      id="newPassword"
+                      label="New Password"
+                      name="newPassword"
+                      autoComplete="new-password"
+                      onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                  </Grid>
+                </Grid>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2, backgroundColor: "#004aad" }}
+                  disabled={resetInProgress}
+                >
+                  Reset Password
+                </Button>
+              </Box>
+            </>
+          )}
+          <Grid container justifyContent="flex-end">
+            <Grid item>
+              <Link href="/login" variant="body2">
+                Return to login
+              </Link>
             </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2, backgroundColor: "#004aad" }}
-            >
-              Reset Password
-            </Button>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Link href="#" variant="body2">
-                  Return to login
-                </Link>
-              </Grid>
-            </Grid>
-          </Box>
+          </Grid>
         </Box>
       </Container>
     </div>

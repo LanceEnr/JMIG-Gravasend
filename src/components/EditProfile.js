@@ -173,19 +173,6 @@ export default function ProfileInfo(props) {
                 <Badge
                   overlap="circular"
                   anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                  badgeContent={
-                    <IconButton
-                      size="small"
-                      style={{
-                        backgroundColor: "#bd8512",
-                        color: "#fafbf5",
-                      }}
-                    >
-                      <CameraEnhanceIcon
-                        style={{ pointerEvents: "none", fontSize: "24px" }}
-                      />
-                    </IconButton>
-                  }
                 >
                   <Avatar
                     alt={userName}

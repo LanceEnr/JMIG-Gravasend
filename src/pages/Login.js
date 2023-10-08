@@ -131,7 +131,7 @@ export default function Login({ dispatch }) {
               name="_userName"
               onChange={handleChange}
               value={loginData._userName}
-              autoComplete="username"
+              autoComplete="off"
               autoFocus
             />
             <TextField

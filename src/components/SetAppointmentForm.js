@@ -73,7 +73,7 @@ export default function SetAppointmentForm(props) {
       userData;
     const formattedSchedule = moment(userData.Schedule).format("M-D-YYYY");
     const formattedTime = moment(time, "HH:mm").format(
-      `h:mm ${IsAM ? "AM" : "PM"}`
+      `h:mm ${IsAM ? "A" : "P"}`
     );
     axios
       .post("http://localhost:3001/save-appointment", {
@@ -151,8 +151,12 @@ export default function SetAppointmentForm(props) {
                 shrink: true,
               }}
               shouldDisableDate={(day) => {
-                // Disable weekends (Saturday = 6, Sunday = 0)
-                return day.day() === 0 || day.day() === 6;
+                const currentDate = moment();
+                return (
+                  day.day() === 0 ||
+                  day.day() === 6 ||
+                  day.isBefore(currentDate, "day")
+                );
               }}
               minDate={moment().add(1, "day")} // Set the minimum date to tomorrow
               onChange={(date) => {

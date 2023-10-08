@@ -11,6 +11,8 @@ const userSchema = new mongoose.Schema(
     _phone: String,
     _bday: String,
     _address: String,
+    _iv: String,
+    _encryptionKey: String,
   },
   { collection: "user" }
 );

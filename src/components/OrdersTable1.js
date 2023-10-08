@@ -120,7 +120,19 @@ export default function OrdersTable1(props) {
                   primary={
                     <Typography variant="subtitle1">{`Order ${item._orderNum}`}</Typography>
                   }
-                  secondary={item._date}
+                  secondary={
+                    <React.Fragment>
+                      <Typography variant="body2" color="textSecondary" noWrap>
+                        {item._status} - {item._time}
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary" noWrap>
+                        PHP{Number(item._price).toLocaleString("en-US")}
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary" noWrap>
+                        {item._materialType} - {item._quantity} cu. mt.
+                      </Typography>
+                    </React.Fragment>
+                  }
                 />
                 <ListItemSecondaryAction>
                   <Stack alignItems="flex-end">
@@ -132,7 +144,7 @@ export default function OrdersTable1(props) {
                       color="textSecondary"
                       noWrap
                     >
-                      {item._materialType} - {item._quantity} cu. mt.
+                      {item._orderDet}
                     </Typography>
                   </Stack>
                 </ListItemSecondaryAction>

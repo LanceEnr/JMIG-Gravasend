@@ -32,6 +32,7 @@ import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 export default function EditAppointmentForm(props) {
   const isMobile = useMediaQuery("(max-width:600px)");
   const userName = localStorage.getItem("userName");
+  const appointmentNum = props.appointmentNum;
   const [userData, setUserData] = useState({
     First: "",
     Last: "",
@@ -42,47 +43,7 @@ export default function EditAppointmentForm(props) {
     time: null,
     IsAM: true,
   });
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedUsername = localStorage.getItem("userName");
-        const appointmentNum = props.appointmentNum;
 
-        // Make the first GET request
-        const response1 = await axios.get(
-          `http://localhost:3001/user?userName=${storedUsername}`
-        );
-        if (response1.data.length > 0) {
-          const user = response1.data[0];
-
-          setUserData({
-            First: user._fName,
-            Last: user._lName,
-            Email: user._email,
-            Phone: user._phone,
-          });
-        }
-
-        const response2 = await axios.get(
-          `http://localhost:3001/get-appointment?appointmentNum=${appointmentNum}`
-        );
-        if (response2.data.length > 0) {
-          const user = response2.data[0];
-          console.log(user._note);
-          setUserData({
-            Agenda: user._note,
-            Schedule: user._date,
-            time: user._time,
-          });
-        }
-      } catch (error) {
-        // Handle errors here
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, [props.appointmentNum]);
   const handleChange = (event) => {
     const { name, value } = event.target;
     setUserData({
@@ -90,16 +51,18 @@ export default function EditAppointmentForm(props) {
       [name]: value,
     });
   };
-  const handleSaveAppointment = () => {
+  const handleUpdateAppointment = () => {
     const userName = localStorage.getItem("userName");
+    const appointmentNum = props.appointmentNum;
     const { Agenda, Schedule, First, Last, Email, Phone, time, IsAM } =
       userData;
     const formattedSchedule = moment(userData.Schedule).format("M-D-YYYY");
     const formattedTime = moment(time, "HH:mm").format(
-      `h:mm ${IsAM ? "AM" : "PM"}`
+      `h:mm ${IsAM ? "A" : "P"}`
     );
     axios
-      .post("http://localhost:3001/save-appointment", {
+      .post("http://localhost:3001/update-appointment", {
+        appointmentNum: appointmentNum,
         _userName: userName,
         _note: userData.Agenda,
         _date: formattedSchedule,
@@ -174,8 +137,12 @@ export default function EditAppointmentForm(props) {
                 shrink: true,
               }}
               shouldDisableDate={(day) => {
-                // Disable weekends (Saturday = 6, Sunday = 0)
-                return day.day() === 0 || day.day() === 6;
+                const currentDate = moment();
+                return (
+                  day.day() === 0 ||
+                  day.day() === 6 ||
+                  day.isBefore(currentDate, "day")
+                );
               }}
               minDate={moment().add(1, "day")} // Set the minimum date to tomorrow
               onChange={(date) => {
@@ -287,7 +254,7 @@ export default function EditAppointmentForm(props) {
             sx={{
               mt: 2,
             }}
-            onClick={handleSaveAppointment}
+            onClick={handleUpdateAppointment}
           >
             Save Changes
           </Button>

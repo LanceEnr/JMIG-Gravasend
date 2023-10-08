@@ -20,6 +20,13 @@ const transporter = nodemailer.createTransport({
     pass: "JMIGGravelAndSandSupply", // Your email password
   },
 });
+// Function to generate a random OTP (simplified example)
+function generateOTP() {
+  return Math.floor(1000 + Math.random() * 9000).toString();
+}
+const registeredUsers = [
+  // Your registered users' data here
+];
 
 router.post("/register", async (req, res) => {
   const saltRounds = 10;
@@ -30,22 +37,27 @@ router.post("/register", async (req, res) => {
 
     const existingUsernameUser = await User.findOne({ _userName });
 
-    const emails = await User.distinct("_email");
+    const emails = await User.find({}, "_email _encryptionKey _iv");
     let isEmailUsed = false;
 
-    for (const hashedEmailFromDB of emails) {
-      const cipher = crypto.createCipheriv(
-        "aes-256-cbc",
-        Buffer.from(encryptionKey, "hex"),
-        Buffer.from(iv, "hex")
-      );
-      const encryptedEmail = Buffer.concat([
-        cipher.update(_email, "utf8"),
-        cipher.final(),
-      ]);
-      const userDataToStoreForUser = `${iv}:${encryptionKey}`;
+    for (const userData of emails) {
+      const { _email: encryptedEmail, _encryptionKey, _iv } = userData;
 
-      if (hashedEmailFromDB === encryptedEmail.toString("base64")) {
+      // Decrypt the stored email
+      const decipher = crypto.createDecipheriv(
+        "aes-256-cbc",
+        Buffer.from(_encryptionKey, "hex"),
+        Buffer.from(_iv, "hex")
+      );
+      const decryptedEmailBuffer = Buffer.concat([
+        decipher.update(Buffer.from(encryptedEmail, "base64")),
+        decipher.final(),
+      ]);
+
+      const storedEmail = decryptedEmailBuffer.toString("utf8");
+
+      // Compare the stored email with the user's provided email
+      if (storedEmail === _email) {
         isEmailUsed = true;
         break;
       }
@@ -84,6 +96,8 @@ router.post("/register", async (req, res) => {
       _phone,
       _bday,
       _address,
+      _iv: iv,
+      _encryptionKey: encryptionKey,
     });
 
     // Save the new user with encrypted email
@@ -130,18 +144,17 @@ router.post("/login", async (req, res) => {
         expiresIn: "7d",
       });
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "Authentication successful",
         token,
         userName: user._userName,
       });
     } else {
-      res.status(401).json({ message: "Authentication failed" });
-      res.json({ field: "email", message: "Email already in use" });
+      return res.status(401).json({ message: "Authentication failed" });
     }
   } catch (error) {
     console.error("Error authenticating user:", error);
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -167,6 +180,29 @@ router.get("/appointment", async (req, res) => {
   }
 });
 
+const decryptEmail = (encryptedEmail, iv, encryptionKey) => {
+  try {
+    if (!encryptedEmail || !iv || !encryptionKey) {
+      // Handle missing parameters gracefully
+      return "1";
+    }
+
+    const decipher = crypto.createDecipheriv(
+      "aes-256-cbc",
+      Buffer.from(encryptionKey, "hex"),
+      Buffer.from(iv, "hex")
+    );
+
+    let decrypted = decipher.update(encryptedEmail, "base64", "utf8");
+    decrypted += decipher.final("utf8");
+
+    return decrypted;
+  } catch (error) {
+    console.error("Error decrypting email:", error);
+    return "2"; // Handle decryption error gracefully
+  }
+};
+
 router.get("/user", async (req, res) => {
   try {
     const storedUsername = req.query.userName;
@@ -183,10 +219,18 @@ router.get("/user", async (req, res) => {
         status: "Pending",
       });
 
+      // Decrypt the email for each user using their IV and encryption key
+      const decryptedEmail = decryptEmail(
+        user._email,
+        user._iv,
+        user._encryptionKey
+      );
+
       decryptedUsers.push({
         ...user._doc,
         totalOrders,
         pendingOrders,
+        _email: decryptedEmail, // Replace the encrypted email with the decrypted one
       });
     }
 
@@ -313,26 +357,6 @@ router.post("/save-appointment", async (req, res) => {
   }
 });
 
-router.get("/get-appointment", async (req, res) => {
-  try {
-    const { appointmentNum } = req.query;
-
-    // Find the appointment by its ID
-    const appointment = await Appointment.findById(appointmentNum);
-
-    if (!appointment) {
-      // If the appointment with the given ID is not found
-      return res.status(404).json({ error: "Appointment not found" });
-    }
-
-    // Return the appointment details
-    res.json(appointment);
-  } catch (error) {
-    console.error("Error fetching appointment:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
 router.post("/cancel-appointment", async (req, res) => {
   try {
     const { _appointmentNum, _status } = req.body;
@@ -352,6 +376,63 @@ router.post("/cancel-appointment", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+router.post("/update-appointment", async (req, res) => {
+  const {
+    appointmentNum,
+    _userName,
+    _note,
+    _date,
+    _fName,
+    _lName,
+    _phone,
+    _time,
+    _email,
+  } = req.body;
+
+  try {
+    const existingAppointment = await Appointment.findOne({
+      _date,
+      _time,
+      _status: { $ne: "Cancelled" },
+    });
+
+    if (existingAppointment) {
+      return res.status(400).json({ error: "Appointment conflict" });
+    }
+
+    const updatedAppointment = await Appointment.findOneAndUpdate(
+      { _appointmentNum: appointmentNum },
+      {
+        $set: {
+          _userName,
+          _note,
+          _date,
+          _fName,
+          _lName,
+          _phone,
+          _time,
+          _email,
+        },
+      },
+      { new: true }
+    );
+
+    if (!updatedAppointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+      console.log("Appointment not found");
+    }
+
+    // Respond with a success message
+    return res.status(200).json({ message: "Appointment edited successfully" });
+  } catch (error) {
+    // Handle errors
+    console.error("Error updating appointment:", error);
+    console.log("Error updating appointmen");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.get("/get-counts", async (req, res) => {
   const storedUsername = req.query.userName;
   const users = await User.find({ _userName: storedUsername });
@@ -373,6 +454,80 @@ router.get("/get-counts", async (req, res) => {
     console.error("Error fetching counts:", error);
     res.status(500).json({ error: "Internal server error" });
   }
+});
+router.post("/check-email", async (req, res) => {
+  const { _email } = req.body;
+  const emails = await User.distinct("_email");
+  let checkEmail = false;
+  for (const hashedEmailFromDB of emails) {
+    const userIV = crypto.randomBytes(16).toString("hex"); // Generate a unique IV for each email check
+    const cipher = crypto.createCipheriv(
+      "aes-256-cbc",
+      Buffer.from(encryptionKey, "hex"),
+      Buffer.from(userIV, "hex")
+    );
+    const encryptedEmail = Buffer.concat([
+      cipher.update(_email, "utf8"),
+      cipher.final(),
+    ]);
+    console.log(encryptedEmail.toString("base64"));
+    if (hashedEmailFromDB === encryptedEmail.toString("base64")) {
+      checkEmail = true;
+      break;
+    }
+  }
+  console.log(checkEmail);
+  if (checkEmail) {
+    res.json({ exists: userExists });
+  }
+});
+
+router.post("/send-otp", (req, res) => {
+  const { email } = req.body;
+  const otp = generateOTP();
+
+  const mailOptions = {
+    to: email,
+    subject: "Password Reset OTP",
+    text: `Your OTP for password reset: ${otp}`,
+  };
+
+  transporter.sendMail(mailOptions, (error) => {
+    if (error) {
+      console.error("Error sending OTP:", error);
+      res.json({ success: false });
+    } else {
+      console.log("OTP sent successfully.");
+      res.json({ success: true });
+    }
+  });
+});
+router.post("/reset-password", async (req, res) => {
+  const { email, newPassword, otp } = req.body;
+
+  // Find the user by email
+  const user = registeredUsers.find((user) => user.email === email);
+
+  // Check if the user exists
+  if (!user) {
+    return res.json({ success: false, message: "Email not found." });
+  }
+
+  // Check if the provided OTP matches the stored OTP
+  if (user.otp !== otp) {
+    return res.json({ success: false, message: "Invalid OTP." });
+  }
+
+  // Hash the new password
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  // Update the user's password
+  user.password = hashedPassword;
+  user.otp = null; // Clear the OTP
+
+  // Implement your logic to save the updated user data to your database
+
+  res.json({ success: true, message: "Password reset successfully." });
 });
 
 module.exports = router;
