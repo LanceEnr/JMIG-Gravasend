@@ -19,6 +19,7 @@ import {
   InputAdornment,
   Typography,
 } from "@mui/material";
+import Title from "./components/Title";
 
 // Modal component for creating and editing job orders
 const JobOrderModal = ({ isOpen, onClose, onSubmit, onDelete, jobOrder }) => {
@@ -247,6 +248,7 @@ const JobOrderSystem = () => {
   }
   return (
     <Paper sx={{ p: 2 }}>
+      <Title>Job Orders</Title>
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
         <Button
           variant="contained"
