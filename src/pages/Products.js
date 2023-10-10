@@ -12,7 +12,7 @@ function Products() {
       <div className="menu">
         <Banner
           bannerImage={BannerImage}
-          title="PRODUCT CATALOG"
+          title="AGGREGATE MATERIALS"
           text="Solid foundations begin with quality gravel and sand
 
         "

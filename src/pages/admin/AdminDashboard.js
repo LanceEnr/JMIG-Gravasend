@@ -43,10 +43,11 @@ import Inventory from "./Inventory";
 import ManageOrders from "./ManageOrders";
 import DriverManagement from "./DriverManagement";
 import UserManagement from "./UserManagement";
-import ManageAppointments from "./ManageAppointments";
+import ManageContactForm from "./ManageContactForm";
 import DeliveryMonitoring from "./DeliveryMonitoring";
 import JobOrderSystem from "./JobOrderSystem";
 import Reports from "./Reports";
+import ManageAppointments from "./ManageAppointments";
 
 function Copyright(props) {
   return (
@@ -307,9 +308,10 @@ export default function AdminDashboard() {
               <ManageOrders />
               <DriverManagement />
               <UserManagement />
-              <ManageAppointments />
+              <ManageContactForm />
 
               <JobOrderSystem />
+              <ManageAppointments />
               <Reports />
             </Grid>
           </Grid>

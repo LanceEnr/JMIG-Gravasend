@@ -1,123 +1,130 @@
 import React, { useState } from "react";
-import { DataGrid, GridActionsCellItem, GridToolbar } from "@mui/x-data-grid";
-import Button from "@mui/material/Button";
-import DialogActions from "@mui/material/DialogActions";
-import IconButton from "@mui/material/IconButton";
-import Visibility from "@mui/icons-material/Visibility";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import { DialogContent, DialogContentText } from "@mui/material";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CancelIcon from "@mui/icons-material/Cancel";
-import Box from "@mui/material/Box";
-import { Paper } from "@mui/material";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import {
+  Dialog,
+  TextField,
+  Button,
+  Select,
+  MenuItem,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Box,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
 
-import Title from "./components/Title";
+const ManageAppointments = () => {
+  const [open, setOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [cancelReason, setCancelReason] = useState("");
 
-const rows = [
-  {
-    id: 1,
-    driver: "John Doe",
-    datetime: new Date(),
-    status: "Upcoming",
-    message:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras consectetur tellus eget eleifend vulputate. Donec sodales mauris sed risus lacinia iaculis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam pellentesque elit nec ante sagittis, non congue nibh tincidunt. Nulla ex magna, vehicula ac condimentum vitae, cursus eu libero. ",
-    approval: "Approved",
-  },
-  {
-    id: 2,
-    driver: "Jane Smith",
-    datetime: new Date(),
-    status: "Upcoming",
-    message:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras consectetur tellus eget eleifend vulputate. Donec sodales mauris sed risus lacinia iaculis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam pellentesque elit nec ante sagittis, non congue nibh tincidunt. Nulla ex magna, vehicula ac condimentum vitae, cursus eu libero. ",
-    approval: "Pending",
-  },
-  // Add more data as needed
-];
-export default function ManageAppointments() {
-  const [open, setOpen] = React.useState(false);
-  const [message, setMessage] = React.useState("");
-
-  const handleClickOpen = (rowData) => {
-    setMessage(rowData.message);
+  const handleEventClick = ({ event }) => {
+    setSelectedEvent(event);
     setOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleDateChange = (date) => {
+    if (
+      window.confirm(
+        "Are you sure? Please note, once you proceed, the changes will be saved."
+      )
+    ) {
+      selectedEvent.setStart(date);
+      setOpen(false);
+    }
   };
-  const columns = [
-    { field: "id", headerName: "ID", flex: 1 },
-    { field: "driver", headerName: "Name", flex: 1 },
-    { field: "datetime", headerName: "Date and Time", flex: 1 },
-    { field: "status", headerName: "Status", flex: 1 },
-    {
-      field: "message",
-      headerName: "Message",
-      sortable: false,
-      flex: 1,
-      renderCell: (params) => (
-        <IconButton color="primary" onClick={() => handleClickOpen(params.row)}>
-          <Visibility />
-        </IconButton>
-      ),
-    },
-    {
-      field: "approval",
-      headerName: "Approval",
-      sortable: false,
-      flex: 1,
-      renderCell: () => (
-        <React.Fragment>
-          <GridActionsCellItem
-            icon={<CheckCircleIcon />}
-            label="Approve"
-            sx={{
-              color: "primary.main",
-            }}
-          />
-          <GridActionsCellItem
-            icon={<CancelIcon />}
-            label="Cancel"
-            className="textPrimary"
-            color="inherit"
-          />
-        </React.Fragment>
-      ),
-    },
-  ];
+
+  const handleCancel = () => {
+    if (cancelReason) {
+      setConfirmOpen(true);
+    }
+  };
+
+  const handleConfirmCancel = () => {
+    selectedEvent.remove();
+    setOpen(false);
+    setConfirmOpen(false);
+  };
 
   return (
-    <Paper sx={{ my: 2, p: 2, display: "flex", flexDirection: "column" }}>
-      <Box style={{ width: "100%" }}>
-        <Title>Manage Appointments</Title>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          pageSize={5}
-          disableColumnFilter
-          disableColumnSelector
-          density="compact"
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-        />
-        <Dialog onClose={handleClose} open={open}>
-          <DialogTitle>User Message</DialogTitle>
-          <DialogContent>
-            <DialogContentText>{message}</DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Box>
-    </Paper>
+    <div>
+      <FullCalendar
+        plugins={[dayGridPlugin, interactionPlugin]}
+        initialView="dayGridMonth"
+        events={[
+          { title: "Appointment 1", date: "2023-10-08", reason: "Check-up" },
+          // more events here
+        ]}
+        eventClick={handleEventClick}
+      />
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <DialogTitle>Appointment 1</DialogTitle>
+        <DialogContent>
+          <Box sx={{ mb: 2 }}>
+            <TextField
+              label="Reason for appointment"
+              value={selectedEvent?.extendedProps.reason}
+              InputProps={{ readOnly: true }}
+              fullWidth
+            />
+          </Box>
+          <Box sx={{ mb: 2 }}>
+            <TextField
+              label="Date and time"
+              type="datetime-local"
+              defaultValue={selectedEvent?.start}
+              onChange={(e) => handleDateChange(e.target.value)}
+              fullWidth
+            />
+          </Box>
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel id="reason">Reason for Cancellation</InputLabel>
+            <Select
+              labelId="reason"
+              value="reason"
+              label="Reason for Cancellation" // Add this line
+            >
+              <MenuItem value="Conflicting Schedule">
+                Conflicting Schedule
+              </MenuItem>
+              <MenuItem value="Change in Availability">
+                Change in Availability
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmOpen(false)} color="primary">
+            Save Changes
+          </Button>
+          <Button onClick={handleConfirmCancel} color="secondary" autoFocus>
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmCancel} color="secondary" autoFocus>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Are you sure?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Please note, once you proceed, the changes will be saved.
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
-}
+};
+
+export default ManageAppointments;

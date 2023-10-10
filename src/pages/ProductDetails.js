@@ -40,11 +40,6 @@ const ProductDetails = () => {
             </Box>
 
             <Box flex="1 1 50%" mb="40px">
-              <Box display="flex" justifyContent="space-between">
-                <Box>Products/Sand</Box>
-                <Box>Prev Next</Box>
-              </Box>
-
               <Box m="10px 0 25px 0">
                 <Typography variant="h3" sx={{ color: "#004aad" }}>
                   Concrete Sand

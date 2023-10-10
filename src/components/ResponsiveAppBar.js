@@ -35,7 +35,7 @@ const ColoredBadge = withStyles({
 
 const token = localStorage.getItem("token");
 
-const pages = ["Home", "Products", "FAQs", "About", "Contact"];
+const pages = ["Home", "Products", "Services", "FAQs", "About", "Contact"];
 
 const settings = ["Dashboard", "Logout"];
 
