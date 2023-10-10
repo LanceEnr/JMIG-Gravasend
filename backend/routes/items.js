@@ -17,10 +17,32 @@ const transporter = nodemailer.createTransport({
   service: "Gmail", // Use a valid email service (e.g., Gmail, Outlook, etc.)
   auth: {
     user: "gravelandsandsupplyjmig@gmail.com", // Your email address
-    pass: "JMIGGravelAndSandSupply", // Your email password
+    pass: "dgqg rirx mvlv frix", // Your email password
   },
 });
-// Function to generate a random OTP (simplified example)
+const decryptEmail = (encryptedEmail, iv, encryptionKey) => {
+  try {
+    if (!encryptedEmail || !iv || !encryptionKey) {
+      // Handle missing parameters gracefully
+      return "1";
+    }
+
+    const decipher = crypto.createDecipheriv(
+      "aes-256-cbc",
+      Buffer.from(encryptionKey, "hex"),
+      Buffer.from(iv, "hex")
+    );
+
+    let decrypted = decipher.update(encryptedEmail, "base64", "utf8");
+    decrypted += decipher.final("utf8");
+
+    return decrypted;
+  } catch (error) {
+    console.error("Error decrypting email:", error);
+    return "2"; // Handle decryption error gracefully
+  }
+};
+
 function generateOTP() {
   return Math.floor(1000 + Math.random() * 9000).toString();
 }
@@ -37,29 +59,17 @@ router.post("/register", async (req, res) => {
 
     const existingUsernameUser = await User.findOne({ _userName });
 
-    const emails = await User.find({}, "_email _encryptionKey _iv");
+    const users = await User.find({}, "_email _iv _encryptionKey");
     let isEmailUsed = false;
 
-    for (const userData of emails) {
-      const { _email: encryptedEmail, _encryptionKey, _iv } = userData;
+    for (const user of users) {
+      const { _email: encryptedEmail, _iv, _encryptionKey } = user;
 
-      // Decrypt the stored email
-      const decipher = crypto.createDecipheriv(
-        "aes-256-cbc",
-        Buffer.from(_encryptionKey, "hex"),
-        Buffer.from(_iv, "hex")
-      );
-      const decryptedEmailBuffer = Buffer.concat([
-        decipher.update(Buffer.from(encryptedEmail, "base64")),
-        decipher.final(),
-      ]);
+      const decryptedEmail = decryptEmail(encryptedEmail, _iv, _encryptionKey);
 
-      const storedEmail = decryptedEmailBuffer.toString("utf8");
-
-      // Compare the stored email with the user's provided email
-      if (storedEmail === _email) {
+      if (decryptedEmail === _email) {
         isEmailUsed = true;
-        break;
+        break; // Exit the loop early if a match is found
       }
     }
 
@@ -179,29 +189,6 @@ router.get("/appointment", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
-const decryptEmail = (encryptedEmail, iv, encryptionKey) => {
-  try {
-    if (!encryptedEmail || !iv || !encryptionKey) {
-      // Handle missing parameters gracefully
-      return "1";
-    }
-
-    const decipher = crypto.createDecipheriv(
-      "aes-256-cbc",
-      Buffer.from(encryptionKey, "hex"),
-      Buffer.from(iv, "hex")
-    );
-
-    let decrypted = decipher.update(encryptedEmail, "base64", "utf8");
-    decrypted += decipher.final("utf8");
-
-    return decrypted;
-  } catch (error) {
-    console.error("Error decrypting email:", error);
-    return "2"; // Handle decryption error gracefully
-  }
-};
 
 router.get("/user", async (req, res) => {
   try {
@@ -457,39 +444,46 @@ router.get("/get-counts", async (req, res) => {
 });
 router.post("/check-email", async (req, res) => {
   const { _email } = req.body;
-  const emails = await User.distinct("_email");
-  let checkEmail = false;
-  for (const hashedEmailFromDB of emails) {
-    const userIV = crypto.randomBytes(16).toString("hex"); // Generate a unique IV for each email check
-    const cipher = crypto.createCipheriv(
-      "aes-256-cbc",
-      Buffer.from(encryptionKey, "hex"),
-      Buffer.from(userIV, "hex")
-    );
-    const encryptedEmail = Buffer.concat([
-      cipher.update(_email, "utf8"),
-      cipher.final(),
-    ]);
-    console.log(encryptedEmail.toString("base64"));
-    if (hashedEmailFromDB === encryptedEmail.toString("base64")) {
-      checkEmail = true;
+
+  const users = await User.find({}, "_email _iv _encryptionKey");
+  let isEmailUsed = false;
+  for (const user of users) {
+    const { _email: encryptedEmail, _iv, _encryptionKey } = user;
+
+    const decryptedEmail = decryptEmail(encryptedEmail, _iv, _encryptionKey);
+
+    if (decryptedEmail === _email) {
+      isEmailUsed = true;
       break;
     }
   }
-  console.log(checkEmail);
-  if (checkEmail) {
-    res.json({ exists: userExists });
+  if (isEmailUsed) {
+    console.log("working");
+    res.json({ exists: isEmailUsed });
+  } else {
+    console.log("working");
+    res.json({ exists: isEmailUsed });
   }
 });
 
-router.post("/send-otp", (req, res) => {
-  const { email } = req.body;
+router.post("/send-otp", async (req, res) => {
+  const { _email } = req.body;
+
   const otp = generateOTP();
 
   const mailOptions = {
-    to: email,
-    subject: "Password Reset OTP",
-    text: `Your OTP for password reset: ${otp}`,
+    to: _email,
+    subject: "Password Reset One-Time Password (OTP)",
+    text: `Dear User,
+
+We have received a request to reset your password for JMIG Gravel and Sand Supply. Your One-Time Password (OTP) for the password reset process is: ${otp}
+
+Please enter this OTP on the reset password page to continue with the password reset procedure.
+
+If you did not request this password reset, please ignore this email.
+
+Sincerely,
+JMIG Gravel and Sand Supply`,
   };
 
   transporter.sendMail(mailOptions, (error) => {
@@ -498,36 +492,40 @@ router.post("/send-otp", (req, res) => {
       res.json({ success: false });
     } else {
       console.log("OTP sent successfully.");
-      res.json({ success: true });
+      res.json({ success: true, otp: otp });
     }
   });
 });
+
 router.post("/reset-password", async (req, res) => {
-  const { email, newPassword, otp } = req.body;
+  try {
+    const { email, newPassword } = req.body;
+    let getEmail = "";
+    const users = await User.find({}, "_email _iv _encryptionKey");
+    let emailVerified = false;
+    for (const user of users) {
+      const { _email: encryptedEmail, _iv, _encryptionKey } = user;
 
-  // Find the user by email
-  const user = registeredUsers.find((user) => user.email === email);
+      const decryptedEmail = decryptEmail(encryptedEmail, _iv, _encryptionKey);
 
-  // Check if the user exists
-  if (!user) {
-    return res.json({ success: false, message: "Email not found." });
+      if (decryptedEmail === email) {
+        getEmail = encryptedEmail;
+      }
+    }
+    const user = await User.findOne({ _email: getEmail });
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+    user._pwd = hashedPassword;
+
+    await user.save();
+
+    res.json({ success: true, message: "Password reset successfully." });
+  } catch (error) {
+    console.error("Error:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to reset password." });
   }
-
-  // Check if the provided OTP matches the stored OTP
-  if (user.otp !== otp) {
-    return res.json({ success: false, message: "Invalid OTP." });
-  }
-
-  // Hash the new password
-  const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-  // Update the user's password
-  user.password = hashedPassword;
-  user.otp = null; // Clear the OTP
-
-  // Implement your logic to save the updated user data to your database
-
-  res.json({ success: true, message: "Password reset successfully." });
 });
 
 module.exports = router;

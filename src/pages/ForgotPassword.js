@@ -7,15 +7,16 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import "../styles/Login.css";
+import ChangePassword from "../components/ChangePassword";
+import EnterOTP from "../components/EnterOtp";
 import { useTheme } from "@mui/material/styles";
+import { toast } from "react-toastify";
 
 export default function ForgetPassword() {
   const [_email, setEmail] = useState("");
   const [message, setMessage] = useState("");
-  const [newPassword, setNewPassword] = useState("");
   const [otp, setOtp] = useState("");
-  const [resetInProgress, setResetInProgress] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
 
   const handleEmailSubmit = async (event) => {
     event.preventDefault();
@@ -23,46 +24,25 @@ export default function ForgetPassword() {
       const response = await axios.post("http://localhost:3001/check-email", {
         _email: _email,
       });
-      if (response.data.exists) {
+
+      if (response.data.exists === true) {
         const otpResponse = await axios.post("http://localhost:3001/send-otp", {
           _email: _email,
         });
-        if (otpResponse.data.success) {
-          setMessage("OTP sent to your email.");
-        } else {
-          setMessage("Failed to send OTP.");
-        }
-      } else {
-        setMessage("Email not found.");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
 
-  const handleResetPasswordSubmit = async (event) => {
-    event.preventDefault();
-    setResetInProgress(true);
-    try {
-      const response = await axios.post(
-        "http://localhost:3001/reset-password",
-        {
-          _email,
-          newPassword,
-          otp,
+        if (otpResponse.data.success) {
+          toast.success("OTP sent to your email.");
+          setOtpSent(true);
+          setOtp(otpResponse.data.otp);
+        } else {
+          toast.error("Failed to send OTP.");
         }
-      );
-      if (response.data.success) {
-        setMessage("Password reset successfully.");
-        // Redirect to login page or handle success as needed
       } else {
-        setMessage(response.data.message || "Failed to reset password.");
+        toast.error("Email not found.");
+        setEmail("");
       }
     } catch (error) {
       console.error("Error:", error);
-      setMessage("Failed to reset password.");
-    } finally {
-      setResetInProgress(false);
     }
   };
 
@@ -96,7 +76,7 @@ export default function ForgetPassword() {
               {message}
             </Typography>
           )}
-          {!otp ? (
+          {!otpSent ? (
             <>
               <Typography variant="body1" color="textSecondary">
                 Provide your email below.
@@ -132,52 +112,7 @@ export default function ForgetPassword() {
               </Box>
             </>
           ) : (
-            <>
-              <Typography variant="body1" color="textSecondary">
-                Enter the OTP received on your email and set your new password.
-              </Typography>
-              <Box
-                component="form"
-                noValidate
-                onSubmit={handleResetPasswordSubmit}
-                sx={{ mt: 3, width: "100%" }}
-              >
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <TextField
-                      required
-                      fullWidth
-                      id="otp"
-                      label="OTP"
-                      name="otp"
-                      autoComplete="otp"
-                      onChange={(e) => setOtp(e.target.value)}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      type="password"
-                      required
-                      fullWidth
-                      id="newPassword"
-                      label="New Password"
-                      name="newPassword"
-                      autoComplete="new-password"
-                      onChange={(e) => setNewPassword(e.target.value)}
-                    />
-                  </Grid>
-                </Grid>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2, backgroundColor: "#004aad" }}
-                  disabled={resetInProgress}
-                >
-                  Reset Password
-                </Button>
-              </Box>
-            </>
+            <EnterOTP email={_email} otp={otp} />
           )}
           <Grid container justifyContent="flex-end">
             <Grid item>
