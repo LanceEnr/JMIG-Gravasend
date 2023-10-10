@@ -17,24 +17,22 @@ import Title from "./components/Title";
 const rows = [
   {
     id: 1,
-    driver: "John Doe",
-    datetime: new Date(),
-    status: "Upcoming",
+    name: "John Doe",
+    email: "john.doe@example.com",
+    datetime: "2023-10-10T00:00",
     message:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras consectetur tellus eget eleifend vulputate. Donec sodales mauris sed risus lacinia iaculis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam pellentesque elit nec ante sagittis, non congue nibh tincidunt. Nulla ex magna, vehicula ac condimentum vitae, cursus eu libero. ",
-    approval: "Approved",
   },
   {
     id: 2,
-    driver: "Jane Smith",
-    datetime: new Date(),
-    status: "Upcoming",
+    name: "Jane Smith",
+    email: "jane.smith@example.com",
+    datetime: "2023-10-11T00:00",
     message:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras consectetur tellus eget eleifend vulputate. Donec sodales mauris sed risus lacinia iaculis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam pellentesque elit nec ante sagittis, non congue nibh tincidunt. Nulla ex magna, vehicula ac condimentum vitae, cursus eu libero. ",
-    approval: "Pending",
   },
-  // Add more data as needed
 ];
+
 export default function ManageContactForm() {
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState("");
@@ -50,8 +48,8 @@ export default function ManageContactForm() {
   const columns = [
     { field: "id", headerName: "ID", flex: 1 },
     { field: "name", headerName: "Name", flex: 1 },
+    { field: "email", headerName: "Email", flex: 1 }, // Add this line
     { field: "datetime", headerName: "Date and Time", flex: 1 },
-    { field: "status", headerName: "Status", flex: 1 },
     {
       field: "message",
       headerName: "Message",
@@ -63,35 +61,12 @@ export default function ManageContactForm() {
         </IconButton>
       ),
     },
-    {
-      field: "approval",
-      headerName: "Approval",
-      sortable: false,
-      flex: 1,
-      renderCell: () => (
-        <React.Fragment>
-          <GridActionsCellItem
-            icon={<CheckCircleIcon />}
-            label="Approve"
-            sx={{
-              color: "primary.main",
-            }}
-          />
-          <GridActionsCellItem
-            icon={<CancelIcon />}
-            label="Cancel"
-            className="textPrimary"
-            color="inherit"
-          />
-        </React.Fragment>
-      ),
-    },
   ];
 
   return (
     <Paper sx={{ my: 2, p: 2, display: "flex", flexDirection: "column" }}>
       <Box style={{ width: "100%" }}>
-        <Title>Manage Appointments</Title>
+        <Title>Contact Form Submissions</Title>
         <DataGrid
           rows={rows}
           columns={columns}
