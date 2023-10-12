@@ -185,25 +185,29 @@ export default function ProfileInfo(props) {
                 <Typography variant="subtitle1" gutterBottom>
                   Phone
                 </Typography>
-                <TextField
-                  label="Phone"
-                  name="Phone"
-                  value={userData.Phone}
-                  fullWidth
-                  onChange={handleChange}
-                />
+                <Box sx={{ mt: 2 }}>
+                  <TextField
+                    label="Phone"
+                    name="Phone"
+                    value={userData.Phone}
+                    fullWidth
+                    onChange={handleChange}
+                  />
+                </Box>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle1" gutterBottom>
                   Address
                 </Typography>
-                <TextField
-                  label="Address"
-                  name="Address"
-                  value={userData.Address}
-                  fullWidth
-                  onChange={handleChange}
-                />
+                <Box sx={{ mt: 2 }}>
+                  <TextField
+                    label="Address"
+                    name="Address"
+                    value={userData.Address}
+                    fullWidth
+                    onChange={handleChange}
+                  />
+                </Box>
               </Grid>
               <Grid item xs={12}>
                 <Button
@@ -226,15 +230,17 @@ export default function ProfileInfo(props) {
                 <Typography variant="subtitle1" gutterBottom>
                   Change Password
                 </Typography>
-                <TextField
-                  label="Current Password"
-                  name="CurrentPassword"
-                  type="password"
-                  value={userData.CurrentPassword}
-                  fullWidth
-                  onChange={handleChange}
-                  required
-                />
+                <Box sx={{ my: 2 }}>
+                  <TextField
+                    label="Current Password"
+                    name="CurrentPassword"
+                    type="password"
+                    value={userData.CurrentPassword}
+                    fullWidth
+                    onChange={handleChange}
+                    required
+                  />
+                </Box>
                 <TextField
                   label="New Password"
                   name="NewPassword"

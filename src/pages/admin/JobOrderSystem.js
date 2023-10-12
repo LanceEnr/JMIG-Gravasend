@@ -29,12 +29,14 @@ const JobOrderModal = ({ isOpen, onClose, onSubmit, onDelete, jobOrder }) => {
   const [cargo, setCargo] = useState("");
   const [weight, setWeight] = useState("");
   const [dateTime, setDateTime] = useState("");
+  const isFormComplete =
+    origin && destination && driverName && cargo && weight && dateTime;
+
   const handleSubmit = () => {
     onSubmit(
       { driverName, cargo, weight, dateTime, origin, destination },
       jobOrder
     );
-    onClose();
   };
 
   useEffect(() => {
@@ -67,6 +69,7 @@ const JobOrderModal = ({ isOpen, onClose, onSubmit, onDelete, jobOrder }) => {
             value={driverName}
             onChange={(e) => setDriverName(e.target.value)}
             fullWidth
+            required
           />
         </Box>
         <FormControl fullWidth sx={{ mb: 2 }}>
@@ -75,7 +78,8 @@ const JobOrderModal = ({ isOpen, onClose, onSubmit, onDelete, jobOrder }) => {
             labelId="origin-label"
             value={origin}
             onChange={(e) => setOrigin(e.target.value)}
-            label="Origin" // Add this line
+            label="Origin"
+            required
           >
             <MenuItem value="Quarry A">Quarry A</MenuItem>
             <MenuItem value="Quarry B">Quarry B</MenuItem>
@@ -87,7 +91,8 @@ const JobOrderModal = ({ isOpen, onClose, onSubmit, onDelete, jobOrder }) => {
             labelId="destination-label"
             value={destination}
             onChange={(e) => setDestination(e.target.value)}
-            label="Destination" // Add this line
+            label="Destination"
+            required
           >
             <MenuItem value="Location A">Location A</MenuItem>
             <MenuItem value="Location B">Location B</MenuItem>
@@ -99,7 +104,8 @@ const JobOrderModal = ({ isOpen, onClose, onSubmit, onDelete, jobOrder }) => {
             labelId="cargo-label"
             value={cargo}
             onChange={(e) => setCargo(e.target.value)}
-            label="Cargo" // Add this line
+            label="Cargo"
+            required
           >
             <MenuItem value="Sand">Sand</MenuItem>
             <MenuItem value="Gravel">Gravel</MenuItem>
@@ -111,6 +117,7 @@ const JobOrderModal = ({ isOpen, onClose, onSubmit, onDelete, jobOrder }) => {
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
             fullWidth
+            required
           />
         </Box>
         <Box sx={{ mb: 2 }}>
@@ -122,12 +129,18 @@ const JobOrderModal = ({ isOpen, onClose, onSubmit, onDelete, jobOrder }) => {
             fullWidth
             InputProps={{
               startAdornment: <InputAdornment position="start" />,
+              required: true,
+              inputProps: { min: "2023-10-10T00:00", max: "2023-12-31T00:00" },
             }}
           />
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleSubmit} color="primary">
+        <Button
+          onClick={handleSubmit}
+          color="primary"
+          disabled={!isFormComplete}
+        >
           Submit
         </Button>
         {jobOrder && (
@@ -153,10 +166,10 @@ const ValidationDialog = ({ isOpen, onConfirm, onCancel }) => (
     </DialogContent>
     <DialogActions>
       <Button onClick={onConfirm} color="primary">
-        Yes
+        Submit
       </Button>
       <Button onClick={onCancel} color="secondary">
-        No
+        Cancel
       </Button>
     </DialogActions>
   </Dialog>

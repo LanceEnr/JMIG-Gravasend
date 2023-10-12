@@ -124,142 +124,150 @@ export default function EditAppointmentForm(props) {
           <UserDrawer onActiveComponentChange={props.onActiveComponentChange} />
         )}
       </Box>
-      <Grid container spacing={3} alignItems="center">
-        <Grid item xs={12} sm={4}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              label="Date"
-              name="Schedule"
-              required
-              value={userData.Schedule}
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-              shouldDisableDate={(day) => {
-                const currentDate = moment();
-                return (
-                  day.day() === 0 ||
-                  day.day() === 6 ||
-                  day.isBefore(currentDate, "day")
-                );
-              }}
-              minDate={moment().add(1, "day")} // Set the minimum date to tomorrow
-              onChange={(date) => {
-                setUserData({
-                  ...userData,
-                  Schedule: date,
-                });
-              }}
-            />
-          </LocalizationProvider>
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <TimePicker
-              label="Time"
-              value={userData.time}
-              minutesStep={60}
-              required
-              ampm={false}
-              minTime={
-                userData.IsAM
-                  ? moment("08:00", "HH:mm")
-                  : moment("13:00", "HH:mm")
-              }
-              maxTime={
-                userData.IsAM
-                  ? moment("11:00", "HH:mm")
-                  : moment("16:00", "HH:mm")
-              }
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-              onChange={(date) => {
-                setUserData({
-                  ...userData,
-                  time: date.format("HH:mm"), // Format the selected time
-                });
-              }}
-            />
-          </LocalizationProvider>
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <FormControl component="fieldset">
-            <FormLabel component="legend">Select Time</FormLabel>
-            <RadioGroup
-              aria-label="Time"
-              name="time"
-              value={userData.IsAM ? "AM" : "PM"}
-              onChange={(e) => {
-                setUserData({ ...userData, IsAM: e.target.value === "AM" });
+      <Paper elevation={2} style={{ padding: "24px" }}>
+        <Grid container spacing={3} alignItems="center">
+          <Grid item xs={12} sm={4}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Date"
+                name="Schedule"
+                required
+                value={userData.Schedule}
+                fullWidth
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                shouldDisableDate={(day) => {
+                  const currentDate = moment();
+                  return (
+                    day.day() === 0 ||
+                    day.day() === 6 ||
+                    day.isBefore(currentDate, "day")
+                  );
+                }}
+                minDate={moment().add(1, "day")} // Set the minimum date to tomorrow
+                onChange={(date) => {
+                  setUserData({
+                    ...userData,
+                    Schedule: date,
+                  });
+                }}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <TimePicker
+                label="Time"
+                value={userData.time}
+                minutesStep={60}
+                required
+                ampm={false}
+                minTime={
+                  userData.IsAM
+                    ? moment("08:00", "HH:mm")
+                    : moment("13:00", "HH:mm")
+                }
+                maxTime={
+                  userData.IsAM
+                    ? moment("11:00", "HH:mm")
+                    : moment("16:00", "HH:mm")
+                }
+                fullWidth
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                onChange={(date) => {
+                  setUserData({
+                    ...userData,
+                    time: date.format("HH:mm"), // Format the selected time
+                  });
+                }}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Select Time</FormLabel>
+              <RadioGroup
+                aria-label="Time"
+                name="time"
+                value={userData.IsAM ? "AM" : "PM"}
+                onChange={(e) => {
+                  setUserData({ ...userData, IsAM: e.target.value === "AM" });
+                }}
+              >
+                <FormControlLabel value="AM" control={<Radio />} label="AM" />
+                <FormControlLabel value="PM" control={<Radio />} label="PM" />
+              </RadioGroup>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormLabel component="legend">Appointment Type</FormLabel>
+            <FormControl fullWidth>
+              <Select
+                value={userData.Agenda}
+                required
+                onChange={(e) => {
+                  setUserData({ ...userData, Agenda: e.target.value });
+                }}
+              >
+                <MenuItem value="Product Inquiry and Pricing">
+                  Product Inquiry and Pricing
+                </MenuItem>
+                <MenuItem value="Order Placement">Order Placement</MenuItem>
+                <MenuItem value="Delivery Scheduling">
+                  Delivery Scheduling
+                </MenuItem>
+                <MenuItem value="Site Visit and Assessment">
+                  Site Visit and Assessment
+                </MenuItem>
+                <MenuItem value="Payment">Payment</MenuItem>
+                <MenuItem value="Complaints and Issue Resolution">
+                  Complaints and Issue Resolution
+                </MenuItem>
+                <MenuItem value="Consultation">Consultation</MenuItem>
+                <MenuItem value="Inventory Availability">
+                  Inventory Availability
+                </MenuItem>
+                <MenuItem value="Follow Up">Follow Up</MenuItem>
+                <MenuItem value="Others">Others</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              variant="outlined"
+              onClick={props.goBack}
+              sx={{
+                mt: 2,
+                marginRight: 2,
+                color: "#004aad",
+                borderColor: "#004aad",
               }}
             >
-              <FormControlLabel value="AM" control={<Radio />} label="AM" />
-              <FormControlLabel value="PM" control={<Radio />} label="PM" />
-            </RadioGroup>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <FormLabel component="legend">Appointment Type</FormLabel>
-          <FormControl fullWidth>
-            <Select
-              value={userData.Agenda}
-              required
-              onChange={(e) => {
-                setUserData({ ...userData, Agenda: e.target.value });
+              Go Back
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              sx={{
+                mt: 2,
+                width: "100px", // adjust this value as needed
+                backgroundColor: "#004aad",
+                color: "#fff", // adjust text color as needed
+                "&:hover": {
+                  backgroundColor: "#003882", // darker shade for hover state
+                },
               }}
+              onClick={handleUpdateAppointment}
             >
-              <MenuItem value="Product Inquiry and Pricing">
-                Product Inquiry and Pricing
-              </MenuItem>
-              <MenuItem value="Order Placement">Order Placement</MenuItem>
-              <MenuItem value="Delivery Scheduling">
-                Delivery Scheduling
-              </MenuItem>
-              <MenuItem value="Site Visit and Assessment">
-                Site Visit and Assessment
-              </MenuItem>
-              <MenuItem value="Payment">Payment</MenuItem>
-              <MenuItem value="Complaints and Issue Resolution">
-                Complaints and Issue Resolution
-              </MenuItem>
-              <MenuItem value="Consultation">Consultation</MenuItem>
-              <MenuItem value="Inventory Availability">
-                Inventory Availability
-              </MenuItem>
-              <MenuItem value="Follow Up">Follow Up</MenuItem>
-              <MenuItem value="Others">Others</MenuItem>
-            </Select>
-          </FormControl>
+              Save Changes
+            </Button>
+          </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <Button
-            variant="outlined"
-            onClick={props.goBack}
-            sx={{
-              mt: 2,
-              marginRight: 2,
-              color: "#004aad",
-              borderColor: "#004aad",
-            }}
-          >
-            Go Back
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            sx={{
-              mt: 2,
-            }}
-            onClick={handleUpdateAppointment}
-          >
-            Save Changes
-          </Button>
-        </Grid>
-      </Grid>
+      </Paper>
     </List>
   );
 }

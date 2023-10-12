@@ -300,6 +300,8 @@ export default function AdminDashboard() {
         <Container maxWidth="lg" sx={{ my: 3 }}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
+              <DeliveryMonitoring />
+
               <FleetInformation />
               <Maintenance />
               <Inspection />
@@ -309,7 +311,6 @@ export default function AdminDashboard() {
               <DriverManagement />
               <UserManagement />
               <ManageContactForm />
-
               <JobOrderSystem />
               <ManageAppointments />
               <Reports />
