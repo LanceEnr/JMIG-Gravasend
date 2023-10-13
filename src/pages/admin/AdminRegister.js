@@ -142,14 +142,14 @@ export default function AdminRegister() {
     }
     try {
       const response = await axios.post(
-        "http://localhost:3001/register",
+        "http://localhost:3001/adminRegister",
         formData
       );
       console.log("Registration successful", response.data);
       toast.success("Registration successful", {
         autoClose: 500,
         onClose: () => {
-          navigate("/login");
+          navigate("/adminLogin");
         },
       });
     } catch (error) {
@@ -269,6 +269,8 @@ export default function AdminRegister() {
 
                   <Grid item xs={12}>
                     <TextField
+                      type="text"
+                      name="_address"
                       label="Address"
                       fullWidth
                       required

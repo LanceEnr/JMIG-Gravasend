@@ -1,0 +1,12 @@
+const mongoose = require("mongoose");
+
+// Define the schema for the 'Item' model
+const adminCodeSchema = new mongoose.Schema(
+  {
+    _isRedeem: Boolean,
+    _adminCode: String,
+  },
+  { collection: "adminCode" }
+);
+
+module.exports = mongoose.model("adminCode", adminCodeSchema);

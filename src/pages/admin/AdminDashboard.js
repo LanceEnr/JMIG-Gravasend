@@ -48,6 +48,10 @@ import DeliveryMonitoring from "./DeliveryMonitoring";
 import JobOrderSystem from "./JobOrderSystem";
 import Reports from "./Reports";
 import ManageAppointments from "./ManageAppointments";
+import Button from "@mui/material/Button";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
   return (
@@ -112,6 +116,8 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -125,6 +131,17 @@ export default function AdminDashboard() {
     if (!open) {
       setOpen(true);
     }
+  };
+  const handleLogout = () => {
+    localStorage.removeItem("adminToken");
+    dispatch({ type: "LOGOUT" });
+    toast.success("Logout successfully", {
+      autoClose: 50,
+      onClose: () => {
+        navigate("/adminLogin");
+        window.location.reload();
+      },
+    });
   };
 
   return (
@@ -162,6 +179,10 @@ export default function AdminDashboard() {
               <NotificationsIcon />
             </Badge>
           </IconButton>
+          <Button color="inherit" onClick={handleLogout}>
+            Logout
+          </Button>{" "}
+          {/* Add the "Logout" button here */}
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>

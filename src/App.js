@@ -5,7 +5,6 @@ import {
   Route,
   Routes,
   Navigate,
-  RouteProps,
 } from "react-router-dom";
 import "@fontsource/roboto";
 import ResponsiveAppBar from "./components/ResponsiveAppBar";
@@ -20,7 +19,6 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Faqs from "./pages/Faqs";
 import ProductDetails from "./pages/ProductDetails";
 import ServiceDetails from "./pages/ServiceDetails";
-
 import UserDashboard from "./pages/UserDashboard";
 import authReducer from "./store/reducers/authReducer";
 import { ToastContainer } from "react-toastify";
@@ -46,13 +44,17 @@ function App() {
     localStorage.removeItem("token");
     authDispatch({ type: "LOGOUT" });
   };
+  const isAdmin = !!localStorage.getItem("adminToken"); // Check for admin token
+
   return (
     <div className="App">
       <Router>
-        <ResponsiveAppBar
-          handleLogout={handleLogout}
-          isAuthenticated={isAuthenticated}
-        />
+        {!isAdmin && (
+          <ResponsiveAppBar
+            handleLogout={handleLogout}
+            isAuthenticated={isAuthenticated}
+          />
+        )}
         <Routes>
           <Route path="/" exact element={<Home />} />
           <Route path="/products" exact element={<Products />} />
@@ -63,10 +65,6 @@ function App() {
           <Route path="/forgotpassword" exact element={<ForgotPassword />} />
           <Route path="/productdetails" exact element={<ProductDetails />} />
           <Route path="/servicedetails" exact element={<ServiceDetails />} />
-
-          <Route path="/admindashboard" exact element={<AdminDashboard />} />
-          <Route path="/adminlogin" exact element={<AdminLogin />} />
-          <Route path="/adminregister" exact element={<AdminRegister />} />
           <Route path="/faqs" exact element={<Faqs />} />
 
           <Route
@@ -97,6 +95,10 @@ function App() {
               )
             }
           />
+
+          <Route path="/admindashboard" exact element={<AdminDashboard />} />
+          <Route path="/adminlogin" exact element={<AdminLogin />} />
+          <Route path="/adminregister" exact element={<AdminRegister />} />
         </Routes>
         <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
         <Footer />

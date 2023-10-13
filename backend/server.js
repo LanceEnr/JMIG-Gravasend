@@ -5,8 +5,11 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const itemsRouter = require("./routes/items");
+const adminRouter = require("./routes/admin");
 const User = require("./models/user");
 const Order = require("./models/order");
+const AdminUser = require("./models/adminUser");
+const Inventory = require("./models/inventory");
 
 const Appointment = require("./models/appointment");
 const { Tune } = require("@mui/icons-material");
@@ -16,8 +19,10 @@ const port = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
-app.use(itemsRouter);
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(itemsRouter);
+app.use(adminRouter);
 
 mongoose.connect(process.env.URI, {
   useNewUrlParser: true,
@@ -42,25 +47,3 @@ mongoose.connection.on("error", (error) => {
 mongoose.connection.on("disconnected", () => {
   console.log("Disconnected from MongoDB");
 });
-
-/*
-
-
-app.post("/register", async (req, res) => {
-  try {
-    // Extract the "name" field from the request body
-    const { name } = req.body;
-
-    // Create a new item with the extracted name
-    const newUser = new user({ name });
-
-    // Save the item to MongoDB
-    await newUser.save();
-
-    res.json({ message: "Item saved successfully" });
-  } catch (error) {
-    console.error("Error creating item:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-*/

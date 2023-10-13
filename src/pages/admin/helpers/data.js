@@ -1,3 +1,92 @@
+import axios from "axios";
+
+// Function to fetch inventory data from the database
+const fetchInventoryData = async () => {
+  try {
+    const response = await axios.get("http://localhost:3001/currentInventory");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+// Function to transform the data into the desired format
+const transformInventoryData = (data) => {
+  return data.map((item) => ({
+    id: item._inventoryID,
+    itemName: item._itemName,
+    quantity: item._quantity,
+    location: item._location,
+    lastUpdated: new Date(item._lastUpdated),
+  }));
+};
+
+// Fetch and transform the data
+const rowsCurrentInventory = transformInventoryData(await fetchInventoryData());
+
+// Export the transformed data
+export { rowsCurrentInventory };
+
+const fetchIncomingInventoryData = async () => {
+  try {
+    const response = await axios.get("http://localhost:3001/incomingInventory");
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+// Function to transform the data into the desired format
+const transformIncomingInventoryData = (data) => {
+  return data.map((item) => ({
+    id: item._inventoryID,
+    itemName: item._itemName,
+    quantity: item._quantity,
+    sourceLocation: item._location,
+    dateReceived: new Date(item._lastUpdated),
+  }));
+};
+
+// Fetch and transform the data for incoming inventory
+const rowsIncomingInventory = transformIncomingInventoryData(
+  await fetchIncomingInventoryData()
+);
+
+// Export the transformed data
+export { rowsIncomingInventory };
+
+const fetchOutgoingInventoryData = async () => {
+  try {
+    const response = await axios.get("http://localhost:3001/outgoingInventory");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+// Function to transform the data into the desired format
+const transformOutgoingInventoryData = (data) => {
+  return data.map((item) => ({
+    id: item._inventoryID, // Use the appropriate property for ID
+    itemName: item._itemName,
+    quantity: item._quantity,
+    destinationLocation: item._location,
+    dateDispatched: new Date(item._lastUpdated),
+  }));
+};
+
+// Fetch and transform the data for outgoing inventory
+const rowsOutgoingInventory = transformOutgoingInventoryData(
+  await fetchOutgoingInventoryData()
+);
+
+// Export the transformed data
+export { rowsOutgoingInventory };
+
 export const columnsMaintenanceScheduling = [
   { field: "id", headerName: "ID", flex: 1 },
   { field: "plateNo", headerName: "Plate No.", flex: 2, editable: true },
@@ -228,8 +317,6 @@ export const columnsCurrentInventory = [
     headerName: "Item Name",
     flex: 2,
     editable: true,
-    type: "singleSelect",
-    valueOptions: ["Gravel", "Sand"],
   },
   {
     field: "quantity",
@@ -242,8 +329,6 @@ export const columnsCurrentInventory = [
     headerName: "Location",
     flex: 2,
     editable: true,
-    type: "singleSelect",
-    valueOptions: ["Warehouse A", "Warehouse B"],
   },
   {
     field: "lastUpdated",
@@ -254,24 +339,6 @@ export const columnsCurrentInventory = [
   },
 ];
 
-export const rowsCurrentInventory = [
-  {
-    id: 1,
-    itemName: "Gravel",
-    quantity: 100,
-    location: "Warehouse A",
-    lastUpdated: new Date(),
-  },
-  {
-    id: 2,
-    itemName: "Sand",
-    quantity: 200,
-    location: "Warehouse B",
-    lastUpdated: new Date(),
-  },
-  // Add more rows as needed
-];
-
 export const columnsIncomingInventory = [
   { field: "id", headerName: "ID", flex: 1 },
   {
@@ -279,8 +346,6 @@ export const columnsIncomingInventory = [
     headerName: "Item Name",
     flex: 2,
     editable: true,
-    type: "singleSelect",
-    valueOptions: ["Gravel", "Sand"],
   },
   {
     field: "quantity",
@@ -293,8 +358,6 @@ export const columnsIncomingInventory = [
     headerName: "Source Location",
     flex: 2,
     editable: true,
-    type: "singleSelect",
-    valueOptions: ["Quarry A", "Quarry B"],
   },
   {
     field: "dateReceived",
@@ -305,24 +368,6 @@ export const columnsIncomingInventory = [
   },
 ];
 
-export const rowsIncomingInventory = [
-  {
-    id: 1,
-    itemName: "Gravel",
-    quantity: 100,
-    sourceLocation: "Quarry A",
-    dateReceived: new Date(),
-  },
-  {
-    id: 2,
-    itemName: "Sand",
-    quantity: 200,
-    sourceLocation: "Quarry B",
-    dateReceived: new Date(),
-  },
-  // Add more rows as needed
-];
-
 export const columnsOutgoingInventory = [
   { field: "id", headerName: "ID", flex: 1 },
   {
@@ -330,8 +375,6 @@ export const columnsOutgoingInventory = [
     headerName: "Item Name",
     flex: 2,
     editable: true,
-    type: "singleSelect",
-    valueOptions: ["Gravel", "Sand"],
   },
   {
     field: "quantity",
@@ -344,8 +387,6 @@ export const columnsOutgoingInventory = [
     headerName: "Destination Location",
     flex: 2,
     editable: true,
-    type: "singleSelect",
-    valueOptions: ["Location A", "Location B"],
   },
   {
     field: "dateDispatched",
@@ -354,24 +395,6 @@ export const columnsOutgoingInventory = [
     flex: 3,
     editable: true,
   },
-];
-
-export const rowsOutgoingInventory = [
-  {
-    id: 1,
-    itemName: "Gravel",
-    quantity: 100,
-    destinationLocation: "Location A",
-    dateDispatched: new Date(),
-  },
-  {
-    id: 2,
-    itemName: "Sand",
-    quantity: 200,
-    destinationLocation: "Location B",
-    dateDispatched: new Date(),
-  },
-  // Add more rows as needed
 ];
 
 export const columnsManageOrders = [

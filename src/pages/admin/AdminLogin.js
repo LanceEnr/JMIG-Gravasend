@@ -1,4 +1,5 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -12,6 +13,13 @@ import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import BannerImage from "../../assets/catalog.webp";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
   return (
@@ -28,14 +36,73 @@ function Copyright(props) {
   );
 }
 
-export default function AdminLogin() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("username"),
-      password: data.get("password"),
+export default function AdminLogin({ dispatch }) {
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [passwordInputType, setPasswordInputType] = useState("password");
+  const handleShowPasswordToggle = () => {
+    setShowPassword(!showPassword);
+    setPasswordInputType(showPassword ? "password" : "text");
+  };
+  const [loginData, setLoginData] = useState({
+    _userName: "",
+    _pwd: "",
+    rememberMe: false,
+  });
+  useEffect(() => {
+    const rememberMeData = localStorage.getItem("rememberMeData");
+    if (rememberMeData) {
+      setLoginData(JSON.parse(rememberMeData));
+    }
+  }, []);
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setLoginData({
+      ...loginData,
+      [name]: value,
     });
+  };
+  const handleRememberChange = () => {
+    setRememberMe(!rememberMe);
+  };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/adminLogin",
+        loginData
+      );
+
+      if (response.status === 200) {
+        console.log("Login successful", response.data);
+        const { token, userName } = response.data;
+        localStorage.setItem("adminToken", token);
+        localStorage.setItem("userName", userName);
+
+        if (loginData.rememberMe) {
+          localStorage.setItem("rememberMeData", JSON.stringify(loginData));
+        } else {
+          localStorage.removeItem("rememberMeData");
+        }
+
+        toast.success("Login successful", {
+          autoClose: 50,
+          onClose: () => {
+            navigate("/adminDashboard");
+          },
+        });
+        dispatch({ type: "LOGIN" });
+      } else {
+        console.error("Login failed", response.data);
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        toast.error("Incorrect Login Credentials");
+      }
+      console.error("Login failed", error);
+    }
   };
 
   return (
@@ -89,19 +156,36 @@ export default function AdminLogin() {
               fullWidth
               id="username"
               label="Username"
-              name="username"
-              autoComplete="username"
+              name="_userName"
+              onChange={handleChange}
+              value={loginData._userName}
+              autoComplete="off"
               autoFocus
             />
             <TextField
               margin="normal"
               required
               fullWidth
-              name="password"
+              name="_pwd"
+              onChange={handleChange}
+              value={loginData._pwd}
               label="Password"
-              type="password"
-              id="password"
+              type={passwordInputType}
+              id="_pwd"
               autoComplete="current-password"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      edge="end"
+                      onClick={handleShowPasswordToggle}
+                      aria-label="toggle password visibility"
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}

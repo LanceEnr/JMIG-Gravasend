@@ -96,13 +96,16 @@ export default function FullFeaturedCrudGrid(props) {
 
   const handleEditClick = (id) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    console.log("clicked");
   };
 
-  const handleSaveClick = (id) => () => {
-    setAction("save");
-    setActionId(id);
-    setOpen(true);
-  };
+  const handleSaveClick =
+    (id, itemName, quantity, location, lastUpdated) => () => {
+      setAction("save");
+      setActionId(id);
+      setOpen(true);
+      console.log("id is " + id);
+    };
 
   const handleDeleteClick = (id) => () => {
     setAction("delete");
@@ -140,7 +143,8 @@ export default function FullFeaturedCrudGrid(props) {
     headerName: "Actions",
     width: props.actionWidth || 100,
     cellClassName: "actions",
-    getActions: ({ id }) => {
+    getActions: (params) => {
+      const { id, itemName, quantity, location, lastUpdated } = params;
       const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
       if (isInEditMode) {
@@ -151,7 +155,13 @@ export default function FullFeaturedCrudGrid(props) {
             sx={{
               color: "primary.main",
             }}
-            onClick={handleSaveClick(id)}
+            onClick={handleSaveClick(
+              id,
+              itemName,
+              quantity,
+              location,
+              lastUpdated
+            )}
           />,
           <GridActionsCellItem
             icon={<CancelIcon />}
