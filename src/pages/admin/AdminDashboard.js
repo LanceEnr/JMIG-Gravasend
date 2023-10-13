@@ -12,6 +12,7 @@ import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
+import { Avatar } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -40,6 +41,10 @@ import Maintenance from "./Maintenance";
 import Inspection from "./Inspection";
 import Trips from "./Trips";
 import Inventory from "./Inventory";
+import Tooltip from "@mui/material/Tooltip";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
+
 import ManageOrders from "./ManageOrders";
 import DriverManagement from "./DriverManagement";
 import UserManagement from "./UserManagement";
@@ -52,6 +57,9 @@ import Button from "@mui/material/Button";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import RandomStringGenerator from "./components/RandomStringGenerator";
+import EventIcon from "@mui/icons-material/Event";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 function Copyright(props) {
   return (
@@ -115,7 +123,34 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
+const notifications = [
+  {
+    icon: EventIcon,
+    heading: "Upcoming Appointment",
+    text: "You have an appointment with JMIG tomorrow.",
+  },
+  {
+    icon: CheckCircleIcon,
+    heading: "Order Acknowledged",
+    text: "Your order has been received and is being processed.",
+  },
+];
+
+const settings = ["Settings", "Logout"];
+
 export default function AdminDashboard() {
+  const [anchorElSettings, setAnchorElSettings] = React.useState(null);
+
+  const [anchorElNotifications, setAnchorElNotifications] =
+    React.useState(null);
+  const handleOpenNotificationsMenu = (event) => {
+    setAnchorElNotifications(event.currentTarget);
+  };
+
+  const handleCloseNotificationsMenu = () => {
+    setAnchorElNotifications(null);
+  };
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [open, setOpen] = React.useState(true);
@@ -142,6 +177,14 @@ export default function AdminDashboard() {
         window.location.reload();
       },
     });
+  };
+
+  const handleOpenSettingsMenu = (event) => {
+    setAnchorElSettings(event.currentTarget);
+  };
+
+  const handleCloseSettingsMenu = () => {
+    setAnchorElSettings(null);
   };
 
   return (
@@ -174,15 +217,77 @@ export default function AdminDashboard() {
           >
             JMIG Admin Panel
           </Typography>
-          <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-          <Button color="inherit" onClick={handleLogout}>
-            Logout
-          </Button>{" "}
-          {/* Add the "Logout" button here */}
+          <Tooltip title="Notifications">
+            <IconButton color="inherit" onClick={handleOpenNotificationsMenu}>
+              <Badge
+                color="secondary"
+                badgeContent={notifications ? notifications.length : 0}
+              >
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+          </Tooltip>
+          <Menu
+            sx={{ mt: "45px" }}
+            id="notification-appbar"
+            anchorEl={anchorElNotifications}
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            open={Boolean(anchorElNotifications)}
+            onClose={handleCloseNotificationsMenu}
+          >
+            {notifications.map((notification) => (
+              <MenuItem
+                key={notification.heading}
+                onClick={handleCloseNotificationsMenu}
+              >
+                <ListItemIcon>
+                  <notification.icon fontSize="small" />
+                </ListItemIcon>
+                <div>
+                  <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+                    {notification.heading}
+                  </Typography>
+                  <Typography variant="body2">{notification.text}</Typography>
+                </div>
+              </MenuItem>
+            ))}
+          </Menu>
+          <Box sx={{ ml: 2 }}>
+            <Tooltip title="Settings">
+              <IconButton onClick={handleOpenSettingsMenu} sx={{ p: 0 }}>
+                <Avatar />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: "45px" }}
+              anchorEl={anchorElSettings}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorElSettings)}
+              onClose={handleCloseSettingsMenu}
+            >
+              {settings.map((setting) => (
+                <MenuItem key={setting}>
+                  <Typography textAlign="center">{setting}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -322,7 +427,8 @@ export default function AdminDashboard() {
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <DeliveryMonitoring />
-
+              <RandomStringGenerator />
+              <AdminProfileInfo />
               <FleetInformation />
               <Maintenance />
               <Inspection />

@@ -1,15 +1,14 @@
 import React from "react";
 import {
   Typography,
+  Box,
   Grid,
   Paper,
-  Box,
   useMediaQuery,
   Avatar,
-  List,
 } from "@mui/material";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+
+import Title from "./components/Title";
 
 export default function AdminProfileInfo() {
   const isMobile = useMediaQuery("(max-width:600px)");
@@ -24,58 +23,49 @@ export default function AdminProfileInfo() {
     Email: "john.doe@example.com",
     Phone: "123-456-7890",
     Birthdate: "1990-01-01",
-    Address: "Sampaloc, Manila",
   };
   return (
-    <List
-      sx={{
-        px: 0,
-        py: 0,
-      }}
-    >
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography
-          component="h1"
-          variant="h5"
-          sx={{
-            color: "#004aad",
-            fontWeight: "bold",
-            display: "flex",
-            alignItems: "center",
-            my: 2,
-          }}
-        >
-          <AccountCircleIcon sx={{ mr: 2, verticalAlign: "middle" }} />
-          Profile Information
-        </Typography>
-      </Box>
+    <Box>
+      <Title>Account Settings</Title>
 
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={4}>
           <Paper
-            elevation={2}
             style={{
               height: "100px",
               display: "flex",
               alignItems: "center",
+              justifyContent: "space-between", // Add this line
               padding: "0 16px",
             }}
           >
-            <Avatar
-              alt={userName}
-              src={userAvatarUrl}
-              style={{ width: "60px", height: "60px", marginLeft: "16px" }}
-            />
-            <Typography variant="h5" style={{ marginLeft: "16px" }}>
-              {userName}
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Avatar
+                alt={userName}
+                src={userAvatarUrl}
+                style={{ width: "60px", height: "60px", marginLeft: "16px" }}
+              />
+              <Typography variant="h5" style={{ marginLeft: "16px" }}>
+                {userName}
+              </Typography>
+            </div>
+            <Typography
+              variant="subtitle1"
+              color="secondary"
+              style={{ marginRight: "16px" }}
+            >
+              ADMIN
             </Typography>
           </Paper>
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <Paper
-            elevation={2}
-            style={{ padding: "16px 16px 16px 32px", marginBottom: "16px" }}
+            style={{
+              minHeight: "100px",
+              padding: "16px 16px 16px 32px",
+              marginBottom: "16px",
+            }}
           >
             <Grid container spacing={2}>
               {Object.entries(userData).map(([key, value]) => (
@@ -95,6 +85,6 @@ export default function AdminProfileInfo() {
           </Paper>
         </Grid>
       </Grid>
-    </List>
+    </Box>
   );
 }
