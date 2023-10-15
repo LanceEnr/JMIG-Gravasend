@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   TextField,
   IconButton,
@@ -7,7 +8,10 @@ import {
   Paper,
 } from "@mui/material";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import Title from "./Title";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function getRandomString(length) {
   const characters =
@@ -20,6 +24,7 @@ function getRandomString(length) {
 }
 
 export default function RandomStringGenerator() {
+  const navigate = useNavigate();
   const [randomString, setRandomString] = useState(getRandomString(6));
 
   const handleGenerate = () => {
@@ -30,9 +35,24 @@ export default function RandomStringGenerator() {
     navigator.clipboard.writeText(randomString);
   };
 
+  const handleGenerateAndPost = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:3001/generateCode", {
+        accessCode: randomString,
+      });
+      console.log("Generated code successfully", response.data);
+      toast.success("Generated code successfully");
+      handleGenerate();
+    } catch (error) {
+      console.error("Generate code failed", error);
+      toast.error("Generate code failed");
+    }
+  };
+
   return (
     <Paper sx={{ my: 2, p: 2, display: "flex", flexDirection: "column" }}>
-      <Title>Generate Access Code</Title>
+      <Title>Generate Admin Access Code</Title>
       <TextField
         label="Access Code"
         variant="outlined"
@@ -44,18 +64,21 @@ export default function RandomStringGenerator() {
               <IconButton onClick={handleCopy}>
                 <FileCopyIcon />
               </IconButton>
+              <IconButton onClick={handleGenerate}>
+                <RefreshIcon />
+              </IconButton>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleGenerateAndPost} // Handle POST request
+              >
+                Generate Code
+              </Button>
             </InputAdornment>
           ),
         }}
+        readOnly
       />
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleGenerate}
-        sx={{ mt: 2 }}
-      >
-        Generate
-      </Button>
     </Paper>
   );
 }

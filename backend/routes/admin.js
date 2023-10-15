@@ -239,4 +239,35 @@ router.get("/outgoingInventory", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+router.post("/generateCode", async (req, res) => {
+  try {
+    const { accessCode } = req.body;
+
+    const existingCode = await Code.findOne({
+      _adminCode: accessCode,
+    });
+
+    if (existingCode) {
+      return res.status(400).json({ error: "Admin Code conflict" });
+    }
+
+    const code = new Code({
+      _isRedeem: "false",
+      _adminCode: accessCode,
+    });
+
+    await code.save();
+
+    res.json({ message: "Admin code generated successfully" });
+  } catch (error) {
+    console.error("Error generating admin code:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.post("/addInventory", (req, res) => {
+  const { actionId, itemName, quantity, location, lastUpdated } = req.body;
+  console.log("data: " + actionId + " " + itemName);
+});
+
 module.exports = router;

@@ -11,7 +11,8 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-
+import axios from "axios";
+import { toast } from "react-toastify";
 import Title from "./Title";
 import {
   GridRowModes,
@@ -51,6 +52,12 @@ export default function FullFeaturedCrudGrid(props) {
   const [open, setOpen] = React.useState(false);
   const [action, setAction] = React.useState(null);
   const [actionId, setActionId] = React.useState(null);
+  const [itemName, setItemName] = React.useState("");
+  const [quantity, setQuantity] = React.useState("");
+  const [location, setLocation] = React.useState("");
+  const [lastUpdated, setLastUpdated] = React.useState("");
+
+  const [dataClassification, setDataClassification] = React.useState("");
 
   const handleDialogClose = () => {
     setOpen(false);
@@ -93,19 +100,75 @@ export default function FullFeaturedCrudGrid(props) {
       event.defaultMuiPrevented = true;
     }
   };
+  const handleSaveClick = (id) => () => {
+    setAction("save");
+    setActionId(id);
+    setOpen(true);
+  };
 
   const handleEditClick = (id) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
     console.log("clicked");
   };
 
-  const handleSaveClick =
-    (id, itemName, quantity, location, lastUpdated) => () => {
-      setAction("save");
-      setActionId(id);
-      setOpen(true);
-      console.log("id is " + id);
-    };
+  const handleSaveConfirmed = async (e) => {
+    setRowModesModel({
+      ...rowModesModel,
+      [actionId]: { mode: GridRowModes.View },
+    });
+
+    try {
+      // Prepare the data to be sent
+      const newData = {
+        id: actionId,
+        itemName,
+        quantity,
+        location,
+        lastUpdated,
+      };
+
+      e.preventDefault();
+      try {
+        const response = await axios.post(
+          "http://localhost:3001/addInventory",
+          {
+            newData,
+          }
+        );
+        console.log("Item added successfully", response.data);
+        toast.success("Item added successfully");
+
+        if (response.data.isCurrent) {
+          setDataClassification("current");
+        } else if (response.data.isIncoming) {
+          setDataClassification("incoming");
+        } else {
+          setDataClassification("outgoing");
+        }
+      } catch (error) {
+        console.error("Item add failed", error);
+        toast.error("Item add failed");
+      }
+
+      // Update the row's data with the edited values
+      const updatedRows = rows.map((row) =>
+        row.id === actionId
+          ? {
+              ...row,
+              itemName,
+              quantity,
+              location,
+              lastUpdated,
+            }
+          : row
+      );
+      setRows(updatedRows);
+      setOpen(false);
+    } catch (error) {
+      console.error("Error while saving data", error);
+      // Handle the error as needed
+    }
+  };
 
   const handleDeleteClick = (id) => () => {
     setAction("delete");
@@ -233,11 +296,20 @@ export default function FullFeaturedCrudGrid(props) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogClose}>Cancel</Button>
-          <Button onClick={handleDialogConfirm} color="primary" autoFocus>
+          <Button
+            onClick={
+              action === "save" ? handleSaveConfirmed : handleDialogConfirm
+            }
+            color="primary"
+            autoFocus
+          >
             Confirm
           </Button>
         </DialogActions>
       </Dialog>
+      {dataClassification && (
+        <div>Data Classification: {dataClassification}</div>
+      )}
     </Box>
   );
 }

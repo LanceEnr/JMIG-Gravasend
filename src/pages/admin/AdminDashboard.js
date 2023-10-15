@@ -282,7 +282,26 @@ export default function AdminDashboard() {
               onClose={handleCloseSettingsMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting}>
+                <MenuItem
+                  key={setting}
+                  onClick={() => {
+                    if (setting === "Logout") {
+                      localStorage.removeItem("adminToken");
+                      dispatch({ type: "LOGOUT" });
+                      toast.success("Logout successfully", {
+                        autoClose: 50,
+                        onClose: () => {
+                          navigate("/adminLogin");
+                          window.location.reload();
+                        },
+                      });
+                    } else if (setting === "Settings") {
+                      window.location.href = "/settings";
+                    } else {
+                      window.location.href = `/${setting}`;
+                    }
+                  }}
+                >
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
@@ -427,7 +446,6 @@ export default function AdminDashboard() {
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <DeliveryMonitoring />
-              <RandomStringGenerator />
               <AdminProfileInfo />
               <FleetInformation />
               <Maintenance />
@@ -436,6 +454,7 @@ export default function AdminDashboard() {
               <Inventory />
               <ManageOrders />
               <DriverManagement />
+              <RandomStringGenerator />
               <UserManagement />
               <ManageContactForm />
               <JobOrderSystem />
