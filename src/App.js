@@ -49,12 +49,11 @@ function App() {
   return (
     <div className="App">
       <Router>
-        {!isAdmin && (
-          <ResponsiveAppBar
-            handleLogout={handleLogout}
-            isAuthenticated={isAuthenticated}
-          />
-        )}
+        <ResponsiveAppBar
+          handleLogout={handleLogout}
+          isAuthenticated={isAuthenticated}
+        />
+
         <Routes>
           <Route path="/" exact element={<Home />} />
           <Route path="/products" exact element={<Products />} />
