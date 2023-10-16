@@ -3,7 +3,9 @@ const router = express.Router();
 const User = require("../models/adminUser");
 const Counter = require("../models/counter");
 const Code = require("../models/adminCode");
+const Order = require("../models/order");
 const Inventory = require("../models/inventory");
+const Inquiry = require("../models/inquiry");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -179,6 +181,27 @@ router.post("/adminLogin", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
+const getNextInventoryNum = async () => {
+  try {
+    const counter = await Counter.findOneAndUpdate(
+      { name: "_inventoryID" },
+      { $inc: { value: 1 } },
+      { new: true, upsert: true }
+    );
+    return counter.value;
+  } catch (err) {
+    console.error("Error getting the next inventory number:", err);
+    throw err;
+  }
+};
+router.get("/generateId", async (req, res) => {
+  try {
+    const id = await getNextInventoryNum();
+    res.json({ id });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to generate ID" });
+  }
+});
 router.get("/currentInventory", async (req, res) => {
   try {
     const data = await Inventory.find(
@@ -192,7 +215,7 @@ router.get("/currentInventory", async (req, res) => {
         _id: 0, // Exclude the default _id field
       }
     );
-    console.log(data);
+
     res.json(data);
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -212,7 +235,7 @@ router.get("/incomingInventory", async (req, res) => {
         _id: 0, // Exclude the default _id field
       }
     );
-    console.log(data);
+
     res.json(data);
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -232,7 +255,6 @@ router.get("/outgoingInventory", async (req, res) => {
         _id: 0, // Exclude the default _id field
       }
     );
-    console.log(data);
     res.json(data);
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -265,9 +287,67 @@ router.post("/generateCode", async (req, res) => {
   }
 });
 
-router.post("/addInventory", (req, res) => {
+router.post("/addInventory", async (req, res) => {
   const { actionId, itemName, quantity, location, lastUpdated } = req.body;
-  console.log("data: " + actionId + " " + itemName);
+  const exisitingName = await Inventory.findOne({
+    _itemName: itemName,
+    _status: "current",
+  });
+
+  if (exisitingName) {
+    // An appointment with the same date and time already exists and is not cancelled
+    return res.status(400).json({ error: "Name conflict" });
+  }
+  const inventory = new Inventory({
+    _inventoryID: actionId,
+    _itemName: itemName,
+    _quantity: quantity,
+    _location: location,
+    _lastUpdated: lastUpdated,
+    _status: "current",
+  });
+
+  await inventory.save();
+
+  res.json({ message: "Appointment saved successfully" });
+});
+
+router.delete("/deleteRecord/:_inventoryID", async (req, res) => {
+  try {
+    const id = req.params._inventoryID;
+    const removedRecord = await Inventory.findOneAndRemove({
+      _inventoryID: id,
+    }); // Use findOneAndRemove
+
+    if (removedRecord) {
+      res.json({ message: "Record deleted successfully" });
+    } else {
+      res.status(404).json({ message: "Record not found" });
+    }
+  } catch (error) {
+    console.error("Error deleting record", error);
+    res
+      .status(500)
+      .json({ message: "Failed to delete the record", error: error.message });
+  }
+});
+router.get("/get-order", async (req, res) => {
+  try {
+    const orders = await Order.find(); // Fetch all orders from the database
+    res.json(orders);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Failed to fetch order data" });
+  }
+});
+router.get("/get-inquiry", async (req, res) => {
+  try {
+    const inquiry = await Inquiry.find(); // Fetch all orders from the database
+    res.json(inquiry);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Failed to fetch order data" });
+  }
 });
 
 module.exports = router;

@@ -87,6 +87,26 @@ const rowsOutgoingInventory = transformOutgoingInventoryData(
 // Export the transformed data
 export { rowsOutgoingInventory };
 
+export const rowsDriverManagement = [
+  {
+    id: 1,
+    name: "John Doe",
+    contact: "123-456-7890",
+    hireDate: new Date(),
+    status: "Active",
+    password: "password123",
+  },
+  {
+    id: 2,
+    name: "Jane Smith",
+    contact: "098-765-4321",
+    hireDate: new Date(),
+    status: "Inactive",
+    password: "password456",
+  },
+  // Add more objects as needed...
+];
+
 export const columnsMaintenanceScheduling = [
   { field: "id", headerName: "ID", flex: 1 },
   { field: "plateNo", headerName: "Plate No.", flex: 2, editable: true },
@@ -329,13 +349,14 @@ export const columnsCurrentInventory = [
     headerName: "Location",
     flex: 2,
     editable: true,
+    type: "singleSelect",
+    valueOptions: ["Warehouse A", "Warehouse B"],
   },
   {
     field: "lastUpdated",
     headerName: "Last Updated",
     type: "datetime",
     flex: 3,
-    editable: true,
   },
 ];
 
@@ -428,23 +449,32 @@ export const columnsManageOrders = [
   },
 ];
 
-export const rowsManageOrders = [
-  {
-    id: 1,
-    customerName: "John Doe",
-    contact: "123-456-7890",
-    orderDate: new Date(2023, 0, 1),
-    status: "Available for pickup",
-  },
-  {
-    id: 2,
-    customerName: "Jane Smith",
-    contact: "098-765-4321",
-    orderDate: new Date(2023, 1, 14),
-    status: "Cancelled",
-  },
-  // Add more rows as needed
-];
+const fetchOrderData = async () => {
+  try {
+    const response = await axios.get("http://localhost:3001/get-order");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+// Function to transform the data into the desired format
+const transformOrderData = (data) => {
+  return data.map((item) => ({
+    id: item._orderNum,
+    customerName: item._name,
+    contact: item._contactNum,
+    orderDate: new Date(item._date),
+    status: item._status,
+  }));
+};
+
+// Fetch and transform the data for outgoing inventory
+const rowsManageOrders = transformOrderData(await fetchOrderData());
+
+// Export the transformed data
+export { rowsManageOrders };
 
 export const columnsDriverManagement = [
   { field: "id", headerName: "ID", flex: 1 },
@@ -466,26 +496,6 @@ export const columnsDriverManagement = [
     valueOptions: ["Active", "Inactive"],
   },
   { field: "password", headerName: "Password", flex: 1 },
-];
-
-export const rowsDriverManagement = [
-  {
-    id: 1,
-    name: "John Doe",
-    contact: "123-456-7890",
-    hireDate: new Date(),
-    status: "Active",
-    password: "password123",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    contact: "098-765-4321",
-    hireDate: new Date(),
-    status: "Inactive",
-    password: "password456",
-  },
-  // Add more objects as needed...
 ];
 
 export const columnsUserManagement = [

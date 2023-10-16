@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { DataGrid, GridActionsCellItem, GridToolbar } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import DialogActions from "@mui/material/DialogActions";
@@ -14,49 +15,53 @@ import { Paper } from "@mui/material";
 
 import Title from "./components/Title";
 
-const rows = [
-  {
-    id: 1,
-    name: "John Doe",
-    email: "john.doe@example.com",
-    datetime: "2023-10-10T00:00",
-    message:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras consectetur tellus eget eleifend vulputate. Donec sodales mauris sed risus lacinia iaculis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam pellentesque elit nec ante sagittis, non congue nibh tincidunt. Nulla ex magna, vehicula ac condimentum vitae, cursus eu libero. ",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    email: "jane.smith@example.com",
-    datetime: "2023-10-11T00:00",
-    message:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras consectetur tellus eget eleifend vulputate. Donec sodales mauris sed risus lacinia iaculis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam pellentesque elit nec ante sagittis, non congue nibh tincidunt. Nulla ex magna, vehicula ac condimentum vitae, cursus eu libero. ",
-  },
-];
-
 export default function ManageContactForm() {
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState("");
+  const [rows, setRows] = useState([]);
 
   const handleClickOpen = (rowData) => {
-    setMessage(rowData.message);
-    setOpen(true);
+    if (rowData) {
+      console.log("message " + rowData);
+      setMessage(rowData);
+      setOpen(true);
+    } else {
+      setMessage("null");
+      setOpen(true);
+    }
   };
 
   const handleClose = () => {
     setOpen(false);
   };
+
+  useEffect(() => {
+    // Fetch data from the API using Axios
+    axios
+      .get("http://localhost:3001/get-inquiry")
+      .then((response) => {
+        setRows(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching orders:", error);
+      });
+  }, []);
+  const getRowId = (row) => row._inquiryID;
   const columns = [
-    { field: "id", headerName: "ID", flex: 1 },
-    { field: "name", headerName: "Name", flex: 1 },
-    { field: "email", headerName: "Email", flex: 1 }, // Add this line
-    { field: "datetime", headerName: "Date and Time", flex: 1 },
+    { field: "_inquiryID", headerName: "ID", flex: 1 },
+    { field: "_name", headerName: "Name", flex: 2 },
+    { field: "_email", headerName: "Email", flex: 2 },
+    { field: "_date", headerName: "Date and Time", flex: 2 },
     {
-      field: "message",
+      field: "_message",
       headerName: "Message",
       sortable: false,
       flex: 1,
       renderCell: (params) => (
-        <IconButton color="primary" onClick={() => handleClickOpen(params.row)}>
+        <IconButton
+          color="primary"
+          onClick={() => handleClickOpen(params.row._message)}
+        >
           <Visibility />
         </IconButton>
       ),
@@ -74,6 +79,7 @@ export default function ManageContactForm() {
           disableColumnFilter
           disableColumnSelector
           density="compact"
+          getRowId={getRowId}
           slots={{ toolbar: GridToolbar }}
           slotProps={{
             toolbar: {

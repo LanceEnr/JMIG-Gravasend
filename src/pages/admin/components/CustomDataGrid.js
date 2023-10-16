@@ -51,13 +51,27 @@ function EditToolbar(props) {
 export default function FullFeaturedCrudGrid(props) {
   const [open, setOpen] = React.useState(false);
   const [action, setAction] = React.useState(null);
-  const [actionId, setActionId] = React.useState(null);
+  const [actionId, setActionId] = React.useState("");
   const [itemName, setItemName] = React.useState("");
   const [quantity, setQuantity] = React.useState("");
   const [location, setLocation] = React.useState("");
   const [lastUpdated, setLastUpdated] = React.useState("");
 
   const [dataClassification, setDataClassification] = React.useState("");
+  const [isEditing, setIsEditing] = React.useState(false);
+
+  const currentDate = new Date();
+  const options = {
+    weekday: "short",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short",
+  };
+  const formattedDate = currentDate.toLocaleString("en-US", options);
 
   const handleDialogClose = () => {
     setOpen(false);
@@ -70,26 +84,34 @@ export default function FullFeaturedCrudGrid(props) {
         [actionId]: { mode: GridRowModes.View },
       });
     } else if (action === "delete") {
+      deleteRecord(actionId);
       setRows(rows.filter((row) => row.id !== actionId));
     }
     setOpen(false);
+    handleDialogClose();
+
+    setIsEditing(false);
   };
 
-  const handleClick = () => {
-    // Create a new row
-    const newRow = {
-      id: Math.random(), // Generate a random id or use a library like uuid
-      // Add other fields with initial values if necessary
-    };
-
-    // Add the new row to the rows state
-    setRows((prevRows) => [...prevRows, newRow]);
-
-    // Set the mode of the new row to Edit
-    setRowModesModel((prevRowModesModel) => ({
-      ...prevRowModesModel,
-      [newRow.id]: { mode: GridRowModes.Edit },
-    }));
+  const handleClick = async () => {
+    if (isEditing) {
+      toast.error("Finish editing the current record before adding another.");
+    } else {
+      try {
+        const response = await axios.get("http://localhost:3001/generateId");
+        if (response.data.id) {
+          const newRow = {
+            id: response.data.id,
+            lastUpdated: formattedDate,
+          };
+          setIsEditing(true);
+          setRows((prevRows) => [...prevRows, newRow]);
+        }
+      } catch (error) {
+        console.error("Failed to generate an ID", error);
+        toast.error("Failed to generate an ID");
+      }
+    }
   };
 
   const [rows, setRows] = React.useState(props.rows);
@@ -100,57 +122,74 @@ export default function FullFeaturedCrudGrid(props) {
       event.defaultMuiPrevented = true;
     }
   };
-  const handleSaveClick = (id) => () => {
+
+  const handleSaveClick = (id, itemName, quantity, location) => () => {
     setAction("save");
     setActionId(id);
+    setItemName(itemName);
+    setQuantity(quantity);
+    setLocation(location);
     setOpen(true);
+    console.log(
+      "action id: " +
+        actionId +
+        " name: " +
+        itemName +
+        " quantity: " +
+        quantity +
+        " location: " +
+        location +
+        " last: " +
+        lastUpdated
+    );
   };
 
   const handleEditClick = (id) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-    console.log("clicked");
   };
 
   const handleSaveConfirmed = async (e) => {
+    e.preventDefault();
+
     setRowModesModel({
       ...rowModesModel,
       [actionId]: { mode: GridRowModes.View },
     });
+    console.log(
+      "action id: " +
+        actionId +
+        " name: " +
+        itemName +
+        " quantity: " +
+        quantity +
+        " location: " +
+        location +
+        " last: " +
+        lastUpdated
+    );
+    if (!itemName || !quantity || !location) {
+      // Show an error message and prevent saving
+      toast.error("All fields are required.");
+      return;
+    }
 
     try {
-      // Prepare the data to be sent
-      const newData = {
-        id: actionId,
-        itemName,
-        quantity,
-        location,
-        lastUpdated,
-      };
+      const response = await axios.post("http://localhost:3001/addInventory", {
+        actionId: actionId,
+        itemName: itemName,
+        quantity: quantity,
+        location: location,
+        lastUpdated: formattedDate,
+      });
 
-      e.preventDefault();
-      try {
-        const response = await axios.post(
-          "http://localhost:3001/addInventory",
-          {
-            newData,
-          }
-        );
-        console.log("Item added successfully", response.data);
-        toast.success("Item added successfully");
+      console.log("Item added successfully", response.data);
+      toast.success("Item added successfully");
 
-        if (response.data.isCurrent) {
-          setDataClassification("current");
-        } else if (response.data.isIncoming) {
-          setDataClassification("incoming");
-        } else {
-          setDataClassification("outgoing");
-        }
-      } catch (error) {
-        console.error("Item add failed", error);
-        toast.error("Item add failed");
-      }
+      setRowModesModel({
+        ...rowModesModel,
+        [actionId]: { mode: GridRowModes.View },
+      });
 
-      // Update the row's data with the edited values
       const updatedRows = rows.map((row) =>
         row.id === actionId
           ? {
@@ -164,9 +203,43 @@ export default function FullFeaturedCrudGrid(props) {
       );
       setRows(updatedRows);
       setOpen(false);
+
+      if (response.data.isCurrent) {
+        setDataClassification("current");
+      } else if (response.data.isIncoming) {
+        setDataClassification("incoming");
+      } else {
+        setDataClassification("outgoing");
+      }
     } catch (error) {
-      console.error("Error while saving data", error);
-      // Handle the error as needed
+      console.error("Item add failed", error);
+      setOpen(false);
+      toast.error("Item name already exists!");
+    }
+  };
+
+  const deleteRecord = async (id) => {
+    try {
+      const _inventoryID = parseInt(id, 10);
+      const response = await axios.delete(
+        `http://localhost:3001/deleteRecord/${_inventoryID}`
+      );
+
+      if (response.status === 200) {
+        // Delete the record from your local state
+        setRows(rows.filter((row) => row.id !== id));
+        // Close the confirmation dialog
+        setOpen(false);
+        toast.success("Record deleted successfully");
+      } else if (response.status === 404) {
+        // Display a "Record not found" toast message
+        toast.error("Record not found");
+      } else {
+        toast.error("Failed to delete the record");
+      }
+    } catch (error) {
+      console.error("Error deleting record", error);
+      toast.error("An error occurred while deleting the record");
     }
   };
 
@@ -207,7 +280,7 @@ export default function FullFeaturedCrudGrid(props) {
     width: props.actionWidth || 100,
     cellClassName: "actions",
     getActions: (params) => {
-      const { id, itemName, quantity, location, lastUpdated } = params;
+      const { id, itemName, quantity, location } = params.row;
       const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
       if (isInEditMode) {
@@ -218,13 +291,7 @@ export default function FullFeaturedCrudGrid(props) {
             sx={{
               color: "primary.main",
             }}
-            onClick={handleSaveClick(
-              id,
-              itemName,
-              quantity,
-              location,
-              lastUpdated
-            )}
+            onClick={handleSaveClick(id, itemName, quantity, location)}
           />,
           <GridActionsCellItem
             icon={<CancelIcon />}
@@ -307,9 +374,6 @@ export default function FullFeaturedCrudGrid(props) {
           </Button>
         </DialogActions>
       </Dialog>
-      {dataClassification && (
-        <div>Data Classification: {dataClassification}</div>
-      )}
     </Box>
   );
 }

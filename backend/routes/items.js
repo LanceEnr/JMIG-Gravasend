@@ -119,15 +119,24 @@ router.post("/register", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
+const getNextInquiryNum = async () => {
+  const counter = await Counter.findOneAndUpdate(
+    { name: "inquiryID" },
+    { $inc: { value: 1 } },
+    { new: true, upsert: true }
+  );
+  return counter.value;
+};
 router.post("/inquiry", async (req, res) => {
   try {
-    const { _name, _email, _message } = req.body;
-
+    const { _name, _email, _message, _date } = req.body;
+    const id = await getNextInquiryNum();
     const newInquiry = new Inquiry({
       _name,
       _email,
       _message,
+      _date,
+      _inquiryID: id,
     });
 
     await newInquiry.save();

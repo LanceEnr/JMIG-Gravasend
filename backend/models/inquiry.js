@@ -6,6 +6,8 @@ const inquirySchema = new mongoose.Schema(
     _name: String,
     _email: String,
     _message: String,
+    _inquiryID: String,
+    _date: String,
   },
   { collection: "inquiry" }
 );

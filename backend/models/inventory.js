@@ -11,6 +11,7 @@ const inventorySchema = new mongoose.Schema(
     _quantity: String,
     _location: String,
     _lastUpdated: String,
+    _status: String,
   },
   { collection: "inventory" }
 );

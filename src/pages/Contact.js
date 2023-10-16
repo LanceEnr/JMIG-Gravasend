@@ -23,6 +23,18 @@ function Contact() {
     _email: "",
     _message: "",
   });
+  const currentDate = new Date();
+  const options = {
+    weekday: "short",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short",
+  };
+  const formattedDate = currentDate.toLocaleString("en-US", options);
   const navigate = useNavigate();
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -37,10 +49,10 @@ function Contact() {
     const { _name, _email, _message } = inquiryData;
 
     try {
-      const response = await axios.post(
-        "http://localhost:3001/inquiry",
-        inquiryData
-      );
+      const response = await axios.post("http://localhost:3001/inquiry", {
+        ...inquiryData,
+        _date: formattedDate,
+      });
       console.log("Inquiry submitted successfully", response.data);
       toast.success("Inquiry submitted successfully", {
         autoClose: 500,
