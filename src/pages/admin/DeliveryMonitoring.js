@@ -5,9 +5,10 @@ import Typography from "antd/es/typography/Typography";
 import SpeedIcon from "@mui/icons-material/Speed";
 import ElectricCarIcon from "@mui/icons-material/ElectricCar";
 import CarCrashIcon from "@mui/icons-material/CarCrash";
+import TripOngoing from "./TripOngoing";
 function DeliveryMonitoring() {
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={3} sx={{ my: 2 }}>
       <Title>Delivery Monitoring</Title>
 
       <Grid item xs={12}>
@@ -37,93 +38,10 @@ ph!4v1693048413304!5m2!1sen!2sph"
           />
         </Paper>
       </Grid>
-      <Grid item xs={6}>
-        <Grid container spacing={3}>
-          <Grid item xs={6}>
-            <Paper
-              elevation={2}
-              sx={{
-                minHeight: "225px",
-                p: 2,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                textAlign: "center",
-              }}
-            >
-              {" "}
-              <Typography
-                variant="subtitle1"
-                style={{
-                  color: "#3f51b5",
-                  marginTop: "20px",
-                  marginBottom: "10px",
-                }}
-              >
-                Driver
-              </Typography>
-              <Avatar sx={{ margin: "10px 0" }} />
-              <Typography
-                variant="caption"
-                style={{ display: "block", marginBottom: "5px" }}
-              >
-                Juan Dela Cruz
-              </Typography>
-              <Typography
-                variant="caption"
-                style={{ display: "block", marginBottom: "20px" }}
-              >
-                Driver ID 2020176555
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid item xs={6}>
-            <Paper
-              elevation={2}
-              sx={{
-                minHeight: "225px",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                p: 2,
-                textAlign: "center",
-              }}
-            >
-              <Typography
-                variant="subtitle1"
-                style={{
-                  color: "#3f51b5",
-                  marginTop: "20px",
-                  marginBottom: "10px",
-                }}
-              >
-                Vehicle Details
-              </Typography>
-              <Typography
-                variant="caption"
-                style={{
-                  display: "block",
-                  marginBottom: "5px",
-                }}
-              >
-                2023 Isuzu C-Series CYZ52 M Dump Truck
-              </Typography>
-              <Typography
-                variant="caption"
-                style={{ display: "block", marginBottom: "20px" }}
-              >
-                MY32160
-              </Typography>
-            </Paper>
-          </Grid>
-        </Grid>
-      </Grid>
 
-      <Grid item xs={6}>
+      <Grid item xs={12}>
         <Grid container spacing={3}>
-          <Grid item xs={6}>
+          <Grid item xs={3}>
             <Paper
               elevation={2}
               sx={{
@@ -152,7 +70,7 @@ ph!4v1693048413304!5m2!1sen!2sph"
             </Paper>
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item xs={3}>
             <Paper
               elevation={2}
               sx={{
@@ -180,7 +98,7 @@ ph!4v1693048413304!5m2!1sen!2sph"
               </Box>
             </Paper>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={3}>
             <Paper
               elevation={2}
               sx={{
@@ -208,7 +126,7 @@ ph!4v1693048413304!5m2!1sen!2sph"
               </Box>
             </Paper>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={3}>
             <Paper
               elevation={2}
               sx={{
@@ -237,6 +155,12 @@ ph!4v1693048413304!5m2!1sen!2sph"
             </Paper>
           </Grid>
         </Grid>
+      </Grid>
+      <Grid item xs={12}>
+        <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+          <Title>Ongoing Trips</Title>
+          <TripOngoing />
+        </Paper>
       </Grid>
     </Grid>
   );

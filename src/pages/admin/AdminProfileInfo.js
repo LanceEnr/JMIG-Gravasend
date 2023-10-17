@@ -7,7 +7,13 @@ import {
   Paper,
   useMediaQuery,
   Avatar,
+  TextField,
+  InputAdornment,
+  IconButton,
+  Button,
 } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import Title from "./components/Title";
 
@@ -25,6 +31,13 @@ export default function AdminProfileInfo() {
     Phone: "",
     Birthdate: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordInputType, setPasswordInputType] = useState("password");
+  const handleShowPasswordToggle = () => {
+    setShowPassword(!showPassword);
+    setPasswordInputType(showPassword ? "password" : "text");
+  };
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("adminUserName");
@@ -48,66 +61,116 @@ export default function AdminProfileInfo() {
   }, []);
   const adminUserName = localStorage.getItem("adminUserName");
   return (
-    <Box>
-      <Title>Account Information</Title>
+    <div>
+      <Box>
+        <Title>Account Information</Title>
 
-      <Grid container spacing={3}>
-        <Grid item xs={4}>
-          <Paper
-            style={{
-              height: "100px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between", // Add this line
-              padding: "0 16px",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <Avatar
-                alt={adminUserName}
-                src={userAvatarUrl}
-                style={{ width: "60px", height: "60px", marginLeft: "16px" }}
-              />
-              <Typography variant="h5" style={{ marginLeft: "16px" }}>
-                {adminUserName}
-              </Typography>
-            </div>
-            <Typography
-              variant="subtitle1"
-              color="secondary"
-              style={{ marginRight: "16px" }}
+        <Grid container spacing={3}>
+          <Grid item xs={4}>
+            <Paper
+              style={{
+                height: "100px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between", // Add this line
+                padding: "0 16px",
+              }}
             >
-              ADMIN
-            </Typography>
-          </Paper>
-        </Grid>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <Avatar
+                  alt={adminUserName}
+                  src={userAvatarUrl}
+                  style={{ width: "60px", height: "60px", marginLeft: "16px" }}
+                />
+                <Typography variant="h5" style={{ marginLeft: "16px" }}>
+                  {adminUserName}
+                </Typography>
+              </div>
+              <Typography
+                variant="subtitle1"
+                color="secondary"
+                style={{ marginRight: "16px" }}
+              >
+                ADMIN
+              </Typography>
+            </Paper>
+          </Grid>
 
-        <Grid item xs={8}>
-          <Paper
-            style={{
-              minHeight: "100px",
-              padding: "16px 16px 16px 32px",
-              marginBottom: "16px",
-            }}
-          >
-            <Grid container spacing={2}>
-              {Object.entries(userData).map(([key, value]) => (
-                <Grid item xs={12} sm={6} md={4} lg={2} key={key}>
-                  <Typography variant="subtitle1" color="textSecondary">
-                    {key}
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    style={{ wordBreak: "break-word" }}
-                  >
-                    {value}
-                  </Typography>
-                </Grid>
-              ))}
-            </Grid>
-          </Paper>
+          <Grid item xs={8}>
+            <Paper
+              style={{
+                minHeight: "100px",
+                padding: "16px 16px 16px 32px",
+                marginBottom: "16px",
+              }}
+            >
+              <Grid container spacing={2}>
+                {Object.entries(userData).map(([key, value]) => (
+                  <Grid item xs={12} sm={6} md={4} lg={2} key={key}>
+                    <Typography variant="subtitle1" color="textSecondary">
+                      {key}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      style={{ wordBreak: "break-word" }}
+                    >
+                      {value}
+                    </Typography>
+                  </Grid>
+                ))}
+              </Grid>
+            </Paper>
+          </Grid>
         </Grid>
-      </Grid>
-    </Box>
+      </Box>
+      <Box>
+        <Title>Change Password</Title>
+
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Paper elevation={2} style={{ padding: "24px" }}>
+              <Grid container spacing={3} alignItems="center">
+                <Grid item xs={12}>
+                  <Box sx={{ mb: 2 }}>
+                    <TextField
+                      label="Current Password"
+                      name="CurrentPassword"
+                      type="password"
+                      fullWidth
+                      required
+                    />
+                  </Box>
+                  <TextField
+                    label="New Password"
+                    name="NewPassword"
+                    type={passwordInputType}
+                    fullWidth
+                    required
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            edge="end"
+                            onClick={handleShowPasswordToggle}
+                            aria-label="toggle password visibility"
+                          >
+                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Button variant="contained" color="primary" type="submit">
+                    Save changes
+                  </Button>
+                </Grid>
+              </Grid>
+            </Paper>
+          </Grid>
+        </Grid>
+      </Box>
+    </div>
   );
 }

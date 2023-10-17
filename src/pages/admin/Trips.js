@@ -3,7 +3,6 @@ import { Paper, Box, Tab, Tabs } from "@mui/material";
 
 import Title from "./components/Title";
 import TripVerification from "./TripVerification";
-import TripOngoing from "./TripOngoing";
 import TripRecords from "./TripRecords";
 function Inspection() {
   const [value, setValue] = useState(0);
@@ -23,13 +22,11 @@ function Inspection() {
               aria-label="basic tabs example"
             >
               <Tab label="Verification" />
-              <Tab label="Ongoing" />
               <Tab label="Records" />
             </Tabs>
           </Box>
           {value === 0 && <TripVerification />}
-          {value === 1 && <TripOngoing />}
-          {value === 2 && <TripRecords />}
+          {value === 1 && <TripRecords />}
         </Box>
       </Paper>
     </div>
