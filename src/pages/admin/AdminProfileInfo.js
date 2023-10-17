@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-
+import { toast } from "react-toastify";
 import Title from "./components/Title";
 
 export default function AdminProfileInfo() {
@@ -31,9 +31,15 @@ export default function AdminProfileInfo() {
     Phone: "",
     Birthdate: "",
   });
+  const [passwordData, setPasswordData] = useState({
+    CurrentPassword: "",
+    NewPassword: "",
+  });
 
   const [showPassword, setShowPassword] = useState(false);
   const [passwordInputType, setPasswordInputType] = useState("password");
+  const [newPassword, setNewPassword] = useState("");
+  const [resetInProgress, setResetInProgress] = useState(false);
   const handleShowPasswordToggle = () => {
     setShowPassword(!showPassword);
     setPasswordInputType(showPassword ? "password" : "text");
@@ -59,6 +65,69 @@ export default function AdminProfileInfo() {
         }
       });
   }, []);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setPasswordData({ ...passwordData, [name]: value });
+  };
+
+  const handlePasswordChange = () => {
+    const userName = localStorage.getItem("adminUserName");
+    const { CurrentPassword, NewPassword } = passwordData;
+
+    axios
+      .post("http://localhost:3001/admin-changepassword", {
+        userName,
+        currentPassword: CurrentPassword,
+        newPassword: NewPassword,
+      })
+      .then((response) => {
+        const lowercaseRegex = /[a-z]/;
+        const uppercaseRegex = /[A-Z]/;
+        const digitRegex = /[0-9]/;
+        const specialCharRegex = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/;
+
+        if (NewPassword.length < 8) {
+          toast.error("New Password must be at least 8 characters long");
+          return;
+        }
+        if (!lowercaseRegex.test(NewPassword)) {
+          toast.error("New Password must contain a lowercase character");
+          return;
+        }
+        if (!uppercaseRegex.test(NewPassword)) {
+          toast.error("New Password must contain an uppercase character");
+          return;
+        }
+        if (!digitRegex.test(NewPassword)) {
+          toast.error("New Password must contain a number");
+          return;
+        }
+        if (!specialCharRegex.test(NewPassword)) {
+          toast.error("New Password must contain a special character");
+          return;
+        }
+        toast.success("New Password updated successfully", {
+          autoClose: 50,
+          onClose: () => {
+            window.location.reload();
+          },
+        });
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          toast.error("Incorrect current password");
+        } else {
+          toast.error("Error updating password");
+        }
+        setPasswordData({
+          ...passwordData,
+          NewPassword: "",
+          CurrentPassword: "",
+        });
+      });
+  };
+
   const adminUserName = localStorage.getItem("adminUserName");
   return (
     <div>
@@ -136,7 +205,9 @@ export default function AdminProfileInfo() {
                       label="Current Password"
                       name="CurrentPassword"
                       type="password"
+                      value={passwordData.CurrentPassword}
                       fullWidth
+                      onChange={handleChange}
                       required
                     />
                   </Box>
@@ -144,7 +215,9 @@ export default function AdminProfileInfo() {
                     label="New Password"
                     name="NewPassword"
                     type={passwordInputType}
+                    value={passwordData.NewPassword}
                     fullWidth
+                    onChange={handleChange}
                     required
                     InputProps={{
                       endAdornment: (
@@ -162,7 +235,19 @@ export default function AdminProfileInfo() {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <Button variant="contained" color="primary" type="submit">
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    sx={{
+                      mt: 2,
+                      backgroundColor: "#004aad",
+                      color: "#fff",
+                      "&:hover": {
+                        backgroundColor: "#003882",
+                      },
+                    }}
+                    onClick={handlePasswordChange} // Call the appropriate function here
+                  >
                     Save changes
                   </Button>
                 </Grid>

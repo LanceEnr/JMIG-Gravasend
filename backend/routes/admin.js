@@ -478,4 +478,33 @@ router.get("/adminUser", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+router.post("/admin-changepassword", async (req, res) => {
+  try {
+    const { userName, currentPassword, newPassword } = req.body;
+
+    const user = await User.findOne({ _userName: userName });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const passwordMatch = await bcrypt.compare(currentPassword, user._pwd);
+    if (!passwordMatch) {
+      return res.status(401).json({ message: "Incorrect current password" });
+    }
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+    user._pwd = hashedPassword;
+
+    // Save the updated user object
+    await user.save();
+
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error updating password:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 module.exports = router;
