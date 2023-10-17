@@ -169,6 +169,7 @@ export default function AdminDashboard() {
   };
   const handleLogout = () => {
     localStorage.removeItem("adminToken");
+    localStorage.removeItem("adminUserName");
     dispatch({ type: "LOGOUT" });
     toast.success("Logout successfully", {
       autoClose: 50,

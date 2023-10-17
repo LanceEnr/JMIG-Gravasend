@@ -11,11 +11,14 @@ const appointmentSchema = new mongoose.Schema(
     _userName: String,
     _dayOfWeek: String,
     _time: String,
-    _fname: String,
+    _fName: String,
     _lName: String,
     _email: String,
     _note: String,
     _phone: String,
+    _dateTime: String,
+    _reasonResched: String,
+    _cancelReason: String,
   },
   { collection: "appointment" }
 );

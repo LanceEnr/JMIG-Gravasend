@@ -71,10 +71,12 @@ export default function SetAppointmentForm(props) {
     const userName = localStorage.getItem("userName");
     const { Agenda, Schedule, First, Last, Email, Phone, time, IsAM } =
       userData;
-    const formattedSchedule = moment(userData.Schedule).format("M-D-YYYY");
+    const formattedSchedule = moment(userData.Schedule).format("YYYY-MM-DD");
     const formattedTime = moment(time, "HH:mm").format(
       `h:mm ${IsAM ? "A" : "P"}`
     );
+    const formattedTime2 = moment(time, "HH:mm").format("HH:mm");
+    const dateTime = `${formattedSchedule}T${formattedTime2}`;
     axios
       .post("http://localhost:3001/save-appointment", {
         _userName: userName,
@@ -85,6 +87,7 @@ export default function SetAppointmentForm(props) {
         _phone: userData.Phone,
         _time: formattedTime,
         _email: userData.Email,
+        _dateTime: dateTime,
       })
       .then((response) => {
         toast.success("Appointment submitted successfully");
@@ -163,7 +166,7 @@ export default function SetAppointmentForm(props) {
                 onChange={(date) => {
                   setUserData({
                     ...userData,
-                    Schedule: date,
+                    Schedule: date.toDate(),
                   });
                 }}
               />

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Typography,
   Box,
@@ -16,17 +17,39 @@ export default function AdminProfileInfo() {
   const userName = "John Doe";
   const totalOrders = 10;
   const pendingOrders = 2;
+  const [users, setUsers] = useState([]);
+  const [userData, setUserData] = useState({
+    "First Name": "",
+    "Last Name": "",
+    Email: "",
+    Phone: "",
+    Birthdate: "",
+  });
 
-  const userData = {
-    "First Name": "John",
-    "Last Name": "Doe",
-    Email: "john.doe@example.com",
-    Phone: "123-456-7890",
-    Birthdate: "1990-01-01",
-  };
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("adminUserName");
+    axios
+      .get(`http://localhost:3001/adminUser?userName=${storedUsername}`)
+      .then((response) => {
+        setUsers(response.data);
+
+        if (response.data.length > 0) {
+          const user = response.data[0];
+
+          setUserData({
+            "First Name": user._fName,
+            "Last Name": user._lName,
+            Email: user._email,
+            Phone: user._phone,
+            Birthdate: user._bday,
+          });
+        }
+      });
+  }, []);
+  const adminUserName = localStorage.getItem("adminUserName");
   return (
     <Box>
-      <Title>Account Settings</Title>
+      <Title>Account Information</Title>
 
       <Grid container spacing={3}>
         <Grid item xs={4}>
@@ -41,12 +64,12 @@ export default function AdminProfileInfo() {
           >
             <div style={{ display: "flex", alignItems: "center" }}>
               <Avatar
-                alt={userName}
+                alt={adminUserName}
                 src={userAvatarUrl}
                 style={{ width: "60px", height: "60px", marginLeft: "16px" }}
               />
               <Typography variant="h5" style={{ marginLeft: "16px" }}>
-                {userName}
+                {adminUserName}
               </Typography>
             </div>
             <Typography

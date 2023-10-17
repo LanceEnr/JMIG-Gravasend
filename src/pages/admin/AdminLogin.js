@@ -79,7 +79,7 @@ export default function AdminLogin({ dispatch }) {
         console.log("Login successful", response.data);
         const { token, userName } = response.data;
         localStorage.setItem("adminToken", token);
-        localStorage.setItem("userName", userName);
+        localStorage.setItem("adminUserName", userName);
 
         if (loginData.rememberMe) {
           localStorage.setItem("rememberMeData", JSON.stringify(loginData));

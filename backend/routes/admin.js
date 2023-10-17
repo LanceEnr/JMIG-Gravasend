@@ -5,6 +5,7 @@ const Counter = require("../models/counter");
 const Code = require("../models/adminCode");
 const Order = require("../models/order");
 const Inventory = require("../models/inventory");
+const Appointment = require("../models/appointment");
 const Inquiry = require("../models/inquiry");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
@@ -350,4 +351,131 @@ router.get("/get-inquiry", async (req, res) => {
   }
 });
 
+router.get("/get-events", async (req, res) => {
+  try {
+    const appointment = await Appointment.find(); // Fetch all orders from the database
+    res.json(appointment);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Failed to fetch order data" });
+  }
+});
+
+router.post("/update-appointment-admin", async (req, res) => {
+  const {
+    appointmentNum,
+    _date,
+    _time,
+    _dateTime,
+    _reasonResched,
+    _cancelReason,
+  } = req.body;
+
+  try {
+    const existingAppointment = await Appointment.findOne({
+      _date,
+      _time,
+      _status: { $ne: "Cancelled" },
+    });
+
+    if (existingAppointment) {
+      return res.status(400).json({ error: "Appointment conflict" });
+    }
+
+    const updatedAppointment = await Appointment.findOneAndUpdate(
+      { _appointmentNum: appointmentNum },
+      {
+        $set: {
+          _date,
+          _time,
+          _dateTime,
+          _reasonResched,
+        },
+      },
+      { new: true }
+    );
+
+    if (!updatedAppointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+      console.log("Appointment not found");
+    }
+
+    // Respond with a success message
+    return res.status(200).json({ message: "Appointment edited successfully" });
+  } catch (error) {
+    // Handle errors
+    console.error("Error updating appointment:", error);
+    console.log("Error updating appointmen");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.post("/cancel-appointment-admin", async (req, res) => {
+  const { appointmentNum, _status, _cancelReason } = req.body;
+
+  try {
+    const cancelAppointment = await Appointment.findOneAndUpdate(
+      { _appointmentNum: appointmentNum },
+      {
+        $set: {
+          _status,
+          _cancelReason,
+        },
+      },
+      { new: true }
+    );
+
+    if (!cancelAppointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+      console.log("Appointment not found");
+    }
+
+    // Respond with a success message
+    return res
+      .status(200)
+      .json({ message: "Appointment cancelled successfully" });
+  } catch (error) {
+    // Handle errors
+    console.error("Error cancelling appointment:", error);
+    console.log("Error cancelling appointmen");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+router.get("/adminUser", async (req, res) => {
+  try {
+    const storedUsername = req.query.userName;
+    const users = await User.find({ _userName: storedUsername });
+
+    const decryptedUsers = [];
+
+    for (const user of users) {
+      const totalOrders = await Order.countDocuments({
+        _userName: storedUsername,
+      });
+      const pendingOrders = await Order.countDocuments({
+        _userName: storedUsername,
+        status: "Pending",
+      });
+
+      // Decrypt the email for each user using their IV and encryption key
+      const decryptedEmail = decryptEmail(
+        user._email,
+        user._iv,
+        user._encryptionKey
+      );
+
+      decryptedUsers.push({
+        ...user._doc,
+        totalOrders,
+        pendingOrders,
+        _email: decryptedEmail, // Replace the encrypted email with the decrypted one
+      });
+    }
+
+    res.json(decryptedUsers);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 module.exports = router;

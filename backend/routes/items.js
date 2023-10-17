@@ -315,9 +315,17 @@ const getNextAppointmentNum = async () => {
 };
 router.post("/save-appointment", async (req, res) => {
   try {
-    const { _userName, _note, _date, _fName, _lName, _phone, _time, _email } =
-      req.body;
-
+    const {
+      _userName,
+      _note,
+      _date,
+      _fName,
+      _lName,
+      _phone,
+      _time,
+      _email,
+      _dateTime,
+    } = req.body;
     // Check if an appointment with the same date, time, and status "Cancelled" exists
     const existingAppointment = await Appointment.findOne({
       _date,
@@ -342,6 +350,9 @@ router.post("/save-appointment", async (req, res) => {
       _email,
       _time,
       _status: "Upcoming",
+      _dateTime,
+      _reasonResched: "",
+      _cancelReason: "",
     });
 
     await appointment.save();
@@ -384,6 +395,7 @@ router.post("/update-appointment", async (req, res) => {
     _phone,
     _time,
     _email,
+    _dateTime,
   } = req.body;
 
   try {
@@ -409,6 +421,7 @@ router.post("/update-appointment", async (req, res) => {
           _phone,
           _time,
           _email,
+          _dateTime,
         },
       },
       { new: true }

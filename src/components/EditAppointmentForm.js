@@ -43,6 +43,23 @@ export default function EditAppointmentForm(props) {
     time: null,
     IsAM: true,
   });
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("userName");
+    axios
+      .get(`http://localhost:3001/user?userName=${storedUsername}`)
+      .then((response) => {
+        if (response.data.length > 0) {
+          const user = response.data[0];
+
+          setUserData({
+            First: user._fName,
+            Last: user._lName,
+            Email: user._email,
+            Phone: user._phone,
+          });
+        }
+      });
+  }, []);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -56,10 +73,12 @@ export default function EditAppointmentForm(props) {
     const appointmentNum = props.appointmentNum;
     const { Agenda, Schedule, First, Last, Email, Phone, time, IsAM } =
       userData;
-    const formattedSchedule = moment(userData.Schedule).format("M-D-YYYY");
+    const formattedSchedule = moment(Schedule).format("YYYY-MM-DD");
     const formattedTime = moment(time, "HH:mm").format(
       `h:mm ${IsAM ? "A" : "P"}`
     );
+    const formattedTime2 = moment(time, "HH:mm").format("HH:mm");
+    const dateTime = `${formattedSchedule}T${formattedTime2}`;
     axios
       .post("http://localhost:3001/update-appointment", {
         appointmentNum: appointmentNum,
@@ -71,6 +90,7 @@ export default function EditAppointmentForm(props) {
         _phone: userData.Phone,
         _time: formattedTime,
         _email: userData.Email,
+        _dateTime: dateTime,
       })
       .then((response) => {
         toast.success("Appointment submitted successfully");
@@ -149,7 +169,7 @@ export default function EditAppointmentForm(props) {
                 onChange={(date) => {
                   setUserData({
                     ...userData,
-                    Schedule: date,
+                    Schedule: date.toDate(),
                   });
                 }}
               />
