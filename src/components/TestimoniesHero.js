@@ -70,24 +70,12 @@ export default function TestimoniesHero() {
                   justifyContent: "center",
                 }}
               >
-                <Avatar
-                  sx={{
-                    width: 70,
-                    height: 70,
-                    marginBottom: 2,
-                    borderColor: "#bd8512",
-                    borderWidth: 2,
-                    borderStyle: "solid",
-                  }}
-                >
-                  {testimony.avatar}
-                </Avatar>
                 <FormatQuoteIcon
                   sx={{
                     transform: "scaleY(-1)",
                     color: "#bd8512",
                     pointerEvents: "none",
-                    fontSize: "40px",
+                    fontSize: "80px",
                   }}
                 />
                 <Typography

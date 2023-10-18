@@ -40,19 +40,9 @@ function ChooseBanner() {
         >
           Our products are sourced responsibly and sustainably. We believe in
           doing our part for the environment, and we ensure that our operations
-          have minimal impact on the natural world.
-        </Typography>
-        <Typography
-          variant="caption"
-          gutterBottom
-          sx={{
-            width: isMobile ? "100%" : "50%",
-            mb: 2,
-            textAlign: "center",
-          }}
-        >
-          By choosing us, you’re not just getting superior materials - you’re
-          also contributing to a greener planet.
+          have minimal impact on the natural world. By choosing us, you’re not
+          just getting superior materials - you’re also contributing to a
+          greener planet.
         </Typography>
       </Box>
     </div>

@@ -60,6 +60,8 @@ import { useNavigate } from "react-router-dom";
 import RandomStringGenerator from "./components/RandomStringGenerator";
 import EventIcon from "@mui/icons-material/Event";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import AddProduct from "./AddProduct";
+import Content from "./Content";
 
 function Copyright(props) {
   return (
@@ -446,6 +448,8 @@ export default function AdminDashboard() {
         <Container maxWidth="lg" sx={{ my: 3 }}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
+              <Content />
+              <AddProduct />
               <DeliveryMonitoring />
               <AdminProfileInfo />
               <FleetInformation />

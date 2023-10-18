@@ -236,16 +236,8 @@ export default function AdminProfileInfo() {
                 </Grid>
                 <Grid item xs={12}>
                   <Button
-                    variant="primary"
+                    variant="contained"
                     type="submit"
-                    sx={{
-                      mt: 2,
-                      backgroundColor: "#004aad",
-                      color: "#fff",
-                      "&:hover": {
-                        backgroundColor: "#003882",
-                      },
-                    }}
                     onClick={handlePasswordChange} // Call the appropriate function here
                   >
                     Save changes

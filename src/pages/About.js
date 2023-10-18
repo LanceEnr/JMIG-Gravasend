@@ -22,6 +22,45 @@ function About() {
       </div>
       <Box
         sx={{
+          pt: 16,
+          bgcolor: "#fafbf5",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Container>
+          <Typography
+            variant="h4"
+            gutterBottom
+            component="div"
+            sx={{
+              position: "relative",
+              textAlign: "center",
+            }}
+          >
+            Mission
+          </Typography>
+          <Typography variant="subtitle1" color="text.secondary" align="center">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
+            posuere elementum orci ac fermentum. Vestibulum tempor consequat
+            eros, non ultricies sapien pharetra eget. Interdum et malesuada
+            fames ac ante ipsum primis in faucibus. Nulla at auctor quam, eu
+            cursus odio. Sed lacinia mollis ex, vitae accumsan enim porta quis.
+            Nam lobortis scelerisque cursus. Donec id vestibulum felis. Morbi
+            augue diam, ornare quis ipsum at, aliquet feugiat orci. Lorem ipsum
+            dolor sit amet, consectetur adipiscing elit. Vestibulum posuere
+            elementum orci ac fermentum. Vestibulum tempor consequat eros, non
+            ultricies sapien pharetra eget. Interdum et malesuada fames ac ante
+            ipsum primis in faucibus. Nulla at auctor quam, eu cursus odio. Sed
+            lacinia mollis ex, vitae accumsan enim porta quis. Nam lobortis
+            scelerisque cursus. Donec id vestibulum felis. Morbi augue diam,
+            ornare quis ipsum at, aliquet feugiat orci.
+          </Typography>
+        </Container>
+      </Box>
+      <Box
+        sx={{
           py: 16,
           bgcolor: "#fafbf5",
           display: "flex",
@@ -39,7 +78,7 @@ function About() {
               textAlign: "center",
             }}
           >
-            Our Services
+            Vision
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" align="center">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
