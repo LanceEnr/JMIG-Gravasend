@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -25,25 +25,66 @@ function getRandomString(length) {
   return result;
 }
 
-const rows = [
-  {
-    id: 1,
-    accessCode: "F2pmpD",
-    datetime: "2023-09-30 19:59",
-  },
-  // Add more rows as needed
-];
-
 export default function RandomStringGenerator() {
   const navigate = useNavigate();
   const [randomString, setRandomString] = useState(getRandomString(6));
+  const [rows, setRows] = useState([]);
+  const currentDate = new Date();
+  const options = {
+    weekday: "short",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short",
+  };
+  const formattedDate = currentDate.toLocaleString("en-US", options);
+
+  useEffect(() => {
+    // Fetch data from your database and update the rows state
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/accessCodes");
+        const rowsWithIds = response.data.map((row) => ({
+          ...row,
+          id: row._codeID,
+        }));
+        setRows(rowsWithIds);
+      } catch (error) {
+        console.error("Error fetching access codes", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleGenerate = () => {
     setRandomString(getRandomString(6));
   };
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(randomString);
+  const handleCopyAccessCode = (accessCode) => {
+    // Copy the access code to the clipboard
+    navigator.clipboard.writeText(accessCode);
+    toast.success("Access code copied to clipboard");
+  };
+
+  const handleDeleteRow = async (adminCode) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:3001/accessCodes/${adminCode}`
+      );
+      if (response.status === 204) {
+        setRows((prevRows) =>
+          prevRows.filter((row) => row._adminCode !== adminCode)
+        );
+        toast.success("Code deleted successfully");
+      }
+    } catch (error) {
+      console.error("Error deleting row", error);
+      toast.error("Error deleting code");
+    }
   };
 
   const handleGenerateAndPost = async (e) => {
@@ -51,8 +92,16 @@ export default function RandomStringGenerator() {
     try {
       const response = await axios.post("http://localhost:3001/generateCode", {
         accessCode: randomString,
+        formattedDate,
       });
-      console.log("Generated code successfully", response.data);
+
+      const generatedCode = response.data;
+      const newRow = {
+        ...generatedCode,
+        id: generatedCode._codeID,
+      };
+      setRows((prevRows) => [...prevRows, newRow]);
+
       toast.success("Generated code successfully");
       handleGenerate();
     } catch (error) {
@@ -62,15 +111,16 @@ export default function RandomStringGenerator() {
   };
 
   const columns = [
-    { field: "id", headerName: "ID", flex: 1 },
-    { field: "accessCode", headerName: "Access Code", flex: 1 },
-    { field: "datetime", headerName: "Date and Time Generated", flex: 1 },
+    { field: "_codeID", headerName: "ID", flex: 1 },
+    { field: "_adminCode", headerName: "Access Code", flex: 1 },
+    { field: "_isRedeem", headerName: "Redemption Status", flex: 1 },
+    { field: "_dateTime", headerName: "Date and Time Generated", flex: 1 },
     {
       field: "actions",
       headerName: "Actions",
       sortable: false,
       flex: 1,
-      renderCell: () => (
+      renderCell: (params) => (
         <React.Fragment>
           <GridActionsCellItem
             icon={<ContentCopyIcon />}
@@ -78,12 +128,14 @@ export default function RandomStringGenerator() {
             sx={{
               color: "primary.main",
             }}
+            onClick={() => handleCopyAccessCode(params.row._adminCode)}
           />
           <GridActionsCellItem
             icon={<DeleteOutlineIcon />}
             label="Remove"
             className="textPrimary"
             color="inherit"
+            onClick={() => handleDeleteRow(params.row._adminCode)}
           />
         </React.Fragment>
       ),

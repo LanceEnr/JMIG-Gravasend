@@ -7,6 +7,7 @@ const Order = require("../models/order");
 const Inventory = require("../models/inventory");
 const Appointment = require("../models/appointment");
 const Inquiry = require("../models/inquiry");
+const Banner = require("../models/banner");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -14,6 +15,8 @@ const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const iv = crypto.randomBytes(16).toString("hex");
 const encryptionKey = crypto.randomBytes(32).toString("hex");
+const multer = require("multer");
+const path = require("path");
 
 const transporter = nodemailer.createTransport({
   service: "Gmail", // Use a valid email service (e.g., Gmail, Outlook, etc.)
@@ -51,6 +54,21 @@ function generateOTP() {
 const registeredUsers = [
   // Your registered users' data here
 ];
+
+const storage = multer.diskStorage({
+  destination: "images/banner/uploads/", // The directory where uploaded files will be saved
+  filename: function (req, file, cb) {
+    cb(null, "banner-" + Date.now() + path.extname(file.originalname)); // Generate a unique filename for each uploaded file
+  },
+});
+
+// Create a multer instance with the defined storage engine
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1000000, // Limit the file size to 1MB
+  },
+});
 
 router.post("/adminRegister", async (req, res) => {
   const {
@@ -262,9 +280,25 @@ router.get("/outgoingInventory", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+const getNextCode = async () => {
+  try {
+    const counter = await Counter.findOneAndUpdate(
+      { name: "_codeID" },
+      { $inc: { value: 1 } },
+      { new: true, upsert: true }
+    );
+    return counter.value;
+  } catch (err) {
+    console.error("Error getting the next inventory number:", err);
+    throw err;
+  }
+};
 router.post("/generateCode", async (req, res) => {
   try {
-    const { accessCode } = req.body;
+    const _codeID = await getNextCode();
+    console.log(_codeID);
+    const { accessCode, formattedDate } = req.body;
 
     const existingCode = await Code.findOne({
       _adminCode: accessCode,
@@ -277,11 +311,13 @@ router.post("/generateCode", async (req, res) => {
     const code = new Code({
       _isRedeem: "false",
       _adminCode: accessCode,
+      _dateTime: formattedDate,
+      _codeID: _codeID,
     });
 
     await code.save();
 
-    res.json({ message: "Admin code generated successfully" });
+    res.json(code);
   } catch (error) {
     console.error("Error generating admin code:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -507,4 +543,138 @@ router.post("/admin-changepassword", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+router.post("/admin-check-email", async (req, res) => {
+  const { _email } = req.body;
+
+  const users = await User.find({}, "_email _iv _encryptionKey");
+  let isEmailUsed = false;
+  for (const user of users) {
+    const { _email: encryptedEmail, _iv, _encryptionKey } = user;
+
+    const decryptedEmail = decryptEmail(encryptedEmail, _iv, _encryptionKey);
+
+    if (decryptedEmail === _email) {
+      isEmailUsed = true;
+      break;
+    }
+  }
+  if (isEmailUsed) {
+    console.log("working");
+    res.json({ exists: isEmailUsed });
+  } else {
+    console.log("working");
+    res.json({ exists: isEmailUsed });
+  }
+});
+
+router.post("/admin-send-otp", async (req, res) => {
+  const { _email } = req.body;
+
+  const otp = generateOTP();
+
+  const mailOptions = {
+    to: _email,
+    subject: "Password Reset One-Time Password (OTP)",
+    text: `Dear Admin,
+
+We have received a request to reset your password for JMIG Gravel and Sand Supply. Your One-Time Password (OTP) for the password reset process is: ${otp}
+
+Please enter this OTP on the reset password page to continue with the password reset procedure.
+
+If you did not request this password reset, please ignore this email.
+
+Sincerely,
+JMIG Gravel and Sand Supply`,
+  };
+
+  transporter.sendMail(mailOptions, (error) => {
+    if (error) {
+      console.error("Error sending OTP:", error);
+      res.json({ success: false });
+    } else {
+      console.log("OTP sent successfully.");
+      res.json({ success: true, otp: otp });
+    }
+  });
+});
+
+router.post("/admin-reset-password", async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+    let getEmail = "";
+    const users = await User.find({}, "_email _iv _encryptionKey");
+    let emailVerified = false;
+    for (const user of users) {
+      const { _email: encryptedEmail, _iv, _encryptionKey } = user;
+
+      const decryptedEmail = decryptEmail(encryptedEmail, _iv, _encryptionKey);
+
+      if (decryptedEmail === email) {
+        getEmail = encryptedEmail;
+      }
+    }
+    const user = await User.findOne({ _email: getEmail });
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+    user._pwd = hashedPassword;
+
+    await user.save();
+
+    res.json({ success: true, message: "Password reset successfully." });
+  } catch (error) {
+    console.error("Error:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to reset password." });
+  }
+});
+
+router.get("/accessCodes", async (req, res) => {
+  try {
+    const codes = await Code.find({}, { _id: 0 }); // Exclude the _id field
+    res.json(codes);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Failed to fetch order data" });
+  }
+});
+
+router.delete("/accessCodes/:adminCode", async (req, res) => {
+  const adminCode = req.params.adminCode;
+
+  try {
+    // Find and remove the code by _adminCode
+    await Code.deleteOne({ _adminCode: adminCode });
+    res.status(204).send(); // 204 No Content on successful deletion
+  } catch (error) {
+    console.error("Error deleting code:", error);
+    res.status(500).json({ error: "Failed to delete the code" });
+  }
+});
+
+router.post("/upload-banner", upload.single("image"), async (req, res) => {
+  const category = req.body.category;
+  const heading = req.body.heading;
+  const subheading = req.body.subheading;
+  const image = req.file.path;
+
+  const banner = new Banner({
+    _bannerType: category,
+    heading: heading,
+    _heading: subheading,
+    _subheading: image,
+  });
+
+  try {
+    await banner.save();
+
+    // Respond with a success message
+    res.status(200).json({ message: "Banner uploaded and saved successfully" });
+  } catch (error) {
+    console.error("Error uploading banner:", error);
+    res.status(500).json({ error: "Banner upload failed" });
+  }
+});
+
 module.exports = router;

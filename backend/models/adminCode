@@ -3,8 +3,13 @@ const mongoose = require("mongoose");
 // Define the schema for the 'Item' model
 const adminCodeSchema = new mongoose.Schema(
   {
+    _codeID: {
+      type: Number,
+      unique: true,
+    },
     _isRedeem: Boolean,
     _adminCode: String,
+    _dateTime: String,
   },
   { collection: "adminCode" }
 );

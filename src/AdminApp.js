@@ -13,6 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminRegister from "./pages/admin/AdminRegister";
+import AdminForgotPassword from "./pages/admin/AdminForgotPassword";
 import Home from "./pages/Home";
 
 const initialState = {
@@ -39,6 +40,11 @@ function AdminApp() {
           <Route path="/adminLogin" exact element={<AdminLogin />} />
           <Route path="/adminRegister" exact element={<AdminRegister />} />
           <Route path="/adminDashboard" exact element={<AdminDashboard />} />
+          <Route
+            path="/adminForgotPassword"
+            exact
+            element={<AdminForgotPassword />}
+          />
         </Routes>
         <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
       </Router>

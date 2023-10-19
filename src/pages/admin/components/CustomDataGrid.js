@@ -60,6 +60,9 @@ export default function FullFeaturedCrudGrid(props) {
   const [dataClassification, setDataClassification] = React.useState("");
   const [isEditing, setIsEditing] = React.useState(false);
 
+  const [rows, setRows] = React.useState(props.rows);
+  const [rowModesModel, setRowModesModel] = React.useState({});
+
   const currentDate = new Date();
   const options = {
     weekday: "short",
@@ -94,28 +97,21 @@ export default function FullFeaturedCrudGrid(props) {
   };
 
   const handleClick = async () => {
-    if (isEditing) {
-      toast.error("Finish editing the current record before adding another.");
-    } else {
-      try {
-        const response = await axios.get("http://localhost:3001/generateId");
-        if (response.data.id) {
-          const newRow = {
-            id: response.data.id,
-            lastUpdated: formattedDate,
-          };
-          setIsEditing(true);
-          setRows((prevRows) => [...prevRows, newRow]);
-        }
-      } catch (error) {
-        console.error("Failed to generate an ID", error);
-        toast.error("Failed to generate an ID");
+    try {
+      const response = await axios.get("http://localhost:3001/generateId");
+      if (response.data.id) {
+        const newRow = {
+          id: response.data.id,
+          lastUpdated: formattedDate,
+        };
+        setRows((prevRows) => [...prevRows, newRow]);
+        setActionId(response.data.id);
       }
+    } catch (error) {
+      console.error("Failed to generate an ID", error);
+      toast.error("Failed to generate an ID");
     }
   };
-
-  const [rows, setRows] = React.useState(props.rows);
-  const [rowModesModel, setRowModesModel] = React.useState({});
 
   const handleRowEditStop = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -124,6 +120,10 @@ export default function FullFeaturedCrudGrid(props) {
   };
 
   const handleSaveClick = (id, itemName, quantity, location) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [actionId]: { mode: GridRowModes.Edit },
+    });
     setAction("save");
     setActionId(id);
     setItemName(itemName);
