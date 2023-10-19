@@ -35,16 +35,9 @@ function Home() {
         <Typography
           variant={isMobile ? "h4" : "h2"}
           gutterBottom
-          sx={{ fontWeight: "bold" }}
+          sx={{ fontWeight: "bold", width: "50%" }}
         >
-          Delivering Quality Materials
-        </Typography>
-        <Typography
-          variant={isMobile ? "h4" : "h2"}
-          gutterBottom
-          sx={{ fontWeight: "bold" }}
-        >
-          Building Strong Foundations
+          Delivering Quality Materials Building Strong Foundations
         </Typography>
         <Typography
           variant="body1"

@@ -1,11 +1,13 @@
 const express = require("express");
 const router = express.Router();
+
 const User = require("../models/adminUser");
 const Counter = require("../models/counter");
 const Code = require("../models/adminCode");
 const Order = require("../models/order");
 const Inventory = require("../models/inventory");
 const Appointment = require("../models/appointment");
+const Testimonial = require("../models/testimonial");
 const Inquiry = require("../models/inquiry");
 const Banner = require("../models/banner");
 const mongoose = require("mongoose");
@@ -676,5 +678,20 @@ router.post("/upload-banner", upload.single("image"), async (req, res) => {
     res.status(500).json({ error: "Banner upload failed" });
   }
 });
+router.post("/testimonials", async (req, res) => {
+  const testimonialData = req.body;
 
+  try {
+    // Create a new testimonial document
+    const testimonial = new Testimonial(testimonialData);
+
+    // Save the testimonial to the database
+    await testimonial.save();
+
+    res.status(201).json({ message: "Testimonial submitted successfully" });
+  } catch (error) {
+    console.error("Error submitting testimonial:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 module.exports = router;

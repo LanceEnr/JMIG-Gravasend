@@ -126,6 +126,7 @@ export default function EditTestimonials() {
                   <TextField
                     fullWidth
                     id="testimonial"
+                    name="testimonial"
                     label="Testimonial"
                     multiline
                     rows={2}
@@ -180,6 +181,7 @@ export default function EditTestimonials() {
                   <TextField
                     fullWidth
                     id="testimonial2"
+                    name="testimonial2"
                     label="Testimonial"
                     multiline
                     rows={2}
@@ -234,6 +236,7 @@ export default function EditTestimonials() {
                   <TextField
                     fullWidth
                     id="testimonial3"
+                    name="testimonial3"
                     label="Testimonial"
                     multiline
                     rows={2}
