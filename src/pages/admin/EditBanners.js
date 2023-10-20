@@ -12,6 +12,7 @@ import {
   FormControl,
   Select,
   InputLabel,
+  ListSubheader,
 } from "@mui/material";
 
 export default function EditBanners() {
@@ -127,8 +128,18 @@ export default function EditBanners() {
                       label="Category"
                       onChange={handleCategoryChange}
                     >
-                      <MenuItem value={"Homepage Full"}>Homepage Full</MenuItem>
-                      <MenuItem value={"Homepage Half"}>Homepage Half</MenuItem>
+                      <ListSubheader>Miscellanous Banners</ListSubheader>
+                      <MenuItem value={"Homepage Full Banner"}>
+                        Homepage Full Banner
+                      </MenuItem>
+                      <MenuItem value={"Homepage Half Banner"}>
+                        Homepage Half Banner
+                      </MenuItem>
+                      <MenuItem value={"Contact Us Banner"}>
+                        Contact Us Banner
+                      </MenuItem>
+
+                      <ListSubheader>Page Title Banners</ListSubheader>
                       <MenuItem value={"Products Page"}>Products Page</MenuItem>
                       <MenuItem value={"Services Page"}>Services Page</MenuItem>
                       <MenuItem value={"FAQS Page"}>FAQS Page</MenuItem>
@@ -137,6 +148,7 @@ export default function EditBanners() {
                     </Select>
                   </FormControl>
                 </Grid>
+
                 <Grid item xs={6}>
                   <TextField
                     label="Heading"

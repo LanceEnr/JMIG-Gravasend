@@ -539,3 +539,24 @@ export const rowsUserManagement = [
   },
   // Add more rows as needed
 ];
+
+export const columnsFaqs = [
+  { field: "id", headerName: "ID", flex: 1 },
+  { field: "question", headerName: "Question", flex: 4, editable: true }, // Increased flex value
+  { field: "answer", headerName: "Answer", flex: 14, editable: true },
+];
+
+export const rowsFaqs = [
+  {
+    id: 1,
+    question: "How do I create an account?",
+    answer:
+      "You can create an account by making sure that lorem ipsum is lorep ipsum dolor et.",
+  },
+  {
+    id: 2,
+    question: "How do I register an account?",
+    answer:
+      "You can register an account by making sure that lorem ipsum is lorep ipsum dolor et.",
+  },
+];

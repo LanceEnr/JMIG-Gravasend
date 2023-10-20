@@ -27,6 +27,8 @@
     "buffer": "^6.0.3",
     "credential-handler-polyfill": "^3.2.0",
     "dayjs": "^1.11.10",
+    "firebase": "^10.5.0",
+    "firebase-admin": "^11.11.0",
     "jsonwebtoken": "^9.0.2",
     "moment": "^2.29.4",
     "planby": "^1.1.4",
