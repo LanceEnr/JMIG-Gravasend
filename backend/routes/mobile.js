@@ -10,7 +10,6 @@ router.get("/fetch-cargo", (req, res) => {
       const cargoData = response.data;
 
       if (cargoData) {
-        console.log('Data from "Cargo" collection:', cargoData);
         res.json(cargoData);
       } else {
         console.log('No data found in the "Cargo" collection.');
@@ -31,7 +30,6 @@ router.get("/fetch-documentCheck", (req, res) => {
       const documentData = response.data;
 
       if (documentData) {
-        console.log('Data from "Document Check" collection:', documentData);
         res.json(documentData);
       } else {
         console.log('No data found in the "Document Check" collection.');
@@ -53,10 +51,6 @@ router.get("/fetch-documentCheckSignatures", (req, res) => {
       const signatureData = response.data;
 
       if (signatureData) {
-        console.log(
-          'Data from "Document Signature Check" collection:',
-          signatureData
-        );
         res.json(signatureData);
       } else {
         console.log(
@@ -80,7 +74,6 @@ router.get("/fetch-proof", (req, res) => {
       const proofData = response.data;
 
       if (proofData) {
-        console.log('Data from "Proof of Delivery" collection:', proofData);
         res.json(proofData);
       } else {
         console.log('No data found in the "Proof of Delivery" collection.');
@@ -102,7 +95,6 @@ router.get("/fetch-schecklist", (req, res) => {
       const checlistData = response.data;
 
       if (checlistData) {
-        console.log('Data from "Safety Checklist" collection:', checlistData);
         res.json(checlistData);
       } else {
         console.log('No data found in the "Safety Checklist" collection.');
@@ -124,7 +116,6 @@ router.get("/fetch-speed", (req, res) => {
       const speedData = response.data;
 
       if (speedData) {
-        console.log('Data from "Speed" collection:', speedData);
         res.json(speedData);
       } else {
         console.log('No data found in the "Speed" collection.');
@@ -146,7 +137,6 @@ router.get("/fetch-tripDash", (req, res) => {
       const tripData = response.data;
 
       if (tripData) {
-        console.log('Data from "Trip Dashboard" collection:', tripData);
         res.json(tripData);
       } else {
         console.log('No data found in the "Trip Dashboard" collection.');
@@ -166,7 +156,6 @@ router.get("/fetch-tripHistory", (req, res) => {
       const tripHistoryData = response.data;
 
       if (tripHistoryData) {
-        console.log('Data from "Trip History" collection:', tripHistoryData);
         res.json(tripHistoryData);
       } else {
         console.log('No data found in the "Trip History" collection.');
@@ -188,10 +177,6 @@ router.get("/fetch-inspectionRecords", (req, res) => {
       const insectionRecordsData = response.data;
 
       if (insectionRecordsData) {
-        console.log(
-          'Data from "Inspection Records" collection:',
-          insectionRecordsData
-        );
         res.json(insectionRecordsData);
       } else {
         console.log('No data found in the "Inspection Records" collection.');
@@ -211,7 +196,6 @@ router.get("/fetch-location", (req, res) => {
       const locationData = response.data;
 
       if (locationData) {
-        console.log('Data from "Location" collection:', locationData);
         res.json(locationData);
       } else {
         console.log('No data found in the "Location" collection.');
@@ -233,10 +217,6 @@ router.get("/fetch-maintenaceHistory", (req, res) => {
       const maintenaceHistoryData = response.data;
 
       if (maintenaceHistoryData) {
-        console.log(
-          'Data from "Maintenance History" collection:',
-          maintenaceHistoryData
-        );
         res.json(maintenaceHistoryData);
       } else {
         console.log('No data found in the "Maintenance History" collection.');
@@ -258,10 +238,6 @@ router.get("/fetch-maintenanceReminders", (req, res) => {
       const maintenanceRemindersData = response.data;
 
       if (maintenanceRemindersData) {
-        console.log(
-          'Data from "Maintenance Reminders" collection:',
-          maintenanceRemindersData
-        );
         res.json(maintenanceRemindersData);
       } else {
         console.log('No data found in the "Maintenance Reminders" collection.');
@@ -281,7 +257,6 @@ router.get("/fetch-trucks", (req, res) => {
       const trucksData = response.data;
 
       if (trucksData) {
-        console.log('Data from "Trucks" collection:', trucksData);
         res.json(trucksData);
       } else {
         console.log('No data found in the "Trucks" collection.');
@@ -303,10 +278,6 @@ router.get("/fetch-upcomingInspections", (req, res) => {
       const upcomingInspectionsData = response.data;
 
       if (upcomingInspectionsData) {
-        console.log(
-          'Data from "Upcoming Inspections" collection:',
-          upcomingInspectionsData
-        );
         res.json(upcomingInspectionsData);
       } else {
         console.log('No data found in the "Upcoming Inspections" collection.');

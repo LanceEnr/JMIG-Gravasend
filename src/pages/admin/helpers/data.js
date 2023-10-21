@@ -1,6 +1,7 @@
 import axios from "axios";
+import React, { useState } from "react";
+import { DataGrid } from "@mui/x-data-grid";
 
-// Function to fetch inventory data from the database
 const fetchInventoryData = async () => {
   try {
     const response = await axios.get("http://localhost:3001/currentInventory");
@@ -11,7 +12,6 @@ const fetchInventoryData = async () => {
   }
 };
 
-// Function to transform the data into the desired format
 const transformInventoryData = (data) => {
   return data.map((item) => ({
     id: item._inventoryID,
@@ -22,10 +22,8 @@ const transformInventoryData = (data) => {
   }));
 };
 
-// Fetch and transform the data
 const rowsCurrentInventory = transformInventoryData(await fetchInventoryData());
 
-// Export the transformed data
 export { rowsCurrentInventory };
 
 const fetchIncomingInventoryData = async () => {
@@ -39,7 +37,6 @@ const fetchIncomingInventoryData = async () => {
   }
 };
 
-// Function to transform the data into the desired format
 const transformIncomingInventoryData = (data) => {
   return data.map((item) => ({
     id: item._inventoryID,
@@ -50,12 +47,10 @@ const transformIncomingInventoryData = (data) => {
   }));
 };
 
-// Fetch and transform the data for incoming inventory
 const rowsIncomingInventory = transformIncomingInventoryData(
   await fetchIncomingInventoryData()
 );
 
-// Export the transformed data
 export { rowsIncomingInventory };
 
 const fetchOutgoingInventoryData = async () => {
@@ -68,10 +63,9 @@ const fetchOutgoingInventoryData = async () => {
   }
 };
 
-// Function to transform the data into the desired format
 const transformOutgoingInventoryData = (data) => {
   return data.map((item) => ({
-    id: item._inventoryID, // Use the appropriate property for ID
+    id: item._inventoryID,
     itemName: item._itemName,
     quantity: item._quantity,
     destinationLocation: item._location,
@@ -79,13 +73,64 @@ const transformOutgoingInventoryData = (data) => {
   }));
 };
 
-// Fetch and transform the data for outgoing inventory
 const rowsOutgoingInventory = transformOutgoingInventoryData(
   await fetchOutgoingInventoryData()
 );
 
-// Export the transformed data
 export { rowsOutgoingInventory };
+
+const transformFleetData = (data) => {
+  const transformedData = [];
+
+  if (data) {
+    for (const uid in data) {
+      if (data.hasOwnProperty(uid)) {
+        const userData = data[uid];
+
+        const mappedData = {
+          id: uid,
+          plateNo: userData.plateNo,
+          chassisNo: userData.chassisNo,
+          engineNo: userData.engineNo,
+          model: userData.model,
+          mileage: userData.mileage,
+        };
+
+        transformedData.push(mappedData);
+      }
+    }
+  }
+
+  return transformedData;
+};
+
+const fetchFleetInformation = async () => {
+  try {
+    const response = await axios.get("http://localhost:3001/fetch-trucks");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+const rowsFleetInformation = transformFleetData(await fetchFleetInformation());
+
+export { rowsFleetInformation };
+
+export const columnsFleetInformation = [
+  { field: "id", headerName: "ID", flex: 1 },
+  { field: "plateNo", headerName: "Plate No.", flex: 2, editable: true },
+  { field: "chassisNo", headerName: "Chassis No.", flex: 2, editable: true },
+  { field: "engineNo", headerName: "Engine No.", flex: 2, editable: true },
+  { field: "model", headerName: "Model", flex: 2, editable: true },
+  {
+    field: "mileage",
+    headerName: "Mileage",
+    flex: 2,
+    editable: true,
+  },
+];
 
 export const rowsDriverManagement = [
   {
@@ -94,7 +139,14 @@ export const rowsDriverManagement = [
     contact: "123-456-7890",
     hireDate: new Date(),
     status: "Active",
-    password: "password123",
+    UserID: "Oiy33a9LcLalL0PNBUuSTVgBQkg1",
+    Code: "AB123",
+    details: {
+      plateNum: "ABC123",
+      email: "johndoe@example.com",
+      password: "********",
+      license: "L12345",
+    },
   },
   {
     id: 2,
@@ -102,10 +154,77 @@ export const rowsDriverManagement = [
     contact: "098-765-4321",
     hireDate: new Date(),
     status: "Inactive",
-    password: "password456",
+    UserID: "Oiy33a9LcLalL0PNBUuSTVgBQkg1",
+    Code: "AB123",
+    details: {
+      plateNum: "ABC123",
+      email: "johndoe@example.com",
+      password: "********",
+      license: "L12345",
+    },
   },
   // Add more objects as needed...
 ];
+export const columnsDriverManagement = [
+  { field: "id", headerName: "ID", flex: 1 },
+  { field: "name", headerName: "Name", flex: 1, editable: true },
+  { field: "contact", headerName: "Contact", flex: 1, editable: true },
+  {
+    field: "hireDate",
+    headerName: "Hire Date",
+    type: "date",
+    flex: 1,
+    editable: true,
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    flex: 1,
+    editable: true,
+    type: "singleSelect",
+    valueOptions: ["Active", "Inactive"],
+  },
+  { field: "UserID", headerName: "UserID", flex: 2 },
+  { field: "Code", headerName: "Code", flex: 1 },
+];
+
+const CustomTable = () => {
+  const [expandedRow, setExpandedRow] = useState(null);
+
+  const handleRowClick = (id) => {
+    setExpandedRow(expandedRow === id ? null : id);
+  };
+
+  return (
+    <div style={{ height: 400, width: "100%" }}>
+      <DataGrid
+        rows={rowsDriverManagement}
+        columns={columnsDriverManagement}
+        onRowClick={(params) => handleRowClick(params.id)}
+        isRowSelectable={() => false}
+        isCellEditable={() => false}
+      />
+      {expandedRow !== null && (
+        <div>
+          <p>Additional Information:</p>
+          <p>
+            Plate Number:{" "}
+            {rowsDriverManagement[expandedRow - 1].details.plateNum}
+          </p>
+          <p>Email: {rowsDriverManagement[expandedRow - 1].details.email}</p>
+          <p>
+            Password: {rowsDriverManagement[expandedRow - 1].details.password}
+          </p>
+          <p>
+            License No.: {rowsDriverManagement[expandedRow - 1].details.license}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default CustomTable;
 
 export const columnsMaintenanceScheduling = [
   { field: "id", headerName: "ID", flex: 1 },
@@ -184,49 +303,6 @@ export const rowsMaintenanceRecords = [
     totalCost: "₱2000",
   },
   // Add more rows as needed
-];
-
-export const columnsFleetInformation = [
-  { field: "id", headerName: "ID", flex: 1 },
-  { field: "plateNo", headerName: "Plate No.", flex: 2, editable: true },
-  { field: "chassisNo", headerName: "Chassis No.", flex: 2, editable: true },
-  { field: "engineNo", headerName: "Engine No.", flex: 2, editable: true },
-  { field: "gvwr", headerName: "GVWR", flex: 2, editable: true },
-  {
-    field: "manufacturer",
-    headerName: "Manufacturer",
-    flex: 2,
-    editable: true,
-  },
-  { field: "model", headerName: "Model", flex: 2, editable: true },
-  {
-    field: "mileage",
-    headerName: "Mileage",
-    flex: 2,
-    editable: true,
-  },
-];
-export const rowsFleetInformation = [
-  {
-    id: 1,
-    plateNo: "ABC123",
-    chassisNo: "XYZ456",
-    engineNo: "DEF789",
-    gvwr: "5000kg",
-    manufacturer: "Toyota",
-    model: "Corolla",
-    mileage: "10000km",
-  },
-  {
-    id: 2,
-    plateNo: "GHI321",
-    chassisNo: "UVW654",
-    engineNo: "JKL987",
-    gvwr: "6000kg",
-    manufacturer: "Honda",
-    model: "Civic",
-    mileage: "20000km",
-  },
 ];
 
 export const columnsInspectionScheduling = [
@@ -475,28 +551,6 @@ const rowsManageOrders = transformOrderData(await fetchOrderData());
 
 // Export the transformed data
 export { rowsManageOrders };
-
-export const columnsDriverManagement = [
-  { field: "id", headerName: "ID", flex: 1 },
-  { field: "name", headerName: "Name", flex: 1, editable: true },
-  { field: "contact", headerName: "Contact", flex: 1, editable: true },
-  {
-    field: "hireDate",
-    headerName: "Hire Date",
-    type: "date",
-    flex: 1,
-    editable: true,
-  },
-  {
-    field: "status",
-    headerName: "Status",
-    flex: 1,
-    editable: true,
-    type: "singleSelect",
-    valueOptions: ["Active", "Inactive"],
-  },
-  { field: "password", headerName: "Password", flex: 1 },
-];
 
 export const columnsUserManagement = [
   { field: "id", headerName: "ID", flex: 1 },
