@@ -15,7 +15,7 @@ import {
 
 import Title from "./components/Title";
 
-export default function AddProduct() {
+export default function AddListing() {
   const [category, setCategory] = useState("");
 
   const handleCategoryChange = (event) => {
@@ -30,7 +30,7 @@ export default function AddProduct() {
   return (
     <div>
       <Box sx={{ my: 2 }}>
-        <Title>Add New Product</Title>
+        <Title>Add New Listing</Title>
 
         <Grid container spacing={3}>
           <Grid item xs={12}>
@@ -52,7 +52,7 @@ export default function AddProduct() {
                       <MenuItem value={"Aggregate Materials"}>
                         Aggregate Materials
                       </MenuItem>
-                      <MenuItem value={"Service"}>Services</MenuItem>
+                      <MenuItem value={"Services"}>Services</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
@@ -85,24 +85,6 @@ export default function AddProduct() {
                     label="Description"
                     multiline
                     rows={4}
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    id="stock"
-                    label="Stock"
-                    type="number"
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    id="price"
-                    label="Price"
-                    type="number"
                     variant="outlined"
                   />
                 </Grid>
