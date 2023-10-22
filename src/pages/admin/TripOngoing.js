@@ -1,29 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import { Button } from "@mui/material";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
-
-const columnsTripOngoing = [
-  { field: "id", headerName: "Driver name", flex: 1.5 },
-  { field: "datetime", headerName: "Date and Time", flex: 1.5 },
-  { field: "currentSpeed", headerName: "Current Speed", flex: 1 },
-  { field: "averageSpeed", headerName: "Avg Speed", flex: 1 },
-  { field: "maxSpeed", headerName: "Max Speed", flex: 1 },
-  { field: "harshBraking", headerName: "Harsh Braking", flex: 1 },
-  { field: "suddenAcceleration", headerName: "Sudden Acceleration", flex: 1 },
-  {
-    field: "track",
-    headerName: "Actions",
-    sortable: false,
-    flex: 1,
-    renderCell: () => (
-      <Button variant="contained" endIcon={<ArrowRightAltIcon />}>
-        Find
-      </Button>
-    ),
-  },
-];
+import { toast, ToastContainer } from "react-toastify";
 
 const transformTripOngoing = (data, data2, data3) => {
   const transformedData = [];
@@ -35,9 +15,9 @@ const transformTripOngoing = (data, data2, data3) => {
         const userData2 = data2[uid];
 
         const mappedData = {
+          id: uid,
           maxSpeed: userData2.max_speed ?? 0,
           currentSpeed: userData2.current_speed ?? 0,
-          id: "John Doe",
           datetime: userData.date,
           averageSpeed: userData2.average_speed,
           harshBraking: userData2.harsh_braking_count ?? 0,
@@ -52,8 +32,34 @@ const transformTripOngoing = (data, data2, data3) => {
   return transformedData;
 };
 
-export default function TripOngoing() {
+export default function TripOngoing({ onFindClick }) {
   const [rowsTripOngoing, setRowsTripOngoing] = useState([]);
+  const columnsTripOngoing = [
+    { field: "id", headerName: "Driver name", flex: 1.5 },
+    { field: "datetime", headerName: "Date and Time", flex: 1.5 },
+    { field: "currentSpeed", headerName: "Current Speed", flex: 1 },
+    { field: "averageSpeed", headerName: "Avg Speed", flex: 1 },
+    { field: "maxSpeed", headerName: "Max Speed", flex: 1 },
+    { field: "harshBraking", headerName: "Harsh Braking", flex: 1 },
+    { field: "suddenAcceleration", headerName: "Sudden Acceleration", flex: 1 },
+    {
+      field: "track",
+      headerName: "Actions",
+      sortable: false,
+      flex: 1,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          endIcon={<ArrowRightAltIcon />}
+          onClick={() => {
+            onFindClick(params.row.uid);
+          }}
+        >
+          Find
+        </Button>
+      ),
+    },
+  ];
 
   const fetchTripOngoing = async () => {
     try {
@@ -109,7 +115,7 @@ export default function TripOngoing() {
     return () => {
       clearInterval(intervalId);
     };
-  }, []);
+  }, [onFindClick]);
 
   return (
     <div style={{ height: 400, width: "100%" }}>

@@ -6,9 +6,12 @@ const Counter = require("../models/counter");
 const Code = require("../models/adminCode");
 const Order = require("../models/order");
 const Inventory = require("../models/inventory");
+const Values = require("../models/values");
 const Appointment = require("../models/appointment");
 const Testimonial = require("../models/testimonial");
 const Inquiry = require("../models/inquiry");
+const About = require("../models/about");
+const Contact = require("../models/contact");
 const Banner = require("../models/banner");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
@@ -19,7 +22,7 @@ const iv = crypto.randomBytes(16).toString("hex");
 const encryptionKey = crypto.randomBytes(32).toString("hex");
 const multer = require("multer");
 const path = require("path");
-
+const fs = require("fs");
 const transporter = nodemailer.createTransport({
   service: "Gmail", // Use a valid email service (e.g., Gmail, Outlook, etc.)
   auth: {
@@ -53,22 +56,22 @@ const decryptEmail = (encryptedEmail, iv, encryptionKey) => {
 function generateOTP() {
   return Math.floor(1000 + Math.random() * 9000).toString();
 }
-const registeredUsers = [
-  // Your registered users' data here
-];
+const registeredUsers = [];
 
 const storage = multer.diskStorage({
-  destination: "images/banner/uploads/", // The directory where uploaded files will be saved
+  destination: `${process.env.PUBLIC_URL}/images/banner/uploads/`,
   filename: function (req, file, cb) {
-    cb(null, "banner-" + Date.now() + path.extname(file.originalname)); // Generate a unique filename for each uploaded file
+    const category = req.body.category;
+    const extname = path.extname(file.originalname);
+    const filename = category + extname;
+    cb(null, filename);
   },
 });
 
-// Create a multer instance with the defined storage engine
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 1000000, // Limit the file size to 1MB
+    fileSize: 1000000,
   },
 });
 
@@ -655,42 +658,202 @@ router.delete("/accessCodes/:adminCode", async (req, res) => {
   }
 });
 
-router.post("/upload-banner", upload.single("image"), async (req, res) => {
+router.put("/update-banner", upload.single("image"), async (req, res) => {
   const category = req.body.category;
   const heading = req.body.heading;
   const subheading = req.body.subheading;
-  const image = req.file.path;
-
-  const banner = new Banner({
-    _bannerType: category,
-    heading: heading,
-    _heading: subheading,
-    _subheading: image,
-  });
 
   try {
-    await banner.save();
+    let image = req.body.image;
 
-    // Respond with a success message
-    res.status(200).json({ message: "Banner uploaded and saved successfully" });
+    if (req.file) {
+      image = req.file.path;
+
+      const existingCategory = req.body.existingCategory;
+      if (category !== existingCategory) {
+        const extname = path.extname(image);
+        const oldImagePath =
+          "images/banner/uploads/" + existingCategory + extname;
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      }
+    }
+
+    // Find and update the existing banner by category
+    const existingBanner = await Banner.findOne({ _bannerType: category });
+
+    if (!existingBanner) {
+      return res.status(404).json({ error: "Banner not found" });
+    }
+
+    // Update the banner details
+    existingBanner._bannerType = category;
+    existingBanner.heading = heading;
+    existingBanner._heading = subheading;
+    existingBanner._subheading = image; // Update the image path
+
+    // Save the updated banner
+    await existingBanner.save();
+
+    res.status(200).json({ message: "Banner updated successfully" });
   } catch (error) {
-    console.error("Error uploading banner:", error);
-    res.status(500).json({ error: "Banner upload failed" });
+    console.error("Error updating banner:", error);
+    res.status(500).json({ error: "Banner update failed" });
   }
 });
-router.post("/testimonials", async (req, res) => {
-  const testimonialData = req.body;
+
+router.get("/fetch-banner", async (req, res) => {
+  try {
+    const banner = await Banner.findOne();
+
+    if (!banner) {
+      return res.status(404).json({ error: "banner not found" });
+    }
+
+    res.json(banner);
+  } catch (error) {
+    console.error("Error retrieving banner:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.put("/update-testimonials", async (req, res) => {
+  const updatedTestimonialData = req.body;
 
   try {
-    // Create a new testimonial document
-    const testimonial = new Testimonial(testimonialData);
+    const existingTestimonial = await Testimonial.findOne();
 
-    // Save the testimonial to the database
-    await testimonial.save();
+    if (!existingTestimonial) {
+      return res.status(404).json({ error: "Testimonial not found" });
+    }
 
-    res.status(201).json({ message: "Testimonial submitted successfully" });
+    existingTestimonial.set(updatedTestimonialData);
+
+    await existingTestimonial.save();
+
+    res.json({ message: "Testimonial updated successfully" });
   } catch (error) {
-    console.error("Error submitting testimonial:", error);
+    console.error("Error updating testimonial:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+router.get("/fetch-testimonials", async (req, res) => {
+  try {
+    const testimonial = await Testimonial.findOne();
+
+    if (!testimonial) {
+      return res.status(404).json({ error: "Testimonial not found" });
+    }
+
+    res.json(testimonial);
+  } catch (error) {
+    console.error("Error retrieving testimonial:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.put("/update-values", async (req, res) => {
+  const updatedValueslData = req.body;
+
+  try {
+    const existingValues = await Values.findOne();
+
+    if (!existingValues) {
+      return res.status(404).json({ error: "Values not found" });
+    }
+
+    existingValues.set(updatedValueslData);
+
+    await existingValues.save();
+
+    res.json({ message: "Values updated successfully" });
+  } catch (error) {
+    console.error("Error updating Values:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+router.get("/fetch-values", async (req, res) => {
+  try {
+    const values = await Values.findOne();
+
+    if (!values) {
+      return res.status(404).json({ error: "Values not found" });
+    }
+
+    res.json(values);
+  } catch (error) {
+    console.error("Error retrieving values:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.put("/update-about", async (req, res) => {
+  const updatedAboutData = req.body;
+
+  try {
+    const existingAbout = await About.findOne();
+
+    if (!existingAbout) {
+      return res.status(404).json({ error: "About not found" });
+    }
+
+    existingAbout.set(updatedAboutData);
+
+    await existingAbout.save();
+
+    res.json({ message: "About updated successfully" });
+  } catch (error) {
+    console.error("Error updating About:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+router.get("/fetch-about", async (req, res) => {
+  try {
+    const about = await About.findOne();
+
+    if (!about) {
+      return res.status(404).json({ error: "About not found" });
+    }
+
+    res.json(about);
+  } catch (error) {
+    console.error("Error retrieving about:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.put("/update-contact", async (req, res) => {
+  const contactData = req.body;
+
+  try {
+    const existingContact = await Contact.findOne();
+
+    if (!existingContact) {
+      return res.status(404).json({ error: "Contact not found" });
+    }
+
+    existingContact.set(contactData);
+
+    await existingContact.save();
+
+    res.json({ message: "Contact updated successfully" });
+  } catch (error) {
+    console.error("Error updating Contact:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+router.get("/fetch-contact", async (req, res) => {
+  try {
+    const contact = await Contact.findOne();
+
+    if (!contact) {
+      return res.status(404).json({ error: "Contact not found" });
+    }
+
+    res.json(contact);
+  } catch (error) {
+    console.error("Error retrieving Contact:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });

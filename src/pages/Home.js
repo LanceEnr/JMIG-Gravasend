@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import BannerImage from "../assets/homeBG.webp";
+import BannerImage from "../../backend/images/banner/uploads/Homepage Full Banner.jpg";
 import "../styles/Home.css";
+import Banner, { fetchBannerData } from "./cmshelper/cms";
 import ProductValues from "../components/ProductValues";
 import {
   Box,
@@ -17,6 +18,26 @@ import ChooseBanner from "../components/ChooseBanner";
 function Home() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [bannerImage, setBannerImage] = useState(BannerImage);
+
+  useEffect(() => {
+    // Fetch the banner data when the component mounts
+    fetchBannerData()
+      .then((data) => {
+        if (data && data._image) {
+          setBannerImage(data._image);
+        } else {
+          console.error("Banner image data not found");
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching banner:", error);
+      });
+  }, []);
+
+  const backgroundImageUrl = `../../backend/${bannerImage.replace(/\\/g, "/")}`;
+  console.log(backgroundImageUrl);
+  console.log(BannerImage);
   return (
     <div>
       <Box

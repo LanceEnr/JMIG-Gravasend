@@ -18,7 +18,8 @@ const mapStyles = {
 function DeliveryMonitoring() {
   const [truckLocations, setTruckLocations] = useState({});
   const [isMapLoaded, setIsMapLoaded] = useState(false);
-
+  const [foundLocation, setFoundLocation] = useState(null);
+  const [zoomLevel, setZoomLevel] = useState(12);
   const handleLoad = () => {
     setIsMapLoaded(true);
   };
@@ -32,11 +33,35 @@ function DeliveryMonitoring() {
       return {};
     }
   };
+  const handleZoomChange = (newZoomLevel) => {
+    setZoomLevel(newZoomLevel);
+  };
+  function handleFindClick(id) {
+    const location = truckLocations[id];
+    if (location) {
+      setFoundLocation(location);
+      handleZoomChange(15);
+    } else {
+      setFoundLocation(null);
+    }
+  }
+
   useEffect(() => {
     fetchTruckLocations().then((data) => {
       setTruckLocations(data);
     });
+
+    const intervalId = setInterval(() => {
+      fetchTruckLocations().then((data) => {
+        setTruckLocations(data);
+      });
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
   }, []);
+
   return (
     <div>
       <Title>Delivery Monitoring</Title>
@@ -57,8 +82,18 @@ function DeliveryMonitoring() {
               {isMapLoaded && (
                 <GoogleMap
                   mapContainerStyle={mapStyles}
-                  center={{ lat: 14.6936, lng: 121.0197 }}
-                  zoom={12}
+                  center={
+                    foundLocation
+                      ? {
+                          lat: foundLocation.latitude,
+                          lng: foundLocation.longitude,
+                        }
+                      : {
+                          lat: 14.6936,
+                          lng: 121.0197,
+                        }
+                  }
+                  zoom={zoomLevel}
                 >
                   {Object.keys(truckLocations).map((uid) => (
                     <Marker
@@ -82,7 +117,7 @@ function DeliveryMonitoring() {
         <Grid item xs={12}>
           <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
             <Title>Ongoing Trips</Title>
-            <TripOngoing />
+            <TripOngoing onFindClick={handleFindClick} />;
           </Paper>
         </Grid>
       </Grid>

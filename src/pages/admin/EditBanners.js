@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useDropzone } from "react-dropzone";
-
+import { toast, ToastContainer } from "react-toastify";
 import {
   Box,
   Grid,
@@ -62,14 +62,15 @@ export default function EditBanners() {
 
     try {
       // Make a POST request to your server
-      const response = await axios.post(
-        "http://localhost:3001/upload-banner",
+      const response = await axios.put(
+        "http://localhost:3001/update-banner",
         formData
       );
 
-      // Handle the response as needed
+      toast.success("Banner modified successfully");
       console.log("Form submitted successfully", response.data);
     } catch (error) {
+      toast.error("Modification failed, please try again!");
       console.error("Form submission failed", error);
     }
   };

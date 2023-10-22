@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
   Box,
@@ -9,7 +9,7 @@ import {
   Divider,
 } from "@mui/material";
 import Rating from "@mui/material/Rating";
-
+import { toast } from "react-toastify";
 import Title from "./components/Title";
 
 export default function EditTestimonials() {
@@ -17,18 +17,18 @@ export default function EditTestimonials() {
   const [value2, setValue2] = React.useState(0);
   const [value3, setValue3] = React.useState(0);
 
-  const [formData, setFormData] = useState({
-    fullName: "",
-    professionalTitle: "",
-    testimonial: "",
-    fullName2: "",
-    professionalTitle2: "",
-    testimonial2: "",
-    fullName3: "",
-    professionalTitle3: "",
-    testimonial3: "",
-  });
+  const [formData, setFormData] = useState({});
 
+  useEffect(() => {
+    axios.get("http://localhost:3001/fetch-testimonials").then((response) => {
+      const defaultValues = response.data;
+      setFormData(response.data);
+      setValue(defaultValues._rating);
+      setValue2(defaultValues._rating2);
+      setValue3(defaultValues._rating3);
+      console.log(formData._fullName);
+    });
+  }, []);
   const handleFormChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
@@ -37,7 +37,6 @@ export default function EditTestimonials() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Validate required fields
     if (
       !formData.fullName ||
       !formData.professionalTitle ||
@@ -47,7 +46,6 @@ export default function EditTestimonials() {
       return;
     }
 
-    // Prepare the data to be sent
     const testimonialData = {
       _rating: value,
       _fullName: formData.fullName,
@@ -67,12 +65,14 @@ export default function EditTestimonials() {
 
     // Send data to the server using Axios (update the URL)
     try {
-      const response = await axios.post(
-        "http://localhost:3001/testimonials",
+      const response = await axios.put(
+        "http://localhost:3001/update-testimonials",
         testimonialData
       );
+      toast.success("Testimonials edited successfully!");
       console.log("Testimonial submitted:", response.data);
     } catch (error) {
+      toast.error("Error submitting testimonial");
       console.error("Error submitting testimonial:", error);
     }
   };
