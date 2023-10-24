@@ -182,6 +182,21 @@ ph!4v1693048413304!5m2!1sen!2sph"
                   <Typography variant="h7">{address}</Typography>
                 </Grid>
               </Grid>
+              <Grid
+                container
+                alignItems="center"
+                style={{ marginBottom: "20px" }}
+              >
+                <Grid item xs={2}>
+                  <HomeIcon style={{ fontSize: 30, color: "#808080" }} />
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography variant="h7">
+                    Branch 2 5440B Mindanao Avenue, Ugong, Valenzuela City, 1440
+                    Metro Manila
+                  </Typography>
+                </Grid>
+              </Grid>
 
               <Grid
                 container
