@@ -89,7 +89,10 @@ const transformFleetData = (data) => {
 
         const mappedData = {
           id: uid,
+          driverName: userData.driverName,
+          bodyNo: userData.bodyNo,
           plateNo: userData.plateNo,
+          plateNo2: userData.plateNo2,
           chassisNo: userData.chassisNo,
           engineNo: userData.engineNo,
           model: userData.model,
@@ -120,9 +123,11 @@ export { rowsFleetInformation };
 
 export const columnsFleetInformation = [
   { field: "id", headerName: "ID", flex: 1 },
-  { field: "plateNo", headerName: "Plate No.", flex: 2, editable: true },
-  { field: "chassisNo", headerName: "Chassis No.", flex: 2, editable: true },
-  { field: "engineNo", headerName: "Engine No.", flex: 2, editable: true },
+  { field: "bodyNo", headerName: "Body No.", flex: 1, flex: 1, editable: true },
+  { field: "plateNo", headerName: "Tractor No.", flex: 1, editable: true },
+  { field: "plateNo2", headerName: "Trailer No.", flex: 1, editable: true },
+  { field: "chassisNo", headerName: "Chassis No.", flex: 1, editable: true },
+  { field: "engineNo", headerName: "Engine No.", flex: 1, editable: true },
   { field: "model", headerName: "Model", flex: 2, editable: true },
   {
     field: "mileage",
@@ -130,49 +135,59 @@ export const columnsFleetInformation = [
     flex: 2,
     editable: true,
   },
+  { field: "driverName", headerName: "Driver", flex: 2, editable: true },
 ];
 
-export const rowsDriverManagement = [
-  {
-    id: 1,
-    name: "John Doe",
-    contact: "123-456-7890",
-    hireDate: new Date(),
-    status: "Active",
-    UserID: "Oiy33a9LcLalL0PNBUuSTVgBQkg1",
-    Code: "AB123",
-    details: {
-      plateNum: "ABC123",
-      email: "johndoe@example.com",
-      password: "********",
-      license: "L12345",
-    },
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    contact: "098-765-4321",
-    hireDate: new Date(),
-    status: "Inactive",
-    UserID: "Oiy33a9LcLalL0PNBUuSTVgBQkg1",
-    Code: "AB123",
-    details: {
-      plateNum: "ABC123",
-      email: "johndoe@example.com",
-      password: "********",
-      license: "L12345",
-    },
-  },
-  // Add more objects as needed...
-];
+const transformDriverData = (data) => {
+  const transformedData = [];
+  console.log(data);
+  if (data) {
+    for (const uid in data) {
+      if (data.hasOwnProperty(uid)) {
+        const userData = data[uid];
+
+        const mappedData = {
+          id: uid,
+          contact: userData.contact,
+          date: userData.date,
+          driverName: userData.driverName,
+          email: userData.email,
+          licenseNo: userData.licenseNo,
+          plateNo: userData.plateNo,
+          status: userData.status,
+        };
+
+        transformedData.push(mappedData);
+      }
+    }
+  }
+
+  return transformedData;
+};
+
+const fetchDriverInformation = async () => {
+  try {
+    const response = await axios.get("http://localhost:3001/fetch-driver");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+const rowsDriverManagement = transformDriverData(
+  await fetchDriverInformation()
+);
+
+export { rowsDriverManagement };
+
 export const columnsDriverManagement = [
   { field: "id", headerName: "ID", flex: 1 },
-  { field: "name", headerName: "Name", flex: 1, editable: true },
+  { field: "driverName", headerName: "Name", flex: 1, editable: true },
   { field: "contact", headerName: "Contact", flex: 1, editable: true },
   {
-    field: "hireDate",
+    field: "date",
     headerName: "Hire Date",
-    type: "date",
     flex: 1,
     editable: true,
   },
@@ -184,8 +199,208 @@ export const columnsDriverManagement = [
     type: "singleSelect",
     valueOptions: ["Active", "Inactive"],
   },
-  { field: "UserID", headerName: "UserID", flex: 2 },
-  { field: "Code", headerName: "Code", flex: 1 },
+  { field: "plateNo", headerName: "Plate No.", flex: 1, editable: true },
+  { field: "email", headerName: "Email", flex: 1, editable: true },
+  { field: "licenseNo", headerName: "License", flex: 1, editable: true },
+];
+
+const transformUpcomingInspectionData = (data) => {
+  const transformedData = [];
+  console.log(data);
+  if (data) {
+    for (const uid in data) {
+      if (data.hasOwnProperty(uid)) {
+        const userData = data[uid];
+
+        const mappedData = {
+          id: uid,
+          plateNo: userData.plateNo,
+          inspectionType: userData.type,
+          nextInspectionDate: new Date(userData.nextInspection),
+          verdict: userData.verdict,
+        };
+
+        transformedData.push(mappedData);
+      }
+    }
+  }
+
+  return transformedData;
+};
+
+const fetchUpcomingInspection = async () => {
+  try {
+    const response = await axios.get(
+      "http://localhost:3001/fetch-upcominginspection"
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+const rowsInspectionScheduling = transformUpcomingInspectionData(
+  await fetchUpcomingInspection()
+);
+
+export { rowsInspectionScheduling };
+
+export const columnsInspectionScheduling = [
+  { field: "id", headerName: "ID", flex: 1 },
+  { field: "plateNo", headerName: "Plate No.", flex: 2, editable: true },
+  {
+    field: "inspectionType",
+    headerName: "Inspection Type",
+    flex: 2,
+    editable: true,
+  },
+  {
+    field: "nextInspectionDate",
+    headerName: "Next Inspection Date",
+    type: "date",
+    flex: 3,
+    editable: true,
+  },
+  {
+    field: "verdict",
+    headerName: "Verdict",
+    flex: 2,
+    editable: true,
+    type: "singleSelect",
+    valueOptions: ["On Going", "Pass", "Failed"],
+  },
+];
+
+const transformInspectionRecordsData = (data) => {
+  const transformedData = [];
+  console.log(data);
+  if (data) {
+    for (const uid in data) {
+      if (data.hasOwnProperty(uid)) {
+        const userData = data[uid];
+
+        const mappedData = {
+          id: uid,
+          plateNo: userData.plateNo,
+          inspectionType: userData.inspectionType,
+          inspectionDate: new Date(userData.inspectionDate),
+          verdict: userData.verdict,
+        };
+
+        transformedData.push(mappedData);
+      }
+    }
+  }
+
+  return transformedData;
+};
+
+const fetchInspectionRecords = async () => {
+  try {
+    const response = await axios.get(
+      "http://localhost:3001/fetch-inspectionrecords"
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+const rowsInspectionRecords = transformInspectionRecordsData(
+  await fetchInspectionRecords()
+);
+
+export { rowsInspectionRecords };
+
+export const columnsInspectionRecords = [
+  { field: "id", headerName: "ID", flex: 1 },
+  { field: "plateNo", headerName: "Plate No.", flex: 2 },
+  {
+    field: "inspectionType",
+    headerName: "Inspection Type",
+    flex: 2,
+    editable: true,
+  },
+  {
+    field: "verdict",
+    headerName: "Verdict",
+    flex: 2,
+  },
+  {
+    field: "inspectionDate",
+    headerName: "Inspection Date",
+    type: "date",
+    flex: 3,
+  },
+];
+
+const transformMaintenanceData = (data) => {
+  const transformedData = [];
+  console.log(data);
+  if (data) {
+    for (const uid in data) {
+      if (data.hasOwnProperty(uid)) {
+        const userData = data[uid];
+
+        const mappedData = {
+          id: uid,
+          plateNo: userData.plateNo,
+          service: userData.service,
+          frequency: userData.frequency,
+          nextDueMileage: userData.nextDueMileage,
+          nextMaintenanceDate: new Date(userData.nextMaintenanceDate),
+        };
+
+        transformedData.push(mappedData);
+      }
+    }
+  }
+
+  return transformedData;
+};
+
+const fetchMaintenance = async () => {
+  try {
+    const response = await axios.get("http://localhost:3001/fetch-maintenance");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+const rowsMaintenanceScheduling = transformMaintenanceData(
+  await fetchMaintenance()
+);
+
+export { rowsMaintenanceScheduling };
+
+export const columnsMaintenanceScheduling = [
+  { field: "id", headerName: "ID", flex: 1 },
+  { field: "plateNo", headerName: "Plate No.", flex: 2, editable: true },
+  { field: "service", headerName: "Service", flex: 2, editable: true },
+  {
+    field: "frequency",
+    headerName: "Frequency",
+    flex: 2,
+    editable: true,
+    type: "singleSelect",
+    valueOptions: ["1000", "3000", "5000", "10000", "15000", "20000"],
+  },
+  {
+    field: "nextDueMileage",
+    headerName: "Next Due Mileage",
+    flex: 2,
+  },
+  {
+    field: "nextMaintenanceDate",
+    headerName: "Next Maintenance Date",
+    type: "date",
+    flex: 2,
+    editable: true,
+  },
 ];
 
 const CustomTable = () => {
@@ -226,51 +441,6 @@ const CustomTable = () => {
 
 export default CustomTable;
 
-export const columnsMaintenanceScheduling = [
-  { field: "id", headerName: "ID", flex: 1 },
-  { field: "plateNo", headerName: "Plate No.", flex: 2, editable: true },
-  { field: "service", headerName: "Service", flex: 2, editable: true },
-  {
-    field: "frequency",
-    headerName: "Frequency",
-    flex: 2,
-    editable: true,
-    type: "singleSelect",
-    valueOptions: ["500", "1000", "2000"],
-  },
-  {
-    field: "nextDueMileage",
-    headerName: "Next Due Mileage",
-    flex: 2,
-  },
-  {
-    field: "nextMaintenanceDate",
-    headerName: "Next Maintenance Date",
-    type: "date",
-    flex: 2,
-    editable: true,
-  },
-];
-export const rowsMaintenanceScheduling = [
-  {
-    id: 1,
-    plateNo: "ABC123",
-    service: "Oil Change",
-    frequency: "500",
-    nextDueMileage: "1500",
-    nextMaintenanceDate: new Date("2024-01-01"),
-  },
-  {
-    id: 2,
-    plateNo: "XYZ789",
-    service: "Tire Rotation",
-    frequency: "1000",
-    nextDueMileage: "2000",
-    nextMaintenanceDate: new Date("2024-02-01"),
-  },
-  // Add more rows as needed
-];
-
 export const columnsMaintenanceRecords = [
   { field: "id", headerName: "ID", flex: 1 },
   { field: "plateNo", headerName: "Plate No.", flex: 2 },
@@ -294,6 +464,7 @@ export const rowsMaintenanceRecords = [
     service: "Oil Change",
     serviceProvider: "Service Provider A",
     totalCost: "₱5000",
+    verdict: "Pass",
   },
   {
     id: 2,
@@ -301,74 +472,7 @@ export const rowsMaintenanceRecords = [
     service: "Tire Rotation",
     serviceProvider: "Service Provider B",
     totalCost: "₱2000",
-  },
-  // Add more rows as needed
-];
-
-export const columnsInspectionScheduling = [
-  { field: "id", headerName: "ID", flex: 1 },
-  { field: "plateNo", headerName: "Plate No.", flex: 2, editable: true },
-  {
-    field: "inspectionType",
-    headerName: "Inspection Type",
-    flex: 2,
-    editable: true,
-    type: "singleSelect",
-    valueOptions: ["Pre-Trip", "Post-Trip"],
-  },
-  {
-    field: "nextInspectionDate",
-    headerName: "Next Inspection Date",
-    type: "date",
-    flex: 3,
-    editable: true,
-  },
-];
-
-export const rowsInspectionScheduling = [
-  {
-    id: 1,
-    plateNo: "ABC123",
-    inspectionType: "Pre-Trip",
-    nextInspectionDate: new Date("2024-01-01"),
-  },
-  {
-    id: 2,
-    plateNo: "XYZ789",
-    inspectionType: "Post-Trip",
-    nextInspectionDate: new Date("2024-02-01"),
-  },
-  // Add more rows as needed
-];
-
-export const columnsInspectionRecords = [
-  { field: "id", headerName: "ID", flex: 1 },
-  { field: "plateNo", headerName: "Plate No.", flex: 2 },
-  {
-    field: "verdict",
-    headerName: "Verdict",
-    flex: 2,
-  },
-  {
-    field: "inspectionDate",
-    headerName: "Inspection Date",
-    type: "date",
-    flex: 3,
-  },
-];
-
-export const rowsInspectionRecords = [
-  {
-    id: 1,
-    plateNo: "ABC123",
-    verdict: "Pass",
-    inspectionDate: new Date("2024-01-01"),
-  },
-  {
-    id: 2,
-    plateNo: "XYZ789",
-    verdict: "Fail",
-    inspectionDate: new Date("2024-02-01"),
+    verdict: "Failed",
   },
   // Add more rows as needed
 ];
@@ -387,6 +491,11 @@ export const columnsTripVerification = [
     headerName: "Approval",
     type: "singleSelect",
     valueOptions: ["Approved", "Rejected", "Pending"],
+  },
+  {
+    field: "verdict",
+    headerName: "Verdict",
+    flex: 2,
   },
 ];
 
@@ -552,6 +661,37 @@ const rowsManageOrders = transformOrderData(await fetchOrderData());
 // Export the transformed data
 export { rowsManageOrders };
 
+const fetchFAQData = async () => {
+  try {
+    const response = await axios.get("http://localhost:3001/get-faq");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+// Function to transform the data into the desired format
+const transformFAQData = (data) => {
+  return data.map((item) => ({
+    id: item._faqNum,
+    question: item._question,
+    answer: item._answer,
+  }));
+};
+
+// Fetch and transform the data for outgoing inventory
+const rowsFaqs = transformFAQData(await fetchFAQData());
+
+// Export the transformed data
+export { rowsFaqs };
+
+export const columnsFaqs = [
+  { field: "id", headerName: "ID", flex: 1 },
+  { field: "question", headerName: "Question", flex: 4, editable: true }, // Increased flex value
+  { field: "answer", headerName: "Answer", flex: 4, editable: true },
+];
+
 export const columnsUserManagement = [
   { field: "id", headerName: "ID", flex: 1 },
   { field: "name", headerName: "Name", flex: 2, editable: true }, // Increased flex value
@@ -592,25 +732,4 @@ export const rowsUserManagement = [
     password: "password456",
   },
   // Add more rows as needed
-];
-
-export const columnsFaqs = [
-  { field: "id", headerName: "ID", flex: 1 },
-  { field: "question", headerName: "Question", flex: 4, editable: true }, // Increased flex value
-  { field: "answer", headerName: "Answer", flex: 14, editable: true },
-];
-
-export const rowsFaqs = [
-  {
-    id: 1,
-    question: "How do I create an account?",
-    answer:
-      "You can create an account by making sure that lorem ipsum is lorep ipsum dolor et.",
-  },
-  {
-    id: 2,
-    question: "How do I register an account?",
-    answer:
-      "You can register an account by making sure that lorem ipsum is lorep ipsum dolor et.",
-  },
 ];

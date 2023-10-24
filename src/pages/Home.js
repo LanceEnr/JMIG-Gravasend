@@ -4,6 +4,8 @@ import BannerImage from "../assets/about.webp";
 import "../styles/Home.css";
 import Banner, { fetchBannerData } from "./cmshelper/cms";
 import ProductValues from "../components/ProductValues";
+import img from "../images/banner/uploads/Homepage Full Banner.jpg";
+
 import {
   Box,
   Button,
@@ -18,14 +20,19 @@ import ChooseBanner from "../components/ChooseBanner";
 function Home() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const [bannerImage, setBannerImage] = useState(BannerImage);
+  const [heading, setHeading] = useState("");
+  const [subheading, setSubeading] = useState("");
+  const [imageURL, setImageURL] = useState(""); // Dynamically set the image URL
 
   useEffect(() => {
-    // Fetch the banner data when the component mounts
     fetchBannerData()
       .then((data) => {
-        if (data && data._image) {
-          setBannerImage(data._image);
+        if (data) {
+          setHeading(data._heading);
+          setSubeading(data._subheading);
+
+          const convertedPath = `../${data._image.replace(/\\/g, "/")}`;
+          setImageURL(convertedPath);
         } else {
           console.error("Banner image data not found");
         }
@@ -35,9 +42,7 @@ function Home() {
       });
   }, []);
 
-  const backgroundImageUrl = `../../backend/${bannerImage.replace(/\\/g, "/")}`;
-  console.log(backgroundImageUrl);
-  console.log(BannerImage);
+  console.log(imageURL);
   return (
     <div>
       <Box
@@ -46,10 +51,10 @@ function Home() {
           display: "flex",
           flexDirection: "column",
           alignItems: "flex-start",
-          justifyContent: "center", // center items vertically
-          padding: "2rem", // add some padding
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${BannerImage})`,
-          backgroundSize: "cover", // ensure the image covers the entire box
+          justifyContent: "center",
+          padding: "2rem",
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${img})`,
+          backgroundSize: "cover",
           color: "#fafbf5",
         }}
       >
@@ -58,16 +63,14 @@ function Home() {
           gutterBottom
           sx={{ fontWeight: "bold", width: "50%" }}
         >
-          Delivering Quality Materials Building Strong Foundations
+          {heading}
         </Typography>
         <Typography
           variant="body1"
           gutterBottom
           sx={{ width: isMobile ? "100%" : "50%", mb: 2 }}
         >
-          JMIG supplies aggregates to a broad spectrum of construction industry
-          covering everything from one load of sand for a backyard repair to
-          tons and tons of base gravels to build roads and infrastructures.
+          {subheading}
         </Typography>
         <Link to="/about">
           <Button

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import Testimonial, { fetchTestimonialData } from "../pages/cmshelper/cms";
 import {
   Card,
   CardContent,
@@ -9,30 +10,68 @@ import {
 } from "@mui/material";
 import Rating from "@mui/material/Rating";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
-const testimonies = [
-  {
-    name: "Lance Enriquez",
-    title: "Client",
-    text: "The quality of gravel supplied for my construction project was top-notch. Delivery was timely and the customer service was excellent.",
-    avatar: "A",
-    rating: 5,
-  },
-  {
-    name: "John Dalican",
-    title: "Client",
-    text: "I have been ordering gravel and sand supplies from this website for my various construction projects. The quality has always been consistent and the prices are competitive.",
-    avatar: "B",
-    rating: 5,
-  },
-  {
-    name: "Neil Camacho",
-    title: "Client",
-    text: "I have been ordering gravel and sand supplies from this website for my various construction projects. ",
-    avatar: "C",
-    rating: 5,
-  },
-];
+
 export default function TestimoniesHero() {
+  const [rating1, setRating1] = useState("");
+  const [fullName1, setFullname1] = useState("");
+  const [professionalTitle1, setProfessionalTitle1] = useState("");
+  const [testimonial1, setTestimonial1] = useState("");
+  const [rating2, setRating2] = useState("");
+  const [fullName2, setFullname2] = useState("");
+  const [professionalTitle2, setProfessionalTitle2] = useState("");
+  const [testimonial2, setTestimonial2] = useState("");
+  const [rating3, setRating3] = useState("");
+  const [fullName3, setFullname3] = useState("");
+  const [professionalTitle3, setProfessionalTitle3] = useState("");
+  const [testimonial3, setTestimonial3] = useState("");
+
+  useEffect(() => {
+    fetchTestimonialData()
+      .then((data) => {
+        if (data) {
+          setRating1(data._rating);
+          setFullname1(data._fullName);
+          setProfessionalTitle1(data._professionalTitle);
+          setTestimonial1(data._testimonial);
+
+          setRating2(data._rating2);
+          setFullname2(data._fullName2);
+          setProfessionalTitle2(data._professionalTitle2);
+          setTestimonial2(data._testimonial2);
+
+          setRating3(data._rating3);
+          setFullname3(data._fullName3);
+          setProfessionalTitle3(data._professionalTitle3);
+          setTestimonial3(data._testimonial3);
+        } else {
+          console.error("Banner image data not found");
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching banner:", error);
+      });
+  }, []);
+
+  const testimonies = [
+    {
+      name: fullName1,
+      title: professionalTitle1,
+      text: testimonial1,
+      rating: rating1,
+    },
+    {
+      name: fullName2,
+      title: professionalTitle2,
+      text: testimonial2,
+      rating: rating2,
+    },
+    {
+      name: fullName3,
+      title: professionalTitle3,
+      text: testimonial3,
+      rating: rating3,
+    },
+  ];
   return (
     <Container sx={{ py: 12 }}>
       <Typography

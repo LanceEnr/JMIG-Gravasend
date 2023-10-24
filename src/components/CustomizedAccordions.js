@@ -6,63 +6,7 @@ import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import { TextField, Typography, Box, InputAdornment } from "@mui/material";
 import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
-
-export const items = [
-  {
-    id: "panel1",
-    title: "How do I make an account?",
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.",
-  },
-  {
-    id: "panel2",
-    title: "How do I set an appointment?",
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.",
-  },
-  {
-    id: "panel3",
-    title: "Where can I see my orders?",
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.",
-  },
-  {
-    id: "panel4",
-    title: "Where can I see your contact information?",
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.",
-  },
-  {
-    id: "panel5",
-    title: "How do I change my password?",
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.",
-  },
-  {
-    id: "panel6",
-    title: "How do I set an appointment?",
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.",
-  },
-  {
-    id: "panel7",
-    title: "Where can I see my orders?",
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.",
-  },
-  {
-    id: "panel8",
-    title: "Where can I see your contact information?",
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.",
-  },
-  {
-    id: "panel9",
-    title: "How do I change my password?",
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.",
-  },
-];
+import { rowsFaqs } from "../pages/cmshelper/cms";
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -148,7 +92,7 @@ export default function CustomizedAccordions() {
           ),
         }}
       />
-      {items
+      {rowsFaqs
         .filter((item) =>
           item.title.toLowerCase().includes(searchTerm.toLowerCase())
         )

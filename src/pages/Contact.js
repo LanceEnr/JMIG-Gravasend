@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {
@@ -16,6 +16,7 @@ import BannerImage from "../assets/contact.webp";
 import Banner from "../components/Banner";
 import "../styles/Contact.css";
 import { toast } from "react-toastify";
+import { fetchContactData } from "./cmshelper/cms";
 
 function Contact() {
   const [inquiryData, SetInquiryData] = useState({
@@ -65,6 +66,26 @@ function Contact() {
       // Handle registration failure (e.g., show an error message).
     }
   };
+
+  const [address, setAddress] = useState("");
+  const [phone, setphone] = useState("");
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    fetchContactData()
+      .then((data) => {
+        if (data) {
+          setAddress(data._address);
+          setphone(data._contactNo);
+          setEmail(data._email);
+        } else {
+          console.error("Contact image data not found");
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching banner:", error);
+      });
+  }, []);
 
   return (
     <div className="contact">
@@ -158,10 +179,7 @@ ph!4v1693048413304!5m2!1sen!2sph"
                   <HomeIcon style={{ fontSize: 30, color: "#808080" }} />
                 </Grid>
                 <Grid item xs={10}>
-                  <Typography variant="h7">
-                    5440B Mindanao Avenue, Ugong, Valenzuela City, 1440 Metro
-                    Manila
-                  </Typography>
+                  <Typography variant="h7">{address}</Typography>
                 </Grid>
               </Grid>
 
@@ -174,7 +192,7 @@ ph!4v1693048413304!5m2!1sen!2sph"
                   <PhoneIcon style={{ fontSize: 30, color: "#808080" }} />
                 </Grid>
                 <Grid item xs={10}>
-                  <Typography variant="h7">+63 9774548585</Typography>
+                  <Typography variant="h7">{phone}</Typography>
                 </Grid>
               </Grid>
 
@@ -187,7 +205,7 @@ ph!4v1693048413304!5m2!1sen!2sph"
                   <EmailIcon style={{ fontSize: 30, color: "#808080" }} />
                 </Grid>
                 <Grid item xs={10}>
-                  <Typography variant="h7">jmig@gmail.com</Typography>
+                  <Typography variant="h7">{email}</Typography>
                 </Grid>
               </Grid>
             </Box>

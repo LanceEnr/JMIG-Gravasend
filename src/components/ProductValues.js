@@ -1,5 +1,4 @@
-import * as React from "react";
-
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
@@ -8,6 +7,7 @@ import Avatar from "@mui/material/Avatar";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import SupportAgentOutlinedIcon from "@mui/icons-material/SupportAgentOutlined";
+import Values, { fetchValuesData } from "../pages/cmshelper/cms";
 const item = {
   display: "flex",
   flexDirection: "column",
@@ -16,6 +16,32 @@ const item = {
 };
 
 function ProductValues() {
+  const [heading1, setHeading1] = useState("");
+  const [subheading1, setSubheading1] = useState("");
+  const [heading2, setHeading2] = useState("");
+  const [subheading2, setSubheading2] = useState("");
+  const [heading3, setHeading3] = useState("");
+  const [subheading3, setSubheading3] = useState("");
+
+  useEffect(() => {
+    fetchValuesData()
+      .then((data) => {
+        if (data) {
+          setHeading1(data._valueHeading1);
+          setHeading2(data._valueHeading2);
+          setHeading3(data._valueHeading3);
+          setSubheading1(data._valueSubheading1);
+          setSubheading2(data._valueSubheading2);
+          setSubheading3(data._valueSubheading3);
+        } else {
+          console.error("Banner image data not found");
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching banner:", error);
+      });
+  }, []);
+
   return (
     <Box
       component="section"
@@ -38,16 +64,14 @@ function ProductValues() {
                 />
               </Avatar>
               <Typography variant="h6" sx={{ my: 2, color: "#004aad" }}>
-                Premium Gravel and Sand
+                {heading1}
               </Typography>
               <Typography
                 variant="body2"
                 color="textSecondary"
                 style={{ textAlign: "center" }}
               >
-                Supplying the highest quality gravel and sand for all your
-                construction needs. Just a few clicks away from delivery to your
-                site.
+                {subheading1}
               </Typography>
             </Box>
           </Grid>
@@ -66,15 +90,14 @@ function ProductValues() {
                 />
               </Avatar>
               <Typography variant="h6" sx={{ my: 2, color: "#004aad" }}>
-                Quality Guarantee
+                {heading2}
               </Typography>
               <Typography
                 variant="body2"
                 color="textSecondary"
                 style={{ textAlign: "center" }}
               >
-                We guarantee the highest quality in all our products to meet
-                your construction needs.
+                {subheading2}
               </Typography>
             </Box>
           </Grid>
@@ -93,15 +116,14 @@ function ProductValues() {
                 />
               </Avatar>
               <Typography variant="h6" sx={{ my: 2, color: "#004aad" }}>
-                Reliable Customer Service
+                {heading3}
               </Typography>
               <Typography
                 variant="body2"
                 color="textSecondary"
                 style={{ textAlign: "center" }}
               >
-                Our customer service team is always ready to assist you with
-                your needs.
+                {subheading3}
               </Typography>
             </Box>
           </Grid>

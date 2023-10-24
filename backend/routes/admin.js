@@ -13,6 +13,7 @@ const Inquiry = require("../models/inquiry");
 const About = require("../models/about");
 const Contact = require("../models/contact");
 const Banner = require("../models/banner");
+const FAQ = require("../models/faq");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -59,7 +60,7 @@ function generateOTP() {
 const registeredUsers = [];
 
 const storage = multer.diskStorage({
-  destination: `${process.env.PUBLIC_URL}/images/banner/uploads/`,
+  destination: "../src/images/banner/uploads/",
   filename: function (req, file, cb) {
     const category = req.body.category;
     const extname = path.extname(file.originalname);
@@ -71,7 +72,7 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 1000000,
+    fileSize: 10000000,
   },
 });
 
@@ -354,7 +355,7 @@ router.post("/addInventory", async (req, res) => {
   res.json({ message: "Appointment saved successfully" });
 });
 
-router.delete("/deleteRecord/:_inventoryID", async (req, res) => {
+router.post("/deleteRecord/:_inventoryID", async (req, res) => {
   try {
     const id = req.params._inventoryID;
     const removedRecord = await Inventory.findOneAndRemove({
@@ -363,7 +364,9 @@ router.delete("/deleteRecord/:_inventoryID", async (req, res) => {
 
     if (removedRecord) {
       res.json({ message: "Record deleted successfully" });
+      toast.success("Record Deleted Successfully");
     } else {
+      toast.error("Please try again!");
       res.status(404).json({ message: "Record not found" });
     }
   } catch (error) {
@@ -377,6 +380,15 @@ router.get("/get-order", async (req, res) => {
   try {
     const orders = await Order.find(); // Fetch all orders from the database
     res.json(orders);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Failed to fetch order data" });
+  }
+});
+router.get("/get-faq", async (req, res) => {
+  try {
+    const faq = await FAQ.find();
+    res.json(faq);
   } catch (error) {
     console.error("Error fetching data:", error);
     res.status(500).json({ error: "Failed to fetch order data" });
@@ -672,6 +684,7 @@ router.put("/update-banner", upload.single("image"), async (req, res) => {
       const existingCategory = req.body.existingCategory;
       if (category !== existingCategory) {
         const extname = path.extname(image);
+
         const oldImagePath =
           "images/banner/uploads/" + existingCategory + extname;
         if (fs.existsSync(oldImagePath)) {
@@ -691,7 +704,7 @@ router.put("/update-banner", upload.single("image"), async (req, res) => {
     existingBanner._bannerType = category;
     existingBanner.heading = heading;
     existingBanner._heading = subheading;
-    existingBanner._subheading = image; // Update the image path
+    existingBanner._image = image; // Update the image path
 
     // Save the updated banner
     await existingBanner.save();
@@ -855,6 +868,64 @@ router.get("/fetch-contact", async (req, res) => {
   } catch (error) {
     console.error("Error retrieving Contact:", error);
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+const getNextFAQNum = async () => {
+  try {
+    const counter = await Counter.findOneAndUpdate(
+      { name: "_faqNum" },
+      { $inc: { value: 1 } },
+      { new: true, upsert: true }
+    );
+    return counter.value;
+  } catch (err) {
+    console.error("Error getting the next inventory number:", err);
+    throw err;
+  }
+};
+router.get("/generateFAQId", async (req, res) => {
+  try {
+    const id = await getNextFAQNum();
+    res.json({ id });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to generate ID" });
+  }
+});
+
+router.post("/addFAQ", async (req, res) => {
+  const { actionId, question, answer } = req.body;
+
+  const faq = new FAQ({
+    _faqNum: actionId,
+    _question: question,
+    _answer: answer,
+  });
+
+  await faq.save();
+
+  res.json({ message: "Appointment saved successfully" });
+});
+
+router.post("/deleteFAQ/:_faqNum", async (req, res) => {
+  try {
+    const id = req.params._faqNum;
+    const removedRecord = await FAQ.findOneAndRemove({
+      _faqNum: id,
+    }); // Use findOneAndRemove
+
+    if (removedRecord) {
+      res.json({ message: "Record deleted successfully" });
+      toast.success("Record Deleted Successfully");
+    } else {
+      toast.error("Please try again!");
+      res.status(404).json({ message: "Record not found" });
+    }
+  } catch (error) {
+    console.error("Error deleting record", error);
+    res
+      .status(500)
+      .json({ message: "Failed to delete the record", error: error.message });
   }
 });
 module.exports = router;

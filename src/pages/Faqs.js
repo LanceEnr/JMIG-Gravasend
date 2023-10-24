@@ -5,6 +5,7 @@ import CustomizedAccordions, {
 import "../styles/Faqs.css";
 import { Container, Box } from "@mui/material";
 import Banner from "../components/Banner";
+import { rowsFaqs } from "./cmshelper/cms";
 
 import BannerImage from "../assets/faqs.webp";
 
@@ -18,7 +19,7 @@ function Faqs() {
       />
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
         <Box mt={2}>
-          <CustomizedAccordions items={items} />
+          <CustomizedAccordions items={rowsFaqs} />
         </Box>
       </Container>
     </div>

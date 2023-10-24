@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 const admin = require("firebase-admin");
+const Counter = require("../models/counter");
 
 router.get("/fetch-cargo", (req, res) => {
   axios
@@ -281,6 +282,171 @@ router.get("/fetch-upcomingInspections", (req, res) => {
         res.json(upcomingInspectionsData);
       } else {
         console.log('No data found in the "Upcoming Inspections" collection.');
+        res.status(404).json({ message: "No data found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
+router.get("/fetch-driver", (req, res) => {
+  axios
+    .get(
+      "https://gravasend-965f7-default-rtdb.firebaseio.com/DriverManagement.json"
+    )
+    .then((response) => {
+      const driverData = response.data;
+
+      if (driverData) {
+        res.json(driverData);
+      } else {
+        console.log('No data found in the "Driver Management" collection.');
+        res.status(404).json({ message: "No data found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
+const getNextDriverNum = async () => {
+  try {
+    const counter = await Counter.findOneAndUpdate(
+      { name: "_id" },
+      { $inc: { value: 1 } },
+      { new: true, upsert: true }
+    );
+    return counter.value;
+  } catch (err) {
+    console.error("Error getting the next inventory number:", err);
+    throw err;
+  }
+};
+router.get("/generateDriverID", async (req, res) => {
+  try {
+    const id = await getNextDriverNum();
+    res.json({ id });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to generate ID" });
+  }
+});
+router.post("/addDriver", async (req, res) => {
+  const email = req.body.email;
+  const driverData = req.body;
+
+  try {
+    // Check if the user exists based on email
+    const user = await admin.auth().getUserByEmail(email);
+
+    if (user) {
+      // If the user exists, get their UID
+      const uid = user.uid;
+
+      // Assign the UID to the driver data
+      driverData.uid = uid;
+
+      // Save the driver data to Firebase under the UID
+      const db = admin.database();
+      const ref = db.ref(`DriverManagement/${uid}`);
+      await ref.set(driverData);
+
+      res.status(200).json({ message: "Driver added successfully" });
+    } else {
+      console.log("User does not exist");
+      res.status(404).json({ message: "User does not exist" });
+    }
+  } catch (error) {
+    console.error("Firebase Authentication error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+router.post("/deleteDriverRecord", async (req, res) => {
+  const _driverID = req.body._driverID;
+  try {
+    // Define a reference to the "DriverManagement" data based on the _driverID
+    const db = admin.database();
+    const driverRef = db.ref(`DriverManagement/${_driverID}`);
+
+    // Remove the record with the specified driver ID (UID)
+    await driverRef.remove();
+
+    res.status(200).json({ message: "Driver record deleted successfully" });
+  } catch (error) {
+    console.error("Firebase delete error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/addTruck", async (req, res) => {
+  const truckData = req.body;
+
+  try {
+    const db = admin.database();
+    const ref = db.ref(`trucks/${truckData.plateNo}`);
+    await ref.set(truckData);
+
+    res.status(200).json({ message: "Truck added successfully" });
+  } catch (error) {
+    console.error("Firebase Authentication error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.get("/fetch-upcominginspection", (req, res) => {
+  axios
+    .get(
+      "https://gravasend-965f7-default-rtdb.firebaseio.com/upcomingInspections.json"
+    )
+    .then((response) => {
+      const upcomingdata = response.data;
+
+      if (upcomingdata) {
+        res.json(upcomingdata);
+      } else {
+        console.log('No data found in the "Upcoming Inspection" collection.');
+        res.status(404).json({ message: "No data found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
+
+router.get("/fetch-inspectionrecords", (req, res) => {
+  axios
+    .get(
+      "https://gravasend-965f7-default-rtdb.firebaseio.com/inspectionRecords.json"
+    )
+    .then((response) => {
+      const inspectionrecordsdata = response.data;
+
+      if (inspectionrecordsdata) {
+        res.json(inspectionrecordsdata);
+      } else {
+        console.log('No data found in the "Inspection Records" collection.');
+        res.status(404).json({ message: "No data found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
+
+router.get("/fetch-maintenance", (req, res) => {
+  axios
+    .get(
+      "https://gravasend-965f7-default-rtdb.firebaseio.com/maintenanceReminders.json"
+    )
+    .then((response) => {
+      const maintenancedata = response.data;
+
+      if (maintenancedata) {
+        res.json(maintenancedata);
+      } else {
+        console.log('No data found in the "Maintenance" collection.');
         res.status(404).json({ message: "No data found" });
       }
     })

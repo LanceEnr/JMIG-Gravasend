@@ -1,6 +1,6 @@
 import react, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import { conntect } from "react-redux";
+import { connect } from "react-redux";
 
 class Dashboard extends Component {
   render() {
