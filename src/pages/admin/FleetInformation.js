@@ -1,6 +1,6 @@
 import React from "react";
 import { Paper } from "@mui/material";
-import FullFeaturedCrudGrid from "./components/CustomDataGrid";
+import FullFeaturedCrudGrid from "./components/FleetDataGrid";
 import { columnsFleetInformation, rowsFleetInformation } from "./helpers/data";
 
 function FleetInformation() {

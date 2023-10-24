@@ -52,29 +52,14 @@ export default function FaqTable(props) {
   const [open, setOpen] = React.useState(false);
   const [action, setAction] = React.useState(null);
   const [actionId, setActionId] = React.useState("");
-  const [itemName, setItemName] = React.useState("");
-  const [quantity, setQuantity] = React.useState("");
-  const [location, setLocation] = React.useState("");
-  const [lastUpdated, setLastUpdated] = React.useState("");
+  const [question, setQuestion] = React.useState("");
+  const [answer, setAnswer] = React.useState("");
 
   const [dataClassification, setDataClassification] = React.useState("");
   const [isEditing, setIsEditing] = React.useState(false);
 
   const [rows, setRows] = React.useState(props.rows);
   const [rowModesModel, setRowModesModel] = React.useState({});
-
-  const currentDate = new Date();
-  const options = {
-    weekday: "short",
-    month: "short",
-    day: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    timeZoneName: "short",
-  };
-  const formattedDate = currentDate.toLocaleString("en-US", options);
 
   const handleDialogClose = () => {
     setOpen(false);
@@ -98,11 +83,10 @@ export default function FaqTable(props) {
 
   const handleClick = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/generateId");
+      const response = await axios.get("http://localhost:3001/generateFAQId");
       if (response.data.id) {
         const newRow = {
           id: response.data.id,
-          lastUpdated: formattedDate,
         };
         setRows((prevRows) => [...prevRows, newRow]);
         setActionId(response.data.id);
@@ -119,29 +103,16 @@ export default function FaqTable(props) {
     }
   };
 
-  const handleSaveClick = (id, itemName, quantity, location) => () => {
+  const handleSaveClick = (id, question, answer) => () => {
     setRowModesModel({
       ...rowModesModel,
       [actionId]: { mode: GridRowModes.Edit },
     });
     setAction("save");
     setActionId(id);
-    setItemName(itemName);
-    setQuantity(quantity);
-    setLocation(location);
+    setQuestion(question);
+    setAnswer(answer);
     setOpen(true);
-    console.log(
-      "action id: " +
-        actionId +
-        " name: " +
-        itemName +
-        " quantity: " +
-        quantity +
-        " location: " +
-        location +
-        " last: " +
-        lastUpdated
-    );
   };
 
   const handleEditClick = (id) => () => {
@@ -155,35 +126,16 @@ export default function FaqTable(props) {
       ...rowModesModel,
       [actionId]: { mode: GridRowModes.View },
     });
-    console.log(
-      "action id: " +
-        actionId +
-        " name: " +
-        itemName +
-        " quantity: " +
-        quantity +
-        " location: " +
-        location +
-        " last: " +
-        lastUpdated
-    );
-    if (!itemName || !quantity || !location) {
-      // Show an error message and prevent saving
-      toast.error("All fields are required.");
-      return;
-    }
 
     try {
-      const response = await axios.post("http://localhost:3001/addInventory", {
+      const response = await axios.post("http://localhost:3001/addFAQ", {
         actionId: actionId,
-        itemName: itemName,
-        quantity: quantity,
-        location: location,
-        lastUpdated: formattedDate,
+        question: question,
+        answer: answer,
       });
 
-      console.log("Item added successfully", response.data);
-      toast.success("Item added successfully");
+      console.log("FAQ added successfully", response.data);
+      toast.success("FAQ added successfully");
 
       setRowModesModel({
         ...rowModesModel,
@@ -194,23 +146,13 @@ export default function FaqTable(props) {
         row.id === actionId
           ? {
               ...row,
-              itemName,
-              quantity,
-              location,
-              lastUpdated,
+              question,
+              answer,
             }
           : row
       );
       setRows(updatedRows);
       setOpen(false);
-
-      if (response.data.isCurrent) {
-        setDataClassification("current");
-      } else if (response.data.isIncoming) {
-        setDataClassification("incoming");
-      } else {
-        setDataClassification("outgoing");
-      }
     } catch (error) {
       console.error("Item add failed", error);
       setOpen(false);
@@ -220,20 +162,19 @@ export default function FaqTable(props) {
 
   const deleteRecord = async (id) => {
     try {
-      const _inventoryID = parseInt(id, 10);
+      const _faqNum = parseInt(id, 10);
       const response = await axios.delete(
-        `http://localhost:3001/deleteRecord/${_inventoryID}`
+        `http://localhost:3001/deleteFAQ/${_faqNum}`
       );
 
       if (response.status === 200) {
-        // Delete the record from your local state
         setRows(rows.filter((row) => row.id !== id));
-        // Close the confirmation dialog
+
         setOpen(false);
-        toast.success("Record deleted successfully");
+        toast.success("FAQ deleted successfully");
       } else if (response.status === 404) {
         // Display a "Record not found" toast message
-        toast.error("Record not found");
+        toast.error("FAQ not found");
       } else {
         toast.error("Failed to delete the record");
       }
@@ -280,7 +221,7 @@ export default function FaqTable(props) {
     width: props.actionWidth || 100,
     cellClassName: "actions",
     getActions: (params) => {
-      const { id, itemName, quantity, location } = params.row;
+      const { id, question, answer } = params.row;
       const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
       if (isInEditMode) {
@@ -291,7 +232,7 @@ export default function FaqTable(props) {
             sx={{
               color: "primary.main",
             }}
-            onClick={handleSaveClick(id, itemName, quantity, location)}
+            onClick={handleSaveClick(id, question, answer)}
           />,
           <GridActionsCellItem
             icon={<CancelIcon />}

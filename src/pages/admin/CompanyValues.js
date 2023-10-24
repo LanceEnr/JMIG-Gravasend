@@ -32,7 +32,7 @@ export default function CompanyValues() {
       _valueHeading1: formData._heading1,
       _valueSubheading1: formData._subheading1,
       _valueHeading2: formData._heading2,
-      _valueSubeading2: formData._subheading2,
+      _valueSubheading2: formData._subheading2,
       _valueHeading3: formData._heading3,
       _valueSubheading3: formData._subheading3,
     };

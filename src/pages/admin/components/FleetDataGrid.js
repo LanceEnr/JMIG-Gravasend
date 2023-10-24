@@ -51,18 +51,19 @@ function EditToolbar(props) {
   );
 }
 
-export default function DataGridDriverManagement(props) {
+export default function FleetDataGrid(props) {
   const [open, setOpen] = React.useState(false);
   const [action, setAction] = React.useState(null);
   const [actionId, setActionId] = React.useState(null);
 
   const [driverName, setdriverName] = React.useState("");
-  const [contact, setcontact] = React.useState("");
-  const [date, setdate] = React.useState("");
-  const [status, setStatus] = React.useState("");
+  const [bodyNo, setbodyNo] = React.useState("");
+  const [chassisNo, setchassisNo] = React.useState("");
+  const [engineNo, setengineNo] = React.useState("");
   const [plateNo, setPlateNo] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [licenseNo, setLicenseNo] = React.useState("");
+  const [mileage, setmileage] = React.useState("");
+  const [model, setmodel] = React.useState("");
+  const [plateNo2, setPlateNo2] = React.useState("");
 
   const [isEditing, setIsEditing] = React.useState(false);
 
@@ -107,7 +108,17 @@ export default function DataGridDriverManagement(props) {
 
   //FIX THIS
   const handleSaveClick =
-    (id, driverName, contact, date, status, plateNo, email, licenseNo) =>
+    (
+      id,
+      driverName,
+      bodyNo,
+      chassisNo,
+      engineNo,
+      plateNo,
+      plateNo2,
+      mileage,
+      model
+    ) =>
     () => {
       setRowModesModel({
         ...rowModesModel,
@@ -116,12 +127,13 @@ export default function DataGridDriverManagement(props) {
       setAction("save");
       setActionId(id);
       setdriverName(driverName);
-      setcontact(contact);
-      setdate(date);
-      setStatus(status);
+      setbodyNo(bodyNo);
+      setchassisNo(chassisNo);
+      setengineNo(engineNo);
       setPlateNo(plateNo);
-      setEmail(email);
-      setLicenseNo(licenseNo);
+      setPlateNo2(plateNo2);
+      setmileage(mileage);
+      setmodel(model);
       setOpen(true);
     };
   //FIX
@@ -135,18 +147,19 @@ export default function DataGridDriverManagement(props) {
     });
 
     try {
-      const response = await axios.post("http://localhost:3001/addDriver", {
+      const response = await axios.post("http://localhost:3001/addTruck", {
         driverName: driverName,
-        contact: contact,
-        date: date,
-        status: status,
+        bodyNo: bodyNo,
+        chassisNo: chassisNo,
+        engineNo: engineNo,
         plateNo: plateNo,
-        email: email,
-        licenseNo,
+        plateNo2: plateNo2,
+        mileage: mileage,
+        model: model,
       });
 
-      console.log("Driver added successfully", response.data);
-      toast.success("Driver added successfully");
+      console.log("Truck added successfully", response.data);
+      toast.success("Truck added successfully");
 
       setRowModesModel({
         ...rowModesModel,
@@ -158,31 +171,32 @@ export default function DataGridDriverManagement(props) {
           ? {
               ...row,
               driverName,
-              contact,
-              date,
-              status,
+              bodyNo,
+              chassisNo,
+              engineNo,
               plateNo,
-              email,
-              licenseNo,
+              plateNo2,
+              mileage,
+              model,
             }
           : row
       );
       setRows(updatedRows);
       setOpen(false);
     } catch (error) {
-      console.error("Driver add failed", error);
+      console.error("Truck add failed", error);
       setOpen(false);
-      toast.error("Driver not yet registered!");
+      toast.error("Truck not yet registered!");
     }
   };
 
   const deleteRecord = async (id) => {
     try {
-      const _driverID = id;
+      const _truckID = id;
       const response = await axios.post(
-        "http://localhost:3001/deleteDriverRecord/",
+        "http://localhost:3001/deleteTruckRecord/",
         {
-          _driverID: _driverID,
+          _truckID: _truckID,
         }
       );
 
@@ -244,12 +258,13 @@ export default function DataGridDriverManagement(props) {
       const {
         id,
         driverName,
-        contact,
-        date,
-        status,
+        bodyNo,
+        chassisNo,
+        engineNo,
         plateNo,
-        email,
-        licenseNo,
+        plateNo2,
+        mileage,
+        model,
       } = params.row;
       const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
@@ -265,12 +280,13 @@ export default function DataGridDriverManagement(props) {
             onClick={handleSaveClick(
               id,
               driverName,
-              contact,
-              date,
-              status,
+              bodyNo,
+              chassisNo,
+              engineNo,
               plateNo,
-              email,
-              licenseNo
+              plateNo2,
+              mileage,
+              model
             )}
           />,
           <GridActionsCellItem
