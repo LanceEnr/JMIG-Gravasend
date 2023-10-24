@@ -457,6 +457,9 @@ const ManageAppointments = () => {
           )}
         </DialogContent>
         <DialogActions>
+          <Button onClick={handleClose} color="primary" autoFocus>
+            Complete
+          </Button>
           <Button onClick={handleClose} color="secondary" autoFocus>
             Close
           </Button>
