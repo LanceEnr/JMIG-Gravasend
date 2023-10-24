@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import BannerImage from "../../backend/images/banner/uploads/Homepage Full Banner.jpg";
+import BannerImage from "../assets/about.webp";
 import "../styles/Home.css";
 import Banner, { fetchBannerData } from "./cmshelper/cms";
 import ProductValues from "../components/ProductValues";

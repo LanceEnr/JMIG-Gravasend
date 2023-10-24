@@ -6,15 +6,12 @@ import {
   Paper,
   Box,
   useMediaQuery,
-  Avatar,
   List,
   Button,
   TextField,
-  Badge,
   IconButton,
 } from "@mui/material";
 import UserDrawer from "./common/UserDrawer";
-import CameraEnhanceIcon from "@mui/icons-material/CameraEnhance";
 import EditIcon from "@mui/icons-material/Edit";
 import { toast } from "react-toastify";
 import Visibility from "@mui/icons-material/Visibility";
@@ -23,7 +20,6 @@ import InputAdornment from "@mui/material/InputAdornment";
 
 export default function ProfileInfo(props) {
   const isMobile = useMediaQuery("(max-width:600px)");
-  const userAvatarUrl = "https://example.com/avatar.jpg";
   const [showPassword, setShowPassword] = useState(false);
   const [passwordInputType, setPasswordInputType] = useState("password");
   const handleShowPasswordToggle = () => {
@@ -169,18 +165,6 @@ export default function ProfileInfo(props) {
         <Grid item xs={12}>
           <Paper elevation={2} style={{ padding: "24px" }}>
             <Grid container spacing={3} alignItems="center">
-              <Grid item xs={12}>
-                <Badge
-                  overlap="circular"
-                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                >
-                  <Avatar
-                    alt={userName}
-                    src={userAvatarUrl}
-                    style={{ width: "60px", height: "60px" }}
-                  />
-                </Badge>
-              </Grid>
               <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle1" gutterBottom>
                   Phone

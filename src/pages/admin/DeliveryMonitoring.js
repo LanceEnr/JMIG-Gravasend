@@ -3,16 +3,13 @@ import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import axios from "axios";
 import { Grid, Paper, Avatar, Box } from "@mui/material";
 import Title from "./components/Title";
-import Typography from "antd/es/typography/Typography";
-import SpeedIcon from "@mui/icons-material/Speed";
-import ElectricCarIcon from "@mui/icons-material/ElectricCar";
-import CarCrashIcon from "@mui/icons-material/CarCrash";
+
 import TripOngoing from "./TripOngoing";
 import truckIcon from "../../assets/truck.png";
 
 const mapStyles = {
   height: "450px",
-  width: "1000px",
+  width: "100%",
 };
 
 function DeliveryMonitoring() {
@@ -64,17 +61,10 @@ function DeliveryMonitoring() {
 
   return (
     <div>
-      <Title>Delivery Monitoring</Title>
-
       <Grid container spacing={3} sx={{ mb: 2 }}>
         <Grid item xs={12}>
           <Paper sx={{ p: 2 }}>
-            <Typography
-              variant="h3"
-              style={{ color: "#3f51b5", marginBottom: "10px" }}
-            >
-              Real-time tracking
-            </Typography>
+            <Title>Real-time Tracking</Title>
             <LoadScript
               googleMapsApiKey="AIzaSyAJf20RDl1D_m5wh6KGdhKPOALFM-pbMFI"
               onLoad={handleLoad}
@@ -117,7 +107,7 @@ function DeliveryMonitoring() {
         <Grid item xs={12}>
           <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
             <Title>Ongoing Trips</Title>
-            <TripOngoing onFindClick={handleFindClick} />;
+            <TripOngoing onFindClick={handleFindClick} />
           </Paper>
         </Grid>
       </Grid>

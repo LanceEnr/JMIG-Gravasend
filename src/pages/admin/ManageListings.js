@@ -22,11 +22,13 @@ const rows = [
     id: 1,
     name: "Gravel",
     category: "Aggregate Materials",
+    price: "₱1000",
   },
   {
     id: 2,
     name: "Backhoe",
     category: "Services",
+    price: "₱1000",
   },
   // Add more rows as needed
 ];
@@ -59,7 +61,7 @@ export default function ManageListings() {
     { field: "id", headerName: "ID", flex: 1 },
     { field: "name", headerName: "Name", flex: 1 },
     { field: "category", headerName: "Category", flex: 1 },
-
+    { field: "price", headerName: "Price", flex: 1 },
     {
       field: "published",
       headerName: "Published",
