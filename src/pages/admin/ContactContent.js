@@ -55,13 +55,32 @@ export default function ContactContent() {
             <Grid item xs={12}>
               <Grid container spacing={3} alignItems="center">
                 <Grid item xs={12}>
-                  <Typography>Company Contact Information</Typography>
+                  <Typography>Business Contact Information</Typography>
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
                     id="address"
                     name="_address"
-                    label="Address"
+                    label="Address Line 1"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    value={formData._address}
+                    onChange={handleFormChange}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <HomeIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    id="address"
+                    name="_address"
+                    label="Address Line 2"
                     variant="outlined"
                     fullWidth
                     required

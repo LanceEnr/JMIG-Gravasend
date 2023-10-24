@@ -38,11 +38,14 @@ export default function EditListing() {
               <Grid container spacing={3} alignItems="center">
                 <Grid item xs={6}>
                   <TextField
-                    label="Name"
-                    name="name"
+                    label="Product"
+                    name="product"
                     type="text"
                     fullWidth
-                    defaultValue="Dummy Name"
+                    defaultValue="Gravel"
+                    InputProps={{
+                      readOnly: true,
+                    }}
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -83,6 +86,14 @@ export default function EditListing() {
                       </p>
                     )}
                   </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Price"
+                    name="price"
+                    type="number"
+                    fullWidth
+                  />
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
