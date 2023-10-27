@@ -61,7 +61,7 @@ export default function ContactContent() {
                   <TextField
                     id="address"
                     name="_address"
-                    label="Address Line 1"
+                    label="Address 1"
                     variant="outlined"
                     fullWidth
                     required
@@ -80,7 +80,7 @@ export default function ContactContent() {
                   <TextField
                     id="address"
                     name="_address"
-                    label="Address Line 2"
+                    label="Address 2"
                     variant="outlined"
                     fullWidth
                     required
