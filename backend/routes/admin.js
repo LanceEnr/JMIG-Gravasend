@@ -14,6 +14,7 @@ const About = require("../models/about");
 const Contact = require("../models/contact");
 const Banner = require("../models/banner");
 const FAQ = require("../models/faq");
+const Listing = require("../models/listing");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -895,8 +896,15 @@ router.get("/generateFAQId", async (req, res) => {
 
 router.post("/addFAQ", async (req, res) => {
   const { actionId, question, answer } = req.body;
+  const exisitingName = await FAQ.findOne({
+    _question: question,
+  });
 
-  const faq = new FAQ({
+  if (exisitingName) {
+    // An appointment with the same date and time already exists and is not cancelled
+    return res.status(400).json({ error: "Name conflict" });
+  }
+  const getNextFAQNum = new FAQ({
     _faqNum: actionId,
     _question: question,
     _answer: answer,
@@ -904,7 +912,7 @@ router.post("/addFAQ", async (req, res) => {
 
   await faq.save();
 
-  res.json({ message: "Appointment saved successfully" });
+  res.json({ message: "FAQ saved successfully" });
 });
 
 router.post("/deleteFAQ/:_faqNum", async (req, res) => {
@@ -928,4 +936,86 @@ router.post("/deleteFAQ/:_faqNum", async (req, res) => {
       .json({ message: "Failed to delete the record", error: error.message });
   }
 });
+
+router.get("/get-listing", async (req, res) => {
+  try {
+    const listings = await Listing.find();
+    res.json(listings);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Failed to fetch order data" });
+  }
+});
+router.get("/get-products", async (req, res) => {
+  try {
+    const inventory = await Inventory.find();
+    res.json(inventory);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Failed to fetch order data" });
+  }
+});
+const getNextListingNum = async () => {
+  try {
+    const counter = await Counter.findOneAndUpdate(
+      { name: "_listingID" },
+      { $inc: { value: 1 } },
+      { new: true, upsert: true }
+    );
+    return counter.value;
+  } catch (err) {
+    console.error("Error getting the next inventory number:", err);
+    throw err;
+  }
+};
+
+const storage2 = multer.diskStorage({
+  destination: "../src/images/listings/",
+  filename: function (req, file, cb) {
+    const listingName = req.body._listingName;
+
+    const extname = path.extname(file.originalname);
+
+    if (!req.fileIndex) {
+      req.fileIndex = 1;
+    } else {
+      req.fileIndex += 1;
+    }
+
+    const filename = `${listingName}${req.fileIndex}${extname}`;
+
+    cb(null, filename);
+  },
+});
+
+const upload2 = multer({
+  storage: storage2,
+  limits: {
+    fileSize: 10000000,
+  },
+});
+router.post("/add-listing", upload2.array("image", 6), async (req, res) => {
+  const productName = req.body._listingName;
+  const category = req.body._listingCategory;
+  const price = req.body._listingPrice;
+  const description = req.body._isPublished;
+  const images = req.files.map((file) => file.path);
+  const id = await getNextListingNum();
+  if (images.length === 0) {
+    return res.status(400).json({ error: "No images were uploaded" });
+  }
+
+  const newListing = new Listing({
+    _listingID: id,
+    _listingName: productName,
+    _listingCategory: category,
+    _listingPrice: price,
+    _listingDescription: description,
+    _isPublished: true,
+    _imgPath: images,
+  });
+  await newListing.save();
+  res.status(200).json({ message: "Listing added successfully" });
+});
+
 module.exports = router;

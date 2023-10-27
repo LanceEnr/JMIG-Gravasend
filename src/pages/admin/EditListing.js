@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-
+import axios from "axios";
 import {
   Box,
   Grid,
@@ -16,8 +16,12 @@ import {
 import Title from "./components/Title";
 
 export default function EditListing() {
-  const [category, setCategory] = useState("Aggregate Materials");
-
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [productName, setProductName] = useState("");
+  const [category, setCategory] = useState("");
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
+  const [products, setProducts] = useState([]);
   const handleCategoryChange = (event) => {
     setCategory(event.target.value);
   };
@@ -27,6 +31,23 @@ export default function EditListing() {
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const response = await fetch("http://localhost:3001/get-products");
+        if (response.ok) {
+          const data = await response.json();
+          setProducts(data);
+        } else {
+          console.error("Failed to fetch products");
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    }
+
+    fetchProducts();
+  }, []);
   return (
     <div>
       <Box sx={{ my: 2 }}>
@@ -37,16 +58,28 @@ export default function EditListing() {
             <Paper elevation={2} style={{ padding: "24px" }}>
               <Grid container spacing={3} alignItems="center">
                 <Grid item xs={6}>
-                  <TextField
-                    label="Product"
-                    name="product"
-                    type="text"
-                    fullWidth
-                    defaultValue="Gravel"
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
+                  <FormControl fullWidth>
+                    <InputLabel id="product-label">Product</InputLabel>
+                    <Select
+                      labelId="product-label"
+                      id="productName"
+                      name="productName"
+                      value={productName}
+                      onChange={(e) => {
+                        setProductName(e.target.value);
+                      }}
+                      label="Product"
+                    >
+                      {products.map((product) => (
+                        <MenuItem
+                          key={product._inventoryID}
+                          value={product._itemName}
+                        >
+                          {product._itemName}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </Grid>
                 <Grid item xs={6}>
                   <FormControl fullWidth>

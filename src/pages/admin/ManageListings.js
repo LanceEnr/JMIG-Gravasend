@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { DataGrid, GridActionsCellItem, GridToolbar } from "@mui/x-data-grid";
-
+import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 
@@ -17,21 +17,27 @@ import {
 } from "@mui/material";
 import Title from "./components/Title";
 
-const rows = [
-  {
-    id: 1,
-    name: "Gravel",
-    category: "Aggregate Materials",
-    price: "₱1000",
-  },
-  {
-    id: 2,
-    name: "Backhoe",
-    category: "Services",
-    price: "₱1000",
-  },
-  // Add more rows as needed
-];
+const fetchListingData = async () => {
+  try {
+    const response = await axios.get("http://localhost:3001/get-listing");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+const transformListingData = (data) => {
+  return data.map((item) => ({
+    id: item._listingID,
+    name: item._listingName,
+    category: item._listingCategory,
+    price: item._listingPrice,
+    published: item._isPublished,
+  }));
+};
+
+const rowsListing = transformListingData(await fetchListingData());
 
 export default function ManageListings() {
   const [open, setOpen] = React.useState(false);
@@ -57,7 +63,7 @@ export default function ManageListings() {
     // Close the dialog after handling the action
     handleClose();
   };
-  const columns = [
+  const columnsListing = [
     { field: "id", headerName: "ID", flex: 1 },
     { field: "name", headerName: "Name", flex: 1 },
     { field: "category", headerName: "Category", flex: 1 },
@@ -67,8 +73,11 @@ export default function ManageListings() {
       headerName: "Published",
       sortable: false,
       flex: 1,
-      renderCell: () => (
-        <Switch defaultChecked onClick={() => handleClickOpen("save")} />
+      renderCell: (params) => (
+        <Switch
+          defaultChecked={params.row.published}
+          onClick={() => handleClickOpen("save")}
+        />
       ),
     },
     {
@@ -111,8 +120,8 @@ export default function ManageListings() {
         </Button>
       </Box>
       <DataGrid
-        rows={rows}
-        columns={columns}
+        rows={rowsListing}
+        columns={columnsListing}
         pageSize={5}
         disableColumnFilter
         disableColumnSelector

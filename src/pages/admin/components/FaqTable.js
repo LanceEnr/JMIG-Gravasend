@@ -54,8 +54,6 @@ export default function FaqTable(props) {
   const [actionId, setActionId] = React.useState("");
   const [question, setQuestion] = React.useState("");
   const [answer, setAnswer] = React.useState("");
-
-  const [dataClassification, setDataClassification] = React.useState("");
   const [isEditing, setIsEditing] = React.useState(false);
 
   const [rows, setRows] = React.useState(props.rows);
@@ -128,6 +126,7 @@ export default function FaqTable(props) {
     });
 
     try {
+      console.log(question);
       const response = await axios.post("http://localhost:3001/addFAQ", {
         actionId: actionId,
         question: question,
