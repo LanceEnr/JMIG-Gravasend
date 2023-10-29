@@ -269,6 +269,28 @@ router.get("/fetch-trucks", (req, res) => {
       res.status(500).json({ message: "Internal server error" });
     });
 });
+router.get("/fetch-fleet-available", (req, res) => {
+  axios
+    .get("https://gravasend-965f7-default-rtdb.firebaseio.com/trucks.json")
+    .then((response) => {
+      const driverData = response.data;
+
+      if (driverData) {
+        const unassignedDrivers = Object.values(driverData).filter(
+          (driver) => driver.status === "available"
+        );
+
+        res.json(unassignedDrivers);
+      } else {
+        console.log('No data found in the "Truck" collection.');
+        res.status(404).json({ message: "No data found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
 
 router.get("/fetch-upcomingInspections", (req, res) => {
   axios
@@ -300,6 +322,31 @@ router.get("/fetch-driver", (req, res) => {
 
       if (driverData) {
         res.json(driverData);
+      } else {
+        console.log('No data found in the "Driver Management" collection.');
+        res.status(404).json({ message: "No data found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
+
+router.get("/fetch-driver-available", (req, res) => {
+  axios
+    .get(
+      "https://gravasend-965f7-default-rtdb.firebaseio.com/DriverManagement.json"
+    )
+    .then((response) => {
+      const driverData = response.data;
+
+      if (driverData) {
+        const unassignedDrivers = Object.values(driverData).filter(
+          (driver) => driver.status === "unassigned"
+        );
+
+        res.json(unassignedDrivers);
       } else {
         console.log('No data found in the "Driver Management" collection.');
         res.status(404).json({ message: "No data found" });
@@ -383,10 +430,40 @@ router.post("/addTruck", async (req, res) => {
 
   try {
     const db = admin.database();
-    const ref = db.ref(`trucks/${truckData.plateNo}`);
+    const ref = db.ref(`trucks/${truckData.id}`);
     await ref.set(truckData);
 
     res.status(200).json({ message: "Truck added successfully" });
+  } catch (error) {
+    console.error("Firebase Authentication error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+const getNextJobNum = async () => {
+  try {
+    const counter = await Counter.findOneAndUpdate(
+      { name: "id_delivery" },
+      { $inc: { value: 1 } },
+      { new: true, upsert: true }
+    );
+    return counter.value;
+  } catch (err) {
+    console.error("Error getting the next fleet number:", err);
+    throw err;
+  }
+};
+
+router.post("/addJob", async (req, res) => {
+  const jobData = req.body;
+  const id = await getNextJobNum();
+  console.log(jobData);
+  try {
+    const db = admin.database();
+    const ref = db.ref(`Trip Dashboard/${id}`);
+    await ref.set(jobData);
+
+    res.status(200).json({ message: "Truo added successfully" });
   } catch (error) {
     console.error("Firebase Authentication error:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -454,6 +531,28 @@ router.get("/fetch-maintenance", (req, res) => {
       console.error("Firebase connection error:", error);
       res.status(500).json({ message: "Internal server error" });
     });
+});
+
+const getNextFleetNum = async () => {
+  try {
+    const counter = await Counter.findOneAndUpdate(
+      { name: "_fleetId" },
+      { $inc: { value: 1 } },
+      { new: true, upsert: true }
+    );
+    return counter.value;
+  } catch (err) {
+    console.error("Error getting the next fleet number:", err);
+    throw err;
+  }
+};
+router.get("/generateFleetId", async (req, res) => {
+  try {
+    const id = await getNextFleetNum();
+    res.json({ id });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to generate ID" });
+  }
 });
 
 module.exports = router;

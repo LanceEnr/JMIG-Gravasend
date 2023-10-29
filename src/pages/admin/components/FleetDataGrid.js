@@ -64,6 +64,8 @@ export default function FleetDataGrid(props) {
   const [mileage, setmileage] = React.useState("");
   const [model, setmodel] = React.useState("");
   const [plateNo2, setPlateNo2] = React.useState("");
+  const [status, setStatus] = React.useState("available");
+  const [location, setLocation] = React.useState("available");
 
   const [isEditing, setIsEditing] = React.useState(false);
 
@@ -89,11 +91,21 @@ export default function FleetDataGrid(props) {
 
   //FIX THIS-
   const handleClick = async () => {
-    const newRow = {
-      id: "auto-generated",
-    };
-    setRows((prevRows) => [...prevRows, newRow]);
-    setActionId("auto-generated");
+    try {
+      const response = await axios.get("http://localhost:3001/generateFleetId");
+      if (response.data.id) {
+        const newRow = {
+          id: response.data.id,
+          status: "available",
+          setStatustatus: "available",
+        };
+        setRows((prevRows) => [...prevRows, newRow]);
+        setActionId(response.data.id);
+      }
+    } catch (error) {
+      console.error("Failed to generate an ID", error);
+      toast.error("Failed to generate an ID");
+    }
   };
 
   const handleRowEditStop = (params, event) => {
@@ -117,7 +129,9 @@ export default function FleetDataGrid(props) {
       plateNo,
       plateNo2,
       mileage,
-      model
+      model,
+      status,
+      location
     ) =>
     () => {
       setRowModesModel({
@@ -134,6 +148,8 @@ export default function FleetDataGrid(props) {
       setPlateNo2(plateNo2);
       setmileage(mileage);
       setmodel(model);
+      setStatus(status);
+      setLocation(location);
       setOpen(true);
     };
   //FIX
@@ -148,6 +164,7 @@ export default function FleetDataGrid(props) {
 
     try {
       const response = await axios.post("http://localhost:3001/addTruck", {
+        id: actionId,
         driverName: driverName,
         bodyNo: bodyNo,
         chassisNo: chassisNo,
@@ -156,6 +173,8 @@ export default function FleetDataGrid(props) {
         plateNo2: plateNo2,
         mileage: mileage,
         model: model,
+        status: status,
+        location: location,
       });
 
       console.log("Truck added successfully", response.data);
@@ -166,22 +185,6 @@ export default function FleetDataGrid(props) {
         [actionId]: { mode: GridRowModes.View },
       });
 
-      const updatedRows = rows.map((row) =>
-        row.id === actionId
-          ? {
-              ...row,
-              driverName,
-              bodyNo,
-              chassisNo,
-              engineNo,
-              plateNo,
-              plateNo2,
-              mileage,
-              model,
-            }
-          : row
-      );
-      setRows(updatedRows);
       setOpen(false);
     } catch (error) {
       console.error("Truck add failed", error);
@@ -265,6 +268,8 @@ export default function FleetDataGrid(props) {
         plateNo2,
         mileage,
         model,
+        status,
+        location,
       } = params.row;
       const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
@@ -286,7 +291,9 @@ export default function FleetDataGrid(props) {
               plateNo,
               plateNo2,
               mileage,
-              model
+              model,
+              status,
+              location
             )}
           />,
           <GridActionsCellItem

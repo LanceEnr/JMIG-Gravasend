@@ -97,6 +97,8 @@ const transformFleetData = (data) => {
           engineNo: userData.engineNo,
           model: userData.model,
           mileage: userData.mileage,
+          status: userData.status,
+          location: userData.location,
         };
 
         transformedData.push(mappedData);
@@ -120,23 +122,6 @@ const fetchFleetInformation = async () => {
 const rowsFleetInformation = transformFleetData(await fetchFleetInformation());
 
 export { rowsFleetInformation };
-
-export const columnsFleetInformation = [
-  { field: "id", headerName: "ID", flex: 1 },
-  { field: "bodyNo", headerName: "Body No.", flex: 1, flex: 1, editable: true },
-  { field: "plateNo", headerName: "Tractor No.", flex: 1, editable: true },
-  { field: "plateNo2", headerName: "Trailer No.", flex: 1, editable: true },
-  { field: "chassisNo", headerName: "Chassis No.", flex: 1, editable: true },
-  { field: "engineNo", headerName: "Engine No.", flex: 1, editable: true },
-  { field: "model", headerName: "Model", flex: 2, editable: true },
-  {
-    field: "mileage",
-    headerName: "Mileage",
-    flex: 2,
-    editable: true,
-  },
-  { field: "driverName", headerName: "Driver", flex: 2, editable: true },
-];
 
 const transformDriverData = (data) => {
   const transformedData = [];
@@ -195,9 +180,6 @@ export const columnsDriverManagement = [
     field: "status",
     headerName: "Status",
     flex: 1,
-    editable: true,
-    type: "singleSelect",
-    valueOptions: ["Active", "Inactive"],
   },
   { field: "plateNo", headerName: "Plate No.", flex: 1, editable: true },
   { field: "email", headerName: "Email", flex: 1, editable: true },

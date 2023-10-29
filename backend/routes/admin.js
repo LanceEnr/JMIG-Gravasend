@@ -943,7 +943,23 @@ router.get("/get-listing", async (req, res) => {
     res.json(listings);
   } catch (error) {
     console.error("Error fetching data:", error);
-    res.status(500).json({ error: "Failed to fetch order data" });
+    res.status(500).json({ error: "Failed to fetch listing data" });
+  }
+});
+router.get("/get-listing-details", async (req, res) => {
+  const _listingName = req.query.productName;
+
+  try {
+    const listing = await Listing.findOne({ _listingName: _listingName });
+
+    if (!listing) {
+      return res.status(404).json({ error: "Listing not found" });
+    }
+
+    res.json(listing);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 router.get("/get-products", async (req, res) => {
@@ -1016,6 +1032,40 @@ router.post("/add-listing", upload2.array("image", 6), async (req, res) => {
   });
   await newListing.save();
   res.status(200).json({ message: "Listing added successfully" });
+});
+router.put("/update-listing", upload2.array("image", 6), async (req, res) => {
+  try {
+    const listingName = req.body._listingName;
+    const category = req.body._listingCategory;
+    const price = req.body._listingPrice;
+    const description = req.body._listingDescription;
+    const images = req.files.map((file) => file.path);
+
+    if (images.length === 0) {
+      return res.status(400).json({ error: "No images were uploaded" });
+    }
+
+    const updatedListing = await Listing.findOneAndUpdate(
+      { _listingName: listingName },
+      {
+        _listingName: listingName,
+        _listingCategory: category,
+        _listingPrice: price,
+        _listingDescription: description,
+        _imgPath: images,
+      },
+      { new: true }
+    );
+
+    if (!updatedListing) {
+      return res.status(404).json({ error: "Listing not found" });
+    }
+
+    res.status(200).json({ message: "Listing updated successfully" });
+  } catch (error) {
+    console.error("Error updating listing:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 module.exports = router;

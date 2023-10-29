@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import axios from "axios";
+
 import {
   Button,
   Dialog,
@@ -20,43 +22,115 @@ import {
   Typography,
 } from "@mui/material";
 import Title from "./components/Title";
+import { toast } from "react-toastify";
 
-// Modal component for creating and editing job orders
-const JobOrderModal = ({ isOpen, onClose, onSubmit, onDelete, jobOrder }) => {
-  const [origin, setOrigin] = useState("");
-  const [destination, setDestination] = useState("");
-  const [driverName, setDriverName] = useState("");
-  const [cargo, setCargo] = useState("");
-  const [weight, setWeight] = useState("");
-  const [dateTime, setDateTime] = useState("");
-  const isFormComplete =
-    origin && destination && driverName && cargo && weight && dateTime;
+const JobOrderModal = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  onDelete,
+  jobOrder,
+  formData,
+  setFormData,
+}) => {
+  const [origin, setOrigin] = useState(formData.origin);
+  const [destination, setDestination] = useState(formData.destination);
+  const [driverName, setDriverName] = useState(formData.driverName);
+  const [cargo, setCargo] = useState(formData.cargo);
+  const [weight, setWeight] = useState(formData.weight);
+  const [dateTime, setDateTime] = useState(formData.dateTime);
+  const [drivers, setDrivers] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [productName, setProductName] = useState("");
+  const [UID, setUID] = useState("");
+
+  const handleFieldChange = (field, value) => {
+    setFormData({
+      ...formData,
+      [field]: value,
+    });
+    setOrigin(formData.origin);
+    setDestination(formData.destination);
+    setDriverName(formData.driverName);
+    setCargo(formData.cargo);
+    setWeight(formData.weight);
+    setProductName(formData.cargo);
+    setDateTime(formData.dateTime);
+    setUID(formData.uid);
+  };
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const response = await fetch("http://localhost:3001/get-products");
+        if (response.ok) {
+          const data = await response.json();
+          setProducts(data);
+        } else {
+          console.error("Failed to fetch products");
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    }
+
+    fetchProducts();
+  }, []);
+  useEffect(() => {
+    async function fetchDrivers() {
+      try {
+        const response = await fetch(
+          "http://localhost:3001/fetch-fleet-available"
+        );
+        if (response.ok) {
+          const data = await response.json();
+          const driverNames = Object.keys(data).map(
+            (key) => data[key].driverName
+          );
+          const uid = Object.keys(data).map((key) => data[key].id);
+
+          setDrivers(driverNames);
+          setUID(uid);
+        } else {
+          console.error("Failed to fetch drivers");
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    }
+
+    fetchDrivers();
+  }, []);
 
   const handleSubmit = () => {
-    onSubmit(
-      { driverName, cargo, weight, dateTime, origin, destination },
-      jobOrder
+    if (isFormComplete) {
+      onSubmit(formData, jobOrder);
+    }
+  };
+
+  const isFormComplete = () => {
+    return (
+      origin !== "" &&
+      destination !== "" &&
+      driverName !== "" &&
+      cargo !== "" &&
+      weight !== "" &&
+      dateTime !== "" &&
+      UID !== ""
     );
   };
 
   useEffect(() => {
-    if (jobOrder) {
-      setDriverName(jobOrder.extendedProps.driverName);
-      setCargo(jobOrder.extendedProps.cargo);
-      setWeight(jobOrder.extendedProps.weight);
-      setDateTime(jobOrder.start.toISOString().substring(0, 16));
-      setOrigin(jobOrder.extendedProps.origin);
-      setDestination(jobOrder.extendedProps.destination);
-    } else {
-      setOrigin("");
-      setDestination("");
-      setDriverName("");
-      setCargo("");
-      setWeight("");
-      setDateTime("");
-    }
-  }, [isOpen]);
+    const currentDate = new Date();
 
+    currentDate.setDate(currentDate.getDate() + 1);
+
+    currentDate.setHours(0, 0, 0, 0);
+
+    const minDateFormatted = currentDate.toISOString().slice(0, 16);
+
+    setDateTime(minDateFormatted);
+  }, []);
   return (
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitle>
@@ -64,20 +138,32 @@ const JobOrderModal = ({ isOpen, onClose, onSubmit, onDelete, jobOrder }) => {
       </DialogTitle>
       <DialogContent>
         <Box sx={{ my: 2 }}>
-          <TextField
-            label="Driver Name"
-            value={driverName}
-            onChange={(e) => setDriverName(e.target.value)}
-            fullWidth
-            required
-          />
+          <FormControl fullWidth>
+            <InputLabel id="driver-label">Driver Name</InputLabel>
+            <Select
+              labelId="driver-label"
+              id="driverName"
+              name="driverName"
+              value={driverName}
+              onChange={(e) => handleFieldChange("driverName", e.target.value)}
+              fullWidth
+              required
+              label="Driver Name"
+            >
+              {drivers.map((driverName) => (
+                <MenuItem key={driverName} value={driverName}>
+                  {driverName}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Box>
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel id="origin-label">Origin</InputLabel>
           <Select
             labelId="origin-label"
             value={origin}
-            onChange={(e) => setOrigin(e.target.value)}
+            onChange={(e) => handleFieldChange("origin", e.target.value)}
             label="Origin"
             required
           >
@@ -90,32 +176,36 @@ const JobOrderModal = ({ isOpen, onClose, onSubmit, onDelete, jobOrder }) => {
           <Select
             labelId="destination-label"
             value={destination}
-            onChange={(e) => setDestination(e.target.value)}
+            onChange={(e) => handleFieldChange("destination", e.target.value)}
             label="Destination"
             required
           >
-            <MenuItem value="Location A">Location A</MenuItem>
-            <MenuItem value="Location B">Location B</MenuItem>
+            <MenuItem value="Pandi">Pandi</MenuItem>
+            <MenuItem value="Mindanao">Mindanao Ave.</MenuItem>
           </Select>
         </FormControl>
         <FormControl fullWidth sx={{ mb: 2 }}>
-          <InputLabel id="cargo-label">Cargo</InputLabel>
+          <InputLabel id="product-label">Product</InputLabel>
           <Select
-            labelId="cargo-label"
-            value={cargo}
-            onChange={(e) => setCargo(e.target.value)}
-            label="Cargo"
-            required
+            labelId="product-label"
+            id="productName"
+            name="productName"
+            value={productName}
+            onChange={(e) => handleFieldChange("cargo", e.target.value)}
+            label="Product"
           >
-            <MenuItem value="Sand">Sand</MenuItem>
-            <MenuItem value="Gravel">Gravel</MenuItem>
+            {products.map((product) => (
+              <MenuItem key={product._inventoryID} value={product._itemName}>
+                {product._itemName}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
         <Box sx={{ mb: 2 }}>
           <TextField
             label="Weight"
             value={weight}
-            onChange={(e) => setWeight(e.target.value)}
+            onChange={(e) => handleFieldChange("weight", e.target.value)}
             fullWidth
             required
           />
@@ -125,12 +215,12 @@ const JobOrderModal = ({ isOpen, onClose, onSubmit, onDelete, jobOrder }) => {
             label="Date Time"
             type="datetime-local"
             value={dateTime}
-            onChange={(e) => setDateTime(e.target.value)}
+            onChange={(e) => handleFieldChange("dateTime", e.target.value)}
             fullWidth
             InputProps={{
               startAdornment: <InputAdornment position="start" />,
               required: true,
-              inputProps: { min: "2023-10-10T00:00", max: "2023-12-31T00:00" },
+              inputProps: { min: dateTime },
             }}
           />
         </Box>
@@ -156,32 +246,64 @@ const JobOrderModal = ({ isOpen, onClose, onSubmit, onDelete, jobOrder }) => {
   );
 };
 
-const ValidationDialog = ({ isOpen, onConfirm, onCancel }) => (
-  <Dialog open={isOpen} onClose={onCancel}>
-    <DialogTitle>Are you sure?</DialogTitle>
-    <DialogContent>
-      <DialogContentText>
-        Please note, once you proceed, the changes will be saved.
-      </DialogContentText>
-    </DialogContent>
-    <DialogActions>
-      <Button onClick={onConfirm} color="primary">
-        Submit
-      </Button>
-      <Button onClick={onCancel} color="secondary">
-        Cancel
-      </Button>
-    </DialogActions>
-  </Dialog>
-);
+const ValidationDialog = ({ isOpen, onConfirm, onCancel, formData }) => {
+  const handleConfirm = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/addJob",
+        formData
+      );
+      if (response.status === 200) {
+        console.log("Data submitted successfully!");
+        toast.success("Job added successfull!");
+      } else {
+        console.error("Failed to submit data");
+        toast.error("Please try again!");
+      }
+    } catch (error) {
+      console.error("Error submitting data:", error);
+    }
+
+    onConfirm();
+  };
+
+  return (
+    <Dialog open={isOpen} onClose={onCancel}>
+      <DialogTitle>Are you sure?</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Please note, once you proceed, the changes will be saved.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleConfirm} color="primary">
+          Submit
+        </Button>
+        <Button onClick={onCancel} color="secondary">
+          Cancel
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
 
 // Main component
 const JobOrderSystem = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [events, setEvents] = useState([]);
-
   const [action, setAction] = useState(null);
+
+  const [formData, setFormData] = useState({
+    origin: "",
+    destination: "",
+    driverName: "",
+    cargo: "",
+    weight: "",
+    dateTime: "",
+    UID: "",
+  });
+
   const handleCreateClick = () => {
     setSelectedEvent(null); // Clear selected event
     setModalOpen(true);
@@ -209,11 +331,9 @@ const JobOrderSystem = () => {
         event.setExtendedProp("driverName", jobOrderData.driverName);
         event.setExtendedProp("cargo", jobOrderData.cargo);
         event.setExtendedProp("weight", jobOrderData.weight);
-        // Add these lines
         event.setExtendedProp("origin", jobOrderData.origin);
         event.setExtendedProp("destination", jobOrderData.destination);
       } else {
-        // Create new event
         setEvents([
           ...events,
           {
@@ -224,7 +344,6 @@ const JobOrderSystem = () => {
               driverName: jobOrderData.driverName,
               cargo: jobOrderData.cargo,
               weight: jobOrderData.weight,
-              // Add these lines
               origin: jobOrderData.origin,
               destination: jobOrderData.destination,
             },
@@ -266,7 +385,7 @@ const JobOrderSystem = () => {
         <Button
           variant="contained"
           color="primary"
-          onClick={handleCreateClick} // Use handleCreateClick here
+          onClick={handleCreateClick}
           sx={{ mb: 2 }}
         >
           Create Job Order
@@ -276,8 +395,10 @@ const JobOrderSystem = () => {
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         onSubmit={handleSubmit}
-        onDelete={handleDelete} // Pass handleDelete here
+        onDelete={handleDelete}
         jobOrder={selectedEvent}
+        formData={formData}
+        setFormData={setFormData}
       />
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
@@ -291,10 +412,11 @@ const JobOrderSystem = () => {
       <ValidationDialog
         isOpen={validationDialogOpen}
         onConfirm={() => {
-          action();
+          action(formData);
           setValidationDialogOpen(false);
         }}
         onCancel={() => setValidationDialogOpen(false)}
+        formData={formData} // Pass formData as a prop
       />
     </Paper>
   );

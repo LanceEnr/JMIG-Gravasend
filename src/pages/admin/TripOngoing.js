@@ -8,23 +8,30 @@ import { toast, ToastContainer } from "react-toastify";
 const transformTripOngoing = (data, data2, data3) => {
   const transformedData = [];
 
-  if (data) {
+  if (data && data2) {
     for (const uid in data) {
-      if (data.hasOwnProperty(uid)) {
+      if (data.hasOwnProperty(uid) && data2.hasOwnProperty(uid)) {
         const userData = data[uid];
         const userData2 = data2[uid];
 
-        const mappedData = {
-          id: uid,
-          maxSpeed: userData2.max_speed ?? 0,
-          currentSpeed: userData2.current_speed ?? 0,
-          datetime: userData.date,
-          averageSpeed: userData2.average_speed,
-          harshBraking: userData2.harsh_braking_count ?? 0,
-          suddenAcceleration: userData2.sudden_acceleration_count ?? 0,
-        };
+        if (
+          userData2 &&
+          userData2.max_speed !== undefined &&
+          userData2.current_speed !== undefined
+        ) {
+          // Both max_speed and current_speed are defined, so include this row
+          const mappedData = {
+            id: uid,
+            maxSpeed: userData2.max_speed ?? 0,
+            currentSpeed: userData2.current_speed ?? 0,
+            datetime: userData.date,
+            averageSpeed: userData2.average_speed,
+            harshBraking: userData2.harsh_braking_count ?? 0,
+            suddenAcceleration: userData2.sudden_acceleration_count ?? 0,
+          };
 
-        transformedData.push(mappedData);
+          transformedData.push(mappedData);
+        }
       }
     }
   }
