@@ -427,13 +427,38 @@ router.post("/deleteDriverRecord", async (req, res) => {
 
 router.post("/addTruck", async (req, res) => {
   const truckData = req.body;
-
+  const driverName = truckData.driverName;
   try {
     const db = admin.database();
-    const ref = db.ref(`trucks/${truckData.id}`);
-    await ref.set(truckData);
+    const driversRef = db.ref("DriverManagement");
 
-    res.status(200).json({ message: "Truck added successfully" });
+    driversRef.once("value", (snapshot) => {
+      let uid = null;
+
+      snapshot.forEach((childSnapshot) => {
+        const driverData = childSnapshot.val();
+
+        if (truckData.driverName === driverName) {
+          uid = childSnapshot.key;
+        }
+      });
+
+      if (uid) {
+        truckData.UID = uid;
+
+        const ref = db.ref(`trucks/${uid}`);
+        ref.set(truckData, (error) => {
+          if (error) {
+            console.error("Firebase set error:", error);
+            res.status(500).json({ message: "Internal server error" });
+          } else {
+            res.status(200).json({ message: "Truck added successfully" });
+          }
+        });
+      } else {
+        res.status(400).json({ message: "Driver not found" });
+      }
+    });
   } catch (error) {
     console.error("Firebase Authentication error:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -456,14 +481,38 @@ const getNextJobNum = async () => {
 
 router.post("/addJob", async (req, res) => {
   const jobData = req.body;
-  const id = await getNextJobNum();
-  console.log(jobData);
+  const driverName = jobData.driverName;
   try {
     const db = admin.database();
-    const ref = db.ref(`Trip Dashboard/${id}`);
-    await ref.set(jobData);
+    const driversRef = db.ref("trucks");
 
-    res.status(200).json({ message: "Truo added successfully" });
+    driversRef.once("value", (snapshot) => {
+      let uid = null;
+
+      snapshot.forEach((childSnapshot) => {
+        const driverData = childSnapshot.val();
+
+        if (driverData.driverName === driverName) {
+          uid = childSnapshot.key;
+        }
+      });
+
+      if (uid) {
+        jobData.UID = uid;
+
+        const ref = db.ref(`Trip Dashboard/${uid}`);
+        ref.set(jobData, (error) => {
+          if (error) {
+            console.error("Firebase set error:", error);
+            res.status(500).json({ message: "Internal server error" });
+          } else {
+            res.status(200).json({ message: "Truck added successfully" });
+          }
+        });
+      } else {
+        res.status(400).json({ message: "Driver not found" });
+      }
+    });
   } catch (error) {
     console.error("Firebase Authentication error:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -553,6 +602,27 @@ router.get("/generateFleetId", async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: "Failed to generate ID" });
   }
+});
+
+router.get("/fetch-job-orders", (req, res) => {
+  axios
+    .get(
+      "https://gravasend-965f7-default-rtdb.firebaseio.com/Trip Dashboard.json"
+    )
+    .then((response) => {
+      const jobData = response.data;
+
+      if (jobData) {
+        res.json(jobData);
+      } else {
+        console.log('No data found in the "Trip Dashboard" collection.');
+        res.status(404).json({ message: "No data found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
 });
 
 module.exports = router;

@@ -56,7 +56,6 @@ const JobOrderModal = ({
     setWeight(formData.weight);
     setProductName(formData.cargo);
     setDateTime(formData.dateTime);
-    setUID(formData.uid);
   };
 
   useEffect(() => {
@@ -88,7 +87,6 @@ const JobOrderModal = ({
             (key) => data[key].driverName
           );
           const uid = Object.keys(data).map((key) => data[key].id);
-
           setDrivers(driverNames);
           setUID(uid);
         } else {
@@ -115,8 +113,7 @@ const JobOrderModal = ({
       driverName !== "" &&
       cargo !== "" &&
       weight !== "" &&
-      dateTime !== "" &&
-      UID !== ""
+      dateTime !== ""
     );
   };
 
@@ -293,6 +290,7 @@ const JobOrderSystem = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [events, setEvents] = useState([]);
   const [action, setAction] = useState(null);
+  const [formattedEvents, setFormattedEvents] = useState([]);
 
   const [formData, setFormData] = useState({
     origin: "",
@@ -303,6 +301,40 @@ const JobOrderSystem = () => {
     dateTime: "",
     UID: "",
   });
+  useEffect(() => {
+    async function fetchJobOrders() {
+      try {
+        const response = await axios.get(
+          "http://localhost:3001/fetch-job-orders"
+        );
+
+        if (response.status === 200) {
+          const data = response.data;
+          const jobOrders = Object.values(data).map((jobOrderData) => {
+            // You need to extract the relevant properties from jobOrderData
+            const driverName = jobOrderData.driverName;
+            const cargo = jobOrderData.cargo;
+            const weight = jobOrderData.weight;
+            const dateTime = jobOrderData.dateTime;
+
+            return {
+              title: `${driverName} - ${cargo} - ${weight}`,
+              start: dateTime,
+            };
+          });
+
+          console.log("Job Orders:", jobOrders); // Log the extracted job orders
+          setEvents(jobOrders);
+        } else {
+          console.error("Failed to fetch job orders");
+        }
+      } catch (error) {
+        console.error("Error fetching job orders:", error);
+      }
+    }
+
+    fetchJobOrders();
+  }, []);
 
   const handleCreateClick = () => {
     setSelectedEvent(null); // Clear selected event
@@ -378,6 +410,7 @@ const JobOrderSystem = () => {
       </Box>
     );
   }
+
   return (
     <Paper sx={{ p: 2 }}>
       <Title>Job Orders</Title>
