@@ -463,6 +463,33 @@ router.post("/update-appointment-admin", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
+router.post("/complete-appointment-admin", async (req, res) => {
+  const { appointmentNum } = req.body; // Destructure appointmentNum from req.body
+  const _status = "Completed";
+
+  try {
+    const updatedAppointment = await Appointment.findOneAndUpdate(
+      { _appointmentNum: appointmentNum },
+      {
+        $set: {
+          _status,
+        },
+      },
+      { new: true }
+    );
+
+    if (!updatedAppointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Appointment completed successfully" });
+  } catch (error) {
+    console.error("Error updating appointment:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 router.post("/cancel-appointment-admin", async (req, res) => {
   const { appointmentNum, _status, _cancelReason } = req.body;

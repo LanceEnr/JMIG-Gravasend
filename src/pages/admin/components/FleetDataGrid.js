@@ -197,7 +197,7 @@ export default function FleetDataGrid(props) {
     try {
       const _truckID = id;
       const response = await axios.post(
-        "http://localhost:3001/deleteTruckRecord/",
+        "http://localhost:3001/deleteTruckRecord",
         {
           _truckID: _truckID,
         }

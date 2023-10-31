@@ -40,6 +40,7 @@ const ManageAppointments = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [cancelReason, setCancelReason] = useState("");
   const [rescheduleReason, setRescheduleReason] = useState("");
+  const [completedAppointments, setCompletedAppointments] = useState([]);
   const [userData, setUserData] = useState({
     First: "",
     Last: "",
@@ -56,6 +57,7 @@ const ManageAppointments = () => {
       .get("http://localhost:3001/get-events")
       .then((response) => {
         setEvents(response.data);
+
         const initialFormattedEvents = response.data.map((event) => ({
           ...event,
           start: event._dateTime,
@@ -67,6 +69,31 @@ const ManageAppointments = () => {
         console.error("Error fetching orders:", error);
       });
   }, []);
+
+  const handleComplete = (appointmentNum) => {
+    console.log(appointmentNum);
+    axios
+      .post("http://localhost:3001/complete-appointment-admin", {
+        appointmentNum: appointmentNum,
+      })
+      .then((response) => {
+        toast.success("Appointment completed successfully");
+        const updatedEvents = formattedEvents.map((event) =>
+          event._appointmentNum === appointmentNum
+            ? { ...event, _status: "Completed", backgroundColor: "green" }
+            : event
+        );
+
+        setFormattedEvents(updatedEvents);
+        setCompletedAppointments([...completedAppointments, appointmentNum]);
+        setOpen(false);
+      })
+      .catch((error) => {
+        toast.error("Completion error");
+        console.error("Error completing appointment", error);
+      });
+    setOpen(false);
+  };
 
   const handleRescheduleSubmit = (appointmentNum) => {
     const updatedEvents = formattedEvents.map((event) =>
@@ -93,7 +120,6 @@ const ManageAppointments = () => {
       })
       .then((response) => {
         toast.success("Appointment rescheduled successfully");
-        window.location.reload();
       })
       .catch((error) => {
         toast.error("Appointment already full");
@@ -105,12 +131,17 @@ const ManageAppointments = () => {
 
   const renderEventContent = (eventInfo) => {
     const isCancelled = eventInfo.event.extendedProps._status === "Cancelled";
+    const isCompleted = eventInfo.event.extendedProps._status === "Completed";
 
     return (
       <Box
         sx={{
           color: "white",
-          backgroundColor: isCancelled ? "red" : "secondary.main",
+          backgroundColor: isCancelled
+            ? "red"
+            : isCompleted
+            ? "green"
+            : "secondary.main",
           p: 1,
           overflow: "hidden",
           wordWrap: "break-word",
@@ -256,24 +287,25 @@ const ManageAppointments = () => {
                 />
               </Box>
 
-              {selectedEvent?.extendedProps._status !== "Cancelled" && (
-                <Box sx={{ mb: 2 }}>
-                  <Button
-                    sx={{ mr: 2 }}
-                    variant="contained"
-                    onClick={handleReschedule}
-                  >
-                    Reschedule
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={handleCancel}
-                  >
-                    Cancel
-                  </Button>
-                </Box>
-              )}
+              {selectedEvent?.extendedProps._status !== "Cancelled" &&
+                selectedEvent?.extendedProps._status !== "Completed" && (
+                  <Box sx={{ mb: 2 }}>
+                    <Button
+                      sx={{ mr: 2 }}
+                      variant="contained"
+                      onClick={handleReschedule}
+                    >
+                      Reschedule
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={handleCancel}
+                    >
+                      Cancel
+                    </Button>
+                  </Box>
+                )}
             </>
           )}
           {view === "reschedule" && (
@@ -457,9 +489,18 @@ const ManageAppointments = () => {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary" autoFocus>
-            Complete
-          </Button>
+          {selectedEvent?.extendedProps._status !== "Cancelled" &&
+            selectedEvent?.extendedProps._status !== "Completed" && (
+              <Button
+                onClick={() =>
+                  handleComplete(selectedEvent?.extendedProps._appointmentNum)
+                }
+                color="primary"
+                autoFocus
+              >
+                Complete
+              </Button>
+            )}
           <Button onClick={handleClose} color="secondary" autoFocus>
             Close
           </Button>

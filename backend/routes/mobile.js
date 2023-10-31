@@ -383,17 +383,13 @@ router.post("/addDriver", async (req, res) => {
   const driverData = req.body;
 
   try {
-    // Check if the user exists based on email
     const user = await admin.auth().getUserByEmail(email);
 
     if (user) {
-      // If the user exists, get their UID
       const uid = user.uid;
 
-      // Assign the UID to the driver data
       driverData.uid = uid;
 
-      // Save the driver data to Firebase under the UID
       const db = admin.database();
       const ref = db.ref(`DriverManagement/${uid}`);
       await ref.set(driverData);
@@ -438,8 +434,18 @@ router.post("/addTruck", async (req, res) => {
       snapshot.forEach((childSnapshot) => {
         const driverData = childSnapshot.val();
 
-        if (truckData.driverName === driverName) {
+        if (driverData.driverName === driverName) {
           uid = childSnapshot.key;
+
+          driverData.status = "assigned";
+
+          const driverRef = db.ref(`DriverManagement/${uid}`);
+          driverRef.set(driverData, (error) => {
+            if (error) {
+              console.error("Firebase set error:", error);
+              res.status(500).json({ message: "Internal server error" });
+            }
+          });
         }
       });
 
@@ -465,6 +471,21 @@ router.post("/addTruck", async (req, res) => {
   }
 });
 
+router.post("/deleteTruckRecord", async (req, res) => {
+  const _truckID = req.body._truckID;
+  try {
+    const db = admin.database();
+    const truckRef = db.ref(`trucks/${_truckID}`);
+
+    await truckRef.remove();
+
+    res.status(200).json({ message: "Driver record deleted successfully" });
+  } catch (error) {
+    console.error("Firebase delete error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 const getNextJobNum = async () => {
   try {
     const counter = await Counter.findOneAndUpdate(
@@ -482,6 +503,7 @@ const getNextJobNum = async () => {
 router.post("/addJob", async (req, res) => {
   const jobData = req.body;
   const driverName = jobData.driverName;
+
   try {
     const db = admin.database();
     const driversRef = db.ref("trucks");
@@ -494,22 +516,36 @@ router.post("/addJob", async (req, res) => {
 
         if (driverData.driverName === driverName) {
           uid = childSnapshot.key;
+
+          // Update the status of the truck to "unavailable"
+          db.ref(`trucks/${uid}`).update(
+            { status: "unavailable" },
+            (statusUpdateError) => {
+              if (statusUpdateError) {
+                console.error(
+                  "Firebase status update error:",
+                  statusUpdateError
+                );
+                res.status(500).json({ message: "Internal server error" });
+              } else {
+                // Proceed to add the job data
+                jobData.UID = uid;
+                const ref = db.ref(`Trip Dashboard/${uid}`);
+                ref.set(jobData, (jobDataError) => {
+                  if (jobDataError) {
+                    console.error("Firebase set error:", jobDataError);
+                    res.status(500).json({ message: "Internal server error" });
+                  } else {
+                    res.status(200).json({ message: "Job added successfully" });
+                  }
+                });
+              }
+            }
+          );
         }
       });
 
-      if (uid) {
-        jobData.UID = uid;
-
-        const ref = db.ref(`Trip Dashboard/${uid}`);
-        ref.set(jobData, (error) => {
-          if (error) {
-            console.error("Firebase set error:", error);
-            res.status(500).json({ message: "Internal server error" });
-          } else {
-            res.status(200).json({ message: "Truck added successfully" });
-          }
-        });
-      } else {
+      if (!uid) {
         res.status(400).json({ message: "Driver not found" });
       }
     });
