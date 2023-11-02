@@ -359,32 +359,6 @@ const rowsMaintenanceScheduling = transformMaintenanceData(
 
 export { rowsMaintenanceScheduling };
 
-export const columnsMaintenanceScheduling = [
-  { field: "id", headerName: "ID", flex: 1 },
-  { field: "plateNo", headerName: "Plate No.", flex: 2, editable: true },
-  { field: "service", headerName: "Service", flex: 2, editable: true },
-  {
-    field: "frequency",
-    headerName: "Frequency",
-    flex: 2,
-    editable: true,
-    type: "singleSelect",
-    valueOptions: ["1000", "3000", "5000", "10000", "15000", "20000"],
-  },
-  {
-    field: "nextDueMileage",
-    headerName: "Next Due Mileage",
-    flex: 2,
-  },
-  {
-    field: "nextMaintenanceDate",
-    headerName: "Next Maintenance Date",
-    type: "date",
-    flex: 2,
-    editable: true,
-  },
-];
-
 const CustomTable = () => {
   const [expandedRow, setExpandedRow] = useState(null);
 
@@ -585,37 +559,6 @@ export const columnsOutgoingInventory = [
   },
 ];
 
-export const columnsManageOrders = [
-  { field: "id", headerName: "ID", flex: 1 },
-  {
-    field: "customerName",
-    headerName: "Customer Name",
-    flex: 2,
-    editable: true,
-  },
-  {
-    field: "contact",
-    headerName: "Contact No.",
-    flex: 2,
-    editable: true,
-  },
-  {
-    field: "orderDate",
-    headerName: "Order Date",
-    type: "date",
-    flex: 1,
-    editable: true,
-  },
-  {
-    field: "status",
-    headerName: "Status",
-    flex: 2,
-    editable: true,
-    type: "singleSelect",
-    valueOptions: ["Available for pickup", "Cancelled"],
-  },
-];
-
 const fetchOrderData = async () => {
   try {
     const response = await axios.get("http://localhost:3001/get-order");
@@ -631,8 +574,11 @@ const transformOrderData = (data) => {
   return data.map((item) => ({
     id: item._orderNum,
     customerName: item._name,
-    contact: item._contactNum,
-    orderDate: new Date(item._date),
+    product: item._materialType,
+    price: item._price,
+    quantity: item._quantity,
+    orderDet: item._orderDet,
+    lastUpdated: item._date,
     status: item._status,
   }));
 };
@@ -665,53 +611,64 @@ const transformFAQData = (data) => {
 // Fetch and transform the data for outgoing inventory
 const rowsFaqs = transformFAQData(await fetchFAQData());
 
-// Export the transformed data
 export { rowsFaqs };
 
 export const columnsFaqs = [
   { field: "id", headerName: "ID", flex: 1 },
-  { field: "question", headerName: "Question", flex: 4, editable: true }, // Increased flex value
+  { field: "question", headerName: "Question", flex: 4, editable: true },
   { field: "answer", headerName: "Answer", flex: 4, editable: true },
 ];
 
 export const columnsUserManagement = [
-  { field: "id", headerName: "ID", flex: 1 },
-  { field: "name", headerName: "Name", flex: 2, editable: true }, // Increased flex value
-  { field: "contact", headerName: "Contact", flex: 1, editable: true },
-  {
-    field: "joinDate",
-    headerName: "Join Date",
-    type: "datetime",
-    flex: 3,
-    editable: true,
-  },
-  {
-    field: "role",
-    headerName: "Role",
-    flex: 1,
-    editable: true,
-    type: "singleSelect",
-    valueOptions: ["Customer", "Admin"],
-  },
-  { field: "password", headerName: "Password", flex: 1 },
+  { field: "id", headerName: "Username", flex: 1 },
+  { field: "name", headerName: "Name", flex: 2 },
+  { field: "contact", headerName: "Contact", flex: 2 },
+  { field: "orderCount", headerName: "Order Count", flex: 1 },
+  { field: "clv", headerName: "Customer Lifetime Value", flex: 2 },
 ];
 
-export const rowsUserManagement = [
-  {
-    id: 1,
-    name: "John Doe",
-    contact: "john.doe@example.com",
-    joinDate: new Date(),
-    role: "Customer",
-    password: "password123",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    contact: "jane.smith@example.com",
-    joinDate: new Date(),
-    role: "Admin",
-    password: "password456",
-  },
-  // Add more rows as needed
-];
+const fetchUsers = async () => {
+  try {
+    const response = await axios.get("http://localhost:3001/get-customers");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+const fetchOrders = async () => {
+  try {
+    const response = await axios.get("http://localhost:3001/get-order");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    return [];
+  }
+};
+
+const transformUsersData = async () => {
+  const users = await fetchUsers();
+  const orders = await fetchOrders();
+  const usersWithOrders = users.map((user) => {
+    const userOrders = orders.filter(
+      (order) => order._name === `${user._fName}_${user._lName}`
+    );
+    const clv = userOrders.reduce((totalCLV, order) => {
+      const orderValue = order._price * order._quantity;
+      return totalCLV + orderValue;
+    }, 0);
+    return {
+      id: user._userName,
+      name: `${user._fName} ${user._lName}`,
+      contact: user._phone,
+      orderCount: userOrders.length,
+      clv,
+    };
+  });
+  return usersWithOrders;
+};
+
+const rowsUserManagement = await transformUsersData();
+
+export { rowsUserManagement };

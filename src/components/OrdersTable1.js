@@ -24,11 +24,21 @@ import UserDrawer from "./common/UserDrawer";
 
 const getColor = (status) => {
   switch (status) {
-    case "Arrived":
+    case "Available for pickup-PANDI":
       return { main: "success.main", lighter: "#8dd290" };
-    case "Failed":
+    case "Available for pickup-MindanaoAve.":
+      return { main: "success.main", lighter: "#8dd290" };
+    case "Delayed":
+      return { main: "error.main", lighter: "#f5c9c9" };
+    case "Cancelled":
       return { main: "error.main", lighter: "#f5c9c9" };
     case "Pending":
+      return { main: "warning.main", lighter: "#ffc890" };
+    case "Fetch from quarry":
+      return { main: "warning.main", lighter: "#ffc890" };
+    case "Arrived at Pandi":
+      return { main: "warning.main", lighter: "#ffc890" };
+    case "Arrived at MindanaoAve.":
       return { main: "warning.main", lighter: "#ffc890" };
     default:
       return { main: "", lighter: "" };
@@ -37,8 +47,8 @@ const getColor = (status) => {
 
 export default function OrdersTable1(props) {
   const [anchorEl, setAnchorEl] = useState(null);
-  const itemsPerPage = 10; // Set your desired items per page
-  const [page, setPage] = useState(1); // Set the initial page number
+  const itemsPerPage = 10;
+  const [page, setPage] = useState(1);
   const isMobile = useMediaQuery("(max-width:600px)");
 
   const handleClick = (event) => {
@@ -96,20 +106,35 @@ export default function OrdersTable1(props) {
             <Paper elevation={2} sx={{ my: 1 }} key={item.orderNumber}>
               <ListItem>
                 <ListItemAvatar>
-                  <Tooltip title={item.status}>
+                  <Tooltip title={item._status}>
                     <Avatar
                       sx={{
                         bgcolor: getColor(item._status).lighter,
                         color: getColor(item._status).main,
                       }}
                     >
-                      {item._status === "Arrived" && (
+                      {item._status === "Available for pickup-PANDI" && (
                         <CheckIcon sx={{ pointerEvents: "none" }} />
                       )}
-                      {item._status === "Failed" && (
+                      {item._status === "Available for pickup-MindanaoAve." && (
+                        <CheckIcon sx={{ pointerEvents: "none" }} />
+                      )}
+                      {item._status === "Delayed" && (
+                        <CloseIcon sx={{ pointerEvents: "none" }} />
+                      )}
+                      {item._status === "Cancelled" && (
                         <CloseIcon sx={{ pointerEvents: "none" }} />
                       )}
                       {item._status === "Pending" && (
+                        <AccessTimeIcon sx={{ pointerEvents: "none" }} />
+                      )}
+                      {item._status === "Fetch from quarry" && (
+                        <AccessTimeIcon sx={{ pointerEvents: "none" }} />
+                      )}
+                      {item._status === "Arrived at Pandi" && (
+                        <AccessTimeIcon sx={{ pointerEvents: "none" }} />
+                      )}
+                      {item._status === "Arrived at MindanaoAve." && (
                         <AccessTimeIcon sx={{ pointerEvents: "none" }} />
                       )}
                     </Avatar>
@@ -118,15 +143,18 @@ export default function OrdersTable1(props) {
 
                 <ListItemText
                   primary={
-                    <Typography variant="subtitle1">{`Order ${item._orderNum}`}</Typography>
+                    <Typography variant="subtitle1">{`Receipt No. ${item._orderNum}`}</Typography>
                   }
                   secondary={
                     <React.Fragment>
                       <Typography variant="body2" color="textSecondary" noWrap>
-                        {item._status} - {item._time}
+                        {item._status} - {item._date}
                       </Typography>
                       <Typography variant="body2" color="textSecondary" noWrap>
-                        PHP{Number(item._price).toLocaleString("en-US")}
+                        PHP
+                        {Number(item._price * item._quantity).toLocaleString(
+                          "en-US"
+                        )}
                       </Typography>
                       <Typography variant="body2" color="textSecondary" noWrap>
                         {item._materialType} - {item._quantity} cu. mt.
@@ -137,7 +165,10 @@ export default function OrdersTable1(props) {
                 <ListItemSecondaryAction>
                   <Stack alignItems="flex-end">
                     <Typography variant="subtitle1" noWrap>
-                      PHP{Number(item._price).toLocaleString("en-US")}
+                      PHP
+                      {Number(item._price * item._quantity).toLocaleString(
+                        "en-US"
+                      )}
                     </Typography>
                     <Typography
                       variant="subtitle2"

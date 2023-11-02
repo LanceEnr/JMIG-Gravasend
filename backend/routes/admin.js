@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const User = require("../models/adminUser");
+const CustomerUser = require("../models/user");
 const Counter = require("../models/counter");
 const Code = require("../models/adminCode");
 const Order = require("../models/order");
@@ -998,6 +999,7 @@ router.get("/get-products", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch order data" });
   }
 });
+
 const getNextListingNum = async () => {
   try {
     const counter = await Counter.findOneAndUpdate(
@@ -1092,6 +1094,121 @@ router.put("/update-listing", upload2.array("image", 6), async (req, res) => {
   } catch (error) {
     console.error("Error updating listing:", error);
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+const getNextOrderNum = async () => {
+  try {
+    const counter = await Counter.findOneAndUpdate(
+      { name: "_orderID" },
+      { $inc: { value: 1 } },
+      { new: true, upsert: true }
+    );
+    return counter.value;
+  } catch (err) {
+    console.error("Error getting the next inventory number:", err);
+    throw err;
+  }
+};
+router.get("/generateorderDateId", async (req, res) => {
+  try {
+    const id = await getNextOrderNum();
+    res.json({ id });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to generate ID" });
+  }
+});
+
+router.post("/addOrder", async (req, res) => {
+  const {
+    _orderNum,
+    _name,
+    _materialType,
+    _date,
+    _status,
+    _price,
+    _quantity,
+    _orderDet,
+  } = req.body;
+
+  try {
+    let order = await Order.findOne({ _orderNum: _orderNum });
+
+    if (!order) {
+      order = new Order({
+        _orderNum: _orderNum,
+        _name: _name,
+        _materialType: _materialType,
+        _date: _date,
+        _status: _status,
+        _price: _price,
+        _quantity: _quantity,
+        _orderDet: _orderDet,
+      });
+    } else {
+      order._name = _name;
+      order._materialType = _materialType;
+      order._date = _date;
+      order._status = _status;
+      order._price = _price;
+      order._quantity = _quantity;
+      order._orderDet = _orderDet;
+    }
+
+    await order.save();
+
+    res.json({ message: "Order saved successfully" });
+  } catch (error) {
+    console.error("Error saving order:", error);
+    res.status(500).json({ error: "Failed to save order" });
+  }
+});
+
+router.post("/deleteOrder/:_orderNum", async (req, res) => {
+  try {
+    const id = req.params._orderNum;
+    const removedRecord = await Order.findOneAndRemove({
+      _orderNum: id,
+    });
+
+    if (removedRecord) {
+      res.json({ message: "Record deleted successfully" });
+    } else {
+      res.status(404).json({ message: "Record not found" });
+    }
+  } catch (error) {
+    console.error("Error deleting record", error);
+    res
+      .status(500)
+      .json({ message: "Failed to delete the record", error: error.message });
+  }
+});
+
+router.get("/get-customers", async (req, res) => {
+  try {
+    const customers = await CustomerUser.find();
+    res.json(customers);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Failed to fetch order data" });
+  }
+});
+
+router.get("/get-price", async (req, res) => {
+  const { product } = req.query;
+
+  try {
+    const inventoryItem = await Listing.findOne({ _itemName: product }).select(
+      "_price"
+    );
+    if (inventoryItem) {
+      res.json({ _price: inventoryItem._price });
+    } else {
+      res.status(404).json({ error: "Price not found for the product" });
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Failed to fetch order data" });
   }
 });
 

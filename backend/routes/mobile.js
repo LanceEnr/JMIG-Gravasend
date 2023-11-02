@@ -640,6 +640,28 @@ router.get("/generateFleetId", async (req, res) => {
   }
 });
 
+const getNextMaintenanceNum = async () => {
+  try {
+    const counter = await Counter.findOneAndUpdate(
+      { name: "_maintenanceID" },
+      { $inc: { value: 1 } },
+      { new: true, upsert: true }
+    );
+    return counter.value;
+  } catch (err) {
+    console.error("Error getting the next maintenance number:", err);
+    throw err;
+  }
+};
+router.get("/generateMaintenanceId", async (req, res) => {
+  try {
+    const id = await getNextMaintenanceNum();
+    res.json({ id });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to generate ID" });
+  }
+});
+
 router.get("/fetch-job-orders", (req, res) => {
   axios
     .get(
@@ -659,6 +681,62 @@ router.get("/fetch-job-orders", (req, res) => {
       console.error("Firebase connection error:", error);
       res.status(500).json({ message: "Internal server error" });
     });
+});
+
+router.post("/addMaintenance", async (req, res) => {
+  const maintenanceData = req.body;
+
+  try {
+    const db = admin.database();
+    const ref = db.ref(`maintenanceReminders/${maintenanceData.actionId}`);
+    await ref.set(maintenanceData);
+
+    res.status(200).json({ message: "Maintenance added successfully" });
+  } catch (error) {
+    console.error("Firebase Authentication error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/deleteMaintenanceRecord", async (req, res) => {
+  const _maintenanceId = req.body._maintenanceId;
+
+  try {
+    const db = admin.database();
+    const maintenanceRef = db.ref(`maintenanceReminders/${_maintenanceId}`);
+
+    await maintenanceRef.remove();
+
+    res
+      .status(200)
+      .json({ message: "Maintenance record deleted successfully" });
+  } catch (error) {
+    console.error("Firebase delete error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.get("/fetch-mileage", async (req, res) => {
+  try {
+    const plateNo = req.query.plateNo;
+    console.log(plateNo);
+
+    const response = await axios.get(
+      "https://gravasend-965f7-default-rtdb.firebaseio.com/trucks.json"
+    );
+
+    const trucksData = response.data;
+    if (trucksData && trucksData[plateNo]) {
+      const mileage = trucksData[plateNo].mileage;
+      console.log(mileage);
+      res.status(200).json({ mileage });
+    } else {
+      res.status(404).json({ message: "Plate not found" });
+    }
+  } catch (error) {
+    console.error("Firebase connection error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 module.exports = router;

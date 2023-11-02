@@ -180,8 +180,15 @@ router.post("/login", async (req, res) => {
 router.get("/order", async (req, res) => {
   try {
     const storedUsername = req.query.userName;
-    const orders = await Order.find({ _userName: storedUsername });
-    res.json(orders);
+    const user = await User.findOne({ _userName: storedUsername });
+
+    if (user) {
+      const fullName = `${user._fName}_${user._lName}`;
+      const orders = await Order.find({ _name: fullName });
+      res.json(orders);
+    } else {
+      console.error("User not found");
+    }
   } catch (error) {
     console.error("Error fetching listings:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -445,23 +452,28 @@ router.post("/update-appointment", async (req, res) => {
 router.get("/get-counts", async (req, res) => {
   const storedUsername = req.query.userName;
   const users = await User.find({ _userName: storedUsername });
-
-  try {
-    for (const user of users) {
-      const ordersCount = await Order.countDocuments({
-        _userName: storedUsername,
-      });
-      const appointmentsCount = await Appointment.countDocuments({
-        _userName: storedUsername,
-      });
-      res.json({
-        totalOrders: ordersCount,
-        totalAppointments: appointmentsCount,
-      });
+  if (users) {
+    try {
+      for (const user of users) {
+        const fullName = `${user._fName}_${user._lName}`;
+        console.log(fullName);
+        const ordersCount = await Order.countDocuments({
+          _name: fullName,
+        });
+        const appointmentsCount = await Appointment.countDocuments({
+          _userName: storedUsername,
+        });
+        res.json({
+          totalOrders: ordersCount,
+          totalAppointments: appointmentsCount,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching counts:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
-  } catch (error) {
-    console.error("Error fetching counts:", error);
-    res.status(500).json({ error: "Internal server error" });
+  } else {
+    console.error("User not found");
   }
 });
 router.post("/check-email", async (req, res) => {
