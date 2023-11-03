@@ -21,10 +21,21 @@ import { Link, NavLink } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { logout } from "../store/reducers/authReducer";
 import { useDispatch } from "react-redux";
-
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import CloseIcon from "@mui/icons-material/Close";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Divider from "@mui/material/Divider";
 import DonutSmallSharpIcon from "@mui/icons-material/DonutSmallSharp";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import HomeIcon from "@mui/icons-material/Home";
+import StorefrontIcon from "@mui/icons-material/Storefront";
+import RoomServiceIcon from "@mui/icons-material/RoomService";
+import LiveHelpIcon from "@mui/icons-material/LiveHelp";
+import InfoIcon from "@mui/icons-material/Info";
+import MailIcon from "@mui/icons-material/Mail";
 
 const ColoredBadge = withStyles({
   badge: {
@@ -36,6 +47,14 @@ const ColoredBadge = withStyles({
 const token = localStorage.getItem("token");
 
 const pages = ["Home", "Products", "Services", "FAQs", "About", "Contact"];
+const mobilePages = [
+  { name: "Home", icon: <HomeIcon /> },
+  { name: "Products", icon: <StorefrontIcon /> },
+  { name: "Services", icon: <RoomServiceIcon /> },
+  { name: "FAQs", icon: <LiveHelpIcon /> },
+  { name: "About", icon: <InfoIcon /> },
+  { name: "Contact", icon: <MailIcon /> },
+];
 
 const settings = ["Dashboard", "Logout"];
 
@@ -86,13 +105,12 @@ function ResponsiveAppBar() {
   };
   const userName = localStorage.getItem("userName");
   return (
-    <AppBar position="sticky" style={{ backgroundColor: "#fafbf5" }}>
+    <AppBar position="sticky" style={{ backgroundColor: "#e8f2ff " }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Link to="/">
             <DonutSmallSharpIcon
               sx={{
-                ml: 2,
                 mr: 1,
                 position: "relative",
                 display: { xs: "none", md: "flex" },
@@ -133,36 +151,41 @@ function ResponsiveAppBar() {
               />
             </IconButton>
 
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
+            <SwipeableDrawer
+              anchor="left"
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: "block", md: "none" },
-              }}
             >
-              {pages.map((page) => (
-                <MenuItem
-                  key={page}
-                  onClick={handleCloseNavMenu}
-                  component={Link}
-                  to={page === "Home" ? "/" : `/${page}`}
-                  sx={{ color: "#343231" }}
-                >
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+              <Box
+                sx={{
+                  p: 2,
+                  height: 1,
+                  backgroundColor: "#e8f2ff",
+                }}
+                role="presentation"
+                onClick={handleCloseNavMenu}
+                onKeyDown={handleCloseNavMenu}
+              >
+                <IconButton sx={{ mb: 2 }}>
+                  <CloseIcon onClick={handleCloseNavMenu} />
+                </IconButton>
+
+                <Divider sx={{ mb: 2 }} />
+                <List sx={{ width: 250 }}>
+                  {mobilePages.map((page) => (
+                    <ListItem
+                      button
+                      key={page.name}
+                      component={Link}
+                      to={page.name === "Home" ? "/" : `/${page.name}`}
+                    >
+                      <ListItemIcon>{page.icon}</ListItemIcon>
+                      <ListItemText primary={page.name} />
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
+            </SwipeableDrawer>
           </Box>
           <Link to="/">
             <DonutSmallSharpIcon
@@ -208,21 +231,28 @@ function ResponsiveAppBar() {
                 component={Link}
                 to={page === "Home" ? "/" : `/${page}`}
                 sx={{
+                  fontWeight: "bold",
                   color: "#343231",
-                  borderRadius: 0,
-                  "&:hover": { borderBottom: "3px solid #004aad" },
                 }}
               >
                 {page}
               </Button>
             ))}
           </Box>
+
           {!hasToken && (
             <Button
               component={Link}
               to={"/login"}
-              variant="outlined"
-              sx={{ ml: 2, color: "#004aad", borderColor: "#004aad" }}
+              variant="contained"
+              sx={{
+                ml: 2,
+                backgroundColor: "#004aad",
+                color: "#fff",
+                "&:hover": {
+                  backgroundColor: "#003882",
+                },
+              }}
             >
               Login
             </Button>

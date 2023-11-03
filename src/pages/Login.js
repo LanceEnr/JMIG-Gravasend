@@ -14,10 +14,19 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import GoogleReCAPTCHA from "react-google-recaptcha";
-import "../styles/Login.css";
+import BannerImage from "../assets/about.webp";
+import { makeStyles } from "@mui/styles"; // Import makeStyles for custom styles
 import { useTheme } from "@mui/material/styles";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+
+const useStyles = makeStyles((theme) => ({
+  signin: {
+    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${BannerImage})`,
+    backgroundSize: "cover",
+    minHeight: "100vh", // Set the minimum height to fill the screen
+  },
+}));
 
 export default function Login({ dispatch }) {
   const navigate = useNavigate();
@@ -111,9 +120,10 @@ export default function Login({ dispatch }) {
     }
   };
   const theme = useTheme();
+  const classes = useStyles(); // Add Material-UI styles
 
   return (
-    <div className="signin">
+    <div className={classes.signin}>
       <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
         <Box
           sx={{
@@ -129,14 +139,19 @@ export default function Login({ dispatch }) {
           }}
         >
           <Typography
-            component="h1"
-            variant="h5"
-            sx={{ color: "#004aad", fontWeight: "bold" }}
+            variant="h4"
+            sx={{ fontSize: "30px", fontWeight: "bold" }}
+            gutterBottom
+            marked="center"
+            align="center"
           >
-            Welcome back.
+            SIGN IN
           </Typography>
-          <Typography component="h1" variant="body1" color="textSecondary">
-            Sign in to your account using the form below.
+          <Typography variant="caption" align="center">
+            {"Not a member yet? "}
+            <Link href="/register" align="center" underline="always">
+              Sign Up here
+            </Link>
           </Typography>
           <Box
             component="form"
@@ -206,13 +221,13 @@ export default function Login({ dispatch }) {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="/forgotpassword" variant="body2">
+                <Link href="/forgotpassword" variant="caption">
                   Forgot password?
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="/register" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                <Link href="/" variant="caption">
+                  Go back to home
                 </Link>
               </Grid>
             </Grid>

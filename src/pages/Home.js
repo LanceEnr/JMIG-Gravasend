@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import BannerImage from "../assets/about.webp";
+import Choose from "../assets/choose.webp";
+import Catalog from "../assets/catalog.webp";
+
+import Contact from "../assets/contact.webp";
+
+import Faqs from "../assets/faqs.webp";
 import "../styles/Home.css";
 import Banner, { fetchBannerData } from "./cmshelper/cms";
-import ProductValues from "../components/ProductValues";
+import ProductValues from "../components/ProductValues1";
 import img from "../images/banner/uploads/Homepage Full Banner.jpg";
 
 import {

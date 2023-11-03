@@ -5,14 +5,26 @@ import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+import Typography from "../components/common/Typography";
 import Container from "@mui/material/Container";
-import ChangePassword from "../components/ChangePassword";
-import EnterOTP from "../components/EnterOtp";
-import { useTheme } from "@mui/material/styles";
 import { toast } from "react-toastify";
+import { useTheme } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles"; // Import makeStyles for custom styles
+import BannerImage from "../assets/about.webp";
+import EnterOTP from "../components/EnterOtp";
+
+const useStyles = makeStyles((theme) => ({
+  signin: {
+    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${BannerImage})`,
+    backgroundSize: "cover",
+    minHeight: "100vh",
+  },
+}));
 
 export default function ForgetPassword() {
+  const theme = useTheme();
+  const classes = useStyles(); // Add Material-UI styles
+
   const [_email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [otp, setOtp] = useState("");
@@ -46,10 +58,8 @@ export default function ForgetPassword() {
     }
   };
 
-  const theme = useTheme();
-
   return (
-    <div className="signin">
+    <div className={classes.signin}>
       <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
         <Box
           sx={{
@@ -65,11 +75,13 @@ export default function ForgetPassword() {
           }}
         >
           <Typography
-            component="h1"
-            variant="h5"
-            sx={{ color: "#004aad", fontWeight: "bold" }}
+            variant="h4"
+            sx={{ fontSize: "30px", fontWeight: "bold" }}
+            gutterBottom
+            marked="center"
+            align="center"
           >
-            Reset your Password
+            RESET PASSWORD
           </Typography>
           {message && (
             <Typography variant="body1" color="textSecondary">
@@ -78,9 +90,13 @@ export default function ForgetPassword() {
           )}
           {!otpSent ? (
             <>
-              <Typography variant="body1" color="textSecondary">
-                Provide your email below.
+              <Typography variant="caption" align="center">
+                {"Changed your mind? "}
+                <Link href="/register" align="center" underline="always">
+                  Login here
+                </Link>
               </Typography>
+
               <Box
                 component="form"
                 noValidate
@@ -116,8 +132,8 @@ export default function ForgetPassword() {
           )}
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="/login" variant="body2">
-                Return to login
+              <Link href="/" variant="caption">
+                Go back to home
               </Link>
             </Grid>
           </Grid>

@@ -160,11 +160,10 @@ export default function AppointmentsTable1(props) {
           Appointments
         </Typography>
         <Button
-          variant="outlined"
+          variant="contained"
           onClick={handleSetAppointmentClick} // Use handleSetAppointmentClick here
           sx={{
-            color: "#004aad",
-            borderColor: "#004aad",
+            backgroundColor: "#004aad",
             padding: isMobile ? "4px 6px" : "6px 8px",
             fontSize: isMobile ? "0.55rem" : "0.875rem",
             mx: isMobile ? 2 : 0,

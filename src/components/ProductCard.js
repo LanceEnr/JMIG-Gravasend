@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Grid,
   Card,
   CardMedia,
   CardContent,
   Typography,
-  CardActions,
+  CardActionArea,
   Button,
   Box,
   Chip,
@@ -13,50 +13,61 @@ import {
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 
 const MyCard = ({ card }) => (
-  <Grid item key={card.name} xs={12} sm={6} md={3}>
+  <Grid item key={card.name} xs={12} sm={6} md={4} lg={3}>
     <Card
       sx={{
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        ":hover": {
-          boxShadow: 6,
-        },
+        borderRadius: "8px", // Adjust this value as needed
       }}
     >
-      <CardMedia component="div" sx={{ pt: "56.25%" }} image={card.image} />
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography
-          gutterBottom
-          variant="body1"
-          component="h2"
-          sx={{ fontWeight: "bold" }}
-        >
-          {card.name}
-        </Typography>
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography sx={{ color: "#bd8512" }} variant="subtitle2">
-            ₱{card.price.toLocaleString()} per cu. mt.
+      <CardActionArea>
+        <CardMedia
+          component="img"
+          sx={{
+            height: 250,
+            transition: "transform 0.3s ease-in-out", // Add transition for smooth zoom effect
+            ":hover": {
+              transform: "scale(1.015)", // Scale the image up to 105% when hovered
+            },
+          }}
+          image={card.image}
+          alt={card.name}
+        />
+
+        <CardContent sx={{ flexGrow: 1 }}>
+          <Typography
+            gutterBottom
+            variant="caption"
+            component="div"
+            sx={{ fontWeight: 600 }}
+          >
+            {card.name}
           </Typography>
-          <Chip
-            label={card.status}
-            color={card.status === "Available" ? "success" : "error"}
-            size="small"
-            variant="outlined"
-          />
-        </Box>
-      </CardContent>
-      <CardActions>
-        <Button
-          fullWidth
-          variant="outlined"
-          size="small"
-          sx={{ color: "#004aad", borderColor: "#004aad" }}
-          endIcon={<VisibilityOutlinedIcon />}
-        >
-          View
-        </Button>
-      </CardActions>
+
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Typography variant="caption" sx={{ color: "#bd8512" }}>
+              ₱{card.price.toLocaleString()} per cu. mt.
+            </Typography>
+            <Chip
+              label={card.status}
+              size="small"
+              sx={{
+                color:
+                  card.status === "Available" ? "success.dark" : "error.dark",
+                bgcolor: card.status === "Available" ? "#8dd290" : "#f5c9c9",
+              }}
+            />
+          </Box>
+        </CardContent>
+      </CardActionArea>
     </Card>
   </Grid>
 );
