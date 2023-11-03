@@ -3,8 +3,8 @@ import { Container, Grid } from "@mui/material";
 import MyCard from "../components/ServiceCard";
 
 const ServiceList = ({ cards }) => (
-  <Container sx={{ py: 8 }} maxWidth="lg">
-    <Grid container spacing={4}>
+  <Container sx={{ py: 3 }} maxWidth="lg">
+    <Grid container spacing={3}>
       {cards.map((card) => (
         <MyCard card={card} />
       ))}

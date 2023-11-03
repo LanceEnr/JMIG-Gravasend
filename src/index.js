@@ -1,4 +1,6 @@
 import React from "react";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { createStore, combineReducers } from "redux";
@@ -8,13 +10,16 @@ import AdminApp from "./AdminApp";
 import reportWebVitals from "./reportWebVitals";
 
 const store = createStore(rootReducer);
+const theme = createTheme();
 
 const shouldRenderAdminApp = window.location.pathname.startsWith("/admin");
 
 ReactDOM.render(
   <Provider store={store}>
     <React.StrictMode>
-      {shouldRenderAdminApp ? <AdminApp /> : <App />}
+      <ThemeProvider theme={theme}>
+        {shouldRenderAdminApp ? <AdminApp /> : <App />}
+      </ThemeProvider>
     </React.StrictMode>
   </Provider>,
   document.getElementById("root")

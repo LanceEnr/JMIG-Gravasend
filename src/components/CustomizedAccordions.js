@@ -73,7 +73,8 @@ export default function CustomizedAccordions() {
         <Typography
           component="h1"
           variant="h5"
-          sx={{ color: "#004aad", fontWeight: "bold" }}
+          color="textPrimary"
+          sx={{ fontWeight: "bold" }}
         >
           How can we help you?
         </Typography>

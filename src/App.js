@@ -5,6 +5,7 @@ import {
   Route,
   Routes,
   Navigate,
+  useLocation,
 } from "react-router-dom";
 import "@fontsource/roboto";
 import ResponsiveAppBar from "./components/ResponsiveAppBar";
@@ -27,6 +28,9 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminRegister from "./pages/admin/AdminRegister";
 import Services from "./pages/Services";
+import Home1 from "./pages/Home1";
+import AppFooter from "./components/AppFooter";
+import TopBar from "./components/TopBar";
 
 const initialState = {
   isAuthenticated: !!localStorage.getItem("token"),
@@ -49,60 +53,88 @@ function App() {
   return (
     <div className="App">
       <Router>
+        <MainApp
+          handleLogout={handleLogout}
+          isAuthenticated={isAuthenticated}
+          authDispatch={authDispatch}
+        />
+        <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
+      </Router>
+    </div>
+  );
+}
+
+function MainApp({ handleLogout, isAuthenticated, authDispatch }) {
+  // Get current location
+  const location = useLocation();
+
+  // Determine if the current page is Login, Register, or ForgotPassword
+  const hideAppBarAndFooter = [
+    "/login",
+    "/register",
+    "/forgotpassword",
+  ].includes(location.pathname);
+
+  return (
+    <>
+      {!hideAppBarAndFooter && <TopBar />}
+      {!hideAppBarAndFooter && (
         <ResponsiveAppBar
           handleLogout={handleLogout}
           isAuthenticated={isAuthenticated}
         />
+      )}
 
-        <Routes>
-          <Route path="/" exact element={<Home />} />
-          <Route path="/products" exact element={<Products />} />
-          <Route path="/services" exact element={<Services />} />
+      <Routes>
+        <Route path="/" exact element={<Home />} />
+        <Route path="/home1" exact element={<Home1 />} />
 
-          <Route path="/about" exact element={<About />} />
-          <Route path="/contact" exact element={<Contact />} />
-          <Route path="/forgotpassword" exact element={<ForgotPassword />} />
-          <Route path="/productdetails" exact element={<ProductDetails />} />
-          <Route path="/servicedetails" exact element={<ServiceDetails />} />
-          <Route path="/faqs" exact element={<Faqs />} />
+        <Route path="/products" exact element={<Products />} />
+        <Route path="/services" exact element={<Services />} />
 
-          <Route
-            path="/dashboard"
-            element={
-              isAuthenticated ? <UserDashboard /> : <Navigate to="/login" />
-            }
-          />
+        <Route path="/about" exact element={<About />} />
+        <Route path="/contact" exact element={<Contact />} />
+        <Route path="/forgotpassword" exact element={<ForgotPassword />} />
+        <Route path="/productdetails" exact element={<ProductDetails />} />
+        <Route path="/servicedetails" exact element={<ServiceDetails />} />
+        <Route path="/faqs" exact element={<Faqs />} />
 
-          <Route
-            path="/login"
-            element={
-              isAuthenticated ? (
-                <Navigate to="/dashboard" state={{ fromLogin: true }} />
-              ) : (
-                <Login dispatch={authDispatch} />
-              )
-            }
-          />
+        <Route
+          path="/dashboard"
+          element={
+            isAuthenticated ? <UserDashboard /> : <Navigate to="/login" />
+          }
+        />
 
-          <Route
-            path="/register"
-            element={
-              isAuthenticated ? (
-                <Navigate to="/dashboard" state={{ fromRegister: true }} />
-              ) : (
-                <Register dispatch={authDispatch} />
-              )
-            }
-          />
+        <Route
+          path="/login"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/dashboard" state={{ fromLogin: true }} />
+            ) : (
+              <Login dispatch={authDispatch} />
+            )
+          }
+        />
 
-          <Route path="/admindashboard" exact element={<AdminDashboard />} />
-          <Route path="/adminlogin" exact element={<AdminLogin />} />
-          <Route path="/adminregister" exact element={<AdminRegister />} />
-        </Routes>
-        <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
-        <Footer />
-      </Router>
-    </div>
+        <Route
+          path="/register"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/dashboard" state={{ fromRegister: true }} />
+            ) : (
+              <Register dispatch={authDispatch} />
+            )
+          }
+        />
+
+        <Route path="/admindashboard" exact element={<AdminDashboard />} />
+        <Route path="/adminlogin" exact element={<AdminLogin />} />
+        <Route path="/adminregister" exact element={<AdminRegister />} />
+      </Routes>
+
+      {!hideAppBarAndFooter && <AppFooter />}
+    </>
   );
 }
 

@@ -1,11 +1,16 @@
-import React from "react";
-import { Box, Button, Typography, LinearProgress } from "@mui/material";
+import React, { useState, useRef } from "react";
+import { Box, Button, Typography, LinearProgress, Link } from "@mui/material";
 import { withStyles } from "@mui/styles";
-import Sand1 from "../assets/Sand1.webp";
 import { Container } from "react-bootstrap";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
+import Sand1 from "../assets/Sand1.webp";
+import Sand2 from "../assets/Sand2.webp";
+import Sand3 from "../assets/Sand3.webp";
 import "../styles/UserDashboard.css";
 import { MenuList } from "../helpers/MenuList";
 import MoreProducts from "../components/MoreProducts";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
 
 const ColoredLinearProgress = withStyles({
   colorPrimary: {
@@ -16,53 +21,108 @@ const ColoredLinearProgress = withStyles({
   },
 })(LinearProgress);
 
+const responsive = {
+  desktop: {
+    breakpoint: { max: 3000, min: 1024 },
+    items: 1,
+  },
+  tablet: {
+    breakpoint: { max: 1024, min: 768 },
+    items: 1,
+  },
+  mobile: {
+    breakpoint: { max: 768, min: 0 },
+    items: 1,
+  },
+};
+
 const ProductDetails = () => {
   const stocksLeft = 50;
   const totalStocks = 100;
+
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
+  const carouselRef = useRef(null);
+
+  const handleThumbnailClick = (index) => {
+    setSelectedImageIndex(index);
+    carouselRef.current.goToSlide(index);
+  };
+
+  const handleBeforeChange = (nextSlide) => {
+    setSelectedImageIndex(nextSlide);
+  };
+  const images = [Sand1, Sand2, Sand3]; // Add your image paths to this array
 
   return (
     <div className="userDashboard">
       <Container>
         <Box width="80%" m="80px auto">
           <Box display="flex" flexWrap="wrap" columnGap="40px">
-            <Box
-              flex="1 1 40%"
-              mb="40px"
-              style={{ borderRadius: "5px", overflow: "hidden" }}
-            >
-              <img
-                alt="Sand"
-                src={Sand1}
-                width="100%"
-                height="100%"
-                style={{ objectFit: "contain", transform: "scale(1.1)" }}
-              />
+            <Box flex="1 1 40%" mb="40px" style={{ overflow: "hidden" }}>
+              <Carousel
+                responsive={responsive}
+                ref={carouselRef}
+                beforeChange={(nextSlide) => handleBeforeChange(nextSlide)}
+                className="carousel" // Add this line
+              >
+                {images.map((image, index) => (
+                  <div key={index} className="carousel-slide">
+                    {" "}
+                    {/* Add this line */}
+                    <img
+                      alt="Sand"
+                      src={image}
+                      width="100%"
+                      height="100%"
+                      style={{ objectFit: "contain", transform: "scale(1.1)" }}
+                    />
+                  </div>
+                ))}
+              </Carousel>
+              <Box display="flex" justifyContent="center" mt="20px">
+                {images.map((image, index) => (
+                  <div
+                    key={index}
+                    className={`thumbnail ${
+                      selectedImageIndex === index ? "active" : ""
+                    }`}
+                    onClick={() => handleThumbnailClick(index)}
+                  >
+                    <img src={image} alt="Thumbnail" />
+                  </div>
+                ))}
+              </Box>
             </Box>
 
             <Box flex="1 1 50%" mb="40px">
               <Box m="10px 0 25px 0">
-                <Typography variant="h3" sx={{ color: "#004aad" }}>
-                  Concrete Sand
+                <Breadcrumbs aria-label="breadcrumb">
+                  <Link underline="hover" color="inherit" href="/">
+                    Home
+                  </Link>
+                  <Link underline="hover" color="inherit" href="#">
+                    Products
+                  </Link>
+                  <Typography color="text.primary">Sand</Typography>
+                </Breadcrumbs>
+
+                <Typography variant="h4" sx={{ fontWeight: "bold", my: 2 }}>
+                  Sand
                 </Typography>
-                <Typography sx={{ color: "#bd8512" }}>
-                  ₱4,000 per cu. mt.
+                <Typography sx={{ mb: 2 }}>Aggregate Materials</Typography>
+                <Typography sx={{ color: "#bd8512", mb: 2 }}>
+                  ₱3,000 per cubic mt.
                 </Typography>
-                <Typography sx={{ mt: "20px" }}>
+                <Typography variant="subtitle2" sx={{ mt: "20px" }}>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi
                   pellentesque metus vel lectus pellentesque, eget ullamcorper
                   est vestibulum. Donec interdum tincidunt dui, ut condimentum
                   metus faucibus nec. Maecenas accumsan justo nunc, finibus
                   pharetra velit rhoncus tempor. Nunc dignissim nulla est, et
-                  scelerisque erat consectetur in. Integer molestie ultricies
-                  nibh, ac euismod velit. Maecenas volutpat, est id eleifend
-                  dignissim, metus urna imperdiet risus, non dignissim magna
-                  ante ut nibh. Cras augue elit, faucibus bibendum dui a, semper
-                  suscipit libero. Maecenas faucibus id neque sit amet sodales.
-                  In tincidunt venenatis magna, at bibendum ante tempor ut.
-                  Vivamus eu neque felis. Ut a ex non felis placerat sodales vel
-                  vitae eros. Aenean molestie tellus pulvinar mi ultricies
-                  scelerisque. Aliquam vitae sagittis libero, et porta sapien.
-                  Praesent id mi ut leo tristique suscipit eget sed odio.
+                  scelerisque erat consectetur in. Lorem ipsum dolor sit amet,
+                  consectetur adipiscing elit. Morbi pellentesque metus vel
+                  lectus pellentesque, eget ullamcorper est vestibulum.
                 </Typography>
               </Box>
               <Box display="flex" alignItems="center">
@@ -75,7 +135,7 @@ const ProductDetails = () => {
                   <ColoredLinearProgress
                     variant="determinate"
                     value={(stocksLeft / totalStocks) * 100}
-                    style={{ height: "8px", borderRadius: "10px" }} // Add this line
+                    style={{ height: "8px", borderRadius: "10px" }}
                   />
                 </Box>
                 <Box minWidth={35}>
@@ -91,9 +151,9 @@ const ProductDetails = () => {
                     minWidth: "150px",
                     padding: "10px 40px",
                     backgroundColor: "#004aad",
-                    color: "#fff", // adjust text color as needed
+                    color: "#fff",
                     "&:hover": {
-                      backgroundColor: "#003882", // darker shade for hover state
+                      backgroundColor: "#003882",
                     },
                   }}
                 >

@@ -2,23 +2,20 @@ import React from "react";
 import { ServicesList } from "../helpers/MenuList";
 import ServiceList from "../components/ServiceList";
 import "../styles/Products.css";
-import Banner from "../components/Banner";
-import BannerImage from "../assets/services.webp";
-import ContactBanner from "../components/ContactBanner";
+
+import ProductSmokingHero from "../components/ProductSmokingHero";
+import ServiceBanner from "../components/ServiceBanner";
 
 function Services() {
   return (
     <div>
-      <div className="menu">
-        <Banner
-          bannerImage={BannerImage}
-          title="SERVICES"
-          text="We offer a range of services including dump truck and heavy equipment operations
-        "
-        />
+      <div className="menu" id="product-list-section">
+        <ServiceBanner />
+
         <ServiceList cards={ServicesList} />
       </div>
-      <ContactBanner />
+
+      <ProductSmokingHero />
     </div>
   );
 }

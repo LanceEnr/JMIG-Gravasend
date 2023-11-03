@@ -7,7 +7,8 @@ import { Container, Box } from "@mui/material";
 import Banner from "../components/Banner";
 import { rowsFaqs } from "./cmshelper/cms";
 
-import BannerImage from "../assets/faqs.webp";
+import BannerImage from "../assets/faqs1.webp";
+import ProductSmokingHero from "../components/ProductSmokingHero";
 
 function Faqs() {
   return (
@@ -22,6 +23,7 @@ function Faqs() {
           <CustomizedAccordions items={rowsFaqs} />
         </Box>
       </Container>
+      <ProductSmokingHero />
     </div>
   );
 }

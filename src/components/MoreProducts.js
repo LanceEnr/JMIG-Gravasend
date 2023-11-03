@@ -1,11 +1,11 @@
 import React from "react";
 import { Grid } from "@mui/material";
-import MyCard from "./ServiceCard";
+import MyCard from "./ProductCard";
 
 const MoreProducts = ({ cards }) => (
-  <Grid container spacing={4}>
+  <Grid container spacing={3}>
     {cards.slice(0, 4).map((card) => (
-      <MyCard card={card} width={100} />
+      <MyCard card={card} />
     ))}
   </Grid>
 );

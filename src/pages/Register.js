@@ -5,8 +5,8 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
-import Box from "@mui/material/Box"; // Import Box component
-import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import Typography from "../components/common/Typography";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
@@ -20,8 +20,20 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import BannerImage from "../assets/about.webp";
+import { makeStyles } from "@mui/styles"; // Import makeStyles for custom styles
+
+const useStyles = makeStyles((theme) => ({
+  signin: {
+    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${BannerImage})`,
+    backgroundSize: "cover",
+    minHeight: "100vh",
+  },
+}));
 
 export default function Register() {
+  const classes = useStyles(); // Add Material-UI styles
+
   const [emailUsed, setEmailUsed] = useState(false);
   const [usernameUsed, setUsernameUsed] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -149,7 +161,7 @@ export default function Register() {
   };
 
   return (
-    <div className="signin">
+    <div className={classes.signin}>
       <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
         <Box
           sx={{
@@ -165,15 +177,21 @@ export default function Register() {
           }}
         >
           <Typography
-            component="h1"
-            variant="h5"
-            sx={{ color: "#004aad", fontWeight: "bold" }}
+            variant="h4"
+            sx={{ fontSize: "30px", fontWeight: "bold" }}
+            gutterBottom
+            marked="center"
+            align="center"
           >
-            Welcome to JMIG.
+            SIGN UP
           </Typography>
-          <Typography component="h1" variant="body1" color="textSecondary">
-            Create your account by filling the form below.
+          <Typography variant="caption" align="center">
+            {"Already have an account? "}
+            <Link href="/login" align="center" underline="always">
+              Login here
+            </Link>
           </Typography>
+
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2} sx={{ mt: 1 }}>
               <Grid item xs={12} sm={6}>
@@ -316,8 +334,8 @@ export default function Register() {
           </form>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="/login" variant="body2">
-                Already have an account? Sign in
+              <Link href="/" variant="caption">
+                Go back to home
               </Link>
             </Grid>
           </Grid>
@@ -325,17 +343,16 @@ export default function Register() {
       </Container>
       {/* Terms and conditions dialog */}
       <Dialog open={openTermsDialog} onClose={handleCloseTermsDialog}>
-        <DialogTitle>Terms and Conditions</DialogTitle>
+        <DialogTitle style={{ fontSize: "1.2rem" }}>
+          Terms and Conditions
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <p>
-              <strong>Terms and Conditions</strong>
-            </p>
-            <p>
+            <p style={{ fontSize: "0.9rem" }}>
               By creating an account with JMIG, you agree to the following terms
               and conditions:
             </p>
-            <ol>
+            <ol style={{ fontSize: "0.9rem" }}>
               <li>
                 <strong>Eligibility:</strong>
                 <ul>
@@ -411,11 +428,11 @@ export default function Register() {
                 </ul>
               </li>
             </ol>
-            <p>
+            <p style={{ fontSize: "0.9rem" }}>
               By clicking "I agree to the terms and conditions," you acknowledge
               that you have read and accept these terms.
             </p>
-            <p>Last Updated: [Date]</p>
+            <p style={{ fontSize: "0.9rem" }}>Last Updated: [Date]</p>
           </DialogContentText>
         </DialogContent>
         <DialogActions>

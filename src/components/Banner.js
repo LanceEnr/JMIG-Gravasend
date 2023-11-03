@@ -1,5 +1,6 @@
 import React from "react";
 import "../styles/Banner.css";
+import Typography from "./common/Typography";
 
 const Banner = ({ bannerImage, title, text }) => {
   return (
@@ -9,8 +10,15 @@ const Banner = ({ bannerImage, title, text }) => {
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${bannerImage})`,
       }}
     >
-      <h1 className="aboutTitle">{title}</h1>
-      <p className="aboutText">{text}</p>
+      <Typography
+        variant="h3"
+        component="h2"
+        marked="center"
+        style={{ fontWeight: "bold" }}
+        gutterBottom
+      >
+        {title}
+      </Typography>
     </div>
   );
 };

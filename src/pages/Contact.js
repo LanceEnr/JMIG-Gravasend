@@ -17,6 +17,8 @@ import Banner from "../components/Banner";
 import "../styles/Contact.css";
 import { toast } from "react-toastify";
 import { fetchContactData } from "./cmshelper/cms";
+import ProductCTA from "../components/ProductCTA";
+import ContactValues from "../components/ContactValues";
 
 function Contact() {
   const [inquiryData, SetInquiryData] = useState({
@@ -88,9 +90,9 @@ function Contact() {
   }, []);
 
   return (
-    <div className="contact">
+    <div>
       <Banner bannerImage={BannerImage} title="CONTACT US" text="Talk to us!" />
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Container maxWidth="lg" sx={{ mt: 4 }}>
         <Box
           component="iframe"
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3859.336009504322!2d121.0196
@@ -99,7 +101,7 @@ function Contact() {
 ph!4v1693048413304!5m2!1sen!2sph"
           width={1200}
           height={450}
-          sx={{ border: "none", borderRadius: "5px", mb: "20px" }}
+          sx={{ border: "none", borderRadius: "5px" }}
           allowFullScreen
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
@@ -108,125 +110,10 @@ ph!4v1693048413304!5m2!1sen!2sph"
             maxHeight: "100%",
           }}
         />
-        <Typography variant="h5" align="left" mb={2}>
-          Get in Touch
-        </Typography>
-        <Grid container spacing={10}>
-          <Grid item xs={12} sm={8}>
-            <form onSubmit={handleSubmit}>
-              <TextField
-                fullWidth
-                label="Name"
-                name="_name"
-                onChange={handleChange}
-                value={inquiryData._name}
-                margin="normal"
-                required
-              />
-              <TextField
-                fullWidth
-                label="Email"
-                name="_email"
-                onChange={handleChange}
-                value={inquiryData._email}
-                margin="normal"
-                required
-                type="email"
-              />
-
-              <TextField
-                fullWidth
-                label="Message"
-                name="_message"
-                onChange={handleChange}
-                value={inquiryData._message}
-                margin="normal"
-                required
-                multiline
-                rows={4}
-              />
-              <Button
-                variant="primary"
-                type="submit"
-                sx={{
-                  mt: 2,
-                  width: "100px", // adjust this value as needed
-                  backgroundColor: "#004aad",
-                  color: "#fff", // adjust text color as needed
-                  "&:hover": {
-                    backgroundColor: "#003882", // darker shade for hover state
-                  },
-                }}
-              >
-                Submit
-              </Button>
-            </form>
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <Box
-              display="flex"
-              flexDirection="column"
-              justifyContent="flex-start"
-              height="100%"
-            >
-              <Grid
-                container
-                alignItems="center"
-                style={{ marginBottom: "20px" }}
-              >
-                <Grid item xs={2}>
-                  <HomeIcon style={{ fontSize: 30, color: "#808080" }} />
-                </Grid>
-                <Grid item xs={10}>
-                  <Typography variant="h7">{address}</Typography>
-                </Grid>
-              </Grid>
-              <Grid
-                container
-                alignItems="center"
-                style={{ marginBottom: "20px" }}
-              >
-                <Grid item xs={2}>
-                  <HomeIcon style={{ fontSize: 30, color: "#808080" }} />
-                </Grid>
-                <Grid item xs={10}>
-                  <Typography variant="h7">
-                    Branch 2 5440B Mindanao Avenue, Ugong, Valenzuela City, 1440
-                    Metro Manila
-                  </Typography>
-                </Grid>
-              </Grid>
-
-              <Grid
-                container
-                alignItems="center"
-                style={{ marginBottom: "20px" }}
-              >
-                <Grid item xs={2}>
-                  <PhoneIcon style={{ fontSize: 30, color: "#808080" }} />
-                </Grid>
-                <Grid item xs={10}>
-                  <Typography variant="h7">{phone}</Typography>
-                </Grid>
-              </Grid>
-
-              <Grid
-                container
-                alignItems="center"
-                style={{ marginBottom: "20px" }}
-              >
-                <Grid item xs={2}>
-                  <EmailIcon style={{ fontSize: 30, color: "#808080" }} />
-                </Grid>
-                <Grid item xs={10}>
-                  <Typography variant="h7">{email}</Typography>
-                </Grid>
-              </Grid>
-            </Box>
-          </Grid>
-        </Grid>
+        <ProductCTA />
       </Container>
+
+      <ContactValues />
     </div>
   );
 }
