@@ -13,6 +13,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
+import GoogleReCAPTCHA from "react-google-recaptcha";
 import BannerImage from "../assets/about.webp";
 import { makeStyles } from "@mui/styles"; // Import makeStyles for custom styles
 import { useTheme } from "@mui/material/styles";
@@ -41,12 +42,28 @@ export default function Login({ dispatch }) {
     _pwd: "",
     rememberMe: false,
   });
+  const [recaptchaValue, setRecaptchaValue] = useState(null);
+
   useEffect(() => {
-    const rememberMeData = localStorage.getItem("rememberMeData");
-    if (rememberMeData) {
-      setLoginData(JSON.parse(rememberMeData));
+    const cookies = document.cookie;
+    const rememberMeCookie = cookies
+      .split("; ")
+      .find((cookie) => cookie.startsWith("rememberMe="));
+
+    if (rememberMeCookie) {
+      const rememberMeValue = rememberMeCookie.split("=")[1];
+      setRememberMe(rememberMeValue === "true");
     }
   }, []);
+  useEffect(() => {
+    if (rememberMe && loginData._userName) {
+      const storedPassword = localStorage.getItem(loginData._userName);
+      if (storedPassword) {
+        setLoginData({ ...loginData, _pwd: storedPassword });
+      }
+    }
+  }, [loginData._userName, rememberMe]);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setLoginData({
@@ -54,12 +71,18 @@ export default function Login({ dispatch }) {
       [name]: value,
     });
   };
+  const handleRecaptchaChange = (value) => {
+    setRecaptchaValue(value);
+  };
   const handleRememberChange = () => {
     setRememberMe(!rememberMe);
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    if (!recaptchaValue) {
+      toast.error("Please complete the reCAPTCHA challenge.");
+      return;
+    }
     try {
       const response = await axios.post(
         "http://localhost:3001/login",
@@ -73,11 +96,11 @@ export default function Login({ dispatch }) {
         localStorage.setItem("token", token);
         localStorage.setItem("userName", userName);
 
-        if (loginData.rememberMe) {
-          localStorage.setItem("rememberMeData", JSON.stringify(loginData));
-        } else {
-          localStorage.removeItem("rememberMeData");
+        if (rememberMe && loginData._userName) {
+          localStorage.setItem(loginData._userName, loginData._pwd);
         }
+
+        document.cookie = `rememberMe=${loginData.rememberMe}; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/`;
 
         toast.success("Login successful", {
           autoClose: 50,
@@ -145,7 +168,6 @@ export default function Login({ dispatch }) {
               name="_userName"
               onChange={handleChange}
               value={loginData._userName}
-              autoComplete="off"
               autoFocus
             />
             <TextField
@@ -172,6 +194,10 @@ export default function Login({ dispatch }) {
                   </InputAdornment>
                 ),
               }}
+            />
+            <GoogleReCAPTCHA
+              sitekey="6LdkquooAAAAAGeJmM27oPgcUtRcQZIGTof4VyY-"
+              onChange={handleRecaptchaChange}
             />
 
             <FormControlLabel

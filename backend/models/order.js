@@ -9,11 +9,13 @@ const orderSchema = new mongoose.Schema(
     _status: String,
     _date: String,
     _materialType: String,
-    _quantity: String,
-    _price: String,
-    _orderNum: Number,
+    _quantity: Number,
+    _price: Number,
+    _orderNum: {
+      type: Number,
+      unique: true,
+    },
     _time: String,
-    _userName: String,
   },
   { collection: "order" }
 );

@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import {
+  GoogleMap,
+  LoadScript,
+  Marker,
+  InfoWindow,
+} from "@react-google-maps/api";
 import axios from "axios";
-import { Grid, Paper, Avatar, Box } from "@mui/material";
+import { Grid, Paper, Avatar, Box, Button } from "@mui/material";
 import Title from "./components/Title";
 
 import TripOngoing from "./TripOngoing";
@@ -17,6 +22,8 @@ function DeliveryMonitoring() {
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [foundLocation, setFoundLocation] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(12);
+  const [lockZoom, setLockZoom] = useState(false);
+  const [hoveredTruck, setHoveredTruck] = useState(null);
   const handleLoad = () => {
     setIsMapLoaded(true);
   };
@@ -30,16 +37,24 @@ function DeliveryMonitoring() {
       return {};
     }
   };
+
+  const handleCenterMap = () => {
+    setFoundLocation(null);
+    handleZoomChange(5);
+    setLockZoom(false);
+  };
+
   const handleZoomChange = (newZoomLevel) => {
-    setZoomLevel(newZoomLevel);
+    if (!lockZoom) {
+      setZoomLevel(newZoomLevel);
+    }
   };
   function handleFindClick(id) {
     const location = truckLocations[id];
     if (location) {
       setFoundLocation(location);
       handleZoomChange(15);
-    } else {
-      setFoundLocation(null);
+      setLockZoom(true);
     }
   }
 
@@ -84,6 +99,9 @@ function DeliveryMonitoring() {
                         }
                   }
                   zoom={zoomLevel}
+                  options={{
+                    gestureHandling: "greedy",
+                  }}
                 >
                   {Object.keys(truckLocations).map((uid) => (
                     <Marker
@@ -101,6 +119,7 @@ function DeliveryMonitoring() {
                 </GoogleMap>
               )}
             </LoadScript>
+            <Button onClick={handleCenterMap}>Center Map</Button>
           </Paper>
         </Grid>
 

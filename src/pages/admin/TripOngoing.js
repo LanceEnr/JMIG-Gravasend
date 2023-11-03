@@ -59,7 +59,7 @@ export default function TripOngoing({ onFindClick }) {
           variant="contained"
           endIcon={<ArrowRightAltIcon />}
           onClick={() => {
-            onFindClick(params.row.uid);
+            onFindClick(params.row.id);
           }}
         >
           Find
