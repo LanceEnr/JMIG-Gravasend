@@ -3,6 +3,7 @@ import { Paper, Box, Tab, Tabs } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import FullFeaturedCrudGrid from "./components/MaintenanceDataGrid";
 import Title from "./components/Title";
+import axios from "axios";
 import {
   rowsMaintenanceScheduling,
   columnsMaintenanceRecords,
@@ -12,8 +13,6 @@ import {
 function Maintenance() {
   const [value, setValue] = useState(0);
   const [plates, setPlates] = useState([]);
-  const [selectedPlateMileage, setSelectedPlateMileage] = useState(null);
-  const [selectedPlateNo, setSelectedPlateNo] = useState("");
 
   useEffect(() => {
     async function fetchPlates() {
@@ -33,34 +32,9 @@ function Maintenance() {
 
     fetchPlates();
   }, []);
-  const fetchPlateMileage = async (plateNo) => {
-    console.log("this");
-    try {
-      const response = await fetch(
-        `http://localhost:3001/fetch-mileage?plateNo=${plateNo}`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setSelectedPlateMileage(data.mileage);
-      } else {
-        console.error("Failed to fetch mileage for plate:", plateNo);
-      }
-    } catch (error) {
-      console.error("Error fetching mileage for plate:", plateNo, error);
-    }
-  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    if (newValue === 0 && plates.length > 0) {
-      fetchPlateMileage(selectedPlateNo);
-    }
-  };
-  const handlePlateSelectChange = (event) => {
-    const newPlateNo = event.target.value;
-    setSelectedPlateNo(newPlateNo);
-    fetchPlateMileage(newPlateNo);
-    console.log("working");
   };
 
   const columnsMaintenanceScheduling = [
@@ -82,19 +56,14 @@ function Maintenance() {
       type: "singleSelect",
       valueOptions: ["1000", "3000", "5000", "10000", "15000", "20000"],
     },
+
     {
       field: "nextDueMileage",
       headerName: "Next Due Mileage",
       flex: 2,
-      value: selectedPlateMileage,
     },
   ];
-  const handleEditCellChange = (params) => {
-    if (params.field === "plateNo") {
-      setSelectedPlateNo(params.props.value);
-      fetchPlateMileage(params.props.value);
-    }
-  };
+
   return (
     <div>
       <Paper sx={{ my: 2, p: 2, display: "flex", flexDirection: "column" }}>
@@ -124,7 +93,6 @@ function Maintenance() {
               density="compact"
               columns={columnsMaintenanceRecords}
               rows={rowsMaintenanceRecords}
-              onEditCellChange={handleEditCellChange}
               slots={{ toolbar: GridToolbar }}
               slotProps={{
                 toolbar: {

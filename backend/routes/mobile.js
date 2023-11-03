@@ -683,15 +683,62 @@ router.get("/fetch-job-orders", (req, res) => {
     });
 });
 
+const getMileageFromPlate = async (plateNo) => {
+  try {
+    const response = await axios.get(
+      "https://gravasend-965f7-default-rtdb.firebaseio.com/trucks.json"
+    );
+    const truckData = response.data;
+
+    if (truckData) {
+      const uidArray = Object.keys(truckData);
+      for (const uid of uidArray) {
+        const truck = truckData[uid];
+        if (truck.plateNo2 === plateNo) {
+          if ("mileage" in truck) {
+            console.log(`Mileage for plateNo '${plateNo}' is ${truck.mileage}`);
+            return truck.mileage;
+          } else {
+            console.log(
+              `Mileage property not found in the truck object with plateNo '${plateNo}'`
+            );
+            return null;
+          }
+        }
+      }
+      console.log(`Truck with plateNo '${plateNo}' not found.`);
+      return null;
+    } else {
+      console.log('No data found in the "Truck" collection.');
+      return null;
+    }
+  } catch (error) {
+    console.error("Firebase connection error:", error);
+    return null;
+  }
+};
+
 router.post("/addMaintenance", async (req, res) => {
   const maintenanceData = req.body;
 
   try {
-    const db = admin.database();
-    const ref = db.ref(`maintenanceReminders/${maintenanceData.actionId}`);
-    await ref.set(maintenanceData);
+    const plateNo = maintenanceData.plateNo;
+    const mileage = await getMileageFromPlate(plateNo);
 
-    res.status(200).json({ message: "Maintenance added successfully" });
+    if (mileage !== null) {
+      const frequency = maintenanceData.frequency;
+      const nextDueMileage = parseInt(mileage) + parseInt(frequency);
+
+      maintenanceData.nextDueMileage = nextDueMileage;
+
+      const db = admin.database();
+      const ref = db.ref(`maintenanceReminders/${maintenanceData.actionId}`);
+      await ref.set(maintenanceData);
+
+      res.status(200).json({ message: "Maintenance added successfully" });
+    } else {
+      res.status(404).json({ message: "Plate number not found" });
+    }
   } catch (error) {
     console.error("Firebase Authentication error:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -716,27 +763,26 @@ router.post("/deleteMaintenanceRecord", async (req, res) => {
   }
 });
 
-router.get("/fetch-mileage", async (req, res) => {
-  try {
-    const plateNo = req.query.plateNo;
-    console.log(plateNo);
+router.get("/fetch-mileage", (req, res) => {
+  const plateNo = req.query.plateNo;
 
-    const response = await axios.get(
-      "https://gravasend-965f7-default-rtdb.firebaseio.com/trucks.json"
-    );
+  axios
+    .get("https://gravasend-965f7-default-rtdb.firebaseio.com/trucks.json")
+    .then((response) => {
+      const truckData = response.data;
 
-    const trucksData = response.data;
-    if (trucksData && trucksData[plateNo]) {
-      const mileage = trucksData[plateNo].mileage;
-      console.log(mileage);
-      res.status(200).json({ mileage });
-    } else {
-      res.status(404).json({ message: "Plate not found" });
-    }
-  } catch (error) {
-    console.error("Firebase connection error:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
+      if (truckData && truckData[plateNo]) {
+        const mileage = truckData[plateNo].mileage;
+        res.json({ plateNo, mileage });
+      } else {
+        console.log(`No mileage data found for plate number: ${plateNo}`);
+        res.status(404).json({ message: "No data found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
 });
 
 module.exports = router;
