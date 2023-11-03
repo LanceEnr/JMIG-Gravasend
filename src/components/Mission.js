@@ -8,7 +8,7 @@ import MissionImage from "../assets/mission.webp";
 
 function Mission() {
   return (
-    <Container component="section" sx={{ mt: 10, display: "flex" }}>
+    <Container component="section" sx={{ pt: 10, display: "flex" }}>
       <Grid container>
         <Grid item xs={12} md={6} sx={{ zIndex: 1 }}>
           <Box

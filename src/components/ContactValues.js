@@ -167,7 +167,6 @@ function ContactValues() {
                   variant="primary"
                   sx={{
                     mt: 2,
-                    width: "100px", // adjust this value as needed
                     backgroundColor: "#004aad",
                     color: "#fff", // adjust text color as needed
                     "&:hover": {

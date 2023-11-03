@@ -19,7 +19,6 @@ const item = {
 const number = {
   fontSize: 24,
   fontFamily: "default",
-  color: "#004aad",
   fontWeight: "bold",
   mb: 3,
 };

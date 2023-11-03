@@ -13,15 +13,10 @@ import ProductSmokingHero from "../components/ProductSmokingHero";
 function Faqs() {
   return (
     <div className="faqs">
-      <Banner
-        bannerImage={BannerImage}
-        title="FREQUENTLY ASKED QUESTIONS"
-        text="Search for answers below"
-      />
+      <Banner bannerImage={BannerImage} title="FREQUENTLY ASKED QUESTIONS" />
+
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Box mt={2}>
-          <CustomizedAccordions items={rowsFaqs} />
-        </Box>
+        <CustomizedAccordions items={rowsFaqs} />
       </Container>
       <ProductSmokingHero />
     </div>

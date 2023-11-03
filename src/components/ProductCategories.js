@@ -118,10 +118,8 @@ export default function ProductCategories() {
     <Container
       component="section"
       sx={{
-        mt: 8,
-        mb: 4,
-        borderRadius: "10px", // Add borderRadius to round all four corners
-        overflow: "hidden", // This is necessary to hide any content overflowing the rounded corners
+        pt: 8,
+        pb: 4,
       }}
     >
       <Typography

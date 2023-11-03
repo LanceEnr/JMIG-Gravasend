@@ -35,7 +35,7 @@ export default function TopBar() {
           <Typography
             variant="caption"
             component="div"
-            style={{ color: "#f6f9fc", fontWeight: "bold" }}
+            style={{ color: "#f6f9fc" }}
           >
             Book an appointment now!
           </Typography>
@@ -54,7 +54,7 @@ export default function TopBar() {
           <Typography
             variant="caption"
             component="div"
-            style={{ color: "#f6f9fc", fontWeight: "bold" }}
+            style={{ color: "#f6f9fc" }}
           >
             +639774548584
           </Typography>

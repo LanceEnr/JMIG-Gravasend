@@ -14,7 +14,6 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import EmailIcon from "@mui/icons-material/Email";
 import BannerImage from "../assets/contact.webp";
 import Banner from "../components/Banner";
-import "../styles/Contact.css";
 import { toast } from "react-toastify";
 import { fetchContactData } from "./cmshelper/cms";
 import ProductCTA from "../components/ProductCTA";
@@ -92,26 +91,28 @@ function Contact() {
   return (
     <div>
       <Banner bannerImage={BannerImage} title="CONTACT US" text="Talk to us!" />
-      <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Box
-          component="iframe"
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3859.336009504322!2d121.0196
+      <Box>
+        <Container maxWidth="lg" sx={{ pt: 3 }}>
+          <Box
+            component="iframe"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3859.336009504322!2d121.0196
 6503907859!3d14.693580674853429!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b
 13a6371ac9d%3A0x8828bdfef721a44c!2sJMIG%20Gravel%20and%20Sand%20Supply!5e0!3m2!1sen!2s
 ph!4v1693048413304!5m2!1sen!2sph"
-          width={1200}
-          height={450}
-          sx={{ border: "none", borderRadius: "5px" }}
-          allowFullScreen
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          style={{
-            maxWidth: "100%",
-            maxHeight: "100%",
-          }}
-        />
-        <ProductCTA />
-      </Container>
+            width={1200}
+            height={450}
+            sx={{ border: "none", borderRadius: "5px" }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            style={{
+              maxWidth: "100%",
+              maxHeight: "100%",
+            }}
+          />
+          <ProductCTA />
+        </Container>
+      </Box>
 
       <ContactValues />
     </div>
