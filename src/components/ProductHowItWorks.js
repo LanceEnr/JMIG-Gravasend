@@ -56,7 +56,7 @@ function ProductHowItWorks() {
           component="h2"
           sx={{ mb: 14, fontWeight: "bold" }}
         >
-          ORDER NOW!
+          HOW TO ORDER
         </Typography>
 
         <div>

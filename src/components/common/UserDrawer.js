@@ -14,6 +14,8 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import EditIcon from "@mui/icons-material/Edit";
+import CloseIcon from "@mui/icons-material/Close";
+import Divider from "@mui/material/Divider";
 
 export default function UserDrawer(props) {
   const [state, setState] = React.useState({
@@ -36,19 +38,37 @@ export default function UserDrawer(props) {
 
     setState({ ...state, [anchor]: open });
   };
+  const handleCloseNavMenu = () => {
+    setState({ ...state, right: false });
+  };
 
   const list = (anchor) => (
     <Box
-      sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
+      sx={{
+        p: 2,
+        height: 1,
+        backgroundColor: "#e8f2ff",
+        width: anchor === "top" || anchor === "bottom" ? "auto" : 250,
+      }}
       role="presentation"
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}
     >
+      <IconButton sx={{ mb: 2 }} onClick={handleCloseNavMenu}>
+        <CloseIcon />
+      </IconButton>
+      <Divider sx={{ mb: 2 }} />
       <List
         component="nav"
         aria-labelledby="nested-list-subheader"
         subheader={
-          <ListSubheader component="div" id="nested-list-subheader">
+          <ListSubheader
+            component="div"
+            id="nested-list-subheader"
+            sx={{
+              backgroundColor: "#e8f2ff", // Set the background color here
+            }}
+          >
             DASHBOARD
           </ListSubheader>
         }
@@ -81,12 +101,18 @@ export default function UserDrawer(props) {
         component="nav"
         aria-labelledby="nested-list-subheader"
         subheader={
-          <ListSubheader component="div" id="nested-list-subheader">
+          <ListSubheader
+            component="div"
+            id="nested-list-subheader"
+            sx={{
+              backgroundColor: "#e8f2ff", // Set the background color here
+            }}
+          >
             ACCOUNT SETTINGS
           </ListSubheader>
         }
       >
-        {["Profile Info", "Edit Profile"].map((text, index) => (
+        {["User Profile"].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton
               onClick={() => {
@@ -115,7 +141,7 @@ export default function UserDrawer(props) {
 
   return (
     <div>
-      {["left"].map((anchor) => (
+      {["right"].map((anchor) => (
         <React.Fragment key={anchor}>
           <IconButton onClick={toggleDrawer(anchor, true)}>
             <MenuIcon />

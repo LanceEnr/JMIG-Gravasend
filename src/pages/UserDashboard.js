@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import { useMediaQuery } from "@mui/material";
+import { useMediaQuery, Box } from "@mui/material";
 import OrdersTable1 from "../components/OrdersTable1";
 import UserSidePanel from "../components/UserSidePanel";
 import AppointmentsTable1 from "../components/AppointmentsTable1";
@@ -9,11 +9,19 @@ import ProfileInfo from "../components/ProfileInfo";
 import EditProfile from "../components/EditProfile";
 import "../styles/UserDashboard.css";
 import axios from "axios";
+import ProductSmokingHero from "../components/ProductSmokingHero";
+import ProfileCard from "../components/common/ProfileCard";
 
 function UserDashboard() {
   const [orders, setOrders] = useState([]);
   const [activeComponent, setActiveComponent] = useState("Orders");
   const isMobile = useMediaQuery("(max-width:600px)");
+
+  const profile = {
+    name: "Lance Enriquez",
+    age: "21",
+    city: "Manila",
+  };
 
   const handleActiveComponentChange = (newComponent) => {
     setActiveComponent(newComponent);
@@ -31,11 +39,8 @@ function UserDashboard() {
             onActiveComponentChange={handleActiveComponentChange}
           />
         );
-      case "Profile Info":
-        return (
-          <ProfileInfo onActiveComponentChange={handleActiveComponentChange} />
-        );
-      case "Edit Profile":
+
+      case "User Profile":
         return (
           <EditProfile onActiveComponentChange={handleActiveComponentChange} />
         );
@@ -48,7 +53,7 @@ function UserDashboard() {
 
   return (
     <div className="userDashboard">
-      <Container sx={{ my: 4, minHeight: "80vh" }}>
+      <Container sx={{ my: 4, maxWidth: "xl" }}>
         <Grid container spacing={3}>
           {!isMobile && (
             <Grid item xs={12} md={3}>

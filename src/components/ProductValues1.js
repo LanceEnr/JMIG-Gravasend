@@ -15,7 +15,7 @@ const item = {
   px: 2,
 };
 
-function ProductValues() {
+function ProductValues1() {
   const [heading1, setHeading1] = useState("");
   const [subheading1, setSubheading1] = useState("");
   const [heading2, setHeading2] = useState("");
@@ -133,4 +133,4 @@ function ProductValues() {
   );
 }
 
-export default ProductValues;
+export default ProductValues1;

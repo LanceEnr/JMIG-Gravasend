@@ -45,7 +45,7 @@ export default function ProductHero() {
       <Typography
         color="inherit"
         align="center"
-        variant={isXsScreen ? "h3" : "h2"} // Change to "h3" on xs screens, otherwise use "h2"
+        variant={isXsScreen ? "h4" : "h2"} // Change to "h3" on xs screens, otherwise use "h2"
         marked="center"
         style={{
           fontWeight: "900",

@@ -10,6 +10,8 @@ import {
   Button,
   TextField,
   IconButton,
+  Divider,
+  Avatar,
 } from "@mui/material";
 import UserDrawer from "./common/UserDrawer";
 import EditIcon from "@mui/icons-material/Edit";
@@ -17,6 +19,10 @@ import { toast } from "react-toastify";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputAdornment from "@mui/material/InputAdornment";
+import ProfileCard from "./common/ProfileCard";
+import ProfilePic from "../assets/formal1x1.jpg";
+import PhotoCameraIcon from "@mui/icons-material/PhotoCamera"; // Import the PhotoCameraIcon
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 export default function ProfileInfo(props) {
   const isMobile = useMediaQuery("(max-width:600px)");
@@ -25,6 +31,12 @@ export default function ProfileInfo(props) {
   const handleShowPasswordToggle = () => {
     setShowPassword(!showPassword);
     setPasswordInputType(showPassword ? "password" : "text");
+  };
+
+  const profile = {
+    name: "Lance Enriquez",
+    age: "21",
+    city: "Manila",
   };
 
   const [userData, setUserData] = useState({
@@ -154,51 +166,54 @@ export default function ProfileInfo(props) {
             my: 2,
           }}
         >
-          <EditIcon sx={{ mr: 2, verticalAlign: "middle" }} />
-          Edit Profile
+          <AccountCircleIcon sx={{ mr: 2, verticalAlign: "middle" }} />
+          User Profile
         </Typography>
         {isMobile && (
           <UserDrawer onActiveComponentChange={props.onActiveComponentChange} />
         )}
       </Box>
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid item xs={12} md={8}>
           <Paper elevation={2} style={{ padding: "24px" }}>
             <Grid container spacing={3} alignItems="center">
-              <Grid item xs={12} sm={6}>
-                <Typography variant="subtitle1" gutterBottom>
-                  Phone
+              <Grid item xs={12}>
+                <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                  Edit Profile
                 </Typography>
-                <Box sx={{ mt: 2 }}>
-                  <TextField
-                    label="Phone"
-                    name="Phone"
-                    value={userData.Phone}
-                    fullWidth
-                    onChange={handleChange}
-                  />
-                </Box>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="subtitle1" gutterBottom>
-                  Address
-                </Typography>
-                <Box sx={{ mt: 2 }}>
-                  <TextField
-                    label="Address"
-                    name="Address"
-                    value={userData.Address}
-                    fullWidth
-                    onChange={handleChange}
-                  />
-                </Box>
+              <Grid item xs={12}>
+                <TextField
+                  label="Email"
+                  name="Email"
+                  value="lancemikaelo2@gmail.com"
+                  fullWidth
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Phone"
+                  name="Phone"
+                  value={userData.Phone}
+                  fullWidth
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Address"
+                  name="Address"
+                  value={userData.Address}
+                  fullWidth
+                  onChange={handleChange}
+                />
               </Grid>
               <Grid item xs={12}>
                 <Button
                   variant="primary"
                   type="submit"
                   sx={{
-                    mt: 2,
                     backgroundColor: "#004aad",
                     color: "#fff",
                     "&:hover": {
@@ -207,24 +222,29 @@ export default function ProfileInfo(props) {
                   }}
                   onClick={handlePhoneAddressChange} // Call the appropriate function here
                 >
-                  Save phone and address
+                  Save User Details
                 </Button>
               </Grid>
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom>
+                <Divider />
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
                   Change Password
                 </Typography>
-                <Box sx={{ my: 2 }}>
-                  <TextField
-                    label="Current Password"
-                    name="CurrentPassword"
-                    type="password"
-                    value={userData.CurrentPassword}
-                    fullWidth
-                    onChange={handleChange}
-                    required
-                  />
-                </Box>
+              </Grid>
+              <Grid item xs={12} md={12}>
+                <TextField
+                  label="Current Password"
+                  name="CurrentPassword"
+                  type="password"
+                  value={userData.CurrentPassword}
+                  fullWidth
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              <Grid item xs={12} md={12}>
                 <TextField
                   label="New Password"
                   name="NewPassword"
@@ -253,7 +273,6 @@ export default function ProfileInfo(props) {
                   variant="primary"
                   type="submit"
                   sx={{
-                    mt: 2,
                     backgroundColor: "#004aad",
                     color: "#fff",
                     "&:hover": {
@@ -267,6 +286,51 @@ export default function ProfileInfo(props) {
               </Grid>
             </Grid>
           </Paper>
+        </Grid>
+        <Grid item xs={12} md={4} order={{ xs: -1, md: 0 }}>
+          <Grid container spacing={3} direction="column">
+            <Grid item>
+              <ProfileCard profile={profile} />
+            </Grid>
+            <Grid item>
+              <Paper elevation={2} style={{ padding: "24px" }}>
+                <Grid container alignItems="center">
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                      Select Profile Photo
+                    </Typography>
+                  </Grid>
+                  <Grid container item xs={12} sx={{ mt: 2 }}>
+                    <Grid item xs={3}>
+                      <Avatar
+                        alt={profile.name}
+                        src={ProfilePic}
+                        sx={{
+                          width: 40,
+                          height: 40,
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={9}>
+                      <Button
+                        variant="contained"
+                        startIcon={<PhotoCameraIcon />}
+                        sx={{
+                          backgroundColor: "#004aad",
+                          color: "#fff",
+                          "&:hover": {
+                            backgroundColor: "#003882",
+                          },
+                        }}
+                      >
+                        Upload
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Paper>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </List>

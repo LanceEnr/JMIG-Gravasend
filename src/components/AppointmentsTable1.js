@@ -21,6 +21,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  IconButton,
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
@@ -31,6 +32,7 @@ import UserDrawer from "./common/UserDrawer";
 import SetAppointmentForm from "./SetAppointmentForm";
 import EditAppointmentForm from "./EditAppointmentForm";
 import { toast } from "react-toastify";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 const getColor = (_status) => {
   switch (_status) {
@@ -159,19 +161,27 @@ export default function AppointmentsTable1(props) {
           <EventNoteIcon sx={{ mr: 2, verticalAlign: "middle" }} />
           Appointments
         </Typography>
-        <Button
-          variant="contained"
-          onClick={handleSetAppointmentClick} // Use handleSetAppointmentClick here
-          sx={{
-            backgroundColor: "#004aad",
-            padding: isMobile ? "4px 6px" : "6px 8px",
-            fontSize: isMobile ? "0.55rem" : "0.875rem",
-            mx: isMobile ? 2 : 0,
-            my: 0,
-          }}
-        >
-          Set Appointment
-        </Button>
+        {!isMobile ? (
+          <Button
+            variant="contained"
+            onClick={handleSetAppointmentClick}
+            sx={{
+              backgroundColor: "#004aad",
+            }}
+          >
+            Set Appointment
+          </Button>
+        ) : (
+          <IconButton
+            color="primary"
+            onClick={handleSetAppointmentClick}
+            sx={{
+              color: "#004aad",
+            }}
+          >
+            <AddCircleIcon />
+          </IconButton>
+        )}
         {isMobile && (
           <UserDrawer onActiveComponentChange={props.onActiveComponentChange} />
         )}
