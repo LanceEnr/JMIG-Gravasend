@@ -5,18 +5,4 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background-color: #f6f9fc;
-}
-
-.aboutBottom {
-  display: flex;
-  flex-direction: column;
-  height: 55%;
-  align-items: left;
-  margin-top: 50px;
-  color: #343231;
-}
-
-.aboutBottom p {
-  width: 1200px;
 }

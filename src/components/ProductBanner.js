@@ -42,9 +42,11 @@ export default function ProductBanner() {
             <Typography
               variant="subtitle2"
               sx={{
-                marginTop: "100px",
+                marginTop: {
+                  sm: "80px",
+                },
                 color: "#004aad",
-                width: "100%", // Expand text to full width
+                width: "100%",
               }}
             >
               AGGREGATE MATERIALS

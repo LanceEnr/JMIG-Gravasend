@@ -9,12 +9,16 @@ import {
   Badge,
   ListItemButton,
   ListItemIcon,
+  Avatar,
+  Typography,
+  Divider,
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import { withStyles } from "@mui/styles";
+import ProfilePic from "../assets/formal1x1.jpg";
 
 const ColoredBadge = withStyles({
   badge: {
@@ -63,11 +67,40 @@ function SidePanel({ setActiveComponent }) {
 
   return (
     <Paper elevation={2} sx={{ pt: 2, pb: 2, width: "100%" }}>
+      <List sx={{ padding: "16px" }}>
+        <ListItem sx={{ marginBottom: "16px" }}>
+          <Avatar
+            alt={userName}
+            src={ProfilePic} // Replace with the actual path to the user's avatar
+            sx={{ width: 64, height: 64, marginRight: "16px" }}
+          />
+          <div>
+            <Typography
+              variant="subtitle1"
+              sx={{ fontWeight: "bold", marginBottom: "8px" }}
+            >
+              Lance Enriquez
+            </Typography>
+            <Typography
+              variant="subtitle1"
+              sx={{ marginBottom: "8px", color: "#004aad" }}
+            >
+              @{userName}
+            </Typography>
+          </div>
+        </ListItem>
+        <Divider />
+      </List>
+
       <List
         component="nav"
         aria-labelledby="nested-list-subheader"
         subheader={
-          <ListSubheader component="div" id="nested-list-subheader">
+          <ListSubheader
+            component="div"
+            id="nested-list-subheader"
+            sx={{ fontWeight: "bold" }}
+          >
             DASHBOARD
           </ListSubheader>
         }
@@ -103,12 +136,16 @@ function SidePanel({ setActiveComponent }) {
         component="nav"
         aria-labelledby="nested-list-subheader"
         subheader={
-          <ListSubheader component="div" id="nested-list-subheader">
-            ACCOUNT SETTINGS
+          <ListSubheader
+            component="div"
+            id="nested-list-subheader"
+            sx={{ fontWeight: "bold" }}
+          >
+            ACCOUNT
           </ListSubheader>
         }
       >
-        {["Profile Info", "Edit Profile"].map((text, index) => (
+        {["User Profile"].map((text, index) => (
           <ListItem
             key={text}
             disablePadding

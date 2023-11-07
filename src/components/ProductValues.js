@@ -26,7 +26,7 @@ function ProductValues() {
       <Container sx={{ mt: 15, mb: 25, display: "flex", position: "relative" }}>
         <Box
           component="img"
-          src={CurvyLines} // Use the imported image here
+          src={CurvyLines}
           alt="curvy lines"
           sx={{ pointerEvents: "none", position: "absolute", top: -180 }}
         />
@@ -46,7 +46,10 @@ function ProductValues() {
                   style={{ color: "#bd8512" }}
                 />
               </Avatar>
-              <Typography variant="h6" sx={{ my: 2, fontWeight: "bold" }}>
+              <Typography
+                variant="h6"
+                sx={{ my: 2, fontWeight: "bold", textAlign: "center" }}
+              >
                 Premium Gravel and Sand
               </Typography>
               <Typography
@@ -74,7 +77,10 @@ function ProductValues() {
                   style={{ color: "#bd8512" }}
                 />
               </Avatar>
-              <Typography variant="h6" sx={{ my: 2, fontWeight: "bold" }}>
+              <Typography
+                variant="h6"
+                sx={{ my: 2, fontWeight: "bold", textAlign: "center" }}
+              >
                 Quality Guarantee
               </Typography>
               <Typography
@@ -101,7 +107,10 @@ function ProductValues() {
                   style={{ color: "#bd8512" }}
                 />
               </Avatar>
-              <Typography variant="h6" sx={{ my: 2, fontWeight: "bold" }}>
+              <Typography
+                variant="h6"
+                sx={{ my: 2, fontWeight: "bold", textAlign: "center" }}
+              >
                 Reliable Heavy Equipment
               </Typography>
               <Typography

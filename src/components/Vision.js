@@ -9,7 +9,7 @@ import VisionImage from "../assets/vision.webp";
 
 function Vision() {
   return (
-    <Container component="section" sx={{ mt: 13, mb: 10, display: "flex" }}>
+    <Container component="section" sx={{ pt: 13, pb: 10, display: "flex" }}>
       <Grid container>
         <Grid
           item

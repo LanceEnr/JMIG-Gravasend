@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "@mui/material";
+import { Button, useMediaQuery } from "@mui/material";
 import Typography from "../components/common/Typography";
 import ProductHeroLayout from "./ProductHeroLayout";
 
@@ -10,6 +10,8 @@ import contactImage from "../assets/contact.webp";
 const backgroundImages = [homeBGImage, catalogImage, contactImage];
 
 export default function ProductHero() {
+  const isXsScreen = useMediaQuery("(max-width:600px)"); // Define the screen width for xs screens
+
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const changeBackgroundWithFade = () => {
@@ -31,6 +33,7 @@ export default function ProductHero() {
         backgroundImage: `url(${backgroundImages[currentImageIndex]})`,
         backgroundColor: "#7fc7d9",
         backgroundPosition: "center",
+        backgroundAttachment: "fixed", // Add this line
         transition: "background-image 2s ease-in-out",
       }}
     >
@@ -42,9 +45,13 @@ export default function ProductHero() {
       <Typography
         color="inherit"
         align="center"
-        variant="h3"
+        variant={isXsScreen ? "h4" : "h2"} // Change to "h3" on xs screens, otherwise use "h2"
         marked="center"
-        style={{ fontWeight: "bold", marginTop: "100px" }}
+        style={{
+          fontWeight: "900",
+          marginTop: "100px",
+          letterSpacing: "0.05em",
+        }}
       >
         BUILD STRONG FOUNDATIONS
       </Typography>

@@ -34,7 +34,6 @@ function About() {
   return (
     <div>
       <Banner bannerImage={BannerImage} title="ABOUT US" />
-
       <Mission />
       <Vision />
     </div>

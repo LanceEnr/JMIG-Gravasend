@@ -14,7 +14,7 @@ function ProductSmokingHero() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        my: 9,
+        py: 9,
       }}
     >
       <Button

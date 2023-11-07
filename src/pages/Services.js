@@ -1,8 +1,7 @@
 import React from "react";
 import { ServicesList } from "../helpers/MenuList";
 import ServiceList from "../components/ServiceList";
-import "../styles/Products.css";
-
+import { Box } from "@mui/material";
 import ProductSmokingHero from "../components/ProductSmokingHero";
 import ServiceBanner from "../components/ServiceBanner";
 
@@ -11,7 +10,6 @@ function Services() {
     <div>
       <div className="menu" id="product-list-section">
         <ServiceBanner />
-
         <ServiceList cards={ServicesList} />
       </div>
 

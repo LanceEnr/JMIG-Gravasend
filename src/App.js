@@ -7,9 +7,11 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
-import "@fontsource/roboto";
+import "@fontsource/montserrat"; // Defaults to weight 400
+import "@fontsource/montserrat/400.css"; // Specify weight
+import "@fontsource/montserrat/400-italic.css"; // Specify weight and style
+
 import ResponsiveAppBar from "./components/ResponsiveAppBar";
-import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import Contact from "./pages/Contact";
@@ -28,7 +30,6 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminRegister from "./pages/admin/AdminRegister";
 import Services from "./pages/Services";
-import Home1 from "./pages/Home1";
 import AppFooter from "./components/AppFooter";
 import TopBar from "./components/TopBar";
 
@@ -87,7 +88,6 @@ function MainApp({ handleLogout, isAuthenticated, authDispatch }) {
 
       <Routes>
         <Route path="/" exact element={<Home />} />
-        <Route path="/home1" exact element={<Home1 />} />
 
         <Route path="/products" exact element={<Products />} />
         <Route path="/services" exact element={<Services />} />

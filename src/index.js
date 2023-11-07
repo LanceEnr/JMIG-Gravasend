@@ -10,7 +10,12 @@ import AdminApp from "./AdminApp";
 import reportWebVitals from "./reportWebVitals";
 
 const store = createStore(rootReducer);
-const theme = createTheme();
+
+const theme = createTheme({
+  typography: {
+    fontFamily: "Montserrat, sans-serif",
+  },
+});
 
 const shouldRenderAdminApp = window.location.pathname.startsWith("/admin");
 

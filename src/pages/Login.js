@@ -195,10 +195,12 @@ export default function Login({ dispatch }) {
                 ),
               }}
             />
-            <GoogleReCAPTCHA
-              sitekey="6LdkquooAAAAAGeJmM27oPgcUtRcQZIGTof4VyY-"
-              onChange={handleRecaptchaChange}
-            />
+            <Box sx={{ mt: 1 }}>
+              <GoogleReCAPTCHA
+                sitekey="6LdkquooAAAAAGeJmM27oPgcUtRcQZIGTof4VyY-"
+                onChange={handleRecaptchaChange}
+              />
+            </Box>
 
             <FormControlLabel
               control={

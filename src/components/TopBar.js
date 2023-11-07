@@ -28,14 +28,25 @@ export default function TopBar() {
               fontWeight: "bold",
               backgroundColor: "#EBDAB7",
               color: "#bd8512",
-              height: "18px",
+              height: {
+                xs: "16px", // Height for extra small screens (mobile)
+                sm: "22px", // Height for small screens and above
+              },
               marginRight: 1,
             }}
           />
+
           <Typography
             variant="caption"
             component="div"
-            style={{ color: "#f6f9fc", fontWeight: "bold" }}
+            sx={{
+              color: "#f6f9fc",
+              fontSize: {
+                xs: "10px", // Font size for extra small screens (mobile)
+                sm: "14px", // Font size for small screens
+                md: "inherit", // Font size for medium screens
+              },
+            }}
           >
             Book an appointment now!
           </Typography>
@@ -45,16 +56,30 @@ export default function TopBar() {
             sx={{
               backgroundColor: "#EBDAB7",
               marginRight: 1,
-              width: "20px",
-              height: "20px",
+              width: {
+                xs: "16px", // Width for extra small screens (mobile)
+                sm: "22px", // Width for small screens and above
+              },
+              height: {
+                xs: "16px", // Height for extra small screens (mobile)
+                sm: "22px", // Height for small screens and above
+              },
             }}
           >
             <PhoneIcon style={{ color: "#bd8512", fontSize: "16px" }} />
           </Avatar>
+
           <Typography
             variant="caption"
             component="div"
-            style={{ color: "#f6f9fc", fontWeight: "bold" }}
+            sx={{
+              color: "#f6f9fc",
+              fontSize: {
+                xs: "10px", // Font size for extra small screens (mobile)
+                sm: "14px", // Font size for small screens
+                md: "inherit", // Font size for medium screens
+              },
+            }}
           >
             +639774548584
           </Typography>

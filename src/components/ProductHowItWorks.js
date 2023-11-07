@@ -19,7 +19,6 @@ const item = {
 const number = {
   fontSize: 24,
   fontFamily: "default",
-  color: "#004aad",
   fontWeight: "bold",
   mb: 3,
 };
@@ -57,7 +56,7 @@ function ProductHowItWorks() {
           component="h2"
           sx={{ mb: 14, fontWeight: "bold" }}
         >
-          ORDER NOW!
+          HOW TO ORDER
         </Typography>
 
         <div>
