@@ -187,7 +187,7 @@ export default function Register() {
           </Typography>
           <Typography variant="caption" align="center">
             {"Already have an account? "}
-            <Link href="/login" align="center" underline="always">
+            <Link href="/login" align="center" underline="none">
               Login here
             </Link>
           </Typography>
@@ -334,7 +334,7 @@ export default function Register() {
           </form>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="/" variant="caption">
+              <Link href="/" variant="caption" underline="none">
                 Go back to home
               </Link>
             </Grid>

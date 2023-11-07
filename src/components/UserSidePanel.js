@@ -18,7 +18,7 @@ import EventNoteIcon from "@mui/icons-material/EventNote";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import { withStyles } from "@mui/styles";
-import ProfilePic from "../assets/formal1x1.jpg";
+import ProfilePic from "../assets/formal1x1.webp";
 
 const ColoredBadge = withStyles({
   badge: {
@@ -82,10 +82,10 @@ function SidePanel({ setActiveComponent }) {
               Lance Enriquez
             </Typography>
             <Typography
-              variant="subtitle1"
-              sx={{ marginBottom: "8px", color: "#004aad" }}
+              variant="body2"
+              sx={{ marginBottom: "8px", color: "#004aad", fontWeight: "bold" }}
             >
-              @{userName}
+              @lanceenr
             </Typography>
           </div>
         </ListItem>

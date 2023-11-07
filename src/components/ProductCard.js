@@ -6,11 +6,9 @@ import {
   CardContent,
   Typography,
   CardActionArea,
-  Button,
   Box,
   Chip,
 } from "@mui/material";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 
 const MyCard = ({ card }) => (
   <Grid item key={card.name} xs={12} sm={6} md={4} lg={3}>
