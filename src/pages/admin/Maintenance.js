@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Paper, Box, Tab, Tabs } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import FullFeaturedCrudGrid from "./components/MaintenanceDataGrid";
+import FullFeaturedCrudGrid2 from "./components/MaintenanceRecordDataGrid";
 import Title from "./components/Title";
 import axios from "axios";
 import {
@@ -48,6 +49,7 @@ function Maintenance() {
       valueOptions: plates,
     },
     { field: "service", headerName: "Service", flex: 2, editable: true },
+
     {
       field: "frequency",
       headerName: "Frequency",
@@ -56,11 +58,29 @@ function Maintenance() {
       type: "singleSelect",
       valueOptions: ["1000", "3000", "5000", "10000", "15000", "20000"],
     },
-
+    {
+      field: "mileage",
+      headerName: "Start Mileage",
+      flex: 1,
+    },
     {
       field: "nextDueMileage",
       headerName: "Next Due Mileage",
       flex: 2,
+      valueGetter: (params) => {
+        const mileage = params.row.mileage;
+        const frequency = params.row.frequency;
+        return parseInt(frequency) + parseInt(mileage);
+      },
+    },
+
+    {
+      field: "status",
+      headerName: "Status",
+      flex: 1,
+      editable: true,
+      type: "singleSelect",
+      valueOptions: ["Pending", "Overdue", "Completed"],
     },
   ];
 
@@ -86,19 +106,9 @@ function Maintenance() {
             />
           )}
           {value === 1 && (
-            <DataGrid
-              checkboxSelection
-              disableColumnFilter
-              disableColumnSelector
-              density="compact"
+            <FullFeaturedCrudGrid2
               columns={columnsMaintenanceRecords}
               rows={rowsMaintenanceRecords}
-              slots={{ toolbar: GridToolbar }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
             />
           )}
         </Box>

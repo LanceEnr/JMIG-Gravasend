@@ -11,11 +11,8 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Badge, IconButton, Avatar } from "@mui/material";
-import CameraEnhanceIcon from "@mui/icons-material/CameraEnhance";
 import axios from "axios";
 import { toast } from "react-toastify";
-
 import Title from "./Title";
 import {
   GridRowModes,
@@ -38,36 +35,39 @@ function EditToolbar(props) {
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <GridToolbarDensitySelector />
         <GridToolbarExport />
-        <Button
-          color="primary"
-          startIcon={<AddIcon />}
-          onClick={props.handleClick}
-        >
-          Add record
-        </Button>
       </Box>
       <GridToolbarQuickFilter />
     </GridToolbarContainer>
   );
 }
 
-export default function DataGridDriverManagement(props) {
+export default function FullFeaturedCrudGrid(props) {
   const [open, setOpen] = React.useState(false);
   const [action, setAction] = React.useState(null);
-  const [actionId, setActionId] = React.useState(null);
-
-  const [driverName, setdriverName] = React.useState("");
-  const [contact, setcontact] = React.useState("");
-  const [date, setdate] = React.useState("");
-  const [status, setStatus] = React.useState("unassigned");
-  const [plateNo, setPlateNo] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [licenseNo, setLicenseNo] = React.useState("");
+  const [actionId, setActionId] = React.useState("");
+  const [plateNo, setplateNo] = React.useState("");
+  const [service, setservice] = React.useState("");
+  const [frequency, setfrequency] = React.useState("");
+  const [nextDueMileage, setnextDueMileage] = React.useState("");
+  const [status, setStatus] = React.useState("");
 
   const [isEditing, setIsEditing] = React.useState(false);
 
   const [rows, setRows] = React.useState(props.rows);
   const [rowModesModel, setRowModesModel] = React.useState({});
+
+  const currentDate = new Date();
+  const options = {
+    weekday: "short",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short",
+  };
+  const formattedDate = currentDate.toLocaleString("en-US", options);
 
   const handleDialogClose = () => {
     setOpen(false);
@@ -84,15 +84,27 @@ export default function DataGridDriverManagement(props) {
       setRows(rows.filter((row) => row.id !== actionId));
     }
     setOpen(false);
+    handleDialogClose();
+
+    setIsEditing(false);
   };
 
-  //FIX THIS-
   const handleClick = async () => {
-    const newRow = {
-      id: "auto-generated",
-    };
-    setRows((prevRows) => [...prevRows, newRow]);
-    setActionId("auto-generated");
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/generateMaintenanceId"
+      );
+      if (response.data.id) {
+        const newRow = {
+          id: response.data.id,
+        };
+        setRows((prevRows) => [...prevRows, newRow]);
+        setActionId(response.data.id);
+      }
+    } catch (error) {
+      console.error("Failed to generate an ID", error);
+      toast.error("Failed to generate an ID");
+    }
   };
 
   const handleRowEditStop = (params, event) => {
@@ -101,30 +113,25 @@ export default function DataGridDriverManagement(props) {
     }
   };
 
-  const handleEditClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-  };
-
-  //FIX THIS
   const handleSaveClick =
-    (id, driverName, contact, date, status, plateNo, email, licenseNo) =>
-    () => {
+    (id, plateNo, service, frequency, nextDueMileage, status) => () => {
       setRowModesModel({
         ...rowModesModel,
         [actionId]: { mode: GridRowModes.Edit },
       });
       setAction("save");
       setActionId(id);
-      setdriverName(driverName);
-      setcontact(contact);
-      setdate(date);
+      setplateNo(plateNo);
+      setservice(service);
+      setfrequency(frequency);
+      setnextDueMileage(nextDueMileage);
       setStatus(status);
-      setPlateNo(plateNo);
-      setEmail(email);
-      setLicenseNo(licenseNo);
       setOpen(true);
     };
-  //FIX
+
+  const handleEditClick = (id) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+  };
 
   const handleSaveConfirmed = async (e) => {
     e.preventDefault();
@@ -135,58 +142,46 @@ export default function DataGridDriverManagement(props) {
     });
 
     try {
-      const response = await axios.post("http://localhost:3001/addDriver", {
-        driverName: driverName,
-        contact: contact,
-        date: date,
-        status: status,
-        email: email,
-        licenseNo,
-      });
+      const response = await axios.post(
+        "http://localhost:3001/addMaintenance",
+        {
+          actionId: actionId,
+          plateNo: plateNo,
+          service: service,
+          frequency: frequency,
+          nextDueMileage: nextDueMileage,
+          mileage: "",
+          status: status,
+        }
+      );
 
-      console.log("Driver added successfully", response.data);
-      toast.success("Driver added successfully");
+      console.log("Maintenance added successfully", response.data);
+      toast.success("Maintenance added successfully");
 
       setRowModesModel({
         ...rowModesModel,
         [actionId]: { mode: GridRowModes.View },
       });
 
-      const updatedRows = rows.map((row) =>
-        row.id === actionId
-          ? {
-              ...row,
-              driverName,
-              contact,
-              date,
-              status,
-              plateNo,
-              email,
-              licenseNo,
-            }
-          : row
-      );
-      setRows(updatedRows);
       setOpen(false);
     } catch (error) {
-      console.error("Driver add failed", error);
+      console.error("Maintenance add failed", error);
       setOpen(false);
-      toast.error("Driver not yet registered!");
+      toast.error("Maintenance name already exists!");
     }
   };
 
   const deleteRecord = async (id) => {
     try {
-      const _driverID = id;
+      const _maintenanceId = parseInt(id, 10);
       const response = await axios.post(
-        "http://localhost:3001/deleteDriverRecord/",
-        {
-          _driverID: _driverID,
-        }
+        "http://localhost:3001/deleteMaintenanceRecord",
+        { _maintenanceId }
       );
 
       if (response.status === 200) {
         setRows(rows.filter((row) => row.id !== id));
+
         setOpen(false);
         toast.success("Record deleted successfully");
       } else if (response.status === 404) {
@@ -199,8 +194,6 @@ export default function DataGridDriverManagement(props) {
       toast.error("An error occurred while deleting the record");
     }
   };
-
-  //END
 
   const handleDeleteClick = (id) => () => {
     setAction("delete");
@@ -239,17 +232,8 @@ export default function DataGridDriverManagement(props) {
     width: props.actionWidth || 100,
     cellClassName: "actions",
     getActions: (params) => {
-      //edit
-      const {
-        id,
-        driverName,
-        contact,
-        date,
-        status,
-        plateNo,
-        email,
-        licenseNo,
-      } = params.row;
+      const { id, plateNo, service, frequency, nextDueMileage, status } =
+        params.row;
       const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
       if (isInEditMode) {
@@ -260,23 +244,19 @@ export default function DataGridDriverManagement(props) {
             sx={{
               color: "primary.main",
             }}
-            //fix
             onClick={handleSaveClick(
               id,
-              driverName,
-              contact,
-              date,
-              status,
               plateNo,
-              email,
-              licenseNo
+              service,
+              frequency,
+              nextDueMileage,
+              status
             )}
           />,
           <GridActionsCellItem
             icon={<CancelIcon />}
             label="Cancel"
             className="textPrimary"
-            //fix
             onClick={handleCancelClick(id)}
             color="inherit"
           />,
@@ -324,7 +304,7 @@ export default function DataGridDriverManagement(props) {
         onRowModesModelChange={handleRowModesModelChange}
         onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
-        density="comfortable"
+        density="compact"
         slots={{
           toolbar: EditToolbar,
         }}

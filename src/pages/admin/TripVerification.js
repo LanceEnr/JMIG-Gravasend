@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { DataGrid, GridActionsCellItem, GridToolbar } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import DialogActions from "@mui/material/DialogActions";
@@ -29,22 +29,178 @@ import LinkIcon from "@mui/icons-material/Link"; // Icon for Steering Linkage an
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh"; // Icon for Brakes
 import ConstructionIcon from "@mui/icons-material/Construction"; // Icon for Dumpbed Operation
 import Title from "./components/Title";
+import axios from "axios";
 
-const rows = [
-  {
-    id: 1,
-    driver: "John Doe",
-    datetime: "2023-09-30 19:59",
-    cargoType: "Type1",
-    cargoWeight: "1000kg",
-  },
-  // Add more rows as needed
-];
+const transformTripOngoing = (data, data2, data3, data4) => {
+  const transformedData = [];
+
+  if (data && data2 && data3 && data4) {
+    for (const uid in data) {
+      const userData = data[uid];
+      const userData2 = data2[uid];
+      const userData3 = data3[uid];
+      const userData4 = data4[uid];
+      console.log(userData);
+      console.log(userData2);
+
+      const mappedData = {
+        id: uid,
+        driver: userData.driverName,
+        datetime: userData.dateTime,
+      };
+
+      if (userData2) {
+        mappedData.cargoType = userData2.cargoType;
+        mappedData.cargoWeight = userData2.cargoWeight;
+      } else {
+        mappedData.cargoType = "No Cargo Type";
+        mappedData.cargoWeight = "No Cargo Weight";
+      }
+
+      transformedData.push(mappedData);
+    }
+  }
+
+  return transformedData;
+};
 
 export default function TripVerification() {
+  const [rows, setRows] = useState([]);
   const [open, setOpen] = React.useState(false);
+  const [documentChecklist, setDocumentChecklist] = useState([]);
+  const [selectedID, setSelectedID] = useState(null);
+  const [id, setId] = useState(null);
+  const [sign, setSignature] = useState(null);
+  const [isLoadingImage, setIsLoadingImage] = useState(true);
+  const [documentChecklistData, setDocumentChecklistData] = useState({
+    driversLicenseChecked: false,
+    localTransportPermitChecked: false,
+    orcrChecked: false,
+  });
 
-  const handleClickOpen = () => {
+  const fetchTripOngoing = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/fetch-tripDash");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return [];
+    }
+  };
+  const fetchCargo = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/fetch-cargo");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return [];
+    }
+  };
+  const fetchDocuments = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/fetch-documentCheck"
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return [];
+    }
+  };
+  const fetchSafetyCheck = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/fetch-schecklist"
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return [];
+    }
+  };
+  const fetchDocumentChecklist = async (id) => {
+    try {
+      setDocumentChecklistData({
+        driversLicenseChecked: false,
+        localTransportPermitChecked: false,
+        orcrChecked: false,
+      });
+
+      const response = await axios.get(
+        `http://localhost:3001/fetch-documentCheck/${id}`
+      );
+      const checklistData = response.data;
+
+      setDocumentChecklistData((prevState) => ({
+        ...prevState,
+        driversLicenseChecked: checklistData.driversLicenseChecked,
+        localTransportPermitChecked: checklistData.localTransportPermitChecked,
+        orcrChecked: checklistData.orcrChecked,
+      }));
+
+      return checklistData;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return [];
+    }
+  };
+  const fetchSignatureImage = async (id) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3001/fetch-signature/${id}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching signature image:", error);
+      return Signature;
+    }
+  };
+  useEffect(() => {
+    fetchSignatureImage(selectedID)
+      .then((imageLocation) => {
+        if (imageLocation) {
+          setSignature(imageLocation);
+        }
+        setIsLoadingImage(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching signature image:", error);
+        setIsLoadingImage(false);
+      });
+  }, [selectedID]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const tripData = await fetchTripOngoing();
+      const cargoData = await fetchCargo();
+      const documentData = await fetchDocuments();
+      const safetyData = await fetchSafetyCheck();
+
+      const updatedData = transformTripOngoing(
+        tripData,
+        cargoData,
+        documentData,
+        safetyData
+      );
+
+      setRows(updatedData);
+    };
+
+    fetchData();
+  }, []);
+
+  const handleClickOpen = (id) => {
+    setSelectedID(id);
+    setId(id);
+    fetchDocumentChecklist(id)
+      .then((data) => {
+        setDocumentChecklist(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching document checklist:", error);
+        setDocumentChecklist([]);
+      });
+
     setOpen(true);
   };
 
@@ -73,8 +229,11 @@ export default function TripVerification() {
       headerName: "Documents",
       sortable: false,
       flex: 1,
-      renderCell: () => (
-        <IconButton color="primary" onClick={handleClickOpen}>
+      renderCell: (params) => (
+        <IconButton
+          color="primary"
+          onClick={() => handleClickOpen(params.row.id)}
+        >
           <Visibility />
         </IconButton>
       ),
@@ -134,65 +293,49 @@ export default function TripVerification() {
       <Dialog onClose={handleClose} open={open}>
         <DialogTitle>Document Check</DialogTitle>
         <List>
-          <ListItem>
-            <ListItemAvatar style={{ pointerEvents: "none" }}>
-              <Avatar>
-                <DriveEtaIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Driver's License" />
-            <ListItemSecondaryAction style={{ pointerEvents: "none" }}>
-              <CheckCircleIcon style={{ color: green[500] }} />
-            </ListItemSecondaryAction>
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar style={{ pointerEvents: "none" }}>
-              <Avatar>
-                <DescriptionIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="OR/CR" />
-            <ListItemSecondaryAction style={{ pointerEvents: "none" }}>
-              <CheckCircleIcon style={{ color: green[500] }} />
-            </ListItemSecondaryAction>
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar style={{ pointerEvents: "none" }}>
-              <Avatar>
-                <LocalShippingIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Local Transport Permit" />
-            <ListItemSecondaryAction style={{ pointerEvents: "none" }}>
-              <CancelIcon style={{ color: red[500] }} />
-            </ListItemSecondaryAction>
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar style={{ pointerEvents: "none" }}>
-              <Avatar>
-                <EditIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Driver E-Signature" />
-            <ListItemSecondaryAction style={{ pointerEvents: "none" }}>
-              {/* Replace with CheckCircleIcon or CancelIcon as needed */}
-              <CheckCircleIcon style={{ color: green[500] }} />
-            </ListItemSecondaryAction>
-          </ListItem>
-
-          {/* Image Box for E-Signature */}
-          <Box
-            component="img"
-            sx={{
-              m: 2,
-              height: 233,
-              width: 350,
-              maxWidth: "100%",
-              borderRadius: 1,
-            }}
-            alt="The alt text for your image"
-            src={Signature}
-          />
+          {[
+            {
+              documentName: "Driver's License",
+              approved: documentChecklistData.driversLicenseChecked,
+            },
+            {
+              documentName: "OR/CR",
+              approved: documentChecklistData.orcrChecked,
+            },
+            {
+              documentName: "Local Transport Permit",
+              approved: documentChecklistData.localTransportPermitChecked,
+            },
+          ].map(({ documentName, approved }, index) => (
+            <ListItem key={index}>
+              <ListItemAvatar style={{ pointerEvents: "none" }}>
+                <Avatar>
+                  {approved ? (
+                    <CheckCircleIcon style={{ color: green[500] }} />
+                  ) : (
+                    <CancelIcon style={{ color: red[500] }} />
+                  )}
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={documentName} />
+            </ListItem>
+          ))}
+          {isLoadingImage ? (
+            <div>Loading...</div>
+          ) : (
+            <Box
+              component="img"
+              sx={{
+                m: 2,
+                height: 233,
+                width: 350,
+                maxWidth: "100%",
+                borderRadius: 1,
+              }}
+              alt="The alt text for your image"
+              src={sign}
+            />
+          )}
         </List>
         <DialogActions>
           <Button onClick={handleClose} color="primary">

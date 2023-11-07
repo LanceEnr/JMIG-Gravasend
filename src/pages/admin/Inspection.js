@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Paper, Box, Tab, Tabs } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import FullFeaturedCrudGrid from "./components/CustomDataGrid";
+import FullFeaturedCrudGrid from "./components/InspectionDataGrid";
 import Title from "./components/Title";
 import {
   columnsInspectionScheduling,

@@ -209,7 +209,7 @@ router.get("/fetch-location", (req, res) => {
     });
 });
 
-router.get("/fetch-maintenaceHistory", (req, res) => {
+router.get("/fetch-maintenanceHistory", (req, res) => {
   axios
     .get(
       "https://gravasend-965f7-default-rtdb.firebaseio.com/maintenanceHistory.json"
@@ -345,7 +345,6 @@ router.get("/fetch-driver-available", (req, res) => {
         const unassignedDrivers = Object.values(driverData).filter(
           (driver) => driver.status === "unassigned"
         );
-
         res.json(unassignedDrivers);
       } else {
         console.log('No data found in the "Driver Management" collection.');
@@ -387,8 +386,6 @@ router.post("/addDriver", async (req, res) => {
 
     if (user) {
       const uid = user.uid;
-
-      driverData.uid = uid;
 
       const db = admin.database();
       const ref = db.ref(`DriverManagement/${uid}`);
@@ -438,7 +435,7 @@ router.post("/addTruck", async (req, res) => {
           uid = childSnapshot.key;
 
           driverData.status = "assigned";
-
+          driverData.UID = uid;
           const driverRef = db.ref(`DriverManagement/${uid}`);
           driverRef.set(driverData, (error) => {
             if (error) {
@@ -696,7 +693,6 @@ const getMileageFromPlate = async (plateNo) => {
         const truck = truckData[uid];
         if (truck.plateNo2 === plateNo) {
           if ("mileage" in truck) {
-            console.log(`Mileage for plateNo '${plateNo}' is ${truck.mileage}`);
             return truck.mileage;
           } else {
             console.log(
@@ -717,6 +713,39 @@ const getMileageFromPlate = async (plateNo) => {
     return null;
   }
 };
+async function getUIDFromPlate(plateNo) {
+  try {
+    const response = await axios.get(
+      "https://gravasend-965f7-default-rtdb.firebaseio.com/trucks.json"
+    );
+    const truckData = response.data;
+
+    if (truckData) {
+      const uidArray = Object.keys(truckData);
+      for (const uid of uidArray) {
+        const truck = truckData[uid];
+        if (truck.plateNo2 === plateNo) {
+          if ("plateNo2" in truck) {
+            return truck.UID;
+          } else {
+            console.log(
+              `UID property not found in the truck object with plateNo '${plateNo}'`
+            );
+            return null;
+          }
+        }
+      }
+      console.log(`Truck with UID '${plateNo}' not found.`);
+      return null;
+    } else {
+      console.log('No data found in the "Truck" collection.');
+      return null;
+    }
+  } catch (error) {
+    console.error("Firebase connection error:", error);
+    return null;
+  }
+}
 
 router.post("/addMaintenance", async (req, res) => {
   const maintenanceData = req.body;
@@ -724,15 +753,19 @@ router.post("/addMaintenance", async (req, res) => {
   try {
     const plateNo = maintenanceData.plateNo;
     const mileage = await getMileageFromPlate(plateNo);
+    const uid = await getUIDFromPlate(plateNo);
 
     if (mileage !== null) {
       const frequency = maintenanceData.frequency;
       const nextDueMileage = parseInt(mileage) + parseInt(frequency);
 
-      maintenanceData.nextDueMileage = nextDueMileage;
+      maintenanceData.mileage = parseInt(mileage);
+      maintenanceData.uid = uid;
 
       const db = admin.database();
-      const ref = db.ref(`maintenanceReminders/${maintenanceData.actionId}`);
+      const ref = db.ref(
+        `maintenanceReminders/${maintenanceData.uid}/${maintenanceData.actionId}`
+      );
       await ref.set(maintenanceData);
 
       res.status(200).json({ message: "Maintenance added successfully" });
@@ -783,6 +816,40 @@ router.get("/fetch-mileage", (req, res) => {
       console.error("Firebase connection error:", error);
       res.status(500).json({ message: "Internal server error" });
     });
+});
+router.get("/fetch-documentCheck/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const firebaseUrl = `https://gravasend-965f7-default-rtdb.firebaseio.com/Document%20Check/${id}.json`;
+
+    const response = await axios.get(firebaseUrl);
+
+    if (response.data) {
+      res.json(response.data);
+    } else {
+      res.status(404).json({ error: "Data not found" });
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+router.get("/fetch-signature/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const firebaseUrl = `https://gravasend-965f7-default-rtdb.firebaseio.com/Document%20Check%20Signatures/${id}.json`;
+
+    const response = await axios.get(firebaseUrl);
+
+    if (response.data) {
+      res.json(response.data);
+    } else {
+      res.status(404).json({ error: "Da ta not found" });
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 module.exports = router;

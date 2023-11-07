@@ -181,7 +181,6 @@ export const columnsDriverManagement = [
     headerName: "Status",
     flex: 1,
   },
-  { field: "plateNo", headerName: "Plate No.", flex: 1, editable: true },
   { field: "email", headerName: "Email", flex: 1, editable: true },
   { field: "licenseNo", headerName: "License", flex: 1, editable: true },
 ];
@@ -326,16 +325,27 @@ const transformMaintenanceData = (data) => {
       if (data.hasOwnProperty(uid)) {
         const userData = data[uid];
 
-        const mappedData = {
-          id: uid,
-          plateNo: userData.plateNo,
-          service: userData.service,
-          frequency: userData.frequency,
-          nextDueMileage: userData.nextDueMileage,
-          nextMaintenanceDate: new Date(userData.nextMaintenanceDate),
-        };
+        for (const id in userData) {
+          if (userData.hasOwnProperty(id)) {
+            const maintenanceData = userData[id];
 
-        transformedData.push(mappedData);
+            const mappedData = {
+              uid: uid,
+              id: id,
+              plateNo: maintenanceData.plateNo,
+              service: maintenanceData.service,
+              frequency: maintenanceData.frequency,
+              nextDueMileage: maintenanceData.nextDueMileage,
+              nextMaintenanceDate: new Date(
+                maintenanceData.nextMaintenanceDate
+              ),
+              mileage: maintenanceData.mileage,
+              status: maintenanceData.status,
+            };
+
+            transformedData.push(mappedData);
+          }
+        }
       }
     }
   }
@@ -399,39 +409,62 @@ export default CustomTable;
 
 export const columnsMaintenanceRecords = [
   { field: "id", headerName: "ID", flex: 1 },
-  { field: "plateNo", headerName: "Plate No.", flex: 2 },
+  { field: "plateNo", headerName: "Tractor No.", flex: 2 },
   { field: "service", headerName: "Service", flex: 2 },
   {
     field: "serviceProvider",
     headerName: "Service Provider",
     flex: 2,
+    editable: true,
   },
   {
     field: "totalCost",
     headerName: "Total Cost",
     flex: 2,
+    editable: true,
   },
 ];
+const transformMaintenanceRecordData = (data) => {
+  const transformedData = [];
+  console.log(data);
+  if (data) {
+    for (const uid in data) {
+      if (data.hasOwnProperty(uid)) {
+        const userData = data[uid];
 
-export const rowsMaintenanceRecords = [
-  {
-    id: 1,
-    plateNo: "ABC123",
-    service: "Oil Change",
-    serviceProvider: "Service Provider A",
-    totalCost: "₱5000",
-    verdict: "Pass",
-  },
-  {
-    id: 2,
-    plateNo: "XYZ789",
-    service: "Tire Rotation",
-    serviceProvider: "Service Provider B",
-    totalCost: "₱2000",
-    verdict: "Failed",
-  },
-  // Add more rows as needed
-];
+        const mappedData = {
+          id: uid,
+          plateNo: userData.plateNo,
+          service: userData.service,
+          serviceProvider: userData.serviceProvider,
+          totalCost: userData.totalCost,
+        };
+
+        transformedData.push(mappedData);
+      }
+    }
+  }
+
+  return transformedData;
+};
+
+const fetchMaintenanceRecord = async () => {
+  try {
+    const response = await axios.get(
+      "http://localhost:3001/fetch-maintenanceHistory"
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+const rowsMaintenanceRecords = transformMaintenanceRecordData(
+  await fetchMaintenanceRecord()
+);
+
+export { rowsMaintenanceRecords };
 
 export const columnsTripVerification = [
   { field: "id", headerName: "ID", flex: 1 },

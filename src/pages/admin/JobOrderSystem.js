@@ -43,6 +43,7 @@ const JobOrderModal = ({
   const [products, setProducts] = useState([]);
   const [productName, setProductName] = useState("");
   const [UID, setUID] = useState("");
+  const [instructions, setInstructions] = useState("");
 
   const handleFieldChange = (field, value) => {
     setFormData({
@@ -56,6 +57,7 @@ const JobOrderModal = ({
     setWeight(formData.weight);
     setProductName(formData.cargo);
     setDateTime(formData.dateTime);
+    setInstructions(formData.instructions);
   };
 
   useEffect(() => {
@@ -113,7 +115,8 @@ const JobOrderModal = ({
       driverName !== "" &&
       cargo !== "" &&
       weight !== "" &&
-      dateTime !== ""
+      dateTime !== "" &&
+      instructions !== ""
     );
   };
 
@@ -201,8 +204,15 @@ const JobOrderModal = ({
         <Box sx={{ mb: 2 }}>
           <TextField
             label="Weight"
-            value={weight}
             onChange={(e) => handleFieldChange("weight", e.target.value)}
+            fullWidth
+            required
+          />
+        </Box>
+        <Box sx={{ mb: 2 }}>
+          <TextField
+            label="Instructions"
+            onChange={(e) => handleFieldChange("instructions", e.target.value)}
             fullWidth
             required
           />
@@ -300,6 +310,7 @@ const JobOrderSystem = () => {
     weight: "",
     dateTime: "",
     UID: "",
+    instructions: "",
   });
   useEffect(() => {
     async function fetchJobOrders() {
@@ -316,6 +327,7 @@ const JobOrderSystem = () => {
             const cargo = jobOrderData.cargo;
             const weight = jobOrderData.weight;
             const dateTime = jobOrderData.dateTime;
+            const instructions = jobOrderData.instructions;
 
             return {
               title: `${driverName} - ${cargo} - ${weight}`,
