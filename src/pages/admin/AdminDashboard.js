@@ -64,6 +64,7 @@ import AddListing from "./AddListing";
 import Content from "./Content";
 import ManageListings from "./ManageListings";
 import EditListing from "./EditListing";
+import SideNavImage from "../../assets/sidenav.png";
 
 function Copyright(props) {
   return (
@@ -113,6 +114,9 @@ const Drawer = styled(MuiDrawer, {
     }),
     boxSizing: "border-box",
     overflowY: "auto", // Add this line
+    backgroundImage: `linear-gradient(to bottom, rgba(0, 74, 173, 0.5), rgba(0, 74, 173, 0.5)), url(${SideNavImage})`,
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
     ...(!open && {
       overflowX: "hidden",
       transition: theme.transitions.create("width", {
@@ -126,7 +130,6 @@ const Drawer = styled(MuiDrawer, {
     }),
   },
 }));
-
 const notifications = [
   {
     icon: EventIcon,
@@ -191,10 +194,14 @@ export default function AdminDashboard() {
   const handleCloseSettingsMenu = () => {
     setAnchorElSettings(null);
   };
+  const styles = (theme) => ({
+    drawerPaper: {
+      backgroundImage: `url(${SideNavImage})`,
+    },
+  });
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
+    <>
       <AppBar position="absolute" open={open}>
         <Toolbar
           sx={{
@@ -329,7 +336,7 @@ export default function AdminDashboard() {
         </Toolbar>
         <Divider />
         <List component="nav">
-          <ListItemButton>
+          <ListItemButton component="a" href="/adminlogin">
             <ListItemIcon>
               <DashboardIcon />
             </ListItemIcon>
@@ -348,19 +355,31 @@ export default function AdminDashboard() {
           </ListItemButton>
           <Collapse in={openFleetManagement} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItemButton sx={{ pl: 4 }}>
+              <ListItemButton
+                component="a"
+                href="/adminfleetinformation"
+                sx={{ pl: 4 }}
+              >
                 <ListItemIcon>
                   <FiberManualRecordIcon sx={{ fontSize: "7px" }} />
                 </ListItemIcon>
                 <ListItemText primary="Fleet Information" />
               </ListItemButton>
-              <ListItemButton sx={{ pl: 4 }}>
+              <ListItemButton
+                component="a"
+                href="/adminmaintenance"
+                sx={{ pl: 4 }}
+              >
                 <ListItemIcon>
                   <FiberManualRecordIcon sx={{ fontSize: "7px" }} />
                 </ListItemIcon>
                 <ListItemText primary="Maintenance" />
               </ListItemButton>
-              <ListItemButton sx={{ pl: 4 }}>
+              <ListItemButton
+                component="a"
+                href="/admininspection"
+                sx={{ pl: 4 }}
+              >
                 <ListItemIcon>
                   <FiberManualRecordIcon sx={{ fontSize: "7px" }} />
                 </ListItemIcon>
@@ -369,47 +388,53 @@ export default function AdminDashboard() {
             </List>
           </Collapse>
 
-          <ListItemButton>
+          <ListItemButton component="a" href="/adminjoborders">
             <ListItemIcon>
               <AssignmentIcon />
             </ListItemIcon>
             <ListItemText primary="Job Orders" />
           </ListItemButton>
-          <ListItemButton>
+          <ListItemButton component="a" href="/admintrips">
             <ListItemIcon>
               <AssignmentTurnedInIcon />
             </ListItemIcon>
             <ListItemText primary="Trip Verification" />
           </ListItemButton>
-          <ListItemButton>
+          <ListItemButton component="a" href="/admindeliverymonitoring">
             <ListItemIcon>
               <TrackChangesIcon />
             </ListItemIcon>
-            <ListItemText primary="Manage Orders" />
+            <ListItemText primary="Delivery Monitoring" />
           </ListItemButton>
           <Divider sx={{ my: 1 }} />
           <ListSubheader component="div" inset>
             Management
           </ListSubheader>
-          <ListItemButton>
+          <ListItemButton component="a" href="/adminreports">
             <ListItemIcon>
               <ReportIcon />
             </ListItemIcon>
             <ListItemText primary="Reports" />
           </ListItemButton>
-          <ListItemButton>
+          <ListItemButton component="a" href="/admindrivermanagement">
             <ListItemIcon>
               <PeopleIcon />
             </ListItemIcon>
             <ListItemText primary="Drivers" />
           </ListItemButton>
-          <ListItemButton>
+          <ListItemButton component="a" href="/adminmanageappointments">
             <ListItemIcon>
               <ReportIcon />
             </ListItemIcon>
             <ListItemText primary="Appointments" />
           </ListItemButton>
-          <ListItemButton>
+          <ListItemButton component="a" href="/adminmanageorders">
+            <ListItemIcon>
+              <Inventory2Icon />
+            </ListItemIcon>
+            <ListItemText primary="Orders" />
+          </ListItemButton>
+          <ListItemButton component="a" href="/admininventory">
             <ListItemIcon>
               <Inventory2Icon />
             </ListItemIcon>
@@ -419,62 +444,32 @@ export default function AdminDashboard() {
           <ListSubheader component="div" inset>
             Website
           </ListSubheader>
-          <ListItemButton>
+          <ListItemButton component="a" href="/admincontent">
             <ListItemIcon>
               <WebIcon />
             </ListItemIcon>
-            <ListItemText primary="Content" />
+            <ListItemText primary="Main Content" />
           </ListItemButton>
-          <ListItemButton>
+          <ListItemButton component="a" href="/adminmanagelistings">
+            <ListItemIcon>
+              <WebIcon />
+            </ListItemIcon>
+            <ListItemText primary="Listings" />
+          </ListItemButton>
+          <ListItemButton component="a" href="/adminusermanagement">
             <ListItemIcon>
               <PeopleIcon />
             </ListItemIcon>
             <ListItemText primary="Users" />
           </ListItemButton>
+          <ListItemButton component="a" href="/adminmanagecontactform">
+            <ListItemIcon>
+              <PeopleIcon />
+            </ListItemIcon>
+            <ListItemText primary="Contact Form" />
+          </ListItemButton>
         </List>
       </Drawer>
-      <Box
-        component="main"
-        sx={{
-          backgroundColor: (theme) =>
-            theme.palette.mode === "light"
-              ? theme.palette.grey[100]
-              : theme.palette.grey[900],
-          flexGrow: 1,
-          height: "100vh",
-          overflow: "auto",
-        }}
-      >
-        <Toolbar />
-
-        <Container maxWidth="lg" sx={{ my: 3 }}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <ManageListings />
-              <AddListing />
-              <EditListing />
-
-              <Content />
-
-              <DeliveryMonitoring />
-              <AdminProfileInfo />
-              <FleetInformation />
-              <Maintenance />
-              <Inspection />
-              <Trips />
-              <Inventory />
-              <ManageOrders />
-              <DriverManagement />
-              <RandomStringGenerator />
-              <UserManagement />
-              <ManageContactForm />
-              <JobOrderSystem />
-              <ManageAppointments />
-              <Reports />
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
-    </Box>
+    </>
   );
 }

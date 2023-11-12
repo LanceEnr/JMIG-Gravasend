@@ -128,7 +128,6 @@ function MainApp({ handleLogout, isAuthenticated, authDispatch }) {
           }
         />
 
-        <Route path="/admindashboard" exact element={<AdminDashboard />} />
         <Route path="/adminlogin" exact element={<AdminLogin />} />
         <Route path="/adminregister" exact element={<AdminRegister />} />
       </Routes>
