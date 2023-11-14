@@ -187,21 +187,27 @@ export const columnsDriverManagement = [
 
 const transformUpcomingInspectionData = (data) => {
   const transformedData = [];
-  console.log(data);
   if (data) {
     for (const uid in data) {
       if (data.hasOwnProperty(uid)) {
         const userData = data[uid];
 
-        const mappedData = {
-          id: uid,
-          plateNo: userData.plateNo,
-          inspectionType: userData.type,
-          nextInspectionDate: new Date(userData.nextInspection),
-          verdict: userData.verdict,
-        };
+        for (const id in userData) {
+          if (userData.hasOwnProperty(id)) {
+            const inspectionData = userData[id];
 
-        transformedData.push(mappedData);
+            const mappedData = {
+              uid: uid,
+              id: id,
+              plateNo: inspectionData.plateNo,
+              inspectionType: inspectionData.inspectionType,
+              nextInspectionDate: new Date(inspectionData.nextInspectionDate),
+              verdict: inspectionData.verdict,
+            };
+
+            transformedData.push(mappedData);
+          }
+        }
       }
     }
   }
@@ -227,49 +233,29 @@ const rowsInspectionScheduling = transformUpcomingInspectionData(
 
 export { rowsInspectionScheduling };
 
-export const columnsInspectionScheduling = [
-  { field: "id", headerName: "ID", flex: 1 },
-  { field: "plateNo", headerName: "Plate No.", flex: 2, editable: true },
-  {
-    field: "inspectionType",
-    headerName: "Inspection Type",
-    flex: 2,
-    editable: true,
-  },
-  {
-    field: "nextInspectionDate",
-    headerName: "Next Inspection Date",
-    type: "date",
-    flex: 3,
-    editable: true,
-  },
-  {
-    field: "verdict",
-    headerName: "Verdict",
-    flex: 2,
-    editable: true,
-    type: "singleSelect",
-    valueOptions: ["On Going", "Pass", "Failed"],
-  },
-];
-
 const transformInspectionRecordsData = (data) => {
   const transformedData = [];
-  console.log(data);
   if (data) {
     for (const uid in data) {
       if (data.hasOwnProperty(uid)) {
         const userData = data[uid];
 
-        const mappedData = {
-          id: uid,
-          plateNo: userData.plateNo,
-          inspectionType: userData.inspectionType,
-          inspectionDate: new Date(userData.inspectionDate),
-          verdict: userData.verdict,
-        };
+        for (const id in userData) {
+          if (userData.hasOwnProperty(id)) {
+            const inspectionData = userData[id];
 
-        transformedData.push(mappedData);
+            const mappedData = {
+              uid: uid,
+              id: id,
+              plateNo: inspectionData.plateNo,
+              inspectionType: inspectionData.inspectionType,
+              nextInspectionDate: new Date(inspectionData.nextInspectionDate),
+              verdict: inspectionData.verdict,
+            };
+
+            transformedData.push(mappedData);
+          }
+        }
       }
     }
   }
@@ -302,18 +288,18 @@ export const columnsInspectionRecords = [
     field: "inspectionType",
     headerName: "Inspection Type",
     flex: 2,
-    editable: true,
+  },
+
+  {
+    field: "nextInspectionDate",
+    headerName: "Inspection Date",
+    type: "date",
+    flex: 3,
   },
   {
     field: "verdict",
     headerName: "Verdict",
     flex: 2,
-  },
-  {
-    field: "inspectionDate",
-    headerName: "Inspection Date",
-    type: "date",
-    flex: 3,
   },
 ];
 
