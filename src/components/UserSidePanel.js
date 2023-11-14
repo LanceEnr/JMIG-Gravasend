@@ -82,10 +82,10 @@ function SidePanel({ setActiveComponent }) {
               Lance Enriquez
             </Typography>
             <Typography
-              variant="subtitle1"
-              sx={{ marginBottom: "8px", color: "#004aad" }}
+              variant="body2"
+              sx={{ marginBottom: "8px", color: "#004aad", fontWeight: "bold" }}
             >
-              @{userName}
+              @lanceenr
             </Typography>
           </div>
         </ListItem>

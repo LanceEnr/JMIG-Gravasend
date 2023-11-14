@@ -149,7 +149,7 @@ export default function Login({ dispatch }) {
           </Typography>
           <Typography variant="caption" align="center">
             {"Not a member yet? "}
-            <Link href="/register" align="center" underline="always">
+            <Link href="/register" align="center" underline="none">
               Sign Up here
             </Link>
           </Typography>
@@ -223,12 +223,12 @@ export default function Login({ dispatch }) {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="/forgotpassword" variant="caption">
+                <Link href="/forgotpassword" variant="caption" underline="none">
                   Forgot password?
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="/" variant="caption">
+                <Link href="/" variant="caption" underline="none">
                   Go back to home
                 </Link>
               </Grid>

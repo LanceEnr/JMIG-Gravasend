@@ -36,6 +36,7 @@ import RoomServiceIcon from "@mui/icons-material/RoomService";
 import LiveHelpIcon from "@mui/icons-material/LiveHelp";
 import InfoIcon from "@mui/icons-material/Info";
 import MailIcon from "@mui/icons-material/Mail";
+import ProfilePic from "../assets/formal1x1.webp";
 
 const ColoredBadge = withStyles({
   badge: {
@@ -46,11 +47,10 @@ const ColoredBadge = withStyles({
 
 const token = localStorage.getItem("token");
 
-const pages = ["Home", "Products", "Services", "FAQs", "About", "Contact"];
+const pages = ["Home", "Products", "FAQs", "About", "Contact"];
 const mobilePages = [
   { name: "Home", icon: <HomeIcon /> },
   { name: "Products", icon: <StorefrontIcon /> },
-  { name: "Services", icon: <RoomServiceIcon /> },
   { name: "FAQs", icon: <LiveHelpIcon /> },
   { name: "About", icon: <InfoIcon /> },
   { name: "Contact", icon: <MailIcon /> },
@@ -312,7 +312,7 @@ function ResponsiveAppBar() {
             <Box sx={{ flexGrow: 0, mr: 2 }}>
               <Tooltip title="Settings">
                 <IconButton onClick={handleOpenSettingsMenu} sx={{ p: 0 }}>
-                  <Avatar alt={userName} />
+                  <Avatar alt={userName} src={ProfilePic} />
                 </IconButton>
               </Tooltip>
 

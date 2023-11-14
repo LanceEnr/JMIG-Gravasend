@@ -92,7 +92,7 @@ export default function ForgetPassword() {
             <>
               <Typography variant="caption" align="center">
                 {"Changed your mind? "}
-                <Link href="/register" align="center" underline="always">
+                <Link href="/register" align="center" underline="none">
                   Login here
                 </Link>
               </Typography>
@@ -132,7 +132,7 @@ export default function ForgetPassword() {
           )}
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="/" variant="caption">
+              <Link href="/" variant="caption" underline="none">
                 Go back to home
               </Link>
             </Grid>

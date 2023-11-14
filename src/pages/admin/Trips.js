@@ -4,7 +4,7 @@ import { Paper, Box, Tab, Tabs } from "@mui/material";
 import Title from "./components/Title";
 import TripVerification from "./TripVerification";
 import TripRecords from "./TripRecords";
-function Inspection() {
+function Trips() {
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
@@ -33,4 +33,4 @@ function Inspection() {
   );
 }
 
-export default Inspection;
+export default Trips;

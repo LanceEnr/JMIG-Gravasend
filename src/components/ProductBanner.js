@@ -4,7 +4,7 @@ import { Button, Box, Hidden } from "@mui/material";
 import Typography from "../components/common/Typography";
 import ProductBannerLayout from "./ProductBannerLayout";
 
-import productImage from "../assets/gravel.webp"; // Replace with your product image
+import productImage from "../assets/excavator.webp"; // Replace with your product image
 
 export default function ProductBanner() {
   const productListSectionRef = useRef(null);

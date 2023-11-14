@@ -22,7 +22,15 @@ import {
   DialogContentText,
   DialogActions,
   IconButton,
+  ListItemIcon,
+  Divider,
+  Chip,
+  Stepper,
+  Step,
+  StepLabel,
+  Grid,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -33,6 +41,11 @@ import SetAppointmentForm from "./SetAppointmentForm";
 import EditAppointmentForm from "./EditAppointmentForm";
 import { toast } from "react-toastify";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import Modal from "@mui/material/Modal";
+import InfoIcon from "@mui/icons-material/Info";
+import PersonIcon from "@mui/icons-material/Person";
+import PhoneIcon from "@mui/icons-material/Phone";
+import EventIcon from "@mui/icons-material/Event";
 
 const getColor = (_status) => {
   switch (_status) {
@@ -54,6 +67,12 @@ export default function AppointmentsTable1(props) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showForm, setShowForm] = useState(false); // Add this line
   const [showEditForm, setShowEditForm] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const handleOpenModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
 
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -133,6 +152,122 @@ export default function AppointmentsTable1(props) {
       />
     );
   }
+  const steps = ["Received", "Upcoming", "Completed"];
+
+  const modalBody = (
+    <Grid
+      container
+      justifyContent="center"
+      alignItems="center"
+      style={{
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+      }}
+    >
+      <Grid
+        item
+        xs={11}
+        sm={8}
+        md={6}
+        lg={4}
+        component={Box}
+        sx={{
+          bgcolor: "background.paper",
+          border: "2px solid #000",
+          boxShadow: 24,
+          p: 4,
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            pb: 2,
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Typography variant="h6" component="div">
+              Appointment
+            </Typography>
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ fontWeight: "bold", ml: 1 }}
+            >
+              #11234
+            </Typography>
+            <Divider orientation="vertical" flexItem />
+            {!fullScreen && (
+              <Chip
+                label="Upcoming"
+                sx={{
+                  fontWeight: "bold",
+                  backgroundColor: "#EBDAB7",
+                  color: "#bd8512",
+                  ml: 1,
+                }}
+              />
+            )}
+          </Box>
+          <IconButton
+            edge="end"
+            color="inherit"
+            onClick={handleCloseModal}
+            aria-label="close"
+          >
+            <CloseIcon />
+          </IconButton>
+        </Box>
+
+        <Divider />
+        {!fullScreen && (
+          <Box sx={{ width: "100%", py: 2 }}>
+            <Stepper activeStep={1}>
+              {steps.map((label, index) => (
+                <Step key={label}>
+                  <StepLabel
+                    StepIconProps={{
+                      style: { color: index <= 1 ? "#bd8512" : "" },
+                    }}
+                  >
+                    {label}
+                  </StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          </Box>
+        )}
+
+        <ListItem>
+          <ListItemIcon>
+            <PersonIcon />
+          </ListItemIcon>
+          <ListItemText primary="Lance Enriquez" />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <PhoneIcon />
+          </ListItemIcon>
+          <ListItemText primary="+63 977 454 8584" />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <EventIcon />
+          </ListItemIcon>
+          <ListItemText primary="10:00 - 10:20, Monday, 23 November 2023" />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <InfoIcon />
+          </ListItemIcon>
+          <ListItemText primary="Order Placement" />
+        </ListItem>
+      </Grid>
+    </Grid>
+  );
 
   return (
     <List
@@ -194,6 +329,8 @@ export default function AppointmentsTable1(props) {
             <ListItem
               key={item.appointmentNumber}
               divider={index !== appointments.length - 1}
+              onClick={handleOpenModal}
+              sx={{ cursor: "pointer" }} // This line adds the pointer
             >
               <ListItemAvatar>
                 <Tooltip title={item._status}>
@@ -203,32 +340,33 @@ export default function AppointmentsTable1(props) {
                       color: getColor(item._status).main,
                     }}
                   >
-                    {item._status === "Completed" && (
-                      <CheckIcon sx={{ pointerEvents: "none" }} />
-                    )}
-                    {item._status === "Cancelled" && (
-                      <CloseIcon sx={{ pointerEvents: "none" }} />
-                    )}
-                    {item._status === "Upcoming" && (
-                      <AccessTimeIcon sx={{ pointerEvents: "none" }} />
-                    )}
+                    {item._status === "Completed" && <CheckIcon />}
+                    {item._status === "Cancelled" && <CloseIcon />}
+                    {item._status === "Upcoming" && <AccessTimeIcon />}
                   </Avatar>
                 </Tooltip>
               </ListItemAvatar>
 
               <ListItemText
                 primary={
-                  <Typography variant="subtitle1">{`Appointment ${item._appointmentNum}`}</Typography>
+                  <Typography
+                    sx={{ fontWeight: "bold" }}
+                    variant="subtitle1"
+                  >{`Appointment #${item._appointmentNum}`}</Typography>
                 }
-                secondary={`${item._note}, ${item._date}`}
+                secondary={
+                  <Typography
+                    sx={{ color: "#004aad" }}
+                    variant="body2"
+                  >{`${item._date}`}</Typography>
+                }
               />
               {isMobile && (
                 <ListItemText
                   sx={{ ml: 4 }}
                   primary={
                     <Typography variant="subtitle1">
-                      {" "}
-                      {`${item._time} `}
+                      {`${item._time}`}
                     </Typography>
                   }
                 />
@@ -316,6 +454,14 @@ export default function AppointmentsTable1(props) {
           </Button>
         </DialogActions>
       </Dialog>
+      <Modal
+        open={showModal}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        {modalBody}
+      </Modal>
     </List>
   );
 }
