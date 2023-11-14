@@ -50,6 +50,7 @@ const JobOrderModal = ({
       ...formData,
       [field]: value,
     });
+    const intValue = parseInt(value, 10);
     setOrigin(formData.origin);
     setDestination(formData.destination);
     setDriverName(formData.driverName);
@@ -204,6 +205,7 @@ const JobOrderModal = ({
         <Box sx={{ mb: 2 }}>
           <TextField
             label="Weight"
+            type="number"
             onChange={(e) => handleFieldChange("weight", e.target.value)}
             fullWidth
             required
@@ -312,36 +314,76 @@ const JobOrderSystem = () => {
     UID: "",
     instructions: "",
   });
+
   useEffect(() => {
     async function fetchJobOrders() {
       try {
-        const response = await axios.get(
+        const jobOrdersResponse = await axios.get(
           "http://localhost:3001/fetch-job-orders"
         );
+        const jobRecordsResponse = await axios.get(
+          "http://localhost:3001/fetch-job-records"
+        );
 
-        if (response.status === 200) {
-          const data = response.data;
-          const jobOrders = Object.values(data).map((jobOrderData) => {
-            // You need to extract the relevant properties from jobOrderData
-            const driverName = jobOrderData.driverName;
-            const cargo = jobOrderData.cargo;
-            const weight = jobOrderData.weight;
-            const dateTime = jobOrderData.dateTime;
-            const instructions = jobOrderData.instructions;
+        if (
+          jobOrdersResponse.status === 200 &&
+          jobRecordsResponse.status === 200
+        ) {
+          const jobOrdersData = jobOrdersResponse.data;
+          const jobRecordsData = jobRecordsResponse.data;
 
-            return {
-              title: `${driverName} - ${cargo} - ${weight}`,
-              start: dateTime,
-            };
-          });
+          const uniqueDateTimes = new Set();
 
-          console.log("Job Orders:", jobOrders); // Log the extracted job orders
-          setEvents(jobOrders);
+          const jobOrders = Object.values(jobOrdersData)
+            .map((jobOrderData) => {
+              const driverName = jobOrderData.driverName;
+              const cargo = jobOrderData.cargo;
+              const weight = jobOrderData.weight;
+              const dateTime = jobOrderData.dateTime;
+
+              if (!uniqueDateTimes.has(dateTime)) {
+                uniqueDateTimes.add(dateTime);
+
+                return {
+                  title: `${driverName} - ${cargo} - ${weight}`,
+                  start: dateTime,
+                };
+              }
+
+              return null;
+            })
+            .filter(Boolean);
+
+          const jobRecords = Object.values(jobRecordsData)
+            .map((uidData) => {
+              return Object.values(uidData).map((idData) => {
+                const driverName = idData.driverName;
+                const cargo = idData.cargo;
+                const weight = idData.weight;
+                const dateTime = idData.dateTime;
+                if (!uniqueDateTimes.has(dateTime)) {
+                  uniqueDateTimes.add(dateTime);
+
+                  return {
+                    title: `${driverName} - ${cargo} - ${weight}`,
+                    start: dateTime,
+                  };
+                }
+
+                return null;
+              });
+            })
+            .flat()
+            .filter(Boolean);
+
+          const mergedEvents = [...jobOrders, ...jobRecords];
+
+          setEvents(mergedEvents);
         } else {
-          console.error("Failed to fetch job orders");
+          console.error("Failed to fetch job orders or job records");
         }
       } catch (error) {
-        console.error("Error fetching job orders:", error);
+        console.error("Error fetching job orders or job records:", error);
       }
     }
 
@@ -400,7 +442,8 @@ const JobOrderSystem = () => {
   };
 
   const handleEventClick = (info) => {
-    setSelectedEvent(info.event);
+    setSelectedEvent(info);
+
     setModalOpen(true);
   };
 

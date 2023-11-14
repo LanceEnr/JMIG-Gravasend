@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import axios from "axios";
 import { Paper, Box, Tab, Tabs } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import FullFeaturedCrudGrid from "./components/InspectionDataGrid";
 import Title from "./components/Title";
 import {
-  columnsInspectionScheduling,
   rowsInspectionScheduling,
   columnsInspectionRecords,
   rowsInspectionRecords,
@@ -12,6 +12,58 @@ import {
 
 function Inspection() {
   const [value, setValue] = useState(0);
+  const [plates, setPlates] = useState([]);
+
+  useEffect(() => {
+    async function fetchPlates() {
+      try {
+        const response = await fetch("http://localhost:3001/fetch-trucks");
+        if (response.ok) {
+          const data = await response.json();
+          const plates = Object.keys(data).map((key) => data[key].plateNo2);
+          setPlates(plates);
+        } else {
+          console.error("Failed to fetch plates");
+        }
+      } catch (error) {
+        console.error("Error fetching plates:", error);
+      }
+    }
+
+    fetchPlates();
+  }, []);
+  const columnsInspectionScheduling = [
+    { field: "id", headerName: "ID", flex: 1 },
+    {
+      field: "plateNo",
+      headerName: "Plate No.",
+      flex: 2,
+      editable: true,
+      type: "singleSelect",
+      valueOptions: plates,
+    },
+    {
+      field: "inspectionType",
+      headerName: "Inspection Type",
+      flex: 2,
+      editable: true,
+    },
+    {
+      field: "nextInspectionDate",
+      headerName: "Inspection Date",
+      type: "date",
+      flex: 3,
+      editable: true,
+    },
+    {
+      field: "verdict",
+      headerName: "Verdict",
+      flex: 2,
+      editable: true,
+      type: "singleSelect",
+      valueOptions: ["Pending", "On Going", "Pass", "Failed"],
+    },
+  ];
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

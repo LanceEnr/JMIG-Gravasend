@@ -53,10 +53,9 @@ export default function FullFeaturedCrudGrid(props) {
   const [action, setAction] = React.useState(null);
   const [actionId, setActionId] = React.useState("");
   const [plateNo, setplateNo] = React.useState("");
-  const [service, setservice] = React.useState("");
-  const [frequency, setfrequency] = React.useState("");
-  const [nextDueMileage, setnextDueMileage] = React.useState("");
-  const [status, setStatus] = React.useState("");
+  const [inspectionType, setinspectionType] = React.useState("");
+  const [nextInspectionDate, setnextInspectionDate] = React.useState("");
+  const [verdict, setverdict] = React.useState("");
 
   const [isEditing, setIsEditing] = React.useState(false);
 
@@ -78,8 +77,8 @@ export default function FullFeaturedCrudGrid(props) {
 
   const handleDialogClose = () => {
     setOpen(false);
+    console.log("closed");
   };
-
   const handleDialogConfirm = () => {
     if (action === "save") {
       setRowModesModel({
@@ -105,6 +104,7 @@ export default function FullFeaturedCrudGrid(props) {
         const newRow = {
           id: response.data.id,
         };
+
         setRows((prevRows) => [...prevRows, newRow]);
         setActionId(response.data.id);
       }
@@ -121,18 +121,24 @@ export default function FullFeaturedCrudGrid(props) {
   };
 
   const handleSaveClick =
-    (id, plateNo, service, frequency, nextDueMileage, status) => () => {
+    (id, plateNo, inspectionType, nextInspectionDate, verdict) => () => {
+      const existingRow = rows.find((row) => row.id === id);
+
+      if (!existingRow) {
+        toast.error("No row with the specified ID found");
+        return;
+      }
+
       setRowModesModel({
         ...rowModesModel,
-        [actionId]: { mode: GridRowModes.Edit },
+        [id]: { mode: GridRowModes.Edit },
       });
       setAction("save");
       setActionId(id);
       setplateNo(plateNo);
-      setservice(service);
-      setfrequency(frequency);
-      setnextDueMileage(nextDueMileage);
-      setStatus(status);
+      setinspectionType(inspectionType);
+      setnextInspectionDate(nextInspectionDate);
+      setverdict(verdict);
       setOpen(true);
     };
 
@@ -142,28 +148,38 @@ export default function FullFeaturedCrudGrid(props) {
 
   const handleSaveConfirmed = async (e) => {
     e.preventDefault();
+    if (
+      !actionId ||
+      !plateNo ||
+      !inspectionType ||
+      !nextInspectionDate ||
+      !verdict
+    ) {
+      toast.error("Please fill in all required fields");
 
+      setRowModesModel({
+        ...rowModesModel,
+        [actionId]: { mode: GridRowModes.View },
+      });
+      setOpen(false);
+      return;
+    }
     setRowModesModel({
       ...rowModesModel,
       [actionId]: { mode: GridRowModes.View },
     });
 
     try {
-      const response = await axios.post(
-        "http://localhost:3001/addMaintenance",
-        {
-          actionId: actionId,
-          plateNo: plateNo,
-          service: service,
-          frequency: frequency,
-          nextDueMileage: nextDueMileage,
-          mileage: "",
-          status: status,
-        }
-      );
+      const response = await axios.post("http://localhost:3001/addInspection", {
+        actionId: actionId,
+        plateNo: plateNo,
+        inspectionType: inspectionType,
+        nextInspectionDate: nextInspectionDate,
+        verdict: verdict,
+      });
 
-      console.log("Maintenance added successfully", response.data);
-      toast.success("Maintenance added successfully");
+      console.log("Inspection Schedule added successfully", response.data);
+      toast.success(response.data.message);
 
       setRowModesModel({
         ...rowModesModel,
@@ -172,18 +188,18 @@ export default function FullFeaturedCrudGrid(props) {
 
       setOpen(false);
     } catch (error) {
-      console.error("Maintenance add failed", error);
+      console.error("Inspection add failed", error);
       setOpen(false);
-      toast.error("Maintenance name already exists!");
+      toast.error("Inspection name already exists!");
     }
   };
 
   const deleteRecord = async (id) => {
     try {
-      const _maintenanceId = parseInt(id, 10);
+      const _inspectionId = parseInt(id, 10);
       const response = await axios.post(
-        "http://localhost:3001/deleteMaintenanceRecord",
-        { _maintenanceId }
+        "http://localhost:3001/deleteInspection",
+        { _inspectionId }
       );
 
       if (response.status === 200) {
@@ -239,7 +255,7 @@ export default function FullFeaturedCrudGrid(props) {
     width: props.actionWidth || 100,
     cellClassName: "actions",
     getActions: (params) => {
-      const { id, plateNo, service, frequency, nextDueMileage, status } =
+      const { id, plateNo, inspectionType, nextInspectionDate, verdict } =
         params.row;
       const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
@@ -254,10 +270,9 @@ export default function FullFeaturedCrudGrid(props) {
             onClick={handleSaveClick(
               id,
               plateNo,
-              service,
-              frequency,
-              nextDueMileage,
-              status
+              inspectionType,
+              nextInspectionDate,
+              verdict
             )}
           />,
           <GridActionsCellItem
@@ -275,7 +290,13 @@ export default function FullFeaturedCrudGrid(props) {
           icon={<EditIcon />}
           label="Edit"
           className="textPrimary"
-          onClick={handleEditClick(id)}
+          onClick={handleEditClick(
+            id,
+            plateNo,
+            inspectionType,
+            nextInspectionDate,
+            verdict
+          )}
           color="inherit"
         />,
         <GridActionsCellItem

@@ -30,6 +30,7 @@ import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh"; // Icon for Brake
 import ConstructionIcon from "@mui/icons-material/Construction"; // Icon for Dumpbed Operation
 import Title from "./components/Title";
 import axios from "axios";
+import GestureIcon from "@mui/icons-material/Gesture";
 
 const transformTripOngoing = (data, data2, data3, data4) => {
   const transformedData = [];
@@ -40,8 +41,6 @@ const transformTripOngoing = (data, data2, data3, data4) => {
       const userData2 = data2[uid];
       const userData3 = data3[uid];
       const userData4 = data4[uid];
-      console.log(userData);
-      console.log(userData2);
 
       const mappedData = {
         id: uid,
@@ -76,6 +75,14 @@ export default function TripVerification() {
     driversLicenseChecked: false,
     localTransportPermitChecked: false,
     orcrChecked: false,
+  });
+  const [SafetyChecklistData, setSafetyChecklistData] = useState({
+    suspension: false,
+    brake: false,
+    steering: false,
+    tireswheels: false,
+    safetyequipment: false,
+    lights: false,
   });
 
   const fetchTripOngoing = async () => {
@@ -138,6 +145,37 @@ export default function TripVerification() {
         orcrChecked: checklistData.orcrChecked,
       }));
 
+      return checklistData;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return [];
+    }
+  };
+  const fetchsetSafetyChecklistData = async (id) => {
+    try {
+      setSafetyChecklistData({
+        suspension: false,
+        brake: false,
+        steering: false,
+        tireswheels: false,
+        safetyequipment: false,
+        lights: false,
+      });
+
+      const response = await axios.get(
+        `http://localhost:3001/fetch-safetychecklist/${id}`
+      );
+      const checklistData = response.data;
+      setSafetyChecklistData((prevState) => ({
+        ...prevState,
+        suspension: checklistData.suspension,
+        brake: checklistData.brake,
+        steering: checklistData.steering,
+        tireswheels: checklistData.tireswheels,
+        safetyequipment: checklistData.safetyequipment,
+        lights: checklistData.lights,
+      }));
+      console.log(SafetyChecklistData);
       return checklistData;
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -210,7 +248,17 @@ export default function TripVerification() {
 
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
-  const handleDialogOpen = () => {
+  const handleDialogOpen = (id) => {
+    setSelectedID(id);
+    setId(id);
+    fetchsetSafetyChecklistData(id)
+      .then((data) => {
+        setSafetyChecklistData(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching document checklist:", error);
+        setSafetyChecklistData([]);
+      });
     setIsDialogOpen(true);
   };
 
@@ -221,6 +269,7 @@ export default function TripVerification() {
   const columns = [
     { field: "id", headerName: "ID", flex: 1 },
     { field: "driver", headerName: "Driver name", flex: 1 },
+    { field: "number", headerName: "Contact No.", flex: 1 },
     { field: "datetime", headerName: "Date and Time", flex: 1 },
     { field: "cargoType", headerName: "Cargo Type", flex: 1 },
     { field: "cargoWeight", headerName: "Cargo Weight", flex: 1 },
@@ -243,33 +292,13 @@ export default function TripVerification() {
       headerName: "Safety Checks",
       sortable: false,
       flex: 1,
-      renderCell: () => (
-        <IconButton color="primary" onClick={handleDialogOpen}>
+      renderCell: (params) => (
+        <IconButton
+          color="primary"
+          onClick={() => handleDialogOpen(params.row.id)}
+        >
           <Visibility />
         </IconButton>
-      ),
-    },
-    {
-      field: "approval",
-      headerName: "Approval",
-      sortable: false,
-      flex: 1,
-      renderCell: () => (
-        <React.Fragment>
-          <GridActionsCellItem
-            icon={<CheckCircleIcon />}
-            label="Approve"
-            sx={{
-              color: "primary.main",
-            }}
-          />
-          <GridActionsCellItem
-            icon={<CancelIcon />}
-            label="Cancel"
-            className="textPrimary"
-            color="inherit"
-          />
-        </React.Fragment>
       ),
     },
   ];
@@ -347,70 +376,48 @@ export default function TripVerification() {
       <Dialog onClose={handleDialogClose} open={isDialogOpen}>
         <DialogTitle>Safety Checks</DialogTitle>
         <List>
-          <ListItem>
-            <ListItemAvatar style={{ pointerEvents: "none" }}>
-              <Avatar>
-                <LocalGasStationIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Oil Levels" />
-            <ListItemSecondaryAction style={{ pointerEvents: "none" }}>
-              <CheckCircleIcon style={{ color: green[500] }} />
-            </ListItemSecondaryAction>
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar style={{ pointerEvents: "none" }}>
-              <Avatar>
-                <OpacityIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Coolant Levels" />
-            <ListItemSecondaryAction style={{ pointerEvents: "none" }}>
-              <CheckCircleIcon style={{ color: green[500] }} />
-            </ListItemSecondaryAction>
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar style={{ pointerEvents: "none" }}>
-              <Avatar>
-                <AirIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Air Pressure" />
-            <ListItemSecondaryAction style={{ pointerEvents: "none" }}>
-              <CheckCircleIcon style={{ color: green[500] }} />
-            </ListItemSecondaryAction>
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar style={{ pointerEvents: "none" }}>
-              <Avatar>
-                <LinkIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Steering Linkage and Suspension" />
-            <ListItemSecondaryAction style={{ pointerEvents: "none" }}>
-              <CheckCircleIcon style={{ color: green[500] }} />
-            </ListItemSecondaryAction>
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar style={{ pointerEvents: "none" }}>
-              <Avatar>
-                <AutoFixHighIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Brakes" />
-            <ListItemSecondaryAction style={{ pointerEvents: "none" }}>
-              <CheckCircleIcon style={{ color: green[500] }} />
-            </ListItemSecondaryAction>
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar style={{ pointerEvents: "none" }}>
-              <Avatar>
-                <ConstructionIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Dumpbed Operation" />
-            <CancelIcon style={{ color: red[500] }} />
-          </ListItem>
+          {[
+            {
+              documentName: "Suspension System",
+              approved: SafetyChecklistData.suspension,
+            },
+            {
+              documentName: "Brake System",
+              approved: SafetyChecklistData.brake,
+            },
+            {
+              documentName: "Steering System",
+              approved: SafetyChecklistData.steering,
+            },
+            ,
+            {
+              documentName: "Tires and Wheels",
+              approved: SafetyChecklistData.tireswheels,
+            },
+            ,
+            {
+              documentName: "Safety Equipments",
+              approved: SafetyChecklistData.safetyequipment,
+            },
+            ,
+            {
+              documentName: "Lights and Reflectors",
+              approved: SafetyChecklistData.lights,
+            },
+          ].map(({ documentName, approved }, index) => (
+            <ListItem key={index}>
+              <ListItemAvatar style={{ pointerEvents: "none" }}>
+                <Avatar>
+                  {approved ? (
+                    <CheckCircleIcon style={{ color: green[500] }} />
+                  ) : (
+                    <CancelIcon style={{ color: red[500] }} />
+                  )}
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={documentName} />
+            </ListItem>
+          ))}
         </List>
         <DialogActions>
           <Button onClick={handleDialogClose} color="primary">

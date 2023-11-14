@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/system";
 import Divider from "@mui/material/Divider";
 import CoverPhoto from "../../assets/coverphoto.png";
-import ProfilePic from "../../assets/formal1x1.jpg";
+import ProfilePic from "../../assets/formal1x1.webp";
 
 const Img = styled("img")({
   height: "140px",

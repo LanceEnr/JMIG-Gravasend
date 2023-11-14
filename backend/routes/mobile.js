@@ -679,6 +679,24 @@ router.get("/fetch-job-orders", (req, res) => {
       res.status(500).json({ message: "Internal server error" });
     });
 });
+router.get("/fetch-job-records", (req, res) => {
+  axios
+    .get("https://gravasend-965f7-default-rtdb.firebaseio.com/TripHistory.json")
+    .then((response) => {
+      const jobData = response.data;
+
+      if (jobData) {
+        res.json(jobData);
+      } else {
+        console.log('No data found in the "Trip History" collection.');
+        res.status(404).json({ message: "No data found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
 
 const getMileageFromPlate = async (plateNo) => {
   try {
@@ -844,7 +862,82 @@ router.get("/fetch-signature/:id", async (req, res) => {
     if (response.data) {
       res.json(response.data);
     } else {
-      res.status(404).json({ error: "Da ta not found" });
+      res.status(404).json({ error: "Data not found" });
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+router.post("/addInspection", async (req, res) => {
+  const inspectionData = req.body;
+
+  try {
+    const plateNo = inspectionData.plateNo;
+    const uid = await getUIDFromPlate(plateNo);
+
+    inspectionData.uid = uid;
+
+    const db = admin.database();
+    const actionId = inspectionData.actionId;
+
+    const verdict = inspectionData.verdict;
+
+    if (verdict === "Pass" || verdict === "Failed") {
+      const recordsRef = db.ref(`inspectionRecords/${uid}/${actionId}`);
+      await recordsRef.set({ ...inspectionData, verdict });
+
+      const upcomingRef = db.ref(`upcomingInspections/${uid}/${actionId}`);
+      const snapshot = await upcomingRef.once("value");
+      if (snapshot.val()) {
+        await upcomingRef.remove();
+      }
+
+      res
+        .status(200)
+        .json({ message: "Inspection added to records successfully" });
+    } else {
+      const ref = db.ref(`upcomingInspections/${uid}/${actionId}`);
+      await ref.set(inspectionData);
+
+      res.status(200).json({
+        message: "Inspection added to upcoming inspections successfully",
+      });
+    }
+  } catch (error) {
+    console.error("Firebase Authentication error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/deleteInspection", async (req, res) => {
+  const _inspectionId = req.body._inspectionId;
+
+  try {
+    const db = admin.database();
+    const maintenanceRef = db.ref(`upcomingInspections/${_inspectionId}`);
+
+    await maintenanceRef.remove();
+
+    res
+      .status(200)
+      .json({ message: "Maintenance record deleted successfully" });
+  } catch (error) {
+    console.error("Firebase delete error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+router.get("/fetch-safetychecklist/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const firebaseUrl = `https://gravasend-965f7-default-rtdb.firebaseio.com/Safety%20Checklist/${id}.json`;
+
+    const response = await axios.get(firebaseUrl);
+
+    if (response.data) {
+      res.json(response.data);
+    } else {
+      res.status(404).json({ error: "Data not found" });
     }
   } catch (error) {
     console.error("Error fetching data:", error);

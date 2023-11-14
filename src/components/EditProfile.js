@@ -20,7 +20,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputAdornment from "@mui/material/InputAdornment";
 import ProfileCard from "./common/ProfileCard";
-import ProfilePic from "../assets/formal1x1.jpg";
+import ProfilePic from "../assets/formal1x1.webp";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera"; // Import the PhotoCameraIcon
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
