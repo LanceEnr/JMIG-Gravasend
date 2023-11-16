@@ -96,14 +96,29 @@ export default function AppointmentsTable1(props) {
     setMenuOpen(true);
     setAppointmentNumber(appointmentNum);
   };
-  const handleCancel = async () => {
+  const currentDate = new Date();
+  const options = {
+    weekday: "short",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short",
+  };
+  const storedUsername = localStorage.getItem("userName");
+  const formattedDate = currentDate.toLocaleString("en-US", options);
+  const handleCancel = async (appointmentNum) => {
     axios
       .post("http://localhost:3001/cancel-appointment", {
         _appointmentNum: appointmentNum,
         _status: "Cancelled",
+        _date: formattedDate,
+        _userName: storedUsername,
       })
       .then((response) => {
-        toast.success("Appointment canceled successfully");
+        toast.success("Appointment cancelled successfully");
         window.location.reload();
       })
       .catch((error) => {
@@ -152,7 +167,6 @@ export default function AppointmentsTable1(props) {
       />
     );
   }
-  const steps = ["Received", "Upcoming", "Completed"];
 
   const modalBody = (
     <Grid
@@ -223,23 +237,6 @@ export default function AppointmentsTable1(props) {
         </Box>
 
         <Divider />
-        {!fullScreen && (
-          <Box sx={{ width: "100%", py: 2 }}>
-            <Stepper activeStep={1}>
-              {steps.map((label, index) => (
-                <Step key={label}>
-                  <StepLabel
-                    StepIconProps={{
-                      style: { color: index <= 1 ? "#bd8512" : "" },
-                    }}
-                  >
-                    {label}
-                  </StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-          </Box>
-        )}
 
         <ListItem>
           <ListItemIcon>
@@ -445,13 +442,13 @@ export default function AppointmentsTable1(props) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>No</Button>
           <Button
             onClick={() => handleCancel(appointmentNum)}
             sx={{ color: "error.main" }}
           >
             Yes
           </Button>
+          <Button onClick={handleCloseDialog}>No</Button>
         </DialogActions>
       </Dialog>
       <Modal

@@ -1,4 +1,5 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
@@ -16,6 +17,29 @@ const Img = styled("img")({
 });
 
 export default function ProfileCard({ profile }) {
+  const userName = localStorage.getItem("userName");
+  const [count, setCounts] = useState({
+    totalOrders: "",
+    totalAppointments: "",
+  });
+
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("userName");
+    axios
+      .get(`http://localhost:3001/get-counts?userName=${storedUsername}`)
+      .then((response) => {
+        setCounts(response.data);
+
+        if (response.data.length > 0) {
+          const user = response.data[0];
+
+          setCounts({
+            totalOrders: user.totalOrders,
+            totalAppointments: user.totalCounts,
+          });
+        }
+      });
+  }, []);
   return (
     <Card sx={{ width: "100%", position: "relative" }}>
       <Img alt={profile.name} src={CoverPhoto} />
@@ -25,7 +49,7 @@ export default function ProfileCard({ profile }) {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          position: "relative", // Add position relative to the container
+          position: "relative",
         }}
       >
         <Avatar
@@ -64,7 +88,7 @@ export default function ProfileCard({ profile }) {
               gutterBottom
               sx={{ color: "#004aad", fontWeight: "bold" }}
             >
-              @lanceenr
+              @{userName}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {profile.city}
@@ -90,7 +114,7 @@ export default function ProfileCard({ profile }) {
               variant="h6"
               style={{ fontWeight: "bold", color: "#bd8512" }}
             >
-              20
+              {count.totalOrders}
             </Typography>
             <Typography variant="caption" color="text.secondary">
               Total Orders
@@ -102,7 +126,7 @@ export default function ProfileCard({ profile }) {
               variant="h6"
               style={{ fontWeight: "bold", color: "#bd8512" }}
             >
-              20
+              {count.totalAppointments}
             </Typography>
             <Typography variant="caption" color="text.secondary">
               Appointments

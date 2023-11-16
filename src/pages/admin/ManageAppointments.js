@@ -51,6 +51,19 @@ const ManageAppointments = () => {
     time: null,
     IsAM: true,
   });
+
+  const currentDate = new Date();
+  const options = {
+    weekday: "short",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short",
+  };
+  const formattedDate = currentDate.toLocaleString("en-US", options);
   const [formattedEvents, setFormattedEvents] = useState([]);
   useEffect(() => {
     axios
@@ -70,11 +83,13 @@ const ManageAppointments = () => {
       });
   }, []);
 
-  const handleComplete = (appointmentNum) => {
-    console.log(appointmentNum);
+  const handleComplete = (appointmentNum, dateTime, fname, lname) => {
     axios
       .post("http://localhost:3001/complete-appointment-admin", {
         appointmentNum: appointmentNum,
+        dateTime: dateTime,
+        date: formattedDate,
+        name: fname + "_" + lname,
       })
       .then((response) => {
         toast.success("Appointment completed successfully");
@@ -95,7 +110,7 @@ const ManageAppointments = () => {
     setOpen(false);
   };
 
-  const handleRescheduleSubmit = (appointmentNum) => {
+  const handleRescheduleSubmit = (appointmentNum, dateTime2, fname, lname) => {
     const updatedEvents = formattedEvents.map((event) =>
       event._appointmentNum === selectedEvent._appointmentNum
         ? { ...event, start: newDateTime }
@@ -117,6 +132,8 @@ const ManageAppointments = () => {
         _reasonResched: rescheduleReason,
         _dateTime: dateTime,
         _cancelReason: cancelReason,
+        date: formattedDate,
+        name: fname + "_" + lname,
       })
       .then((response) => {
         toast.success("Appointment rescheduled successfully");
@@ -192,7 +209,7 @@ const ManageAppointments = () => {
     setView("details"); // reset view state when closing the dialog
   };
 
-  const handleCancelSubmit = (appointmentNum) => {
+  const handleCancelSubmit = (appointmentNum, dateTime, fname, lname) => {
     if (cancelReason) {
       const updatedEvents = formattedEvents.filter(
         (event) => event._appointmentNum !== selectedEvent._appointmentNum
@@ -202,6 +219,9 @@ const ManageAppointments = () => {
           appointmentNum: appointmentNum,
           _status: "Cancelled",
           _cancelReason: cancelReason,
+          date: formattedDate,
+          dateTime: dateTime,
+          name: fname + "_" + lname,
         })
         .then((response) => {
           toast.success("Appointment cancelled successfully");
@@ -429,7 +449,10 @@ const ManageAppointments = () => {
                   variant="contained"
                   onClick={() =>
                     handleRescheduleSubmit(
-                      selectedEvent?.extendedProps._appointmentNum
+                      selectedEvent?.extendedProps._appointmentNum,
+                      selectedEvent?.extendedProps._dateTime,
+                      selectedEvent?.extendedProps._fName,
+                      selectedEvent?.extendedProps._lName
                     )
                   }
                   disabled={
@@ -477,7 +500,10 @@ const ManageAppointments = () => {
                   variant="contained"
                   onClick={() =>
                     handleCancelSubmit(
-                      selectedEvent?.extendedProps._appointmentNum
+                      selectedEvent?.extendedProps._appointmentNum,
+                      selectedEvent?.extendedProps._dateTime,
+                      selectedEvent?.extendedProps._fName,
+                      selectedEvent?.extendedProps._lName
                     )
                   }
                   disabled={!cancelReason}
@@ -493,7 +519,12 @@ const ManageAppointments = () => {
             selectedEvent?.extendedProps._status !== "Completed" && (
               <Button
                 onClick={() =>
-                  handleComplete(selectedEvent?.extendedProps._appointmentNum)
+                  handleComplete(
+                    selectedEvent?.extendedProps._appointmentNum,
+                    selectedEvent?.extendedProps._dateTime,
+                    selectedEvent?.extendedProps._fName,
+                    selectedEvent?.extendedProps._lName
+                  )
                 }
                 color="primary"
                 autoFocus

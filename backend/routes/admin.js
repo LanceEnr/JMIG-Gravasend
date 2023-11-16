@@ -8,6 +8,8 @@ const Code = require("../models/adminCode");
 const Order = require("../models/order");
 const Inventory = require("../models/inventory");
 const Values = require("../models/values");
+const Notification = require("../models/customerNotification");
+const Notification2 = require("../models/adminNotification");
 const Appointment = require("../models/appointment");
 const Testimonial = require("../models/testimonial");
 const Inquiry = require("../models/inquiry");
@@ -305,7 +307,7 @@ const getNextCode = async () => {
 router.post("/generateCode", async (req, res) => {
   try {
     const _codeID = await getNextCode();
-    console.log(_codeID);
+
     const { accessCode, formattedDate } = req.body;
 
     const existingCode = await Code.findOne({
@@ -424,6 +426,8 @@ router.post("/update-appointment-admin", async (req, res) => {
     _dateTime,
     _reasonResched,
     _cancelReason,
+    name,
+    date,
   } = req.body;
 
   try {
@@ -436,6 +440,16 @@ router.post("/update-appointment-admin", async (req, res) => {
     if (existingAppointment) {
       return res.status(400).json({ error: "Appointment conflict" });
     }
+    const id = await getNextNotifId();
+    let customerNotification = new Notification({
+      _notifID: id,
+      _date: date,
+      _name: name,
+      _title: "Appointment " + appointmentNum,
+      _description:
+        "Your appointment was rescheduled" + " on " + _date + " at " + _time,
+    });
+    await customerNotification.save();
 
     const updatedAppointment = await Appointment.findOneAndUpdate(
       { _appointmentNum: appointmentNum },
@@ -465,10 +479,21 @@ router.post("/update-appointment-admin", async (req, res) => {
   }
 });
 router.post("/complete-appointment-admin", async (req, res) => {
-  const { appointmentNum } = req.body; // Destructure appointmentNum from req.body
+  const { appointmentNum, dateTime, date, name } = req.body;
   const _status = "Completed";
-
+  const id = await getNextNotifId();
   try {
+    let customerNotification = new Notification({
+      _notifID: id,
+      _date: date,
+      _dateTime: dateTime,
+      _appointmentNum: appointmentNum,
+      _name: name,
+      _title: "Appointment " + appointmentNum,
+      _description: "Your appointment was completed successfully!",
+    });
+    await customerNotification.save();
+
     const updatedAppointment = await Appointment.findOneAndUpdate(
       { _appointmentNum: appointmentNum },
       {
@@ -493,9 +518,19 @@ router.post("/complete-appointment-admin", async (req, res) => {
 });
 
 router.post("/cancel-appointment-admin", async (req, res) => {
-  const { appointmentNum, _status, _cancelReason } = req.body;
+  const { appointmentNum, _status, _cancelReason, date, dateTime, name } =
+    req.body;
 
   try {
+    const id = await getNextNotifId();
+    let customerNotification = new Notification({
+      _notifID: id,
+      _date: date,
+      _name: name,
+      _title: appointmentNum + " on " + dateTime,
+      _description: "Your appointment was cancelled due to " + _cancelReason,
+    });
+    await customerNotification.save();
     const cancelAppointment = await Appointment.findOneAndUpdate(
       { _appointmentNum: appointmentNum },
       {
@@ -519,7 +554,7 @@ router.post("/cancel-appointment-admin", async (req, res) => {
   } catch (error) {
     // Handle errors
     console.error("Error cancelling appointment:", error);
-    console.log("Error cancelling appointmen");
+    console.log("Error cancelling appointment");
     return res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -606,10 +641,8 @@ router.post("/admin-check-email", async (req, res) => {
     }
   }
   if (isEmailUsed) {
-    console.log("working");
     res.json({ exists: isEmailUsed });
   } else {
-    console.log("working");
     res.json({ exists: isEmailUsed });
   }
 });
@@ -1104,7 +1137,11 @@ const getNextOrderNum = async () => {
       { $inc: { value: 1 } },
       { new: true, upsert: true }
     );
-    return counter.value;
+
+    const offset = 31000000;
+    const orderIdWithOffset = counter.value + offset;
+
+    return orderIdWithOffset;
   } catch (err) {
     console.error("Error getting the next inventory number:", err);
     throw err;
@@ -1119,6 +1156,19 @@ router.get("/generateorderDateId", async (req, res) => {
   }
 });
 
+const getNextNotifId = async () => {
+  try {
+    const counter = await Counter.findOneAndUpdate(
+      { name: "_notifId" },
+      { $inc: { value: 1 } },
+      { new: true, upsert: true }
+    );
+    return counter.value;
+  } catch (err) {
+    console.error("Error getting the next inventory number:", err);
+    throw err;
+  }
+};
 router.post("/addOrder", async (req, res) => {
   const {
     _orderNum,
@@ -1133,6 +1183,81 @@ router.post("/addOrder", async (req, res) => {
 
   try {
     let order = await Order.findOne({ _orderNum: _orderNum });
+    const id = await getNextNotifId();
+    if (_status == "Pending") {
+      let customerNotification = new Notification({
+        _notifID: id,
+        _date: _date,
+        _name: _name,
+        _title:
+          "Your order with receipt number of " + _orderNum + " has been placed",
+        _description: _materialType + " - " + _quantity + " cub. mt.",
+      });
+      await customerNotification.save();
+    } else if (
+      _status == "Available for pickup-PANDI" ||
+      _status == "Available for pickup-MindanaoAve."
+    ) {
+      let customerNotification = new Notification({
+        _notifID: id,
+        _date: _date,
+        _name: _name,
+        _title: "You may now pick up your order!",
+        _description: _materialType + " - " + _quantity + " cub. mt.",
+      });
+      await customerNotification.save();
+    } else if (
+      _status == "Arrived at Pandi" ||
+      _status == "Arrived at MindanaoAve."
+    ) {
+      let customerNotification = new Notification({
+        _notifID: id,
+        _date: _date,
+        _name: _name,
+        _title: "Your order arrived at our inventory",
+        _description: _materialType + " - " + _quantity + " cub. mt.",
+      });
+      await customerNotification.save();
+    } else if (_status == "Fetch from quarry") {
+      let customerNotification = new Notification({
+        _notifID: id,
+        _date: _date,
+        _name: _name,
+        _title: "Your order is being fetch from quary",
+        _description: _materialType + " - " + _quantity + " cub. mt.",
+      });
+      await customerNotification.save();
+    } else if (_status == "Cancelled") {
+      let customerNotification = new Notification({
+        _notifID: id,
+        _date: _date,
+        _name: _name,
+        _title: "Order Cancelled",
+        _description:
+          "We regret to inform you that your order of " +
+          _materialType +
+          " - " +
+          _quantity +
+          " cub. mt. has been cancelled, if you have any questions feel free to contact our office from 8AM-5PM.",
+      });
+
+      await customerNotification.save();
+    } else if (_status == "Delayed") {
+      let customerNotification = new Notification({
+        _notifID: id,
+        _date: _date,
+        _name: _name,
+        _title: "Order Delayed",
+        _description:
+          "We regret to inform you that your order of " +
+          _materialType +
+          " - " +
+          _quantity +
+          " cub. mt. has experienced a delay in shipment, if you have any questions feel free to contact our office from 8AM-5PM.",
+      });
+
+      await customerNotification.save();
+    }
 
     if (!order) {
       order = new Order({
@@ -1145,6 +1270,8 @@ router.post("/addOrder", async (req, res) => {
         _quantity: _quantity,
         _orderDet: _orderDet,
       });
+      await order.save();
+      res.json({ message: "Order saved successfully" });
     } else {
       order._name = _name;
       order._materialType = _materialType;
@@ -1153,11 +1280,10 @@ router.post("/addOrder", async (req, res) => {
       order._price = _price;
       order._quantity = _quantity;
       order._orderDet = _orderDet;
+      await order.save();
+
+      res.json({ message: "Order updated successfully" });
     }
-
-    await order.save();
-
-    res.json({ message: "Order saved successfully" });
   } catch (error) {
     console.error("Error saving order:", error);
     res.status(500).json({ error: "Failed to save order" });
@@ -1206,6 +1332,18 @@ router.get("/get-price", async (req, res) => {
     } else {
       res.status(404).json({ error: "Price not found for the product" });
     }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Failed to fetch order data" });
+  }
+});
+router.get("/fetch-adminNotifications", async (req, res) => {
+  try {
+    const notif = await Notification2.find().sort({
+      _notifID: -1,
+    });
+
+    res.json(notif);
   } catch (error) {
     console.error("Error fetching data:", error);
     res.status(500).json({ error: "Failed to fetch order data" });

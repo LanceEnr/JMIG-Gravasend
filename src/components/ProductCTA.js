@@ -1,4 +1,6 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
@@ -6,14 +8,89 @@ import { TextField, Button, Snackbar } from "@mui/material";
 import Typography from "../components/common/Typography";
 import ImageDots from "../assets/productCTAImageDots.webp";
 import Catalog from "../assets/cta.webp";
+import { toast } from "react-toastify";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
 
 function ProductCTA() {
   const [open, setOpen] = React.useState(false);
+  const navigate = useNavigate();
+  const [agreementChecked, setAgreementChecked] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [inquiryData, SetInquiryData] = useState({
+    _name: "",
+    _email: "",
+    _message: "",
+  });
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    setOpen(true);
+  const currentDate = new Date();
+  const options = {
+    weekday: "short",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short",
   };
+  const formattedDate = currentDate.toLocaleString("en-US", options);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    SetInquiryData({
+      ...inquiryData,
+      [name]: value,
+    });
+  };
+  const resetForm = () => {
+    SetInquiryData({
+      _name: "",
+      _email: "",
+      _message: "",
+    });
+  };
+  const handleCheckboxChange = (event) => {
+    setAgreementChecked(event.target.checked);
+  };
+
+  const handleDialogOpen = () => {
+    setOpenDialog(true);
+  };
+
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+  };
+
+  const handleAgreeSubmit = () => {
+    // Perform any additional actions upon agreement (e.g., store the agreement status)
+    handleDialogClose(); // Close the dialog
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { _name, _email, _message } = inquiryData;
+
+    try {
+      const response = await axios.post("http://localhost:3001/inquiry", {
+        ...inquiryData,
+        _date: formattedDate,
+      });
+      console.log("Inquiry submitted successfully", response.data);
+      toast.success("Inquiry submitted successfully");
+      resetForm();
+    } catch (error) {
+      console.error("Registration failed", error);
+      // Handle registration failure (e.g., show an error message).
+    }
+  };
+
+  const [address, setAddress] = useState("");
+  const [phone, setphone] = useState("");
+  const [email, setEmail] = useState("");
 
   const handleClose = () => {
     setOpen(false);
@@ -56,6 +133,8 @@ function ProductCTA() {
                 label="Name"
                 name="_name"
                 margin="normal"
+                onChange={handleChange}
+                value={inquiryData._name}
                 required
               />
               <TextField
@@ -63,6 +142,8 @@ function ProductCTA() {
                 label="Email"
                 name="_email"
                 margin="normal"
+                onChange={handleChange}
+                value={inquiryData._email}
                 required
                 type="email"
               />
@@ -72,10 +153,27 @@ function ProductCTA() {
                 label="Message"
                 name="_message"
                 margin="normal"
+                onChange={handleChange}
+                value={inquiryData._message}
                 required
                 multiline
                 rows={4}
               />
+              <div>
+                <input
+                  type="checkbox"
+                  id="agreementCheckbox"
+                  checked={agreementChecked}
+                  onChange={handleCheckboxChange}
+                />
+                <label htmlFor="agreementCheckbox">
+                  I agree that the information provided will be used for product
+                  promotion and will be used to contact you.
+                </label>
+              </div>
+
+              {/* Button to open the dialog */}
+
               <Button
                 variant="primary"
                 type="submit"

@@ -1,4 +1,5 @@
 import * as React from "react";
+import axios from "axios";
 import { withStyles } from "@mui/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -16,7 +17,7 @@ import Badge from "@mui/material/Badge";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import EventIcon from "@mui/icons-material/Event";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import OrderIcon from "@mui/icons-material/LocalShipping";
 import { Link, NavLink } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { logout } from "../store/reducers/authReducer";
@@ -56,20 +57,67 @@ const mobilePages = [
   { name: "Contact", icon: <MailIcon /> },
 ];
 
-const settings = ["Dashboard", "Logout"];
+const timeAgo = (timestamp) => {
+  const currentDate = new Date();
+  const notificationDate = new Date(timestamp);
+  const timeDifference = currentDate - notificationDate;
+  const seconds = Math.floor(timeDifference / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
 
-const notifications = [
-  {
-    icon: EventIcon,
-    heading: "Upcoming Appointment",
-    text: "You have an appointment with JMIG tomorrow.",
-  },
-  {
-    icon: CheckCircleIcon,
-    heading: "Order Acknowledged",
-    text: "Your order has been received and is being processed.",
-  },
-];
+  if (minutes < 1) {
+    // Display seconds if less than 1 minute
+    return `${seconds} second${seconds === 1 ? "" : "s"} ago`;
+  } else if (hours < 1) {
+    // Display minutes if less than 1 hour
+    return `${minutes} minute${minutes === 1 ? "" : "s"} ago`;
+  } else if (hours < 24) {
+    // Display hours if less than 24 hours
+    return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+  } else {
+    // If more than 24 hours, display the full date
+    const options = {
+      weekday: "short",
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      timeZoneName: "short",
+    };
+    return notificationDate.toLocaleString("en-US", options);
+  }
+};
+
+const settings = ["Dashboard", "Logout"];
+const userName = localStorage.getItem("userName");
+const name = "";
+const fetchNotifications = async () => {
+  const storedUsername = localStorage.getItem("userName");
+
+  try {
+    const response = await axios.get(
+      `http://localhost:3001/fetch-notifications?userName=${storedUsername}`
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+const transformNotification = (data) => {
+  return data.map((item) => ({
+    icon: item._title.toLowerCase().includes("order") ? OrderIcon : EventIcon,
+    heading: item._title,
+    text: item._description,
+    date: item._date,
+  }));
+};
+
+const notifications = transformNotification(await fetchNotifications());
 
 function ResponsiveAppBar() {
   const navigate = useNavigate();
@@ -301,6 +349,12 @@ function ResponsiveAppBar() {
                       </Typography>
                       <Typography variant="body2">
                         {notification.text}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{ fontSize: 10, color: "blue" }}
+                      >
+                        {timeAgo(notification.date)}
                       </Typography>
                     </div>
                   </MenuItem>

@@ -137,10 +137,15 @@ export default function FullFeaturedCrudGrid(props) {
       status
     ) =>
     () => {
-      console.log("status " + status);
+      const existingRow = rows.find((row) => row.id === id);
+      if (!existingRow) {
+        toast.error("No row with the specified ID found");
+        return;
+      }
+
       setRowModesModel({
         ...rowModesModel,
-        [actionId]: { mode: GridRowModes.Edit },
+        [id]: { mode: GridRowModes.Edit },
       });
       setAction("save");
       setActionId(id);
@@ -150,6 +155,7 @@ export default function FullFeaturedCrudGrid(props) {
       setPrice(price);
       setQty(quantity);
       setTotal(total);
+      setlastUpdated(lastUpdated);
       setOrderDetails(orderDet);
       setOpen(true);
     };
@@ -178,7 +184,7 @@ export default function FullFeaturedCrudGrid(props) {
       });
 
       console.log("Order added successfully", response.data);
-      toast.success("Order added successfully");
+      toast.success(response.data.message);
 
       setRowModesModel({
         ...rowModesModel,
@@ -300,7 +306,17 @@ export default function FullFeaturedCrudGrid(props) {
           icon={<EditIcon />}
           label="Edit"
           className="textPrimary"
-          onClick={handleEditClick(id)}
+          onClick={handleEditClick(
+            id,
+            customerName,
+            product,
+            price,
+            quantity,
+            total,
+            orderDet,
+            lastUpdated,
+            status
+          )}
           color="inherit"
         />,
         <GridActionsCellItem

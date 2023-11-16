@@ -17,12 +17,6 @@ function UserDashboard() {
   const [activeComponent, setActiveComponent] = useState("Orders");
   const isMobile = useMediaQuery("(max-width:600px)");
 
-  const profile = {
-    name: "Lance Enriquez",
-    age: "21",
-    city: "Manila",
-  };
-
   const handleActiveComponentChange = (newComponent) => {
     setActiveComponent(newComponent);
   };

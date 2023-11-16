@@ -68,6 +68,20 @@ export default function EditAppointmentForm(props) {
       [name]: value,
     });
   };
+
+  const currentDate = new Date();
+  const options = {
+    weekday: "short",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short",
+  };
+  const formattedDate = currentDate.toLocaleString("en-US", options);
+
   const handleUpdateAppointment = () => {
     const userName = localStorage.getItem("userName");
     const appointmentNum = props.appointmentNum;
@@ -91,10 +105,21 @@ export default function EditAppointmentForm(props) {
         _time: formattedTime,
         _email: userData.Email,
         _dateTime: dateTime,
+        _dateNow: formattedDate,
       })
       .then((response) => {
         toast.success("Appointment submitted successfully");
-        window.location.reload();
+        setUserData({
+          First: "",
+          Last: "",
+          Email: "",
+          Phone: "",
+          Agenda: "",
+          Schedule: null,
+          time: null,
+          IsAM: true,
+        });
+        props.goBack();
       })
       .catch((error) => {
         toast.error("Appointment already full");

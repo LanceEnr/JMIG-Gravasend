@@ -5,6 +5,8 @@ const Order = require("../models/order");
 const Appointment = require("../models/appointment");
 const Inquiry = require("../models/inquiry");
 const Counter = require("../models/counter");
+const Notification = require("../models/customerNotification");
+const Notification2 = require("../models/adminNotification");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -20,6 +22,19 @@ const transporter = nodemailer.createTransport({
     pass: "dgqg rirx mvlv frix", // Your email password
   },
 });
+const getNextNotifId = async () => {
+  try {
+    const counter = await Counter.findOneAndUpdate(
+      { name: "_notifId" },
+      { $inc: { value: 1 } },
+      { new: true, upsert: true }
+    );
+    return counter.value;
+  } catch (err) {
+    console.error("Error getting the next inventory number:", err);
+    throw err;
+  }
+};
 const decryptEmail = (encryptedEmail, iv, encryptionKey) => {
   try {
     if (!encryptedEmail || !iv || !encryptionKey) {
@@ -54,8 +69,17 @@ router.post("/register", async (req, res) => {
   const saltRounds = 10;
 
   try {
-    const { _email, _pwd, _fName, _lName, _userName, _phone, _bday, _address } =
-      req.body;
+    const {
+      _email,
+      _pwd,
+      _fName,
+      _lName,
+      _userName,
+      _phone,
+      _bday,
+      _address,
+      _date,
+    } = req.body;
 
     const existingUsernameUser = await User.findOne({ _userName });
 
@@ -113,6 +137,17 @@ router.post("/register", async (req, res) => {
     // Save the new user with encrypted email
     await newUser.save();
 
+    const id = await getNextNotifId();
+
+    let customerNotification = new Notification2({
+      _notifID: id,
+      _date: _date,
+      _name: _fName + " " + _lName,
+      _title: "New customer registered!",
+      _description: _fName + " " + _lName + " registered an account!",
+    });
+    await customerNotification.save();
+
     res.status(200).json({ message: "User registered successfully" });
   } catch (error) {
     console.error("Registration error:", error);
@@ -130,6 +165,16 @@ const getNextInquiryNum = async () => {
 router.post("/inquiry", async (req, res) => {
   try {
     const { _name, _email, _message, _date } = req.body;
+    const id2 = await getNextNotifId();
+    const truncatedDescription = _message.substring(0, 20);
+    let customerNotification = new Notification2({
+      _notifID: id2,
+      _date: _date,
+      _name: _name,
+      _title: _name + " reached out!",
+      _description: truncatedDescription,
+    });
+    await customerNotification.save();
     const id = await getNextInquiryNum();
     const newInquiry = new Inquiry({
       _name,
@@ -184,7 +229,10 @@ router.get("/order", async (req, res) => {
 
     if (user) {
       const fullName = `${user._fName}_${user._lName}`;
-      const orders = await Order.find({ _name: fullName });
+      const orders = await Order.find({ _name: fullName })
+        .sort({ _orderNum: -1 })
+        .exec();
+
       res.json(orders);
     } else {
       console.error("User not found");
@@ -198,7 +246,11 @@ router.get("/order", async (req, res) => {
 router.get("/appointment", async (req, res) => {
   try {
     const storedUsername = req.query.userName;
-    const appointments = await Appointment.find({ _userName: storedUsername });
+
+    const appointments = await Appointment.find({ _userName: storedUsername })
+      .sort({ _appointmentNum: -1 })
+      .exec();
+
     res.json(appointments);
   } catch (error) {
     console.error("Error fetching listings:", error);
@@ -253,6 +305,10 @@ router.get("/setuser", async (req, res) => {
       return {
         Phone: user._phone,
         Address: user._address,
+        Username: user._userName,
+        fName: user._fName,
+        lName: user._lName,
+        address: user._address,
       };
     });
 
@@ -318,7 +374,9 @@ const getNextAppointmentNum = async () => {
     { $inc: { value: 1 } },
     { new: true, upsert: true }
   );
-  return counter.value;
+  const offset = 41000000;
+  const orderIdWithOffset = counter.value + offset;
+  return orderIdWithOffset;
 };
 router.post("/save-appointment", async (req, res) => {
   try {
@@ -332,6 +390,7 @@ router.post("/save-appointment", async (req, res) => {
       _time,
       _email,
       _dateTime,
+      _dateNow,
     } = req.body;
     // Check if an appointment with the same date, time, and status "Cancelled" exists
     const existingAppointment = await Appointment.findOne({
@@ -344,6 +403,29 @@ router.post("/save-appointment", async (req, res) => {
       // An appointment with the same date and time already exists and is not cancelled
       return res.status(400).json({ error: "Appointment conflict" });
     }
+
+    const existingAppointment2 = await Appointment.findOne({
+      _userName,
+      _status: "Upcoming",
+    });
+
+    if (existingAppointment2) {
+      // The user already has an upcoming appointment
+      return res
+        .status(400)
+        .json({ error: "You can only set an appointment one at a time!" });
+    }
+
+    const id = await getNextNotifId();
+
+    let customerNotification = new Notification2({
+      _notifID: id,
+      _date: _dateNow,
+      _name: _fName + " " + _lName,
+      _title: "New appointment scheduled!",
+      _description: _fName + " " + _lName + " scheduled an appointment",
+    });
+    await customerNotification.save();
 
     const _appointmentNum = await getNextAppointmentNum();
     const appointment = new Appointment({
@@ -373,8 +455,7 @@ router.post("/save-appointment", async (req, res) => {
 
 router.post("/cancel-appointment", async (req, res) => {
   try {
-    const { _appointmentNum, _status } = req.body;
-
+    const { _appointmentNum, _status, _date, _userName } = req.body;
     const appointment = await Appointment.findOne({ _appointmentNum });
 
     if (!appointment) {
@@ -383,6 +464,20 @@ router.post("/cancel-appointment", async (req, res) => {
 
     appointment._status = _status;
     await appointment.save();
+
+    const users = await User.find({ _userName: _userName });
+    for (const user of users) {
+      const id = await getNextNotifId();
+      let customerNotification = new Notification2({
+        _notifID: id,
+        _date: _date,
+        _name: user._fName + " " + user._lName,
+        _title: "Appointment Cancelled",
+        _description:
+          user._fName + " " + user._lName + " cancelled the appointment",
+      });
+      await customerNotification.save();
+    }
 
     res.json({ message: "Appointment canceled successfully" });
   } catch (error) {
@@ -403,6 +498,7 @@ router.post("/update-appointment", async (req, res) => {
     _time,
     _email,
     _dateTime,
+    _dateNow,
   } = req.body;
 
   try {
@@ -415,6 +511,17 @@ router.post("/update-appointment", async (req, res) => {
     if (existingAppointment) {
       return res.status(400).json({ error: "Appointment conflict" });
     }
+
+    const id = await getNextNotifId();
+
+    let customerNotification = new Notification2({
+      _notifID: id,
+      _date: _dateNow,
+      _name: _fName + " " + _lName,
+      _title: "Appointment Rescheduled",
+      _description: _fName + " " + _lName + " rescheduled the appointment",
+    });
+    await customerNotification.save();
 
     const updatedAppointment = await Appointment.findOneAndUpdate(
       { _appointmentNum: appointmentNum },
@@ -444,7 +551,7 @@ router.post("/update-appointment", async (req, res) => {
   } catch (error) {
     // Handle errors
     console.error("Error updating appointment:", error);
-    console.log("Error updating appointmen");
+    console.log("Error updating appointment");
     return res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -456,7 +563,7 @@ router.get("/get-counts", async (req, res) => {
     try {
       for (const user of users) {
         const fullName = `${user._fName}_${user._lName}`;
-        console.log(fullName);
+
         const ordersCount = await Order.countDocuments({
           _name: fullName,
         });
@@ -492,10 +599,8 @@ router.post("/check-email", async (req, res) => {
     }
   }
   if (isEmailUsed) {
-    console.log("working");
     res.json({ exists: isEmailUsed });
   } else {
-    console.log("working");
     res.json({ exists: isEmailUsed });
   }
 });
@@ -559,6 +664,27 @@ router.post("/reset-password", async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: "Failed to reset password." });
+  }
+});
+router.get("/fetch-notifications", async (req, res) => {
+  try {
+    const userName = req.query.userName;
+    const users = await User.find({ _userName: userName });
+
+    for (const user of users) {
+      const fName = user._fName;
+      const lName = user._lName;
+      const name = fName + "_" + lName;
+
+      const notif = await Notification.find({ _name: name }).sort({
+        _notifID: -1,
+      });
+
+      res.json(notif);
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Failed to fetch order data" });
   }
 });
 

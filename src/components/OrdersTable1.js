@@ -68,11 +68,66 @@ export default function OrdersTable1(props) {
   const isMobile = useMediaQuery("(max-width:600px)");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [name, setName] = useState(null);
+  const [materialType, setMaterialType] = useState(null);
+  const [quantity, setQuantity] = useState(null);
+  const [amount, setAmount] = useState(null);
+  const [status, setStatus] = useState(null);
+  const [orderDet, setOrderDet] = useState(null);
 
-  const steps = ["Processing", "In Transport", "Completed"];
+  const steps = ["Processing", "In Transit", "Completed"];
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+  const handleListItemClick = (
+    orderId,
+    price,
+    materialType,
+    name,
+    orderDet,
+    quantity,
+    status
+  ) => {
+    setSelectedOrderId(orderId);
+    setAmount(price);
+    setMaterialType(materialType);
+    const modifiedString = name.replace(/_/g, " ");
+    setName(modifiedString);
+    setOrderDet(orderDet);
+    setQuantity(quantity);
+    setStatus(status);
+    openModal();
+  };
+  const getStepperColor = (status, index) => {
+    switch (status) {
+      case "Pending":
+        return index === 0 ? "#4caf50" : "";
+      case "Fetch from quarry":
+        return index === 0 || index === 1 ? "#4caf50" : "#f44336";
+      case "Arrived at Pandi":
+        return index === 0 || index === 1 ? "#4caf50" : "#f44336";
+      case "Arrived at MindanaoAve.":
+        return index === 0 || index === 1 ? "#4caf50" : "#f44336";
+      case "Delayed":
+        return index === 0 || index === 1 ? "#4caf50" : "#f44336";
+      case "In Transit":
+        return index === 0 || index === 1 ? "#4caf50" : "#f44336";
+      case "Available for pickup-MindanaoAve.":
+        return index === 0 || index === 1 ? "#4caf50" : "#f44336";
+      case "Available for pickup-PANDI":
+        return index === 0 || index === 1 ? "#4caf50" : "#f44336";
+      case "Completed":
+        return "#4caf50";
+      case "Cancelled":
+        return "#f44336";
+      default:
+        return "#f44336";
+    }
+  };
+
+  const description = `${materialType} - ${quantity} cu. mt.`;
+  const price = `Amount: ₱${Number(amount * quantity).toLocaleString("en-US")}`;
 
   const modalBody = (
     <Grid
@@ -117,15 +172,15 @@ export default function OrdersTable1(props) {
               component="div"
               sx={{ fontWeight: "bold", ml: 1 }}
             >
-              #51
+              #{selectedOrderId}
             </Typography>
             {!fullScreen && (
               <Chip
-                label="Available"
+                label={status}
                 sx={{
                   fontWeight: "bold",
-                  backgroundColor: "#8dd290",
-                  color: "success.main",
+                  backgroundColor: "#2196f3",
+
                   ml: 1,
                 }}
               />
@@ -148,7 +203,9 @@ export default function OrdersTable1(props) {
                 <Step key={label} completed={index <= 2}>
                   <StepLabel
                     StepIconProps={{
-                      style: { color: index <= 2 ? "#bd8512" : "" },
+                      style: {
+                        color: getStepperColor(status, index),
+                      },
                     }}
                   >
                     {label}
@@ -163,20 +220,20 @@ export default function OrdersTable1(props) {
           <ListItemIcon>
             <PersonIcon />
           </ListItemIcon>
-          <ListItemText primary="Lance Enriquez" />
+          <ListItemText primary={name} />
         </ListItem>
         <ListItem>
           <ListItemIcon>
             <Inventory2Icon />
           </ListItemIcon>
-          <ListItemText primary="Gravel - 32 cu. mt." />
+          <ListItemText primary={description} />
         </ListItem>
 
         <ListItem>
           <ListItemIcon>
             <PaymentIcon />
           </ListItemIcon>
-          <ListItemText primary="To Pay - ₱54,000" />
+          <ListItemText primary={price} />
         </ListItem>
 
         <ListItem>
@@ -185,9 +242,7 @@ export default function OrdersTable1(props) {
           </ListItemIcon>
           <ListItemText
             primary={
-              <Typography sx={{ color: "success.main" }}>
-                Your order is ready to be picked up at Mindanao Ave. Branch
-              </Typography>
+              <Typography sx={{ color: "success.main" }}>{orderDet}</Typography>
             }
           />
         </ListItem>
@@ -256,8 +311,18 @@ export default function OrdersTable1(props) {
           .map((item, index) => (
             <Paper elevation={2} sx={{ my: 1 }} key={item.orderNumber}>
               <ListItem
-                onClick={openModal}
-                sx={{ cursor: "pointer" }} // This line adds the pointer
+                onClick={() =>
+                  handleListItemClick(
+                    item._orderNum,
+                    item._price,
+                    item._materialType,
+                    item._name,
+                    item._orderDet,
+                    item._quantity,
+                    item._status
+                  )
+                }
+                sx={{ cursor: "pointer" }}
               >
                 <ListItemAvatar>
                   <Tooltip title={item._status}>
@@ -300,7 +365,7 @@ export default function OrdersTable1(props) {
                     <Typography
                       sx={{ fontWeight: "bold" }}
                       variant="subtitle1"
-                    >{`Receipt #${item._orderNum}`}</Typography>
+                    >{`Order #${item._orderNum}`}</Typography>
                   }
                   secondary={
                     <React.Fragment>

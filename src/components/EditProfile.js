@@ -33,12 +33,6 @@ export default function ProfileInfo(props) {
     setPasswordInputType(showPassword ? "password" : "text");
   };
 
-  const profile = {
-    name: "Lance Enriquez",
-    age: "21",
-    city: "Manila",
-  };
-
   const [userData, setUserData] = useState({
     userName: "", // You should set the username here
     Phone: "",
@@ -55,11 +49,14 @@ export default function ProfileInfo(props) {
           const user = response.data[0];
 
           setUserData({
-            userName: user.userName, // Set the username if available
+            userName: user.Username,
             Phone: user.Phone,
             Address: user.Address,
-            CurrentPassword: "", // Add this line if you want to reset the password fields
-            NewPassword: "", // Add this line if you want to reset the password fields
+            fName: user.fName,
+            lName: user.lName,
+            address: user.address,
+            CurrentPassword: "",
+            NewPassword: "",
           });
         }
       })
@@ -67,7 +64,10 @@ export default function ProfileInfo(props) {
         console.error("Error fetching user data:", error);
       });
   }, []);
-
+  const profile = {
+    name: userData.fName + " " + userData.lName,
+    city: userData.address,
+  };
   const handleChange = (event) => {
     const { name, value } = event.target;
     setUserData({ ...userData, [name]: value });
@@ -129,6 +129,11 @@ export default function ProfileInfo(props) {
   const handlePhoneAddressChange = () => {
     const userName = localStorage.getItem("userName");
     const { Phone, Address } = userData;
+    const phoneNumberRegex = /^(09|\+639)\d{9}$/;
+    if (!phoneNumberRegex.test(Phone)) {
+      toast.error("Invalid Philippine phone number format");
+      return;
+    }
 
     axios
       .post("http://localhost:3001/updatephoneaddress", {
@@ -184,9 +189,9 @@ export default function ProfileInfo(props) {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  label="Email"
-                  name="Email"
-                  value="lancemikaelo2@gmail.com"
+                  label="Username"
+                  name="Username"
+                  value={userData.userName}
                   fullWidth
                   onChange={handleChange}
                 />

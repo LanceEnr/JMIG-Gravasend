@@ -50,7 +50,7 @@ function ManageOrders() {
   }, []);
 
   const columnsManageOrders = [
-    { field: "id", headerName: "Receipt No.", flex: 2 },
+    { field: "id", headerName: "Order No.", flex: 2, editable: true },
     {
       field: "customerName",
       headerName: "Customer Name",

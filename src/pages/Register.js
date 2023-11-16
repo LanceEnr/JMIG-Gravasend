@@ -44,6 +44,19 @@ export default function Register() {
     setShowPassword(!showPassword);
     setPasswordInputType(showPassword ? "password" : "text");
   };
+  const currentDate = new Date();
+  const options = {
+    weekday: "short",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short",
+  };
+  const formattedDate = currentDate.toLocaleString("en-US", options);
+
   const [formData, setFormData] = useState({
     _fName: "",
     _lName: "",
@@ -53,6 +66,7 @@ export default function Register() {
     _phone: "",
     _bday: "",
     _address: "",
+    _date: formattedDate,
   });
   const navigate = useNavigate();
   const handleChange = (event) => {

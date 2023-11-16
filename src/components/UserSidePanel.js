@@ -55,6 +55,29 @@ function SidePanel({ setActiveComponent }) {
       });
   }, []);
 
+  const [userData, setUserData] = useState({
+    fName: "",
+    lName: "",
+  });
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("userName");
+    axios
+      .get(`http://localhost:3001/setuser?userName=${storedUsername}`)
+      .then((response) => {
+        if (response.data.length > 0) {
+          const user = response.data[0];
+
+          setUserData({
+            fName: user.fName,
+            lName: user.lName,
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+      });
+  }, []);
+
   const badgeContentMap = {
     Orders: counts.totalOrders,
     Appointments: counts.totalAppointments,
@@ -79,13 +102,13 @@ function SidePanel({ setActiveComponent }) {
               variant="subtitle1"
               sx={{ fontWeight: "bold", marginBottom: "8px" }}
             >
-              Lance Enriquez
+              {userData.fName}
             </Typography>
             <Typography
               variant="body2"
               sx={{ marginBottom: "8px", color: "#004aad", fontWeight: "bold" }}
             >
-              @lanceenr
+              {userName}
             </Typography>
           </div>
         </ListItem>
