@@ -39,7 +39,7 @@ const transformListingData = (data) => {
 
 const rowsListing = transformListingData(await fetchListingData());
 
-export default function ManageListings() {
+export default function ManageListings({ onAddClick, onEditClick }) {
   const [open, setOpen] = React.useState(false);
   const [action, setAction] = React.useState(null);
 
@@ -92,6 +92,7 @@ export default function ManageListings() {
             label="Edit"
             className="textPrimary"
             color="inherit"
+            onClick={onEditClick}
           />
 
           <GridActionsCellItem
@@ -115,7 +116,7 @@ export default function ManageListings() {
       >
         <Title>Manage Listings</Title>
 
-        <Button variant="contained" sx={{ ml: 1 }}>
+        <Button variant="contained" sx={{ ml: 1 }} onClick={onAddClick}>
           Add Listing
         </Button>
       </Box>

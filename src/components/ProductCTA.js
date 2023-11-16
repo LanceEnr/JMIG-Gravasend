@@ -4,7 +4,7 @@ import axios from "axios";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
-import { TextField, Button, Snackbar } from "@mui/material";
+import { TextField, Button, Checkbox } from "@mui/material";
 import Typography from "../components/common/Typography";
 import ImageDots from "../assets/productCTAImageDots.webp";
 import Catalog from "../assets/cta.webp";
@@ -159,18 +159,20 @@ function ProductCTA() {
                 multiline
                 rows={4}
               />
-              <div>
-                <input
-                  type="checkbox"
-                  id="agreementCheckbox"
-                  checked={agreementChecked}
-                  onChange={handleCheckboxChange}
-                />
-                <label htmlFor="agreementCheckbox">
-                  I agree that the information provided will be used for product
-                  promotion and will be used to contact you.
-                </label>
-              </div>
+              <Checkbox
+                id="agreementCheckbox"
+                checked={agreementChecked}
+                onChange={handleCheckboxChange}
+              />
+              <Typography
+                variant="caption"
+                color="textSecondary"
+                component="label"
+                htmlFor="agreementCheckbox"
+              >
+                I agree that the information provided will be used for product
+                promotion and will be used to contact me.
+              </Typography>
 
               {/* Button to open the dialog */}
 
