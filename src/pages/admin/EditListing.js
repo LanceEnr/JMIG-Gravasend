@@ -16,7 +16,7 @@ import {
 
 import Title from "./components/Title";
 
-export default function EditListing() {
+export default function EditListing({ onBackClick }) {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [productName, setProductName] = useState("");
   const [category, setCategory] = useState("");
@@ -152,35 +152,29 @@ export default function EditListing() {
                     </FormControl>
                   </Grid>
                   <Grid item xs={6}>
-                    <FormControl fullWidth>
-                      <InputLabel id="category-label">Category</InputLabel>
-                      {productName ? (
-                        <Select
-                          labelId="category-label"
-                          id="category-select"
-                          value={category}
-                          label="Category"
-                          onChange={(e) => {
-                            setCategory(e.target.value);
-                          }}
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                        >
-                          <MenuItem value={"Aggregate Materials"}>
-                            Aggregate Materials
-                          </MenuItem>
-                          <MenuItem value={"Service"}>Services</MenuItem>
-                        </Select>
-                      ) : (
-                        <TextField
-                          label="Category"
-                          name="category"
-                          fullWidth
-                          disabled
-                        />
-                      )}
-                    </FormControl>
+                    {productName ? (
+                      <TextField
+                        label="Price"
+                        name="price"
+                        type="number"
+                        fullWidth
+                        onChange={(e) => {
+                          setPrice(e.target.value);
+                        }}
+                        value={price}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    ) : (
+                      <TextField
+                        label="Price"
+                        name="price"
+                        type="number"
+                        fullWidth
+                        disabled
+                      />
+                    )}
                   </Grid>
                   <Grid item xs={12}>
                     {productName ? (
@@ -218,31 +212,7 @@ export default function EditListing() {
                       <p>Select a product you want to modify</p>
                     )}
                   </Grid>
-                  <Grid item xs={12}>
-                    {productName ? (
-                      <TextField
-                        label="Price"
-                        name="price"
-                        type="number"
-                        fullWidth
-                        onChange={(e) => {
-                          setPrice(e.target.value);
-                        }}
-                        value={price}
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                      />
-                    ) : (
-                      <TextField
-                        label="Price"
-                        name="price"
-                        type="number"
-                        fullWidth
-                        disabled
-                      />
-                    )}
-                  </Grid>
+
                   <Grid item xs={12}>
                     {productName ? (
                       <TextField
@@ -274,6 +244,17 @@ export default function EditListing() {
                   </Grid>
 
                   <Grid item xs={12}>
+                    <Button
+                      variant="outlined"
+                      sx={{
+                        marginRight: 2,
+                        color: "#004aad",
+                        borderColor: "#004aad",
+                      }}
+                      onClick={onBackClick}
+                    >
+                      Go Back
+                    </Button>
                     <Button variant="contained" color="primary" type="submit">
                       Save changes
                     </Button>

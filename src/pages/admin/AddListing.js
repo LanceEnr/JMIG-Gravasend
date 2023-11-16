@@ -16,7 +16,7 @@ import {
 
 import Title from "./components/Title";
 
-export default function AddListing() {
+export default function AddListing({ onBackClick }) {
   const [product, setProduct] = React.useState("");
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState("");
@@ -139,24 +139,16 @@ export default function AddListing() {
                     </FormControl>
                   </Grid>
                   <Grid item xs={6}>
-                    <FormControl fullWidth>
-                      <InputLabel id="category-label">Category</InputLabel>
-                      <Select
-                        labelId="category-label"
-                        id="category"
-                        name="category"
-                        value={category}
-                        label="Category"
-                        onChange={(e) => {
-                          setCategory(e.target.value);
-                        }}
-                      >
-                        <MenuItem value={"Aggregate Materials"}>
-                          Aggregate Materials
-                        </MenuItem>
-                        <MenuItem value={"Services"}>Services</MenuItem>
-                      </Select>
-                    </FormControl>
+                    <TextField
+                      label="Price"
+                      name="price"
+                      value={price}
+                      type="number"
+                      onChange={(e) => {
+                        setPrice(e.target.value);
+                      }}
+                      fullWidth
+                    />
                   </Grid>
                   <Grid item xs={12}>
                     <Box
@@ -188,18 +180,7 @@ export default function AddListing() {
                       )}
                     </Box>
                   </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      label="Price"
-                      name="price"
-                      value={price}
-                      type="number"
-                      onChange={(e) => {
-                        setPrice(e.target.value);
-                      }}
-                      fullWidth
-                    />
-                  </Grid>
+
                   <Grid item xs={12}>
                     <TextField
                       fullWidth
@@ -216,6 +197,17 @@ export default function AddListing() {
                   </Grid>
 
                   <Grid item xs={12}>
+                    <Button
+                      variant="outlined"
+                      sx={{
+                        marginRight: 2,
+                        color: "#004aad",
+                        borderColor: "#004aad",
+                      }}
+                      onClick={onBackClick}
+                    >
+                      Go Back
+                    </Button>
                     <Button variant="contained" color="primary" type="submit">
                       Save changes
                     </Button>

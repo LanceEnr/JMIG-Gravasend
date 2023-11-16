@@ -14,27 +14,23 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminRegister from "./pages/admin/AdminRegister";
 import AdminForgotPassword from "./pages/admin/AdminForgotPassword";
-
-const AdminProfileInfo = lazy(() => import("./pages/admin/AdminProfileInfo"));
-const FleetInformation = lazy(() => import("./pages/admin/FleetInformation"));
-const Maintenance = lazy(() => import("./pages/admin/Maintenance"));
-const Inspection = lazy(() => import("./pages/admin/Inspection"));
-const Trips = lazy(() => import("./pages/admin/Trips"));
-const JobOrderSystem = lazy(() => import("./pages/admin/JobOrderSystem"));
-const DeliveryMonitoring = lazy(() =>
-  import("./pages/admin/DeliveryMonitoring")
-);
-const Reports = lazy(() => import("./pages/admin/Reports"));
-const DriverManagement = lazy(() => import("./pages/admin/DriverManagement"));
-const ManageAppointments = lazy(() =>
-  import("./pages/admin/ManageAppointments")
-);
-const ManageOrders = lazy(() => import("./pages/admin/ManageOrders"));
-const Inventory = lazy(() => import("./pages/admin/Inventory"));
-const ManageListings = lazy(() => import("./pages/admin/ManageListings"));
-const Content = lazy(() => import("./pages/admin/Content"));
-const UserManagement = lazy(() => import("./pages/admin/UserManagement"));
-const ManageContactForm = lazy(() => import("./pages/admin/ManageContactForm"));
+import AdminProfileInfo from "./pages/admin/AdminProfileInfo";
+import FleetInformation from "./pages/admin/FleetInformation";
+import Maintenance from "./pages/admin/Maintenance";
+import Inspection from "./pages/admin/Inspection";
+import Trips from "./pages/admin/Trips";
+import JobOrderSystem from "./pages/admin/JobOrderSystem";
+import DeliveryMonitoring from "./pages/admin/DeliveryMonitoring";
+import Reports from "./pages/admin/Reports";
+import DriverManagement from "./pages/admin/DriverManagement";
+import ManageAppointments from "./pages/admin/ManageAppointments";
+import ManageOrders from "./pages/admin/ManageOrders";
+import Inventory from "./pages/admin/Inventory";
+import ManageListings from "./pages/admin/ManageListings";
+import Content from "./pages/admin/Content";
+import UserManagement from "./pages/admin/UserManagement";
+import ManageContactForm from "./pages/admin/ManageContactForm";
+import Listings from "./pages/admin/Listings";
 
 const initialState = {
   isAuthenticated: !!localStorage.getItem("admintoken"),
@@ -126,11 +122,7 @@ function AdminApp() {
                       exact
                       element={<Inventory />}
                     />
-                    <Route
-                      path="/adminmanagelistings"
-                      exact
-                      element={<ManageListings />}
-                    />
+
                     <Route path="/admincontent" exact element={<Content />} />
                     <Route
                       path="/adminusermanagement"
@@ -142,6 +134,7 @@ function AdminApp() {
                       exact
                       element={<ManageContactForm />}
                     />
+                    <Route path="/adminlistings" exact element={<Listings />} />
                   </Routes>
                 </Suspense>
               </Grid>

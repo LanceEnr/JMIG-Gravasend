@@ -25,7 +25,6 @@ function Content() {
               aria-label="basic tabs example"
             >
               <Tab label="Banners" />
-              <Tab label="Testimonials" />
               <Tab label="Values" />
               <Tab label="About" />
               <Tab label="Contact" />
@@ -33,11 +32,10 @@ function Content() {
             </Tabs>
           </Box>
           {value === 0 && <EditBanners />}
-          {value === 1 && <EditTestimonials />}
-          {value === 2 && <CompanyValues />}
-          {value === 3 && <AboutContent />}
-          {value === 4 && <ContactContent />}
-          {value === 5 && <FaqTable columns={columnsFaqs} rows={rowsFaqs} />}
+          {value === 1 && <CompanyValues />}
+          {value === 2 && <AboutContent />}
+          {value === 3 && <ContactContent />}
+          {value === 4 && <FaqTable columns={columnsFaqs} rows={rowsFaqs} />}
         </Box>
       </Paper>
     </div>

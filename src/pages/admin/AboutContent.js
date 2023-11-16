@@ -9,8 +9,13 @@ import {
   Typography,
   Divider,
 } from "@mui/material";
+import { useDropzone } from "react-dropzone";
 
 export default function AboutContent() {
+  const { getRootProps, getInputProps, isDragActive } = useDropzone();
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [filePreview, setFilePreview] = useState(null);
+
   const [formData, setFormData] = useState({});
 
   const handleFormChange = (event) => {
@@ -49,7 +54,40 @@ export default function AboutContent() {
                 <Grid item xs={12}>
                   <Typography>Vision</Typography>
                 </Grid>
-
+                <Grid item xs={12}>
+                  <Box
+                    {...getRootProps()}
+                    sx={{
+                      height: 200,
+                      border: "1px dashed gray",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <input {...getInputProps()} />
+                    {isDragActive ? (
+                      <p>Drop the image here...</p>
+                    ) : (
+                      <div>
+                        {selectedFile ? (
+                          <div>
+                            <img
+                              src={filePreview}
+                              alt={selectedFile.name}
+                              style={{ maxWidth: "300px", maxHeight: "100px" }}
+                            />
+                            <p>Selected file: {selectedFile.name}</p>
+                          </div>
+                        ) : (
+                          <p>
+                            Drag & drop image here, or click to select an image
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </Box>
+                </Grid>
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
@@ -71,7 +109,40 @@ export default function AboutContent() {
                 <Grid item xs={12}>
                   <Typography>Mission</Typography>
                 </Grid>
-
+                <Grid item xs={12}>
+                  <Box
+                    {...getRootProps()}
+                    sx={{
+                      height: 200,
+                      border: "1px dashed gray",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <input {...getInputProps()} />
+                    {isDragActive ? (
+                      <p>Drop the image here...</p>
+                    ) : (
+                      <div>
+                        {selectedFile ? (
+                          <div>
+                            <img
+                              src={filePreview}
+                              alt={selectedFile.name}
+                              style={{ maxWidth: "300px", maxHeight: "100px" }}
+                            />
+                            <p>Selected file: {selectedFile.name}</p>
+                          </div>
+                        ) : (
+                          <p>
+                            Drag & drop image here, or click to select an image
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </Box>
+                </Grid>
                 <Grid item xs={12}>
                   <TextField
                     fullWidth

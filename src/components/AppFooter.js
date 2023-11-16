@@ -4,7 +4,10 @@ import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import Container from "@mui/material/Container";
 import Typography from "../components/common/Typography";
-
+import Avatar from "@mui/material/Avatar";
+import PhoneIcon from "@mui/icons-material/Phone";
+import FacebookOutlinedIcon from "@mui/icons-material/FacebookOutlined";
+import MapsUgcOutlinedIcon from "@mui/icons-material/MapsUgcOutlined";
 function Copyright() {
   return (
     <React.Fragment>
@@ -172,6 +175,56 @@ export default function AppFooter() {
               </Box>
               <Box component="li" sx={{ py: 0.5 }}>
                 <Typography variant="caption">+639774548583</Typography>
+              </Box>
+              <Box
+                component="li"
+                sx={{
+                  py: 0.5,
+                  display: "flex", // Add this line
+                }}
+              >
+                <a href="https://your-external-link.com">
+                  {" "}
+                  <Avatar
+                    sx={{
+                      backgroundColor: "#EBDAB7",
+                      marginRight: 1,
+                      width: {
+                        xs: "16px", // Width for extra small screens (mobile)
+                        sm: "22px", // Width for small screens and above
+                      },
+                      height: {
+                        xs: "16px", // Height for extra small screens (mobile)
+                        sm: "22px", // Height for small screens and above
+                      },
+                    }}
+                  >
+                    <FacebookOutlinedIcon
+                      style={{ color: "#bd8512", fontSize: "16px" }}
+                    />
+                  </Avatar>
+                </a>
+                <a href="https://your-external-link.com">
+                  {" "}
+                  <Avatar
+                    sx={{
+                      backgroundColor: "#EBDAB7",
+                      marginRight: 1,
+                      width: {
+                        xs: "16px", // Width for extra small screens (mobile)
+                        sm: "22px", // Width for small screens and above
+                      },
+                      height: {
+                        xs: "16px", // Height for extra small screens (mobile)
+                        sm: "22px", // Height for small screens and above
+                      },
+                    }}
+                  >
+                    <MapsUgcOutlinedIcon
+                      style={{ color: "#bd8512", fontSize: "16px" }}
+                    />
+                  </Avatar>
+                </a>
               </Box>
             </Box>
           </Grid>

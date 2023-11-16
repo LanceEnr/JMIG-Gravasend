@@ -129,23 +129,11 @@ export default function EditBanners() {
                       label="Category"
                       onChange={handleCategoryChange}
                     >
-                      <ListSubheader>Miscellanous Banners</ListSubheader>
                       <MenuItem value={"Homepage Full Banner"}>
                         Homepage Full Banner
                       </MenuItem>
-                      <MenuItem value={"Homepage Half Banner"}>
-                        Homepage Half Banner
-                      </MenuItem>
-                      <MenuItem value={"Contact Us Banner"}>
-                        Contact Us Banner
-                      </MenuItem>
 
-                      <ListSubheader>Page Title Banners</ListSubheader>
                       <MenuItem value={"Products Page"}>Products Page</MenuItem>
-                      <MenuItem value={"Services Page"}>Services Page</MenuItem>
-                      <MenuItem value={"FAQS Page"}>FAQS Page</MenuItem>
-                      <MenuItem value={"About Page"}>About Page</MenuItem>
-                      <MenuItem value={"Contact Page"}>Contact Page</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>

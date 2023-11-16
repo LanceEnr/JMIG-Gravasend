@@ -15,6 +15,7 @@ import MapsUgcIcon from "@mui/icons-material/MapsUgc";
 import HomeIcon from "@mui/icons-material/Home";
 import PhoneIcon from "@mui/icons-material/Phone";
 import EmailIcon from "@mui/icons-material/Email";
+import SmartphoneIcon from "@mui/icons-material/Smartphone";
 export default function ContactContent() {
   const [formData, setFormData] = useState({});
 
@@ -57,7 +58,7 @@ export default function ContactContent() {
                 <Grid item xs={12}>
                   <Typography>Business Contact Information</Typography>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={6}>
                   <TextField
                     id="address"
                     name="_address"
@@ -76,7 +77,7 @@ export default function ContactContent() {
                     }}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={6}>
                   <TextField
                     id="address"
                     name="_address"
@@ -96,11 +97,50 @@ export default function ContactContent() {
                   />
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid item xs={6}>
                   <TextField
                     id="contact-no"
                     name="_contactNo"
-                    label="Contact No."
+                    label="Phone 1"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    value={formData._contact}
+                    onChange={handleFormChange}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SmartphoneIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    id="contact-no"
+                    name="_contactNo"
+                    label="Phone 2"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    value={formData._contact}
+                    onChange={handleFormChange}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SmartphoneIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <TextField
+                    id="contact-no"
+                    name="_contactNo"
+                    label="Landline"
                     variant="outlined"
                     fullWidth
                     required
@@ -116,7 +156,7 @@ export default function ContactContent() {
                   />
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid item xs={6}>
                   <TextField
                     id="email"
                     name="_email"
