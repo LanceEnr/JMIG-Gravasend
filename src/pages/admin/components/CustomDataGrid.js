@@ -120,9 +120,16 @@ export default function FullFeaturedCrudGrid(props) {
   };
 
   const handleSaveClick = (id, itemName, quantity, location) => () => {
+    const existingRow = rows.find((row) => row.id === id);
+
+    if (!existingRow) {
+      toast.error("No row with the specified ID found");
+      return;
+    }
+
     setRowModesModel({
       ...rowModesModel,
-      [actionId]: { mode: GridRowModes.Edit },
+      [id]: { mode: GridRowModes.Edit },
     });
     setAction("save");
     setActionId(id);
@@ -130,22 +137,25 @@ export default function FullFeaturedCrudGrid(props) {
     setQuantity(quantity);
     setLocation(location);
     setOpen(true);
-    console.log(
-      "action id: " +
-        actionId +
-        " name: " +
-        itemName +
-        " quantity: " +
-        quantity +
-        " location: " +
-        location +
-        " last: " +
-        lastUpdated
-    );
   };
 
-  const handleEditClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+  const handleEditClick = (id, itemName, quantity, location) => () => {
+    const existingRow = rows.find((row) => row.id === id);
+    if (!existingRow) {
+      toast.error("No row with the specified ID found");
+      return;
+    }
+
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.Edit },
+    });
+    setAction("save");
+    setActionId(id);
+    setItemName(itemName);
+    setQuantity(quantity);
+    setLocation(location);
+    setOpen(true);
   };
 
   const handleSaveConfirmed = async (e) => {
@@ -155,21 +165,12 @@ export default function FullFeaturedCrudGrid(props) {
       ...rowModesModel,
       [actionId]: { mode: GridRowModes.View },
     });
-    console.log(
-      "action id: " +
-        actionId +
-        " name: " +
-        itemName +
-        " quantity: " +
-        quantity +
-        " location: " +
-        location +
-        " last: " +
-        lastUpdated
-    );
+
     if (!itemName || !quantity || !location) {
       // Show an error message and prevent saving
       toast.error("All fields are required.");
+      setOpen(false);
+
       return;
     }
 
@@ -182,8 +183,7 @@ export default function FullFeaturedCrudGrid(props) {
         lastUpdated: formattedDate,
       });
 
-      console.log("Item added successfully", response.data);
-      toast.success("Item added successfully");
+      toast.success(response.data.message);
 
       setRowModesModel({
         ...rowModesModel,
@@ -221,18 +221,15 @@ export default function FullFeaturedCrudGrid(props) {
   const deleteRecord = async (id) => {
     try {
       const _inventoryID = parseInt(id, 10);
-      const response = await axios.delete(
-        `http://localhost:3001/deleteRecord/${_inventoryID}`
-      );
+      const response = await axios.post("http://localhost:3001/deleteRecord", {
+        _inventoryID,
+      });
 
       if (response.status === 200) {
-        // Delete the record from your local state
         setRows(rows.filter((row) => row.id !== id));
-        // Close the confirmation dialog
         setOpen(false);
         toast.success("Record deleted successfully");
       } else if (response.status === 404) {
-        // Display a "Record not found" toast message
         toast.error("Record not found");
       } else {
         toast.error("Failed to delete the record");
@@ -308,7 +305,7 @@ export default function FullFeaturedCrudGrid(props) {
           icon={<EditIcon />}
           label="Edit"
           className="textPrimary"
-          onClick={handleEditClick(id)}
+          onClick={handleEditClick(id, itemName, quantity, location)}
           color="inherit"
         />,
         <GridActionsCellItem

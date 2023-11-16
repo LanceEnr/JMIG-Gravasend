@@ -178,7 +178,6 @@ export default function FullFeaturedCrudGrid(props) {
         verdict: verdict,
       });
 
-      console.log("Inspection Schedule added successfully", response.data);
       toast.success(response.data.message);
 
       setRowModesModel({

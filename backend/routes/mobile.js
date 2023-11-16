@@ -622,7 +622,9 @@ const getNextFleetNum = async () => {
       { $inc: { value: 1 } },
       { new: true, upsert: true }
     );
-    return counter.value;
+    const offset = 61000000;
+    const orderIdWithOffset = counter.value + offset;
+    return orderIdWithOffset;
   } catch (err) {
     console.error("Error getting the next fleet number:", err);
     throw err;
@@ -644,7 +646,9 @@ const getNextMaintenanceNum = async () => {
       { $inc: { value: 1 } },
       { new: true, upsert: true }
     );
-    return counter.value;
+    const offset = 21000000;
+    const orderIdWithOffset = counter.value + offset;
+    return orderIdWithOffset;
   } catch (err) {
     console.error("Error getting the next maintenance number:", err);
     throw err;
@@ -781,12 +785,28 @@ router.post("/addMaintenance", async (req, res) => {
       maintenanceData.uid = uid;
 
       const db = admin.database();
-      const ref = db.ref(
+      const refReminders = db.ref(
         `maintenanceReminders/${maintenanceData.uid}/${maintenanceData.actionId}`
       );
-      await ref.set(maintenanceData);
 
-      res.status(200).json({ message: "Maintenance added successfully" });
+      // Check if status is "Completed"
+      if (maintenanceData.status === "Completed") {
+        // Move the record to maintenanceHistory
+        const refHistory = db.ref(
+          `maintenanceHistory/${maintenanceData.uid}/${maintenanceData.actionId}`
+        );
+        await refHistory.set(maintenanceData);
+
+        // Remove the record from maintenanceReminders
+        await refReminders.remove();
+      } else {
+        // Add the record to maintenanceReminders
+        await refReminders.set(maintenanceData);
+      }
+
+      res
+        .status(200)
+        .json({ message: "Maintenance record updated successfully" });
     } else {
       res.status(404).json({ message: "Plate number not found" });
     }
@@ -798,7 +818,6 @@ router.post("/addMaintenance", async (req, res) => {
 
 router.post("/deleteMaintenanceRecord", async (req, res) => {
   const _maintenanceId = req.body._maintenanceId;
-
   try {
     const db = admin.database();
     const maintenanceRef = db.ref(`maintenanceReminders/${_maintenanceId}`);
@@ -901,7 +920,7 @@ router.post("/addInspection", async (req, res) => {
       await ref.set(inspectionData);
 
       res.status(200).json({
-        message: "Inspection added to upcoming inspections successfully",
+        message: "Inspection updated successfully",
       });
     }
   } catch (error) {
@@ -942,6 +961,53 @@ router.get("/fetch-safetychecklist/:id", async (req, res) => {
   } catch (error) {
     console.error("Error fetching data:", error);
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.post("/update-maintenanceRecords", async (req, res) => {
+  const maintenanceData = req.body;
+
+  try {
+    const plateNo = maintenanceData.plateNo;
+    const uid = await getUIDFromPlate(plateNo);
+
+    maintenanceData.uid = uid;
+
+    const db = admin.database();
+    const ref = db.ref(
+      `maintenanceHistory/${maintenanceData.uid}/${maintenanceData.actionId}`
+    );
+
+    // Use update to append new fields without deleting existing ones
+    await ref.update({
+      provider: maintenanceData.provider,
+      cost: maintenanceData.cost,
+    });
+
+    res
+      .status(200)
+      .json({ message: "Maintenance record updated successfully" });
+  } catch (error) {
+    console.error("Firebase Authentication error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/deleteMaintenanceRecord2", async (req, res) => {
+  const _maintenanceId = req.body._maintenanceId;
+
+  try {
+    const db = admin.database();
+    const maintenanceRef = db.ref(`maintenanceHistory/${_maintenanceId}`);
+
+    await maintenanceRef.remove();
+
+    res
+      .status(200)
+      .json({ message: "Maintenance record deleted successfully" });
+  } catch (error) {
+    console.error("Firebase delete error:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 

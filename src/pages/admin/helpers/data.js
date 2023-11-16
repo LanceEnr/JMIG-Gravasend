@@ -398,13 +398,18 @@ export const columnsMaintenanceRecords = [
   { field: "plateNo", headerName: "Tractor No.", flex: 2 },
   { field: "service", headerName: "Service", flex: 2 },
   {
-    field: "serviceProvider",
+    field: "mileage",
+    headerName: "Mileage",
+    flex: 1,
+  },
+  {
+    field: "provider",
     headerName: "Service Provider",
     flex: 2,
     editable: true,
   },
   {
-    field: "totalCost",
+    field: "cost",
     headerName: "Total Cost",
     flex: 2,
     editable: true,
@@ -418,15 +423,29 @@ const transformMaintenanceRecordData = (data) => {
       if (data.hasOwnProperty(uid)) {
         const userData = data[uid];
 
-        const mappedData = {
-          id: uid,
-          plateNo: userData.plateNo,
-          service: userData.service,
-          serviceProvider: userData.serviceProvider,
-          totalCost: userData.totalCost,
-        };
+        for (const id in userData) {
+          if (userData.hasOwnProperty(id)) {
+            const maintenanceData = userData[id];
 
-        transformedData.push(mappedData);
+            const mappedData = {
+              uid: uid,
+              id: id,
+              plateNo: maintenanceData.plateNo,
+              service: maintenanceData.service,
+              frequency: maintenanceData.frequency,
+              nextDueMileage: maintenanceData.nextDueMileage,
+              nextMaintenanceDate: new Date(
+                maintenanceData.nextMaintenanceDate
+              ),
+              mileage: maintenanceData.mileage,
+              status: maintenanceData.status,
+              provider: maintenanceData.provider,
+              cost: maintenanceData.cost,
+            };
+
+            transformedData.push(mappedData);
+          }
+        }
       }
     }
   }
@@ -500,7 +519,7 @@ export const columnsCurrentInventory = [
   },
   {
     field: "quantity",
-    headerName: "Quantity",
+    headerName: "Quantity (cub. mt.)",
     flex: 2,
     editable: true,
   },
@@ -510,7 +529,7 @@ export const columnsCurrentInventory = [
     flex: 2,
     editable: true,
     type: "singleSelect",
-    valueOptions: ["Warehouse A", "Warehouse B"],
+    valueOptions: ["Pandi", "MindanaoAve."],
   },
   {
     field: "lastUpdated",

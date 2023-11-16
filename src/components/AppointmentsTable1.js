@@ -70,8 +70,31 @@ export default function AppointmentsTable1(props) {
   const [showModal, setShowModal] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const [status, setstatus] = useState(null);
+  const [phone, setphone] = useState(null);
+  const [fName, setfName] = useState(null);
+  const [lName, setlName] = useState(null);
+  const [date, setdate] = useState(null);
+  const [note, setnote] = useState(null);
 
-  const handleOpenModal = () => setShowModal(true);
+  const handleOpenModal = (
+    appointmentNum,
+    status,
+    phone,
+    fName,
+    lName,
+    date,
+    note
+  ) => {
+    setAppointmentNumber(appointmentNum);
+    setstatus(status);
+    setphone(phone);
+    setfName(fName);
+    setlName(lName);
+    setdate(date);
+    setnote(note);
+    setShowModal(true);
+  };
   const handleCloseModal = () => setShowModal(false);
 
   const handleOpenDialog = () => {
@@ -211,16 +234,23 @@ export default function AppointmentsTable1(props) {
               component="div"
               sx={{ fontWeight: "bold", ml: 1 }}
             >
-              #11234
+              #{appointmentNum}
             </Typography>
             <Divider orientation="vertical" flexItem />
             {!fullScreen && (
               <Chip
-                label="Upcoming"
+                label={status}
                 sx={{
                   fontWeight: "bold",
-                  backgroundColor: "#EBDAB7",
-                  color: "#bd8512",
+                  backgroundColor:
+                    status === "Completed"
+                      ? "#8dd290" // Green for Completed
+                      : status === "Cancelled"
+                      ? "#f5c9c9" // Red for Cancelled
+                      : status === "Upcoming"
+                      ? "#ffc890" // Yellow for Upcoming
+                      : "#EBDAB7", // Default color
+                  color: "#FFFFFF", // White text for better visibility
                   ml: 1,
                 }}
               />
@@ -242,25 +272,25 @@ export default function AppointmentsTable1(props) {
           <ListItemIcon>
             <PersonIcon />
           </ListItemIcon>
-          <ListItemText primary="Lance Enriquez" />
+          <ListItemText primary={fName + " " + lName} />
         </ListItem>
         <ListItem>
           <ListItemIcon>
             <PhoneIcon />
           </ListItemIcon>
-          <ListItemText primary="+63 977 454 8584" />
+          <ListItemText primary={phone} />
         </ListItem>
         <ListItem>
           <ListItemIcon>
             <EventIcon />
           </ListItemIcon>
-          <ListItemText primary="10:00 - 10:20, Monday, 23 November 2023" />
+          <ListItemText primary={date} />
         </ListItem>
         <ListItem>
           <ListItemIcon>
             <InfoIcon />
           </ListItemIcon>
-          <ListItemText primary="Order Placement" />
+          <ListItemText primary={note} />
         </ListItem>
       </Grid>
     </Grid>
@@ -326,7 +356,17 @@ export default function AppointmentsTable1(props) {
             <ListItem
               key={item.appointmentNumber}
               divider={index !== appointments.length - 1}
-              onClick={handleOpenModal}
+              onClick={() =>
+                handleOpenModal(
+                  item._appointmentNum,
+                  item._status,
+                  item._phone,
+                  item._fName,
+                  item._lName,
+                  item._date,
+                  item._note
+                )
+              }
               sx={{ cursor: "pointer" }} // This line adds the pointer
             >
               <ListItemAvatar>

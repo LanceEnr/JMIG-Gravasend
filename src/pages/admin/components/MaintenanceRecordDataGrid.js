@@ -47,9 +47,8 @@ export default function FullFeaturedCrudGrid(props) {
   const [actionId, setActionId] = React.useState("");
   const [plateNo, setplateNo] = React.useState("");
   const [service, setservice] = React.useState("");
-  const [frequency, setfrequency] = React.useState("");
-  const [nextDueMileage, setnextDueMileage] = React.useState("");
-  const [status, setStatus] = React.useState("");
+  const [provider, setprovider] = React.useState("");
+  const [cost, setcost] = React.useState("");
 
   const [isEditing, setIsEditing] = React.useState(false);
 
@@ -113,21 +112,26 @@ export default function FullFeaturedCrudGrid(props) {
     }
   };
 
-  const handleSaveClick =
-    (id, plateNo, service, frequency, nextDueMileage, status) => () => {
-      setRowModesModel({
-        ...rowModesModel,
-        [actionId]: { mode: GridRowModes.Edit },
-      });
-      setAction("save");
-      setActionId(id);
-      setplateNo(plateNo);
-      setservice(service);
-      setfrequency(frequency);
-      setnextDueMileage(nextDueMileage);
-      setStatus(status);
-      setOpen(true);
-    };
+  const handleSaveClick = (id, plateNo, service, provider, cost) => () => {
+    const existingRow = rows.find((row) => row.id === id);
+
+    if (!existingRow) {
+      toast.error("No row with the specified ID found");
+      return;
+    }
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.Edit },
+    });
+    setAction("save");
+    setActionId(id);
+    setplateNo(plateNo);
+    setservice(service);
+    setprovider(provider);
+    setcost(cost);
+
+    setOpen(true);
+  };
 
   const handleEditClick = (id) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
@@ -140,23 +144,27 @@ export default function FullFeaturedCrudGrid(props) {
       ...rowModesModel,
       [actionId]: { mode: GridRowModes.View },
     });
+    if (!provider || !cost) {
+      toast.error("All fields are required.");
+      setOpen(false);
+
+      return;
+    }
 
     try {
       const response = await axios.post(
-        "http://localhost:3001/addMaintenance",
+        "http://localhost:3001/update-maintenanceRecords",
         {
           actionId: actionId,
           plateNo: plateNo,
           service: service,
-          frequency: frequency,
-          nextDueMileage: nextDueMileage,
-          mileage: "",
-          status: status,
+          provider: provider,
+          cost: cost,
         }
       );
 
       console.log("Maintenance added successfully", response.data);
-      toast.success("Maintenance added successfully");
+      toast.success("Maintenance record updated successfully");
 
       setRowModesModel({
         ...rowModesModel,
@@ -175,7 +183,7 @@ export default function FullFeaturedCrudGrid(props) {
     try {
       const _maintenanceId = parseInt(id, 10);
       const response = await axios.post(
-        "http://localhost:3001/deleteMaintenanceRecord",
+        "http://localhost:3001/deleteMaintenanceRecord2",
         { _maintenanceId }
       );
 
@@ -232,8 +240,7 @@ export default function FullFeaturedCrudGrid(props) {
     width: props.actionWidth || 100,
     cellClassName: "actions",
     getActions: (params) => {
-      const { id, plateNo, service, frequency, nextDueMileage, status } =
-        params.row;
+      const { id, plateNo, service, provider, cost } = params.row;
       const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
       if (isInEditMode) {
@@ -244,14 +251,7 @@ export default function FullFeaturedCrudGrid(props) {
             sx={{
               color: "primary.main",
             }}
-            onClick={handleSaveClick(
-              id,
-              plateNo,
-              service,
-              frequency,
-              nextDueMileage,
-              status
-            )}
+            onClick={handleSaveClick(id, plateNo, service, provider, cost)}
           />,
           <GridActionsCellItem
             icon={<CancelIcon />}
@@ -269,12 +269,6 @@ export default function FullFeaturedCrudGrid(props) {
           label="Edit"
           className="textPrimary"
           onClick={handleEditClick(id)}
-          color="inherit"
-        />,
-        <GridActionsCellItem
-          icon={<DeleteIcon />}
-          label="Delete"
-          onClick={handleDeleteClick(id)}
           color="inherit"
         />,
       ];

@@ -122,9 +122,16 @@ export default function FullFeaturedCrudGrid(props) {
 
   const handleSaveClick =
     (id, plateNo, service, frequency, nextDueMileage, status) => () => {
+      const existingRow = rows.find((row) => row.id === id);
+
+      if (!existingRow) {
+        toast.error("No row with the specified ID found");
+        return;
+      }
+
       setRowModesModel({
         ...rowModesModel,
-        [actionId]: { mode: GridRowModes.Edit },
+        [id]: { mode: GridRowModes.Edit },
       });
       setAction("save");
       setActionId(id);
@@ -162,8 +169,7 @@ export default function FullFeaturedCrudGrid(props) {
         }
       );
 
-      console.log("Maintenance added successfully", response.data);
-      toast.success("Maintenance added successfully");
+      toast.success(response.data.message);
 
       setRowModesModel({
         ...rowModesModel,

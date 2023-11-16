@@ -28,6 +28,7 @@ const encryptionKey = crypto.randomBytes(32).toString("hex");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+
 const transporter = nodemailer.createTransport({
   service: "Gmail", // Use a valid email service (e.g., Gmail, Outlook, etc.)
   auth: {
@@ -35,6 +36,7 @@ const transporter = nodemailer.createTransport({
     pass: "dgqg rirx mvlv frix", // Your email password
   },
 });
+
 const decryptEmail = (encryptedEmail, iv, encryptionKey) => {
   try {
     if (!encryptedEmail || !iv || !encryptionKey) {
@@ -217,7 +219,9 @@ const getNextInventoryNum = async () => {
       { $inc: { value: 1 } },
       { new: true, upsert: true }
     );
-    return counter.value;
+    const offset = 11000000;
+    const orderIdWithOffset = counter.value + offset;
+    return orderIdWithOffset;
   } catch (err) {
     console.error("Error getting the next inventory number:", err);
     throw err;
@@ -336,16 +340,27 @@ router.post("/generateCode", async (req, res) => {
 
 router.post("/addInventory", async (req, res) => {
   const { actionId, itemName, quantity, location, lastUpdated } = req.body;
-  const exisitingName = await Inventory.findOne({
-    _itemName: itemName,
+
+  // Check if an inventory item with the same inventoryID exists
+  const existingInventory = await Inventory.findOne({
+    _inventoryID: actionId,
     _status: "current",
   });
 
-  if (exisitingName) {
-    // An appointment with the same date and time already exists and is not cancelled
-    return res.status(400).json({ error: "Name conflict" });
+  if (existingInventory) {
+    // Update the existing inventory item
+    existingInventory._itemName = itemName;
+    existingInventory._quantity = quantity;
+    existingInventory._location = location;
+    existingInventory._lastUpdated = lastUpdated;
+
+    await existingInventory.save();
+
+    return res.json({ message: "Inventory item updated successfully" });
   }
-  const inventory = new Inventory({
+
+  // Create a new inventory item
+  const newInventory = new Inventory({
     _inventoryID: actionId,
     _itemName: itemName,
     _quantity: quantity,
@@ -354,23 +369,22 @@ router.post("/addInventory", async (req, res) => {
     _status: "current",
   });
 
-  await inventory.save();
+  await newInventory.save();
 
-  res.json({ message: "Appointment saved successfully" });
+  res.json({ message: "Inventory item saved successfully" });
 });
 
-router.post("/deleteRecord/:_inventoryID", async (req, res) => {
+router.post("/deleteRecord", async (req, res) => {
   try {
-    const id = req.params._inventoryID;
+    const id = req.body._inventoryID;
+
     const removedRecord = await Inventory.findOneAndRemove({
       _inventoryID: id,
-    }); // Use findOneAndRemove
+    });
 
     if (removedRecord) {
       res.json({ message: "Record deleted successfully" });
-      toast.success("Record Deleted Successfully");
     } else {
-      toast.error("Please try again!");
       res.status(404).json({ message: "Record not found" });
     }
   } catch (error) {
