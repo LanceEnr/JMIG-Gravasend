@@ -57,7 +57,7 @@ import ManageAppointments from "./ManageAppointments";
 import Button from "@mui/material/Button";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import RandomStringGenerator from "./components/RandomStringGenerator";
 import EventIcon from "@mui/icons-material/Event";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -420,8 +420,8 @@ export default function AdminDashboard() {
           <Collapse in={openFleetManagement} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               <ListItemButton
-                component="a"
-                href="/adminfleetinformation"
+                component={Link}
+                to="/adminfleetinformation"
                 sx={{ pl: 4 }}
               >
                 <ListItemIcon>
@@ -432,8 +432,8 @@ export default function AdminDashboard() {
                 </ListItemText>
               </ListItemButton>
               <ListItemButton
-                component="a"
-                href="/adminmaintenance"
+                component={Link}
+                to="/adminmaintenance"
                 sx={{ pl: 4 }}
               >
                 <ListItemIcon>
@@ -444,8 +444,8 @@ export default function AdminDashboard() {
                 </ListItemText>
               </ListItemButton>
               <ListItemButton
-                component="a"
-                href="/admininspection"
+                component={Link}
+                to="/admininspection"
                 sx={{ pl: 4 }}
               >
                 <ListItemIcon>
@@ -458,7 +458,7 @@ export default function AdminDashboard() {
             </List>
           </Collapse>
 
-          <ListItemButton component="a" href="/adminjoborders">
+          <ListItemButton component={Link} to="/adminjoborders">
             <ListItemIcon>
               <AssignmentIcon />
             </ListItemIcon>
@@ -466,7 +466,7 @@ export default function AdminDashboard() {
               <Typography variant="caption">Job Orders</Typography>
             </ListItemText>
           </ListItemButton>
-          <ListItemButton component="a" href="/admintrips">
+          <ListItemButton component={Link} to="/admintrips">
             <ListItemIcon>
               <AssignmentTurnedInIcon />
             </ListItemIcon>
@@ -474,7 +474,7 @@ export default function AdminDashboard() {
               <Typography variant="caption">Trip Verification</Typography>
             </ListItemText>
           </ListItemButton>
-          <ListItemButton component="a" href="/admindeliverymonitoring">
+          <ListItemButton component={Link} to="/admindeliverymonitoring">
             <ListItemIcon>
               <TrackChangesIcon />
             </ListItemIcon>
@@ -486,7 +486,7 @@ export default function AdminDashboard() {
           <ListSubheader component="div" inset>
             MANAGEMENT
           </ListSubheader>
-          <ListItemButton component="a" href="/adminreports">
+          <ListItemButton component={Link} to="/adminreports">
             <ListItemIcon>
               <ReportIcon />
             </ListItemIcon>
@@ -494,7 +494,7 @@ export default function AdminDashboard() {
               <Typography variant="caption">Reports</Typography>
             </ListItemText>
           </ListItemButton>
-          <ListItemButton component="a" href="/admindrivermanagement">
+          <ListItemButton component={Link} to="/admindrivermanagement">
             <ListItemIcon>
               <PeopleIcon />
             </ListItemIcon>
@@ -502,7 +502,7 @@ export default function AdminDashboard() {
               <Typography variant="caption">Drivers</Typography>
             </ListItemText>
           </ListItemButton>
-          <ListItemButton component="a" href="/adminmanageappointments">
+          <ListItemButton component={Link} to="/adminmanageappointments">
             <ListItemIcon>
               <ReportIcon />
             </ListItemIcon>
@@ -510,7 +510,7 @@ export default function AdminDashboard() {
               <Typography variant="caption">Appointments</Typography>
             </ListItemText>
           </ListItemButton>
-          <ListItemButton component="a" href="/adminmanageorders">
+          <ListItemButton component={Link} to="/adminmanageorders">
             <ListItemIcon>
               <Inventory2Icon />
             </ListItemIcon>
@@ -518,7 +518,7 @@ export default function AdminDashboard() {
               <Typography variant="caption">Orders</Typography>
             </ListItemText>
           </ListItemButton>
-          <ListItemButton component="a" href="/admininventory">
+          <ListItemButton component={Link} to="/admininventory">
             <ListItemIcon>
               <Inventory2Icon />
             </ListItemIcon>
@@ -530,7 +530,7 @@ export default function AdminDashboard() {
           <ListSubheader component="div" inset>
             WEBSITE
           </ListSubheader>
-          <ListItemButton component="a" href="/admincontent">
+          <ListItemButton component={Link} to="/admincontent">
             <ListItemIcon>
               <WebIcon />
             </ListItemIcon>
@@ -538,7 +538,7 @@ export default function AdminDashboard() {
               <Typography variant="caption">Main Content</Typography>
             </ListItemText>
           </ListItemButton>
-          <ListItemButton component="a" href="/adminlistings">
+          <ListItemButton component={Link} to="/adminlistings">
             <ListItemIcon>
               <WebIcon />
             </ListItemIcon>
@@ -546,7 +546,7 @@ export default function AdminDashboard() {
               <Typography variant="caption">Listings</Typography>
             </ListItemText>
           </ListItemButton>
-          <ListItemButton component="a" href="/adminusermanagement">
+          <ListItemButton component={Link} to="/adminusermanagement">
             <ListItemIcon>
               <PeopleIcon />
             </ListItemIcon>
@@ -554,7 +554,7 @@ export default function AdminDashboard() {
               <Typography variant="caption">Users</Typography>
             </ListItemText>
           </ListItemButton>
-          <ListItemButton component="a" href="/adminmanagecontactform">
+          <ListItemButton component={Link} to="/adminmanagecontactform">
             <ListItemIcon>
               <PeopleIcon />
             </ListItemIcon>

@@ -1016,10 +1016,10 @@ router.get("/get-listing", async (req, res) => {
   }
 });
 router.get("/get-listing-details", async (req, res) => {
-  const _listingName = req.query.productName;
+  const productName = req.query.productName;
 
   try {
-    const listing = await Listing.findOne({ _listingName: _listingName });
+    const listing = await Listing.findOne({ _listingName: productName });
 
     if (!listing) {
       return res.status(404).json({ error: "Listing not found" });
@@ -1031,6 +1031,28 @@ router.get("/get-listing-details", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+router.get("/get-listing-stocks", async (req, res) => {
+  const productName = req.query.productName;
+
+  try {
+    const stocks = await Inventory.find({ _itemName: productName });
+
+    if (!stocks || stocks.length === 0) {
+      return res.status(404).json({ error: "Stocks not found" });
+    }
+
+    const stockDetails = stocks.map(({ _location, _quantity }) => ({
+      _location,
+      _quantity,
+    }));
+
+    res.json(stockDetails);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.get("/get-products", async (req, res) => {
   try {
     const inventory = await Inventory.find();

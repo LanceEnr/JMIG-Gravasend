@@ -11,7 +11,8 @@ import "../styles/UserDashboard.css";
 import { MenuList } from "../helpers/MenuList";
 import MoreProducts from "../components/MoreProducts";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const ColoredLinearProgress = withStyles({
   colorPrimary: {
@@ -40,7 +41,7 @@ const responsive = {
 const ProductDetails = () => {
   const stocksLeft = 50;
   const totalStocks = 100;
-
+  const navigate = useNavigate();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const carouselRef = useRef(null);
@@ -55,24 +56,70 @@ const ProductDetails = () => {
   };
   const images = [Sand1, Sand2, Sand3];
 
+  const [productDetails, setProductDetails] = useState(null);
+  const [pandiStocks, setPandiStocks] = useState([]);
+  const [mindanaoStocks, setMindanaoStocks] = useState([]);
+
   useEffect(() => {
     const currentUrl = window.location.href;
     const url = new URL(currentUrl);
 
     const productName = url.searchParams.get("productName");
 
-    console.log(productName);
-  }, []);
+    async function fetchProductDetails() {
+      try {
+        const response = await axios.get(
+          "http://localhost:3001/get-listing-details",
+          {
+            params: { productName }, // Use the 'params' property to pass parameters
+          }
+        );
 
-  async function fetchProductDetails() {
-    try {
-      const response = await axios.get("http://localhost:3001/fetch-values");
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching values:", error);
-      throw error;
+        const productDetailsData = response.data;
+
+        if (productDetailsData) {
+          setProductDetails(productDetailsData);
+        } else {
+          console.error("Product details not found");
+        }
+        window.scrollTo({ top: 0 });
+      } catch (error) {
+        console.error("Error fetching values:", error);
+      }
     }
-  }
+    async function fetchStocks() {
+      try {
+        const response = await axios.get(
+          "http://localhost:3001/get-listing-stocks",
+          {
+            params: { productName },
+          }
+        );
+
+        const stocks = response.data;
+
+        if (stocks) {
+          // Filter stocks for Pandi
+          const pandiStocks = stocks.filter(
+            (stock) => stock._location.toLowerCase() === "pandi"
+          );
+          setPandiStocks(pandiStocks);
+
+          // Filter stocks for Mindanao
+          const mindanaoStocks = stocks.filter(
+            (stock) => stock._location.toLowerCase() === "mindanao ave."
+          );
+          setMindanaoStocks(mindanaoStocks);
+        } else {
+          console.error("Stocks not found");
+        }
+      } catch (error) {
+        console.error("Error fetching values:", error);
+      }
+    }
+    fetchStocks();
+    fetchProductDetails();
+  }, [navigate, window.location.href]);
 
   return (
     <div className="userDashboard">
@@ -121,51 +168,78 @@ const ProductDetails = () => {
                   <Link underline="hover" color="inherit" to="/">
                     Home
                   </Link>
-                  <Link underline="hover" color="inherit" href="#">
+                  <Link underline="hover" color="inherit" to="/products">
                     Products
                   </Link>
-                  <Typography color="text.primary">Sand</Typography>
+                  <Typography color="text.primary">
+                    {productDetails && productDetails._listingName}
+                  </Typography>
                 </Breadcrumbs>
 
                 <Typography variant="h4" sx={{ fontWeight: "bold", my: 2 }}>
-                  Sand
+                  {productDetails && productDetails._listingName}
                 </Typography>
                 <Typography sx={{ mb: 2 }}>Aggregate Materials</Typography>
                 <Typography sx={{ color: "#bd8512", mb: 2 }}>
-                  ₱3,000 per cubic mt.
+                  ₱{productDetails && productDetails._listingPrice} per cubic
+                  mt.
                 </Typography>
                 <Typography variant="subtitle2" sx={{ mt: "20px" }}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi
-                  pellentesque metus vel lectus pellentesque, eget ullamcorper
-                  est vestibulum. Donec interdum tincidunt dui, ut condimentum
-                  metus faucibus nec. Maecenas accumsan justo nunc, finibus
-                  pharetra velit rhoncus tempor. Nunc dignissim nulla est, et
-                  scelerisque erat consectetur in. Lorem ipsum dolor sit amet,
-                  consectetur adipiscing elit. Morbi pellentesque metus vel
-                  lectus pellentesque, eget ullamcorper est vestibulum.
+                  {productDetails && productDetails._listingDescription}
                 </Typography>
               </Box>
-              <Box display="flex" alignItems="center">
+              <Box display="flex" flexDirection="column" mt={2}>
                 <Typography variant="body1" color="text.secondary">
-                  Stocks left:
+                  Stocks:
                 </Typography>
-              </Box>
-              <Box display="flex" alignItems="center" minHeight="50px">
-                <Box width="100%" mr={1}>
-                  <ColoredLinearProgress
-                    variant="determinate"
-                    value={(stocksLeft / totalStocks) * 100}
-                    style={{ height: "8px", borderRadius: "10px" }}
-                  />
+
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  p={2}
+                  borderRadius={4}
+                  mt={1}
+                  style={{
+                    backgroundColor:
+                      pandiStocks.map((stock) => stock._quantity) ||
+                      mindanaoStocks.map((stock) => stock._quantity) > 0
+                        ? "#8dd290"
+                        : "#f5c9c9",
+                  }}
+                >
+                  <Typography variant="body" color="text.secondary">
+                    <strong>Pandi:</strong>{" "}
+                    {pandiStocks.map((stock) => stock._quantity) > 0
+                      ? `${pandiStocks.map((stock) => stock._quantity)} cu. mt.`
+                      : "Out of Stocks"}
+                  </Typography>
                 </Box>
-                <Box minWidth={35}>
-                  <Typography variant="body2" color="text.secondary">
-                    {`${Math.round((stocksLeft / totalStocks) * 100)}%`}
+
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  p={2}
+                  borderRadius={4}
+                  mt={1}
+                  style={{
+                    backgroundColor:
+                      mindanaoStocks.map((stock) => stock._quantity) > 0
+                        ? "#8dd290"
+                        : "#f5c9c9",
+                  }}
+                >
+                  <Typography variant="body" color="text.secondary">
+                    <strong>Mindanao Ave:</strong>{" "}
+                    {mindanaoStocks.map((stock) => stock._quantity) > 0
+                      ? `${mindanaoStocks.map(
+                          (stock) => stock._quantity
+                        )} cu. mt.`
+                      : "Out of Stocks"}
                   </Typography>
                 </Box>
               </Box>
 
-              <Box display="flex" alignItems="center" minHeight="50px">
+              <Box display="flex" alignItems="center" minHeight="50px" mt={2}>
                 <Button
                   sx={{
                     minWidth: "150px",
@@ -176,6 +250,7 @@ const ProductDetails = () => {
                       backgroundColor: "#003882",
                     },
                   }}
+                  onClick={() => navigate("/contact")}
                 >
                   REQUEST ORDER
                 </Button>
