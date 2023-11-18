@@ -40,7 +40,9 @@ function UserDashboard() {
         );
       default:
         return (
-          <OrdersTable1 onActiveComponentChange={handleActiveComponentChange} />
+          <AppointmentsTable1
+            onActiveComponentChange={handleActiveComponentChange}
+          />
         );
     }
   };
