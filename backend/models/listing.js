@@ -9,7 +9,7 @@ const listingSchema = new mongoose.Schema(
     },
     _listingName: String,
     _listingCategory: String,
-    _listingPrice: String,
+    _listingPrice: Number,
     _listingDescription: String,
     _isPublished: Boolean,
     _imgPath: [String],

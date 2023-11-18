@@ -10,6 +10,7 @@ import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import CurvyLines from "../assets/appCurvyLines.webp";
+import { fetchContactData } from "../components/cms";
 
 const item = {
   display: "flex",
@@ -17,6 +18,7 @@ const item = {
   alignItems: "center",
   px: 5,
 };
+const contactData = await fetchContactData();
 
 function ContactValues() {
   return (
@@ -59,7 +61,7 @@ function ContactValues() {
                 color="textSecondary"
                 style={{ textAlign: "center", marginBottom: 16 }}
               >
-                5440B Mindanao Avenue, Ugong, Valenzuela City, 1440 Metro Manila
+                {contactData._address2}
               </Typography>
               <Typography
                 variant="body2"
@@ -73,7 +75,7 @@ function ContactValues() {
                 color="textSecondary"
                 style={{ textAlign: "center" }}
               >
-                5440B Mindanao Avenue, Ugong, Valenzuela City, 1440 Metro Manila
+                {contactData._address1}
               </Typography>
             </Box>
           </Grid>
@@ -99,20 +101,6 @@ function ContactValues() {
                 color="textSecondary"
                 style={{ textAlign: "center" }}
               >
-                Sun:
-              </Typography>
-              <Typography
-                variant="body2"
-                color="textSecondary"
-                style={{ textAlign: "center", marginBottom: 16 }}
-              >
-                0943422055
-              </Typography>
-              <Typography
-                variant="body2"
-                color="textSecondary"
-                style={{ textAlign: "center" }}
-              >
                 Globe:
               </Typography>
               <Typography
@@ -120,7 +108,21 @@ function ContactValues() {
                 color="textSecondary"
                 style={{ textAlign: "center", marginBottom: 16 }}
               >
-                09054222988
+                {contactData._phone1}
+              </Typography>
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                style={{ textAlign: "center" }}
+              >
+                Smart:
+              </Typography>
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                style={{ textAlign: "center", marginBottom: 16 }}
+              >
+                {contactData._phone2}
               </Typography>
               <Typography
                 variant="body2"
@@ -134,7 +136,7 @@ function ContactValues() {
                 color="textSecondary"
                 style={{ textAlign: "center", marginBottom: 16 }}
               >
-                025175562
+                {contactData._landline}
               </Typography>
             </Box>
           </Grid>
@@ -160,7 +162,7 @@ function ContactValues() {
                 color="textSecondary"
                 style={{ textAlign: "center" }}
               >
-                jmiggravelandsand@gmail.com
+                {contactData._email}
               </Typography>
               <a href="mailto:jmiggravelandsand@gmail.com">
                 <Button

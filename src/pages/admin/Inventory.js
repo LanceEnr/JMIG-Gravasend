@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Paper, Box, Tab, Tabs } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import FullFeaturedCrudGrid from "./components/CustomDataGrid";
+import IncomingDataGrid from "./components/IncomingDataGrid";
 import Title from "./components/Title";
 import {
   columnsCurrentInventory,
@@ -31,7 +32,7 @@ function Inventory() {
             >
               <Tab label="Current" />
               <Tab label="Incoming" />
-              <Tab label="Outgoing" />
+              <Tab label="History" />
             </Tabs>
           </Box>
           {value === 0 && (
@@ -41,13 +42,13 @@ function Inventory() {
             />
           )}
           {value === 1 && (
-            <FullFeaturedCrudGrid
+            <IncomingDataGrid
               columns={columnsIncomingInventory}
               rows={rowsIncomingInventory}
             />
           )}
           {value === 2 && (
-            <FullFeaturedCrudGrid
+            <IncomingDataGrid
               columns={columnsOutgoingInventory}
               rows={rowsOutgoingInventory}
             />

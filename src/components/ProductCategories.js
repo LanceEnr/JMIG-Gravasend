@@ -81,36 +81,6 @@ const images = [
     title: "Lahar",
     width: "40%",
   },
-  {
-    url: backhoe,
-    title: "Backhoe",
-    width: "38%",
-  },
-  {
-    url: dumptruck,
-    title: "Dumptruck",
-    width: "38%",
-  },
-  {
-    url: loader,
-    title: "Loader",
-    width: "24%",
-  },
-  {
-    url: Sand3,
-    title: "Escombro",
-    width: "40%",
-  },
-  {
-    url: Gravel2,
-    title: "White Sand",
-    width: "20%",
-  },
-  {
-    url: Sand2,
-    title: "Gravel 3/8",
-    width: "40%",
-  },
 ];
 
 export default function ProductCategories() {

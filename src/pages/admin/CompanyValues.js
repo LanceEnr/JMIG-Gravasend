@@ -13,13 +13,40 @@ import {
 import Title from "./components/Title";
 
 export default function CompanyValues() {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    _valueHeading1: "",
+    _valueSubheading1: "",
+    _valueHeading2: "",
+    _valueSubheading2: "",
+    _valueHeading3: "",
+    _valueSubheading3: "",
+  });
+
   useEffect(() => {
-    axios.get("http://localhost:3001/fetch-values").then((response) => {
-      const defaultValues = response.data;
-      setFormData(response.data);
-    });
+    async function fetchValues() {
+      try {
+        const response = await axios.get("http://localhost:3001/fetch-values");
+        const valuesData = response.data;
+
+        // Set the formData state with the fetched values
+        setFormData({
+          ...formData,
+          _valueHeading1: valuesData._valueHeading1 || "",
+          _valueSubheading1: valuesData._valueSubheading1 || "",
+          _valueHeading2: valuesData._valueHeading2 || "",
+          _valueSubheading2: valuesData._valueSubheading2 || "",
+          _valueHeading3: valuesData._valueHeading3 || "",
+          _valueSubheading3: valuesData._valueSubheading3 || "",
+        });
+      } catch (error) {
+        console.error("Error fetching contact:", error);
+        throw error;
+      }
+    }
+
+    fetchValues();
   }, []);
+
   const handleFormChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
@@ -68,7 +95,7 @@ export default function CompanyValues() {
                     type="text"
                     fullWidth
                     required
-                    value={formData._heading1}
+                    value={formData._valueHeading1}
                     onChange={handleFormChange}
                   />
                 </Grid>
@@ -83,7 +110,7 @@ export default function CompanyValues() {
                     required
                     rows={2}
                     variant="outlined"
-                    value={formData._subheading1}
+                    value={formData._valueSubheading1}
                     onChange={handleFormChange}
                   />
                 </Grid>
@@ -100,7 +127,7 @@ export default function CompanyValues() {
                     type="text"
                     fullWidth
                     required
-                    value={formData._heading2}
+                    value={formData._valueHeading2}
                     onChange={handleFormChange}
                   />
                 </Grid>
@@ -115,7 +142,7 @@ export default function CompanyValues() {
                     rows={2}
                     required
                     variant="outlined"
-                    value={formData._subheading2}
+                    value={formData._valueSubheading2}
                     onChange={handleFormChange}
                   />
                 </Grid>
@@ -132,7 +159,7 @@ export default function CompanyValues() {
                     type="text"
                     fullWidth
                     required
-                    value={formData._heading3}
+                    value={formData._valueHeading3}
                     onChange={handleFormChange}
                   />
                 </Grid>
@@ -147,7 +174,7 @@ export default function CompanyValues() {
                     rows={2}
                     required
                     variant="outlined"
-                    value={formData._subheading3}
+                    value={formData._valueSubheading3}
                     onChange={handleFormChange}
                   />
                 </Grid>

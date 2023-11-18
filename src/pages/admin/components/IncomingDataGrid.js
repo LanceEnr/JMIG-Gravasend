@@ -11,11 +11,8 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Typography } from "@mui/material";
-import CameraEnhanceIcon from "@mui/icons-material/CameraEnhance";
 import axios from "axios";
 import { toast } from "react-toastify";
-
 import Title from "./Title";
 import {
   GridRowModes,
@@ -38,39 +35,39 @@ function EditToolbar(props) {
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <GridToolbarDensitySelector />
         <GridToolbarExport />
-        <Button
-          color="primary"
-          startIcon={<AddIcon />}
-          onClick={props.handleClick}
-        >
-          Add record
-        </Button>
       </Box>
       <GridToolbarQuickFilter />
     </GridToolbarContainer>
   );
 }
 
-export default function FleetDataGrid(props) {
+export default function FullFeaturedCrudGrid(props) {
   const [open, setOpen] = React.useState(false);
   const [action, setAction] = React.useState(null);
-  const [actionId, setActionId] = React.useState(null);
+  const [actionId, setActionId] = React.useState("");
+  const [itemName, setItemName] = React.useState("");
+  const [quantity, setQuantity] = React.useState("");
+  const [location, setLocation] = React.useState("");
+  const [lastUpdated, setLastUpdated] = React.useState("");
 
-  const [driverName, setdriverName] = React.useState("");
-  const [bodyNo, setbodyNo] = React.useState("");
-  const [chassisNo, setchassisNo] = React.useState("");
-  const [engineNo, setengineNo] = React.useState("");
-  const [plateNo, setPlateNo] = React.useState("");
-  const [mileage, setmileage] = React.useState("");
-  const [model, setmodel] = React.useState("");
-  const [plateNo2, setPlateNo2] = React.useState("");
-  const [status, setStatus] = React.useState("available");
-  const [location, setLocation] = React.useState("available");
-
+  const [dataClassification, setDataClassification] = React.useState("");
   const [isEditing, setIsEditing] = React.useState(false);
 
   const [rows, setRows] = React.useState(props.rows);
   const [rowModesModel, setRowModesModel] = React.useState({});
+
+  const currentDate = new Date();
+  const options = {
+    weekday: "short",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short",
+  };
+  const formattedDate = currentDate.toLocaleString("en-US", options);
 
   const handleDialogClose = () => {
     setOpen(false);
@@ -87,19 +84,20 @@ export default function FleetDataGrid(props) {
       setRows(rows.filter((row) => row.id !== actionId));
     }
     setOpen(false);
+    handleDialogClose();
+
+    setIsEditing(false);
   };
 
-  //FIX THIS-
   const handleClick = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/generateFleetId");
+      const response = await axios.get("http://localhost:3001/generateId");
       if (response.data.id) {
         const newRow = {
           id: response.data.id,
-          status: "available",
-          setStatustatus: "available",
+          lastUpdated: formattedDate,
         };
-        setRows((prevRows) => [newRow, ...prevRows]);
+        setRows((prevRows) => [...prevRows, newRow]);
         setActionId(response.data.id);
       }
     } catch (error) {
@@ -114,66 +112,44 @@ export default function FleetDataGrid(props) {
     }
   };
 
-  const handleEditClick = (id) => () => {
-    // Find the row with the corresponding id
-    const selectedRow = rows.find((row) => row.id === id);
+  const handleSaveClick = (id, itemName, quantity, location) => () => {
+    const existingRow = rows.find((row) => row.id === id);
 
-    // Populate the state variables with the values of the selected row
+    if (!existingRow) {
+      toast.error("No row with the specified ID found");
+      return;
+    }
+
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.Edit },
+    });
+    setAction("save");
     setActionId(id);
-    setdriverName(selectedRow.driverName);
-    setbodyNo(selectedRow.bodyNo);
-    setchassisNo(selectedRow.chassisNo);
-    setengineNo(selectedRow.engineNo);
-    setPlateNo(selectedRow.plateNo);
-    setPlateNo2(selectedRow.plateNo2);
-    setmileage(selectedRow.mileage);
-    setmodel(selectedRow.model);
-    setStatus(selectedRow.status);
-    setLocation(selectedRow.location);
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    setItemName(itemName);
+    setQuantity(quantity);
+    setLocation(location);
+    setOpen(true);
   };
 
-  //FIX THIS
-  const handleSaveClick =
-    (
-      id,
-      driverName,
-      bodyNo,
-      chassisNo,
-      engineNo,
-      plateNo,
-      plateNo2,
-      mileage,
-      model,
-      status,
-      location
-    ) =>
-    () => {
-      const existingRow = rows.find((row) => row.id === id);
+  const handleEditClick = (id, itemName, quantity, location) => () => {
+    const existingRow = rows.find((row) => row.id === id);
+    if (!existingRow) {
+      toast.error("No row with the specified ID found");
+      return;
+    }
 
-      if (!existingRow) {
-        toast.error("No row with the specified ID found");
-        return;
-      }
-      setRowModesModel({
-        ...rowModesModel,
-        [id]: { mode: GridRowModes.Edit },
-      });
-      setAction("save");
-      setActionId(id);
-      setdriverName(driverName);
-      setbodyNo(bodyNo);
-      setchassisNo(chassisNo);
-      setengineNo(engineNo);
-      setPlateNo(plateNo);
-      setPlateNo2(plateNo2);
-      setmileage(mileage);
-      setmodel(model);
-      setStatus(status);
-      setLocation(location);
-      setOpen(true);
-    };
-  //FIX
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.Edit },
+    });
+    setAction("save");
+    setActionId(id);
+    setItemName(itemName);
+    setQuantity(quantity);
+    setLocation(location);
+    setOpen(true);
+  };
 
   const handleSaveConfirmed = async (e) => {
     e.preventDefault();
@@ -183,46 +159,64 @@ export default function FleetDataGrid(props) {
       [actionId]: { mode: GridRowModes.View },
     });
 
+    if (!itemName || !quantity || !location) {
+      // Show an error message and prevent saving
+      toast.error("All fields are required.");
+      setOpen(false);
+
+      return;
+    }
+
     try {
-      const response = await axios.post("http://localhost:3001/addTruck", {
-        id: actionId,
-        driverName: driverName,
-        bodyNo: bodyNo,
-        chassisNo: chassisNo,
-        engineNo: engineNo,
-        plateNo: plateNo,
-        plateNo2: plateNo2,
-        mileage: mileage,
-        model: model,
-        status: status,
+      const response = await axios.post("http://localhost:3001/addInventory", {
+        actionId: actionId,
+        itemName: itemName,
+        quantity: quantity,
         location: location,
+        lastUpdated: formattedDate,
       });
 
-      console.log("Truck added successfully", response.data);
-      toast.success("Truck added successfully");
+      toast.success(response.data.message);
 
       setRowModesModel({
         ...rowModesModel,
         [actionId]: { mode: GridRowModes.View },
       });
 
+      const updatedRows = rows.map((row) =>
+        row.id === actionId
+          ? {
+              ...row,
+              itemName,
+              quantity,
+              location,
+              lastUpdated,
+            }
+          : row
+      );
+      setRows(updatedRows);
       setOpen(false);
+
+      if (response.data.isCurrent) {
+        setDataClassification("current");
+      } else if (response.data.isIncoming) {
+        setDataClassification("incoming");
+      } else {
+        setDataClassification("outgoing");
+      }
     } catch (error) {
-      console.error("Truck add failed", error);
+      console.error("Item add failed", error);
       setOpen(false);
-      toast.error("Truck not yet registered!");
+      toast.error("Item name already exists!");
     }
   };
 
   const deleteRecord = async (id) => {
     try {
-      const _truckID = id;
-      const response = await axios.post(
-        "http://localhost:3001/deleteTruckRecord",
-        {
-          _truckID: _truckID,
-        }
-      );
+      const _inventoryID = parseInt(id, 10);
+      const response = await axios.post("http://localhost:3001/deleteRecord", {
+        _inventoryID,
+      });
 
       if (response.status === 200) {
         setRows(rows.filter((row) => row.id !== id));
@@ -238,8 +232,6 @@ export default function FleetDataGrid(props) {
       toast.error("An error occurred while deleting the record");
     }
   };
-
-  //END
 
   const handleDeleteClick = (id) => () => {
     setAction("delete");
@@ -271,86 +263,6 @@ export default function FleetDataGrid(props) {
 
   let columns = [...props.columns];
 
-  columns.push({
-    field: "actions",
-    type: "actions",
-    headerName: "ACTIONS",
-    width: props.actionWidth || 100,
-    cellClassName: "actions",
-    renderHeader: (params) => (
-      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-        {params.colDef.headerName}
-      </Typography>
-    ),
-    getActions: (params) => {
-      //edit
-      const {
-        id,
-        driverName,
-        bodyNo,
-        chassisNo,
-        engineNo,
-        plateNo,
-        plateNo2,
-        mileage,
-        model,
-        status,
-        location,
-      } = params.row;
-      const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-
-      if (isInEditMode) {
-        return [
-          <GridActionsCellItem
-            icon={<SaveIcon />}
-            label="Save"
-            sx={{
-              color: "primary.main",
-            }}
-            //fix
-            onClick={handleSaveClick(
-              id,
-              driverName,
-              bodyNo,
-              chassisNo,
-              engineNo,
-              plateNo,
-              plateNo2,
-              mileage,
-              model,
-              status,
-              location
-            )}
-          />,
-          <GridActionsCellItem
-            icon={<CancelIcon />}
-            label="Cancel"
-            className="textPrimary"
-            //fix
-            onClick={handleCancelClick(id)}
-            color="inherit"
-          />,
-        ];
-      }
-
-      return [
-        <GridActionsCellItem
-          icon={<EditIcon />}
-          label="Edit"
-          className="textPrimary"
-          onClick={handleEditClick(id)}
-          color="inherit"
-        />,
-        <GridActionsCellItem
-          icon={<DeleteIcon />}
-          label="Delete"
-          onClick={handleDeleteClick(id)}
-          color="inherit"
-        />,
-      ];
-    },
-  });
-
   return (
     <Box
       sx={{
@@ -374,21 +286,13 @@ export default function FleetDataGrid(props) {
         onRowModesModelChange={handleRowModesModelChange}
         onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
-        density="comfortable"
+        density="compact"
         slots={{
           toolbar: EditToolbar,
         }}
         slotProps={{
           toolbar: { setRows, setRowModesModel, handleClick },
         }}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 5,
-            },
-          },
-        }}
-        pageSizeOptions={[5, 10, 25]}
       />
       <Dialog open={open} onClose={handleDialogClose}>
         <DialogTitle>Are you sure?</DialogTitle>

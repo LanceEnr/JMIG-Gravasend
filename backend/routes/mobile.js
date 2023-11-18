@@ -3,6 +3,7 @@ const router = express.Router();
 const axios = require("axios");
 const admin = require("firebase-admin");
 const Counter = require("../models/counter");
+const IncomingInventory = require("../models/incomingInventory");
 
 router.get("/fetch-cargo", (req, res) => {
   axios
@@ -381,6 +382,9 @@ router.post("/addDriver", async (req, res) => {
   const email = req.body.email;
   const driverData = req.body;
 
+  // Add the status field and set it to "unassigned"
+  driverData.status = "unassigned";
+
   try {
     const user = await admin.auth().getUserByEmail(email);
 
@@ -401,6 +405,7 @@ router.post("/addDriver", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
 router.post("/deleteDriverRecord", async (req, res) => {
   const _driverID = req.body._driverID;
   try {
@@ -496,15 +501,38 @@ const getNextJobNum = async () => {
     throw err;
   }
 };
-
+const getNextIncoming = async () => {
+  try {
+    const counter = await Counter.findOneAndUpdate(
+      { name: "_incomingId" },
+      { $inc: { value: 1 } },
+      { new: true, upsert: true }
+    );
+    const offset = 10000000;
+    const orderIdWithOffset = counter.value + offset;
+    return orderIdWithOffset;
+  } catch (err) {
+    console.error("Error getting the next fleet number:", err);
+    throw err;
+  }
+};
 router.post("/addJob", async (req, res) => {
   const jobData = req.body;
   const driverName = jobData.driverName;
+  const id = await getNextIncoming();
 
   try {
     const db = admin.database();
     const driversRef = db.ref("trucks");
-
+    const incoming = new IncomingInventory({
+      _inventoryID: id,
+      _name: jobData.driverName,
+      _materialType: jobData.cargo,
+      _date: jobData.dateTime,
+      _quantity: jobData.weight,
+      _location: jobData.destination,
+    });
+    await incoming.save();
     driversRef.once("value", (snapshot) => {
       let uid = null;
 
@@ -713,7 +741,7 @@ const getMileageFromPlate = async (plateNo) => {
       const uidArray = Object.keys(truckData);
       for (const uid of uidArray) {
         const truck = truckData[uid];
-        if (truck.plateNo2 === plateNo) {
+        if (truck.plateNo === plateNo) {
           if ("mileage" in truck) {
             return truck.mileage;
           } else {
@@ -746,7 +774,7 @@ async function getUIDFromPlate(plateNo) {
       const uidArray = Object.keys(truckData);
       for (const uid of uidArray) {
         const truck = truckData[uid];
-        if (truck.plateNo2 === plateNo) {
+        if (truck.plateNo === plateNo) {
           if ("plateNo2" in truck) {
             return truck.UID;
           } else {
@@ -771,6 +799,7 @@ async function getUIDFromPlate(plateNo) {
 
 router.post("/addMaintenance", async (req, res) => {
   const maintenanceData = req.body;
+  console.log(maintenanceData);
 
   try {
     const plateNo = maintenanceData.plateNo;
@@ -818,10 +847,13 @@ router.post("/addMaintenance", async (req, res) => {
 
 router.post("/deleteMaintenanceRecord", async (req, res) => {
   const _maintenanceId = req.body._maintenanceId;
+  const uid = req.body.uid;
   try {
     const db = admin.database();
-    const maintenanceRef = db.ref(`maintenanceReminders/${_maintenanceId}`);
-
+    const maintenanceRef = db.ref(
+      `maintenanceReminders/${uid}/${_maintenanceId}`
+    );
+    console.lo;
     await maintenanceRef.remove();
 
     res
@@ -1010,5 +1042,59 @@ router.post("/deleteMaintenanceRecord2", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+router.get("/incomingInventory", async (req, res) => {
+  try {
+    const incomingInventoryData = await IncomingInventory.find();
+    const tripHistoryData = await axios.get(
+      "https://gravasend-965f7-default-rtdb.firebaseio.com/TripHistory.json"
+    );
+
+    const incomingInventoryFiltered = incomingInventoryData.filter((item) => {
+      const incomingInventoryDate = new Date(item.date).toLocaleDateString();
+
+      // Check if the date exists in TripHistory data
+      const isDateExists =
+        tripHistoryData.data &&
+        hasDateInTripHistory(tripHistoryData.data, incomingInventoryDate);
+
+      return !isDateExists;
+    });
+
+    // Delete items from incoming inventory whose dates exist in TripHistory
+    const deletePromises = incomingInventoryData
+      .filter((item) => {
+        const incomingInventoryDate = new Date(item.date).toLocaleDateString();
+        return hasDateInTripHistory(
+          tripHistoryData.data,
+          incomingInventoryDate
+        );
+      })
+      .map((item) => IncomingInventory.findByIdAndDelete(item._id));
+
+    await Promise.all(deletePromises);
+
+    res.json(incomingInventoryFiltered);
+  } catch (error) {
+    console.error("Error fetching or deleting data:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+function hasDateInTripHistory(tripHistoryData, dateToCheck) {
+  for (const uid in tripHistoryData) {
+    if (tripHistoryData.hasOwnProperty(uid)) {
+      const idData = tripHistoryData[uid];
+      for (const id in idData) {
+        if (idData.hasOwnProperty(id)) {
+          const tripDate = new Date(idData[id].dateTime).toLocaleDateString();
+          if (tripDate === dateToCheck) {
+            return true;
+          }
+        }
+      }
+    }
+  }
+  return false;
+}
 
 module.exports = router;

@@ -17,7 +17,43 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import EmailIcon from "@mui/icons-material/Email";
 import SmartphoneIcon from "@mui/icons-material/Smartphone";
 export default function ContactContent() {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    _address1: "",
+    _address2: "",
+    _phone1: "",
+    _phone2: "",
+    _landline: "",
+    _email: "",
+    _fb: "",
+    _messenger: "",
+  });
+
+  useEffect(() => {
+    async function fetchContactData() {
+      try {
+        const response = await axios.get("http://localhost:3001/fetch-contact");
+        const contactData = response.data;
+
+        // Set the formData state with the fetched values
+        setFormData({
+          ...formData,
+          _address1: contactData._address1 || "",
+          _address2: contactData._address2 || "",
+          _phone1: contactData._phone1 || "",
+          _phone2: contactData._phone2 || "",
+          _landline: contactData._landline || "",
+          _email: contactData._email || "",
+          _fb: contactData._fb || "",
+          _messenger: contactData._messenger || "",
+        });
+      } catch (error) {
+        console.error("Error fetching contact:", error);
+        throw error;
+      }
+    }
+
+    fetchContactData();
+  }, []);
 
   const handleFormChange = (event) => {
     const { name, value } = event.target;
@@ -28,12 +64,23 @@ export default function ContactContent() {
     event.preventDefault();
 
     const valueData = {
-      _address: formData._address,
-      _contactNo: formData._contactNo,
+      _address1: formData._address1,
+      _address2: formData._address2,
+      _phone1: formData._phone1,
+      _phone2: formData._phone2,
+      _landline: formData._landline,
       _email: formData._email,
       _fb: formData._fb,
       _messenger: formData._messenger,
     };
+
+    try {
+      const response = await axios.get("http://localhost:3001/fetch-contact");
+      const data = response.data;
+    } catch (error) {
+      console.error("Error fetching contact:", error);
+      throw error;
+    }
 
     try {
       const response = await axios.put(
@@ -66,7 +113,7 @@ export default function ContactContent() {
                     variant="outlined"
                     fullWidth
                     required
-                    value={formData._address}
+                    value={formData._address1}
                     onChange={handleFormChange}
                     InputProps={{
                       startAdornment: (
@@ -85,7 +132,7 @@ export default function ContactContent() {
                     variant="outlined"
                     fullWidth
                     required
-                    value={formData._address}
+                    value={formData._address2}
                     onChange={handleFormChange}
                     InputProps={{
                       startAdornment: (
@@ -105,7 +152,7 @@ export default function ContactContent() {
                     variant="outlined"
                     fullWidth
                     required
-                    value={formData._contact}
+                    value={formData._phone1}
                     onChange={handleFormChange}
                     InputProps={{
                       startAdornment: (
@@ -124,7 +171,7 @@ export default function ContactContent() {
                     variant="outlined"
                     fullWidth
                     required
-                    value={formData._contact}
+                    value={formData._phone2}
                     onChange={handleFormChange}
                     InputProps={{
                       startAdornment: (
@@ -144,7 +191,7 @@ export default function ContactContent() {
                     variant="outlined"
                     fullWidth
                     required
-                    value={formData._contact}
+                    value={formData._landline}
                     onChange={handleFormChange}
                     InputProps={{
                       startAdornment: (

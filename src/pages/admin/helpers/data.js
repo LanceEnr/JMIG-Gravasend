@@ -40,10 +40,11 @@ const fetchIncomingInventoryData = async () => {
 const transformIncomingInventoryData = (data) => {
   return data.map((item) => ({
     id: item._inventoryID,
-    itemName: item._itemName,
+    itemName: item._materialType,
     quantity: item._quantity,
-    sourceLocation: item._location,
-    dateReceived: new Date(item._lastUpdated),
+    name: item._name,
+    date: item._date,
+    location: item._location,
   }));
 };
 
@@ -305,7 +306,6 @@ export const columnsInspectionRecords = [
 
 const transformMaintenanceData = (data) => {
   const transformedData = [];
-  console.log(data);
   if (data) {
     for (const uid in data) {
       if (data.hasOwnProperty(uid)) {
@@ -529,7 +529,7 @@ export const columnsCurrentInventory = [
     flex: 2,
     editable: true,
     type: "singleSelect",
-    valueOptions: ["Pandi", "MindanaoAve."],
+    valueOptions: ["Pandi", "Mindanao Ave."],
   },
   {
     field: "lastUpdated",
@@ -549,19 +549,25 @@ export const columnsIncomingInventory = [
   },
   {
     field: "quantity",
-    headerName: "Quantity",
+    headerName: "Quantity (cub. mt.)",
     flex: 2,
     editable: true,
   },
   {
-    field: "sourceLocation",
-    headerName: "Source Location",
+    field: "name",
+    headerName: "Driver Name",
     flex: 2,
     editable: true,
   },
   {
-    field: "dateReceived",
-    headerName: "Date Received",
+    field: "location",
+    headerName: "Location",
+    flex: 2,
+    editable: true,
+  },
+  {
+    field: "date",
+    headerName: "Date Ordered",
     type: "datetime",
     flex: 3,
     editable: true,

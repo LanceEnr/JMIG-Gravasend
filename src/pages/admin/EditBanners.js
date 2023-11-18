@@ -28,6 +28,25 @@ export default function EditBanners() {
     setCategory(event.target.value);
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3001/fetch-category-values/${category}`
+        );
+
+        setHeading(response.data._heading);
+        setSubheading(response.data._subheading);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    if (category) {
+      fetchData();
+    }
+  }, [category]);
+
   const onDrop = useCallback((acceptedFiles) => {
     const file = acceptedFiles[0];
     setSelectedFile(file);
@@ -111,7 +130,10 @@ export default function EditBanners() {
                         ) : (
                           <p>
                             Drag & drop banner image here, or click to select an
-                            image
+                            image. <br></br>
+                            <center>
+                              (This will override the stored photo.)
+                            </center>
                           </p>
                         )}
                       </div>
@@ -134,6 +156,9 @@ export default function EditBanners() {
                       </MenuItem>
 
                       <MenuItem value={"Products Page"}>Products Page</MenuItem>
+                      <MenuItem value={"FAQS Page"}>FAQs Page</MenuItem>
+                      <MenuItem value={"About Page"}>About Page</MenuItem>
+                      <MenuItem value={"Contact Page"}>Contact Us</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
@@ -143,6 +168,12 @@ export default function EditBanners() {
                     label="Heading"
                     name="heading"
                     type="text"
+                    disabled={
+                      category === "FAQS Page" ||
+                      category === "About Page" ||
+                      category === "Contact Page"
+                    }
+                    value={heading}
                     fullWidth
                     onChange={(e) => {
                       setHeading(e.target.value);
@@ -155,6 +186,7 @@ export default function EditBanners() {
                     fullWidth
                     id="subheading"
                     label="Subheading"
+                    value={subheading}
                     multiline
                     rows={4}
                     variant="outlined"
@@ -162,6 +194,11 @@ export default function EditBanners() {
                       setSubheading(e.target.value);
                       validateForm();
                     }}
+                    disabled={
+                      category === "FAQS Page" ||
+                      category === "About Page" ||
+                      category === "Contact Page"
+                    }
                   />
                 </Grid>
 

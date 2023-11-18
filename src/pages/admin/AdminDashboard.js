@@ -55,7 +55,7 @@ import ManageAppointments from "./ManageAppointments";
 import Button from "@mui/material/Button";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import RandomStringGenerator from "./components/RandomStringGenerator";
 import EventIcon from "@mui/icons-material/Event";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -341,192 +341,174 @@ export default function AdminDashboard() {
           </IconButton>
         </Toolbar>
         <Divider />
-        <Box
-          sx={{
-            overflow: "auto",
-            maxHeight: "calc(100vh - 64px)",
-            "&::-webkit-scrollbar": {
-              width: "0.2em",
-            },
-            "&::-webkit-scrollbar-track": {
-              boxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
-              webkitBoxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "rgba(169,169,169,1)", // Default grey color
-              borderRadius: "10px", // Slightly rounded corners
-            },
-          }}
-        >
-          <List component="nav" sx={{ overflowX: "hidden" }}>
-            {" "}
-            <ListItemButton component="a" href="/adminlogin">
-              <ListItemIcon>
-                <DashboardIcon />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography variant="caption">Dashboard</Typography>
-              </ListItemText>
-            </ListItemButton>
-            <Divider sx={{ my: 1 }} />
-            <ListSubheader component="div" inset>
-              OPERATIONS
-            </ListSubheader>
-            <ListItemButton onClick={handleClickFleetManagement}>
-              <ListItemIcon>
-                <LocalShippingIcon />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography variant="caption">Fleet Management</Typography>
-              </ListItemText>
-              {openFleetManagement ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-            <Collapse in={openFleetManagement} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <ListItemButton
-                  component="a"
-                  href="/adminfleetinformation"
-                  sx={{ pl: 4 }}
-                >
-                  <ListItemIcon>
-                    <FiberManualRecordIcon sx={{ fontSize: "7px" }} />
-                  </ListItemIcon>
-                  <ListItemText>
-                    <Typography variant="caption">Fleet Information</Typography>
-                  </ListItemText>
-                </ListItemButton>
-                <ListItemButton
-                  component="a"
-                  href="/adminmaintenance"
-                  sx={{ pl: 4 }}
-                >
-                  <ListItemIcon>
-                    <FiberManualRecordIcon sx={{ fontSize: "7px" }} />
-                  </ListItemIcon>
-                  <ListItemText>
-                    <Typography variant="caption">Maintenance</Typography>
-                  </ListItemText>
-                </ListItemButton>
-                <ListItemButton
-                  component="a"
-                  href="/admininspection"
-                  sx={{ pl: 4 }}
-                >
-                  <ListItemIcon>
-                    <FiberManualRecordIcon sx={{ fontSize: "7px" }} />
-                  </ListItemIcon>
-                  <ListItemText>
-                    <Typography variant="caption">Inspection</Typography>
-                  </ListItemText>
-                </ListItemButton>
-              </List>
-            </Collapse>
-            <ListItemButton component="a" href="/adminjoborders">
-              <ListItemIcon>
-                <AssignmentIcon />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography variant="caption">Job Orders</Typography>
-              </ListItemText>
-            </ListItemButton>
-            <ListItemButton component="a" href="/admintrips">
-              <ListItemIcon>
-                <AssignmentTurnedInIcon />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography variant="caption">Trip Verification</Typography>
-              </ListItemText>
-            </ListItemButton>
-            <ListItemButton component="a" href="/admindeliverymonitoring">
-              <ListItemIcon>
-                <TrackChangesIcon />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography variant="caption">Delivery Monitoring</Typography>
-              </ListItemText>
-            </ListItemButton>
-            <Divider sx={{ my: 1 }} />
-            <ListSubheader component="div" inset>
-              MANAGEMENT
-            </ListSubheader>
-            <ListItemButton component="a" href="/adminreports">
-              <ListItemIcon>
-                <ReportIcon />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography variant="caption">Reports</Typography>
-              </ListItemText>
-            </ListItemButton>
-            <ListItemButton component="a" href="/admindrivermanagement">
-              <ListItemIcon>
-                <PeopleIcon />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography variant="caption">Drivers</Typography>
-              </ListItemText>
-            </ListItemButton>
-            <ListItemButton component="a" href="/adminmanageappointments">
-              <ListItemIcon>
-                <ReportIcon />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography variant="caption">Appointments</Typography>
-              </ListItemText>
-            </ListItemButton>
-            <ListItemButton component="a" href="/adminmanageorders">
-              <ListItemIcon>
-                <Inventory2Icon />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography variant="caption">Orders</Typography>
-              </ListItemText>
-            </ListItemButton>
-            <ListItemButton component="a" href="/admininventory">
-              <ListItemIcon>
-                <Inventory2Icon />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography variant="caption">Inventory</Typography>
-              </ListItemText>
-            </ListItemButton>
-            <Divider sx={{ my: 1 }} />
-            <ListSubheader component="div" inset>
-              WEBSITE
-            </ListSubheader>
-            <ListItemButton component="a" href="/admincontent">
-              <ListItemIcon>
-                <WebIcon />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography variant="caption">Main Content</Typography>
-              </ListItemText>
-            </ListItemButton>
-            <ListItemButton component="a" href="/adminmanagelistings">
-              <ListItemIcon>
-                <WebIcon />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography variant="caption">Listings</Typography>
-              </ListItemText>
-            </ListItemButton>
-            <ListItemButton component="a" href="/adminusermanagement">
-              <ListItemIcon>
-                <PeopleIcon />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography variant="caption">Users</Typography>
-              </ListItemText>
-            </ListItemButton>
-            <ListItemButton component="a" href="/adminmanagecontactform">
-              <ListItemIcon>
-                <PeopleIcon />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography variant="caption">Contact Form</Typography>
-              </ListItemText>
-            </ListItemButton>
-          </List>
-        </Box>
+        <List component="nav">
+          <ListItemButton component="a" href="/adminlogin">
+            <ListItemIcon>
+              <DashboardIcon />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography variant="caption">Dashboard</Typography>
+            </ListItemText>
+          </ListItemButton>
+          <Divider sx={{ my: 1 }} />
+          <ListSubheader component="div" inset>
+            OPERATIONS
+          </ListSubheader>
+          <ListItemButton onClick={handleClickFleetManagement}>
+            <ListItemIcon>
+              <LocalShippingIcon />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography variant="caption">Fleet Management</Typography>
+            </ListItemText>
+            {openFleetManagement ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={openFleetManagement} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItemButton
+                component={Link}
+                to="/adminfleetinformation"
+                sx={{ pl: 4 }}
+              >
+                <ListItemIcon>
+                  <FiberManualRecordIcon sx={{ fontSize: "7px" }} />
+                </ListItemIcon>
+                <ListItemText>
+                  <Typography variant="caption">Fleet Information</Typography>
+                </ListItemText>
+              </ListItemButton>
+              <ListItemButton
+                component={Link}
+                to="/adminmaintenance"
+                sx={{ pl: 4 }}
+              >
+                <ListItemIcon>
+                  <FiberManualRecordIcon sx={{ fontSize: "7px" }} />
+                </ListItemIcon>
+                <ListItemText>
+                  <Typography variant="caption">Maintenance</Typography>
+                </ListItemText>
+              </ListItemButton>
+              <ListItemButton
+                component={Link}
+                to="/admininspection"
+                sx={{ pl: 4 }}
+              >
+                <ListItemIcon>
+                  <FiberManualRecordIcon sx={{ fontSize: "7px" }} />
+                </ListItemIcon>
+                <ListItemText>
+                  <Typography variant="caption">Inspection</Typography>
+                </ListItemText>
+              </ListItemButton>
+            </List>
+          </Collapse>
+
+          <ListItemButton component={Link} to="/adminjoborders">
+            <ListItemIcon>
+              <AssignmentIcon />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography variant="caption">Job Orders</Typography>
+            </ListItemText>
+          </ListItemButton>
+          <ListItemButton component={Link} to="/admintrips">
+            <ListItemIcon>
+              <AssignmentTurnedInIcon />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography variant="caption">Trip Verification</Typography>
+            </ListItemText>
+          </ListItemButton>
+          <ListItemButton component={Link} to="/admindeliverymonitoring">
+            <ListItemIcon>
+              <TrackChangesIcon />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography variant="caption">Delivery Monitoring</Typography>
+            </ListItemText>
+          </ListItemButton>
+          <Divider sx={{ my: 1 }} />
+          <ListSubheader component="div" inset>
+            MANAGEMENT
+          </ListSubheader>
+          <ListItemButton component={Link} to="/adminreports">
+            <ListItemIcon>
+              <ReportIcon />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography variant="caption">Reports</Typography>
+            </ListItemText>
+          </ListItemButton>
+          <ListItemButton component={Link} to="/admindrivermanagement">
+            <ListItemIcon>
+              <PeopleIcon />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography variant="caption">Drivers</Typography>
+            </ListItemText>
+          </ListItemButton>
+          <ListItemButton component={Link} to="/adminmanageappointments">
+            <ListItemIcon>
+              <ReportIcon />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography variant="caption">Appointments</Typography>
+            </ListItemText>
+          </ListItemButton>
+          <ListItemButton component={Link} to="/adminmanageorders">
+            <ListItemIcon>
+              <Inventory2Icon />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography variant="caption">Orders</Typography>
+            </ListItemText>
+          </ListItemButton>
+          <ListItemButton component={Link} to="/admininventory">
+            <ListItemIcon>
+              <Inventory2Icon />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography variant="caption">Inventory</Typography>
+            </ListItemText>
+          </ListItemButton>
+          <Divider sx={{ my: 1 }} />
+          <ListSubheader component="div" inset>
+            WEBSITE
+          </ListSubheader>
+          <ListItemButton component={Link} to="/admincontent">
+            <ListItemIcon>
+              <WebIcon />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography variant="caption">Main Content</Typography>
+            </ListItemText>
+          </ListItemButton>
+          <ListItemButton component={Link} to="/adminlistings">
+            <ListItemIcon>
+              <WebIcon />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography variant="caption">Listings</Typography>
+            </ListItemText>
+          </ListItemButton>
+          <ListItemButton component={Link} to="/adminusermanagement">
+            <ListItemIcon>
+              <PeopleIcon />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography variant="caption">Users</Typography>
+            </ListItemText>
+          </ListItemButton>
+          <ListItemButton component={Link} to="/adminmanagecontactform">
+            <ListItemIcon>
+              <PeopleIcon />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography variant="caption">Contact Form</Typography>
+            </ListItemText>
+          </ListItemButton>
+        </List>
       </Drawer>
     </>
   );

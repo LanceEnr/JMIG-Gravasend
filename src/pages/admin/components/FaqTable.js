@@ -34,13 +34,12 @@ function EditToolbar(props) {
     >
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <GridToolbarDensitySelector />
-        <GridToolbarExport />
         <Button
           color="primary"
           startIcon={<AddIcon />}
           onClick={props.handleClick}
         >
-          Add record
+          Add FAQ
         </Button>
       </Box>
       <GridToolbarQuickFilter />
@@ -102,9 +101,16 @@ export default function FaqTable(props) {
   };
 
   const handleSaveClick = (id, question, answer) => () => {
+    const existingRow = rows.find((row) => row.id === id);
+
+    if (!existingRow) {
+      toast.error("No row with the specified ID found");
+      return;
+    }
+
     setRowModesModel({
       ...rowModesModel,
-      [actionId]: { mode: GridRowModes.Edit },
+      [id]: { mode: GridRowModes.Edit },
     });
     setAction("save");
     setActionId(id);
@@ -162,7 +168,7 @@ export default function FaqTable(props) {
   const deleteRecord = async (id) => {
     try {
       const _faqNum = parseInt(id, 10);
-      const response = await axios.delete(
+      const response = await axios.post(
         `http://localhost:3001/deleteFAQ/${_faqNum}`
       );
 

@@ -3,6 +3,7 @@ import { DataGrid, GridActionsCellItem, GridToolbar } from "@mui/x-data-grid";
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import { toast } from "react-toastify";
 
 import {
   Switch,
@@ -37,36 +38,68 @@ const transformListingData = (data) => {
   }));
 };
 
-const rowsListing = transformListingData(await fetchListingData());
-
 export default function ManageListings({ onAddClick, onEditClick }) {
   const [open, setOpen] = React.useState(false);
   const [action, setAction] = React.useState(null);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [rowsListing, setRowsListing] = useState([]);
 
-  const handleClickOpen = (action) => {
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchListingData();
+      const transformedData = transformListingData(data);
+      setRowsListing(transformedData);
+    };
+
+    fetchData();
+  }, []);
+
+  const handleClickOpen = (action, row) => {
     setAction(action);
     setOpen(true);
+    setSelectedRow(row);
   };
 
   const handleClose = () => {
     setOpen(false);
   };
+  const deleteRecord = async (id) => {
+    try {
+      const _listingId = parseInt(id, 10);
+      const response = await axios.post(
+        "http://localhost:3001/delete-listing",
+        { _listingId }
+      );
+
+      if (response.status === 200) {
+        toast.success("Listing deleted successfully");
+      } else if (response.status === 404) {
+        toast.error("Record not found");
+      } else {
+        toast.error("Failed to delete the listing");
+      }
+    } catch (error) {
+      console.error("Error deleting record", error);
+      toast.error("An error occurred while deleting the record");
+    }
+  };
 
   const handleConfirm = () => {
     if (action === "save") {
-      // Handle save changes action here
       console.log("Save changes");
     } else if (action === "delete") {
-      // Handle delete row action here
-      console.log("Delete row");
+      setRowsListing((prevRows) =>
+        prevRows.filter((row) => row.id !== selectedRow.id)
+      );
+      deleteRecord(selectedRow.id);
     }
-    // Close the dialog after handling the action
+
     handleClose();
   };
+
   const columnsListing = [
     { field: "id", headerName: "ID", flex: 1 },
     { field: "name", headerName: "Name", flex: 1 },
-    { field: "category", headerName: "Category", flex: 1 },
     { field: "price", headerName: "Price", flex: 1 },
     {
       field: "published",
@@ -76,7 +109,7 @@ export default function ManageListings({ onAddClick, onEditClick }) {
       renderCell: (params) => (
         <Switch
           defaultChecked={params.row.published}
-          onClick={() => handleClickOpen("save")}
+          onClick={() => handleClickOpen("save", params.row)}
         />
       ),
     },
@@ -85,21 +118,21 @@ export default function ManageListings({ onAddClick, onEditClick }) {
       headerName: "Actions",
       sortable: false,
       flex: 1,
-      renderCell: () => (
+      renderCell: (params) => (
         <React.Fragment>
           <GridActionsCellItem
             icon={<EditIcon />}
             label="Edit"
             className="textPrimary"
             color="inherit"
-            onClick={onEditClick}
+            onClick={() => onEditClick(params.row)}
           />
 
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
             color="inherit"
-            onClick={() => handleClickOpen("delete")}
+            onClick={() => handleClickOpen("delete", params.row)}
           />
         </React.Fragment>
       ),
