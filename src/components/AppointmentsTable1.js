@@ -212,7 +212,7 @@ export default function AppointmentsTable1(props) {
         component={Box}
         sx={{
           bgcolor: "background.paper",
-          border: "2px solid #000",
+          borderRadius: "16px",
           boxShadow: 24,
           p: 4,
         }}
@@ -236,7 +236,6 @@ export default function AppointmentsTable1(props) {
             >
               #{appointmentNum}
             </Typography>
-            <Divider orientation="vertical" flexItem />
             {!fullScreen && (
               <Chip
                 label={status}
@@ -250,7 +249,14 @@ export default function AppointmentsTable1(props) {
                       : status === "Upcoming"
                       ? "#ffc890" // Yellow for Upcoming
                       : "#EBDAB7", // Default color
-                  color: "#FFFFFF", // White text for better visibility
+                  color:
+                    status === "Completed"
+                      ? "success.main" // Green for Completed
+                      : status === "Cancelled"
+                      ? "error.main" // Red for Cancelled
+                      : status === "Upcoming"
+                      ? "warning.main" // Yellow for Upcoming
+                      : "textSecondary", // Default color
                   ml: 1,
                 }}
               />
@@ -266,7 +272,7 @@ export default function AppointmentsTable1(props) {
           </IconButton>
         </Box>
 
-        <Divider />
+        <Divider style={{ borderStyle: "dashed", borderColor: "#bd8512" }} />
 
         <ListItem>
           <ListItemIcon>

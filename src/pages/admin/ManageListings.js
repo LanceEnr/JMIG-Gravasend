@@ -107,7 +107,7 @@ export default function ManageListings({ onAddClick, onEditClick }) {
   ];
 
   return (
-    <Paper sx={{ my: 2, p: 2, display: "flex", flexDirection: "column" }}>
+    <Paper sx={{ m: 2, p: 2, display: "flex", flexDirection: "column" }}>
       <Box
         display="flex"
         justifyContent="space-between"

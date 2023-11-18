@@ -105,7 +105,7 @@ export default function FullFeaturedCrudGrid(props) {
         const newRow = {
           id: response.data.id,
         };
-        setRows((prevRows) => [...prevRows, newRow]);
+        setRows((prevRows) => [newRow, ...prevRows]);
         setActionId(response.data.id);
       }
     } catch (error) {

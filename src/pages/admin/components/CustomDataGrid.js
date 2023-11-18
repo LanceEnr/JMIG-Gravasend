@@ -104,7 +104,7 @@ export default function FullFeaturedCrudGrid(props) {
           id: response.data.id,
           lastUpdated: formattedDate,
         };
-        setRows((prevRows) => [...prevRows, newRow]);
+        setRows((prevRows) => [newRow, ...prevRows]);
         setActionId(response.data.id);
       }
     } catch (error) {
@@ -341,13 +341,20 @@ export default function FullFeaturedCrudGrid(props) {
         onRowModesModelChange={handleRowModesModelChange}
         onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
-        density="compact"
         slots={{
           toolbar: EditToolbar,
         }}
         slotProps={{
           toolbar: { setRows, setRowModesModel, handleClick },
         }}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 5,
+            },
+          },
+        }}
+        pageSizeOptions={[5, 10, 25]}
       />
       <Dialog open={open} onClose={handleDialogClose}>
         <DialogTitle>Are you sure?</DialogTitle>

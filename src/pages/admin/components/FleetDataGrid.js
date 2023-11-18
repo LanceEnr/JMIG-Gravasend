@@ -11,7 +11,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Badge, IconButton, Avatar } from "@mui/material";
+import { Typography } from "@mui/material";
 import CameraEnhanceIcon from "@mui/icons-material/CameraEnhance";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -99,7 +99,7 @@ export default function FleetDataGrid(props) {
           status: "available",
           setStatustatus: "available",
         };
-        setRows((prevRows) => [...prevRows, newRow]);
+        setRows((prevRows) => [newRow, ...prevRows]);
         setActionId(response.data.id);
       }
     } catch (error) {
@@ -253,9 +253,14 @@ export default function FleetDataGrid(props) {
   columns.push({
     field: "actions",
     type: "actions",
-    headerName: "Actions",
+    headerName: "ACTIONS",
     width: props.actionWidth || 100,
     cellClassName: "actions",
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
     getActions: (params) => {
       //edit
       const {
@@ -355,6 +360,14 @@ export default function FleetDataGrid(props) {
         slotProps={{
           toolbar: { setRows, setRowModesModel, handleClick },
         }}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 5,
+            },
+          },
+        }}
+        pageSizeOptions={[5, 10, 25]}
       />
       <Dialog open={open} onClose={handleDialogClose}>
         <DialogTitle>Are you sure?</DialogTitle>

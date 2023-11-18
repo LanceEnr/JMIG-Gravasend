@@ -91,7 +91,7 @@ export default function DataGridDriverManagement(props) {
     const newRow = {
       id: "auto-generated",
     };
-    setRows((prevRows) => [...prevRows, newRow]);
+    setRows((prevRows) => [newRow, ...prevRows]);
     setActionId("auto-generated");
   };
 

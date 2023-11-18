@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import axios from "axios";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
@@ -29,7 +28,6 @@ import TrackChangesIcon from "@mui/icons-material/TrackChanges";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import ReportIcon from "@mui/icons-material/Report";
 import PeopleIcon from "@mui/icons-material/People";
-import OrderIcon from "@mui/icons-material/LocalShipping";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import WebIcon from "@mui/icons-material/Web";
 import Collapse from "@mui/material/Collapse";
@@ -143,64 +141,18 @@ const Drawer = styled(MuiDrawer, {
     color: "white",
   },
 }));
-const timeAgo = (timestamp) => {
-  const currentDate = new Date();
-  const notificationDate = new Date(timestamp);
-  const timeDifference = currentDate - notificationDate;
-  const seconds = Math.floor(timeDifference / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-
-  if (minutes < 1) {
-    // Display seconds if less than 1 minute
-    return `${seconds} second${seconds === 1 ? "" : "s"} ago`;
-  } else if (hours < 1) {
-    // Display minutes if less than 1 hour
-    return `${minutes} minute${minutes === 1 ? "" : "s"} ago`;
-  } else if (hours < 24) {
-    // Display hours if less than 24 hours
-    return `${hours} hour${hours === 1 ? "" : "s"} ago`;
-  } else {
-    // If more than 24 hours, display the full date
-    const options = {
-      weekday: "short",
-      month: "short",
-      day: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      timeZoneName: "short",
-    };
-    return notificationDate.toLocaleString("en-US", options);
-  }
-};
-
-const fetchNotifications = async () => {
-  const storedUsername = localStorage.getItem("userName");
-
-  try {
-    const response = await axios.get(
-      `http://localhost:3001/fetch-adminNotifications`
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return [];
-  }
-};
-
-const transformNotification = (data) => {
-  return data.map((item) => ({
-    icon: item._title.toLowerCase().includes("order") ? OrderIcon : EventIcon,
-    heading: item._title,
-    text: item._description,
-    date: item._date,
-  }));
-};
-
-const notifications = transformNotification(await fetchNotifications());
+const notifications = [
+  {
+    icon: EventIcon,
+    heading: "Upcoming Appointment",
+    text: "You have an appointment with JMIG tomorrow.",
+  },
+  {
+    icon: CheckCircleIcon,
+    heading: "Order Acknowledged",
+    text: "Your order has been received and is being processed.",
+  },
+];
 
 const settings = ["Settings", "Logout"];
 
@@ -322,12 +274,6 @@ export default function AdminDashboard() {
                     {notification.heading}
                   </Typography>
                   <Typography variant="body2">{notification.text}</Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{ fontSize: 10, color: "blue" }}
-                  >
-                    {timeAgo(notification.date)}
-                  </Typography>
                 </div>
               </MenuItem>
             ))}
@@ -395,174 +341,192 @@ export default function AdminDashboard() {
           </IconButton>
         </Toolbar>
         <Divider />
-        <List component="nav">
-          <ListItemButton component="a" href="/adminlogin">
-            <ListItemIcon>
-              <DashboardIcon />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography variant="caption">Dashboard</Typography>
-            </ListItemText>
-          </ListItemButton>
-          <Divider sx={{ my: 1 }} />
-          <ListSubheader component="div" inset>
-            OPERATIONS
-          </ListSubheader>
-          <ListItemButton onClick={handleClickFleetManagement}>
-            <ListItemIcon>
-              <LocalShippingIcon />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography variant="caption">Fleet Management</Typography>
-            </ListItemText>
-            {openFleetManagement ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
-          <Collapse in={openFleetManagement} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItemButton
-                component="a"
-                href="/adminfleetinformation"
-                sx={{ pl: 4 }}
-              >
-                <ListItemIcon>
-                  <FiberManualRecordIcon sx={{ fontSize: "7px" }} />
-                </ListItemIcon>
-                <ListItemText>
-                  <Typography variant="caption">Fleet Information</Typography>
-                </ListItemText>
-              </ListItemButton>
-              <ListItemButton
-                component="a"
-                href="/adminmaintenance"
-                sx={{ pl: 4 }}
-              >
-                <ListItemIcon>
-                  <FiberManualRecordIcon sx={{ fontSize: "7px" }} />
-                </ListItemIcon>
-                <ListItemText>
-                  <Typography variant="caption">Maintenance</Typography>
-                </ListItemText>
-              </ListItemButton>
-              <ListItemButton
-                component="a"
-                href="/admininspection"
-                sx={{ pl: 4 }}
-              >
-                <ListItemIcon>
-                  <FiberManualRecordIcon sx={{ fontSize: "7px" }} />
-                </ListItemIcon>
-                <ListItemText>
-                  <Typography variant="caption">Inspection</Typography>
-                </ListItemText>
-              </ListItemButton>
-            </List>
-          </Collapse>
-
-          <ListItemButton component="a" href="/adminjoborders">
-            <ListItemIcon>
-              <AssignmentIcon />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography variant="caption">Job Orders</Typography>
-            </ListItemText>
-          </ListItemButton>
-          <ListItemButton component="a" href="/admintrips">
-            <ListItemIcon>
-              <AssignmentTurnedInIcon />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography variant="caption">Trip Verification</Typography>
-            </ListItemText>
-          </ListItemButton>
-          <ListItemButton component="a" href="/admindeliverymonitoring">
-            <ListItemIcon>
-              <TrackChangesIcon />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography variant="caption">Delivery Monitoring</Typography>
-            </ListItemText>
-          </ListItemButton>
-          <Divider sx={{ my: 1 }} />
-          <ListSubheader component="div" inset>
-            MANAGEMENT
-          </ListSubheader>
-          <ListItemButton component="a" href="/adminreports">
-            <ListItemIcon>
-              <ReportIcon />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography variant="caption">Reports</Typography>
-            </ListItemText>
-          </ListItemButton>
-          <ListItemButton component="a" href="/admindrivermanagement">
-            <ListItemIcon>
-              <PeopleIcon />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography variant="caption">Drivers</Typography>
-            </ListItemText>
-          </ListItemButton>
-          <ListItemButton component="a" href="/adminmanageappointments">
-            <ListItemIcon>
-              <ReportIcon />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography variant="caption">Appointments</Typography>
-            </ListItemText>
-          </ListItemButton>
-          <ListItemButton component="a" href="/adminmanageorders">
-            <ListItemIcon>
-              <Inventory2Icon />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography variant="caption">Orders</Typography>
-            </ListItemText>
-          </ListItemButton>
-          <ListItemButton component="a" href="/admininventory">
-            <ListItemIcon>
-              <Inventory2Icon />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography variant="caption">Inventory</Typography>
-            </ListItemText>
-          </ListItemButton>
-          <Divider sx={{ my: 1 }} />
-          <ListSubheader component="div" inset>
-            WEBSITE
-          </ListSubheader>
-          <ListItemButton component="a" href="/admincontent">
-            <ListItemIcon>
-              <WebIcon />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography variant="caption">Main Content</Typography>
-            </ListItemText>
-          </ListItemButton>
-          <ListItemButton component="a" href="/adminlistings">
-            <ListItemIcon>
-              <WebIcon />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography variant="caption">Listings</Typography>
-            </ListItemText>
-          </ListItemButton>
-          <ListItemButton component="a" href="/adminusermanagement">
-            <ListItemIcon>
-              <PeopleIcon />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography variant="caption">Users</Typography>
-            </ListItemText>
-          </ListItemButton>
-          <ListItemButton component="a" href="/adminmanagecontactform">
-            <ListItemIcon>
-              <PeopleIcon />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography variant="caption">Contact Form</Typography>
-            </ListItemText>
-          </ListItemButton>
-        </List>
+        <Box
+          sx={{
+            overflow: "auto",
+            maxHeight: "calc(100vh - 64px)",
+            "&::-webkit-scrollbar": {
+              width: "0.2em",
+            },
+            "&::-webkit-scrollbar-track": {
+              boxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+              webkitBoxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "rgba(169,169,169,1)", // Default grey color
+              borderRadius: "10px", // Slightly rounded corners
+            },
+          }}
+        >
+          <List component="nav" sx={{ overflowX: "hidden" }}>
+            {" "}
+            <ListItemButton component="a" href="/adminlogin">
+              <ListItemIcon>
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="caption">Dashboard</Typography>
+              </ListItemText>
+            </ListItemButton>
+            <Divider sx={{ my: 1 }} />
+            <ListSubheader component="div" inset>
+              OPERATIONS
+            </ListSubheader>
+            <ListItemButton onClick={handleClickFleetManagement}>
+              <ListItemIcon>
+                <LocalShippingIcon />
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="caption">Fleet Management</Typography>
+              </ListItemText>
+              {openFleetManagement ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Collapse in={openFleetManagement} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItemButton
+                  component="a"
+                  href="/adminfleetinformation"
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemIcon>
+                    <FiberManualRecordIcon sx={{ fontSize: "7px" }} />
+                  </ListItemIcon>
+                  <ListItemText>
+                    <Typography variant="caption">Fleet Information</Typography>
+                  </ListItemText>
+                </ListItemButton>
+                <ListItemButton
+                  component="a"
+                  href="/adminmaintenance"
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemIcon>
+                    <FiberManualRecordIcon sx={{ fontSize: "7px" }} />
+                  </ListItemIcon>
+                  <ListItemText>
+                    <Typography variant="caption">Maintenance</Typography>
+                  </ListItemText>
+                </ListItemButton>
+                <ListItemButton
+                  component="a"
+                  href="/admininspection"
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemIcon>
+                    <FiberManualRecordIcon sx={{ fontSize: "7px" }} />
+                  </ListItemIcon>
+                  <ListItemText>
+                    <Typography variant="caption">Inspection</Typography>
+                  </ListItemText>
+                </ListItemButton>
+              </List>
+            </Collapse>
+            <ListItemButton component="a" href="/adminjoborders">
+              <ListItemIcon>
+                <AssignmentIcon />
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="caption">Job Orders</Typography>
+              </ListItemText>
+            </ListItemButton>
+            <ListItemButton component="a" href="/admintrips">
+              <ListItemIcon>
+                <AssignmentTurnedInIcon />
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="caption">Trip Verification</Typography>
+              </ListItemText>
+            </ListItemButton>
+            <ListItemButton component="a" href="/admindeliverymonitoring">
+              <ListItemIcon>
+                <TrackChangesIcon />
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="caption">Delivery Monitoring</Typography>
+              </ListItemText>
+            </ListItemButton>
+            <Divider sx={{ my: 1 }} />
+            <ListSubheader component="div" inset>
+              MANAGEMENT
+            </ListSubheader>
+            <ListItemButton component="a" href="/adminreports">
+              <ListItemIcon>
+                <ReportIcon />
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="caption">Reports</Typography>
+              </ListItemText>
+            </ListItemButton>
+            <ListItemButton component="a" href="/admindrivermanagement">
+              <ListItemIcon>
+                <PeopleIcon />
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="caption">Drivers</Typography>
+              </ListItemText>
+            </ListItemButton>
+            <ListItemButton component="a" href="/adminmanageappointments">
+              <ListItemIcon>
+                <ReportIcon />
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="caption">Appointments</Typography>
+              </ListItemText>
+            </ListItemButton>
+            <ListItemButton component="a" href="/adminmanageorders">
+              <ListItemIcon>
+                <Inventory2Icon />
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="caption">Orders</Typography>
+              </ListItemText>
+            </ListItemButton>
+            <ListItemButton component="a" href="/admininventory">
+              <ListItemIcon>
+                <Inventory2Icon />
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="caption">Inventory</Typography>
+              </ListItemText>
+            </ListItemButton>
+            <Divider sx={{ my: 1 }} />
+            <ListSubheader component="div" inset>
+              WEBSITE
+            </ListSubheader>
+            <ListItemButton component="a" href="/admincontent">
+              <ListItemIcon>
+                <WebIcon />
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="caption">Main Content</Typography>
+              </ListItemText>
+            </ListItemButton>
+            <ListItemButton component="a" href="/adminmanagelistings">
+              <ListItemIcon>
+                <WebIcon />
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="caption">Listings</Typography>
+              </ListItemText>
+            </ListItemButton>
+            <ListItemButton component="a" href="/adminusermanagement">
+              <ListItemIcon>
+                <PeopleIcon />
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="caption">Users</Typography>
+              </ListItemText>
+            </ListItemButton>
+            <ListItemButton component="a" href="/adminmanagecontactform">
+              <ListItemIcon>
+                <PeopleIcon />
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="caption">Contact Form</Typography>
+              </ListItemText>
+            </ListItemButton>
+          </List>
+        </Box>
       </Drawer>
     </>
   );
