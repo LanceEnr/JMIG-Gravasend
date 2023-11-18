@@ -8,6 +8,7 @@ import Avatar from "@mui/material/Avatar";
 import PhoneIcon from "@mui/icons-material/Phone";
 import FacebookOutlinedIcon from "@mui/icons-material/FacebookOutlined";
 import MapsUgcOutlinedIcon from "@mui/icons-material/MapsUgcOutlined";
+import { fetchContactData } from "../components/cms";
 function Copyright() {
   return (
     <React.Fragment>
@@ -32,6 +33,7 @@ const iconStyle = {
     bgcolor: "warning.dark",
   },
 };
+const contactData = await fetchContactData();
 
 const LANGUAGES = [
   {
@@ -164,17 +166,16 @@ export default function AppFooter() {
             <Box component="ul" sx={{ m: 0, listStyle: "none", p: 0 }}>
               <Box component="li" sx={{ py: 0.5 }}>
                 <Typography variant="caption">
-                  5440B Mindanao Avenue, Ugong, Valenzuela City, 1440 Metro
-                  Manila
+                  {contactData._address1}
                 </Typography>
+              </Box>
+              <Box component="li" sx={{ py: 0.5 }}>
+                <Typography variant="caption">{contactData._email}</Typography>
               </Box>
               <Box component="li" sx={{ py: 0.5 }}>
                 <Typography variant="caption">
-                  jmiggravelandsand@gmail.com
+                  {contactData._landline}
                 </Typography>
-              </Box>
-              <Box component="li" sx={{ py: 0.5 }}>
-                <Typography variant="caption">+639774548583</Typography>
               </Box>
               <Box
                 component="li"

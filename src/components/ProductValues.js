@@ -9,6 +9,7 @@ import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined
 import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import HandymanOutlinedIcon from "@mui/icons-material/HandymanOutlined";
 import CurvyLines from "../assets/appCurvyLines.webp";
+import { fetchValuesData } from "../components/cms";
 
 const item = {
   display: "flex",
@@ -16,6 +17,7 @@ const item = {
   alignItems: "center",
   px: 5,
 };
+const valuesData = await fetchValuesData();
 
 function ProductValues() {
   return (
@@ -50,16 +52,14 @@ function ProductValues() {
                 variant="h6"
                 sx={{ my: 2, fontWeight: "bold", textAlign: "center" }}
               >
-                Premium Gravel and Sand
+                {valuesData._valueHeading1}
               </Typography>
               <Typography
                 variant="body2"
                 color="textSecondary"
                 style={{ textAlign: "center" }}
               >
-                Supplying the highest quality gravel and sand for all your
-                construction needs. Just a few clicks away from delivery to your
-                site.
+                {valuesData._valueSubheading1}
               </Typography>
             </Box>
           </Grid>
@@ -81,15 +81,14 @@ function ProductValues() {
                 variant="h6"
                 sx={{ my: 2, fontWeight: "bold", textAlign: "center" }}
               >
-                Quality Guarantee
+                {valuesData._valueHeading2}
               </Typography>
               <Typography
                 variant="body2"
                 color="textSecondary"
                 style={{ textAlign: "center" }}
               >
-                We guarantee the highest quality in all our products to meet
-                your construction needs.
+                {valuesData._valueSubheading2}
               </Typography>
             </Box>
           </Grid>
@@ -111,16 +110,14 @@ function ProductValues() {
                 variant="h6"
                 sx={{ my: 2, fontWeight: "bold", textAlign: "center" }}
               >
-                Reliable Heavy Equipment
+                {valuesData._valueHeading3}
               </Typography>
               <Typography
                 variant="body2"
                 color="textSecondary"
                 style={{ textAlign: "center" }}
               >
-                We provide top-quality construction machinery and heavy
-                equipment solutions, ensuring the reliability and efficiency of
-                your projects.
+                {valuesData._valueSubheading3}
               </Typography>
             </Box>
           </Grid>

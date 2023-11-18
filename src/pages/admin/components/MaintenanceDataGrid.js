@@ -57,6 +57,7 @@ export default function FullFeaturedCrudGrid(props) {
   const [frequency, setfrequency] = React.useState("");
   const [nextDueMileage, setnextDueMileage] = React.useState("");
   const [status, setStatus] = React.useState("");
+  const [uid, setUID] = React.useState("");
 
   const [isEditing, setIsEditing] = React.useState(false);
 
@@ -87,7 +88,7 @@ export default function FullFeaturedCrudGrid(props) {
         [actionId]: { mode: GridRowModes.View },
       });
     } else if (action === "delete") {
-      deleteRecord(actionId);
+      deleteRecord(actionId, uid);
       setRows(rows.filter((row) => row.id !== actionId));
     }
     setOpen(false);
@@ -105,7 +106,7 @@ export default function FullFeaturedCrudGrid(props) {
         const newRow = {
           id: response.data.id,
         };
-        setRows((prevRows) => [...prevRows, newRow]);
+        setRows((prevRows) => [newRow, ...prevRows]);
         setActionId(response.data.id);
       }
     } catch (error) {
@@ -121,29 +122,43 @@ export default function FullFeaturedCrudGrid(props) {
   };
 
   const handleSaveClick =
-    (id, plateNo, service, frequency, nextDueMileage, status) => () => {
+    (id, plateNo, service, frequency, nextDueMileage, status, uid) => () => {
       const existingRow = rows.find((row) => row.id === id);
 
       if (!existingRow) {
         toast.error("No row with the specified ID found");
         return;
       }
-
-      setRowModesModel({
-        ...rowModesModel,
-        [id]: { mode: GridRowModes.Edit },
-      });
       setAction("save");
       setActionId(id);
       setplateNo(plateNo);
       setservice(service);
       setfrequency(frequency);
       setnextDueMileage(nextDueMileage);
+      setUID(uid);
       setStatus(status);
       setOpen(true);
+
+      setRowModesModel({
+        ...rowModesModel,
+        [id]: { mode: GridRowModes.Edit },
+      });
     };
 
   const handleEditClick = (id) => () => {
+    // Find the row with the corresponding id
+    const selectedRow = rows.find((row) => row.id === id);
+
+    // Populate the state variables with the values of the selected row
+    setActionId(id);
+    setplateNo(selectedRow.plateNo);
+    setservice(selectedRow.service);
+    setfrequency(selectedRow.frequency);
+    setnextDueMileage(selectedRow.nextDueMileage);
+    setStatus(selectedRow.status);
+    setUID(selectedRow.uid);
+
+    // Set the edit mode for the selected row
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
@@ -166,6 +181,7 @@ export default function FullFeaturedCrudGrid(props) {
           nextDueMileage: nextDueMileage,
           mileage: "",
           status: status,
+          uid: uid,
         }
       );
 
@@ -184,12 +200,12 @@ export default function FullFeaturedCrudGrid(props) {
     }
   };
 
-  const deleteRecord = async (id) => {
+  const deleteRecord = async (id, uid) => {
     try {
       const _maintenanceId = parseInt(id, 10);
       const response = await axios.post(
         "http://localhost:3001/deleteMaintenanceRecord",
-        { _maintenanceId }
+        { _maintenanceId, uid }
       );
 
       if (response.status === 200) {
@@ -208,9 +224,10 @@ export default function FullFeaturedCrudGrid(props) {
     }
   };
 
-  const handleDeleteClick = (id) => () => {
+  const handleDeleteClick = (id, uid) => () => {
     setAction("delete");
     setActionId(id);
+    setUID(uid);
     setOpen(true);
   };
 
@@ -235,6 +252,34 @@ export default function FullFeaturedCrudGrid(props) {
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
   };
+  const handleEditCellChange = (params, event) => {
+    const { id, field } = params;
+    const value = params.props.value; // Access value from params.props
+
+    // Update the corresponding state variable based on the edited cell
+    switch (field) {
+      case "plateNo":
+        setplateNo(value);
+        break;
+      case "service":
+        setservice(value);
+        break;
+      case "frequency":
+        setfrequency(value);
+        break;
+      case "nextDueMileage":
+        setnextDueMileage(value);
+        break;
+      case "status":
+        setStatus(value);
+        break;
+      case "uid":
+        setUID(value);
+        break;
+      default:
+        break;
+    }
+  };
 
   let columns = [...props.columns];
 
@@ -245,7 +290,7 @@ export default function FullFeaturedCrudGrid(props) {
     width: props.actionWidth || 100,
     cellClassName: "actions",
     getActions: (params) => {
-      const { id, plateNo, service, frequency, nextDueMileage, status } =
+      const { id, plateNo, service, frequency, nextDueMileage, status, uid } =
         params.row;
       const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
@@ -263,7 +308,8 @@ export default function FullFeaturedCrudGrid(props) {
               service,
               frequency,
               nextDueMileage,
-              status
+              status,
+              uid
             )}
           />,
           <GridActionsCellItem
@@ -287,7 +333,7 @@ export default function FullFeaturedCrudGrid(props) {
         <GridActionsCellItem
           icon={<DeleteIcon />}
           label="Delete"
-          onClick={handleDeleteClick(id)}
+          onClick={handleDeleteClick(id, uid)}
           color="inherit"
         />,
       ];
@@ -318,6 +364,9 @@ export default function FullFeaturedCrudGrid(props) {
         onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
         density="compact"
+        onEditCellChange={(params, event) =>
+          handleEditCellChange(params, event)
+        }
         slots={{
           toolbar: EditToolbar,
         }}

@@ -6,8 +6,10 @@ import ProductHeroLayout from "./ProductHeroLayout";
 import homeBGImage from "../assets/homeBG.webp";
 import catalogImage from "../assets/catalog.webp";
 import contactImage from "../assets/contact.webp";
+import { fetchBannerDataHome } from "../components/cms";
 
 const backgroundImages = [homeBGImage, catalogImage, contactImage];
+const valuesData = await fetchBannerDataHome();
 
 export default function ProductHero() {
   const isXsScreen = useMediaQuery("(max-width:600px)"); // Define the screen width for xs screens
@@ -53,7 +55,7 @@ export default function ProductHero() {
           letterSpacing: "0.05em",
         }}
       >
-        BUILD STRONG FOUNDATIONS
+        {valuesData._heading}
       </Typography>
       <Typography
         color="inherit"
@@ -64,7 +66,7 @@ export default function ProductHero() {
           mt: { xs: 4, sm: 10 },
         }}
       >
-        JMIG supplies aggregates to a broad spectrum of construction industry.
+        {valuesData._subheading}
       </Typography>
       <Button
         variant="contained"

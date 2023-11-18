@@ -63,7 +63,6 @@ function ProductHowItWorks() {
           <Grid container spacing={5}>
             <Grid item xs={12} md={4}>
               <Box sx={item}>
-                <Box sx={number}>1.</Box>
                 <Avatar
                   style={{
                     backgroundColor: "#EBDAB7",
@@ -90,7 +89,6 @@ function ProductHowItWorks() {
             </Grid>
             <Grid item xs={12} md={4}>
               <Box sx={item}>
-                <Box sx={number}>2.</Box>
                 <Avatar
                   style={{
                     backgroundColor: "#EBDAB7",
@@ -117,7 +115,6 @@ function ProductHowItWorks() {
             </Grid>
             <Grid item xs={12} md={4}>
               <Box sx={item}>
-                <Box sx={number}>3.</Box>
                 <Avatar
                   style={{
                     backgroundColor: "#EBDAB7",

@@ -64,6 +64,7 @@ export default function AddListing({ onBackClick }) {
       setPrice(0);
       setDescription("");
       setSelectedFiles([]);
+      onBackClick();
       console.log("Form submitted successfully", response.data);
     } catch (error) {
       toast.error("Modification failed, please try again!");
@@ -73,7 +74,7 @@ export default function AddListing({ onBackClick }) {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const response = await fetch("http://localhost:3001/get-products");
+        const response = await fetch("http://localhost:3001/get-products2");
         if (response.ok) {
           const data = await response.json();
           setProducts(data);
@@ -127,12 +128,11 @@ export default function AddListing({ onBackClick }) {
                         }}
                         label="Product"
                       >
-                        {products.map((product) => (
-                          <MenuItem
-                            key={product._inventoryID}
-                            value={product._itemName}
-                          >
-                            {product._itemName}
+                        {Array.from(
+                          new Set(products.map((product) => product._itemName))
+                        ).map((uniqueItemName) => (
+                          <MenuItem key={uniqueItemName} value={uniqueItemName}>
+                            {uniqueItemName}
                           </MenuItem>
                         ))}
                       </Select>

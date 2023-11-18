@@ -7,6 +7,7 @@ const Counter = require("../models/counter");
 const Code = require("../models/adminCode");
 const Order = require("../models/order");
 const Inventory = require("../models/inventory");
+const IncomingInventory = require("../models/incomingInventory");
 const Values = require("../models/values");
 const Notification = require("../models/customerNotification");
 const Notification2 = require("../models/adminNotification");
@@ -255,26 +256,7 @@ router.get("/currentInventory", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-router.get("/incomingInventory", async (req, res) => {
-  try {
-    const data = await Inventory.find(
-      { _status: "incoming" },
-      {
-        _inventoryID: 1,
-        _itemName: 1,
-        _quantity: 1,
-        _location: 1,
-        _lastUpdated: 1,
-        _id: 0, // Exclude the default _id field
-      }
-    );
 
-    res.json(data);
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
 router.get("/outgoingInventory", async (req, res) => {
   try {
     const data = await Inventory.find(
@@ -778,8 +760,8 @@ router.put("/update-banner", upload.single("image"), async (req, res) => {
 
     // Update the banner details
     existingBanner._bannerType = category;
-    existingBanner.heading = heading;
-    existingBanner._heading = subheading;
+    existingBanner._heading = heading;
+    existingBanner._subheading = subheading;
     existingBanner._image = image; // Update the image path
 
     // Save the updated banner
@@ -799,6 +781,18 @@ router.get("/fetch-banner", async (req, res) => {
     if (!banner) {
       return res.status(404).json({ error: "banner not found" });
     }
+
+    res.json(banner);
+  } catch (error) {
+    console.error("Error retrieving banner:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+router.get("/fetch-category-values/:category", async (req, res) => {
+  const { category } = req.params;
+
+  try {
+    const banner = await Banner.findOne({ _bannerType: category });
 
     res.json(banner);
   } catch (error) {
@@ -954,7 +948,9 @@ const getNextFAQNum = async () => {
       { $inc: { value: 1 } },
       { new: true, upsert: true }
     );
-    return counter.value;
+    const offset = 1000;
+    const orderIdWithOffset = counter.value + offset;
+    return orderIdWithOffset;
   } catch (err) {
     console.error("Error getting the next inventory number:", err);
     throw err;
@@ -979,7 +975,7 @@ router.post("/addFAQ", async (req, res) => {
     // An appointment with the same date and time already exists and is not cancelled
     return res.status(400).json({ error: "Name conflict" });
   }
-  const getNextFAQNum = new FAQ({
+  const faq = new FAQ({
     _faqNum: actionId,
     _question: question,
     _answer: answer,
@@ -999,9 +995,7 @@ router.post("/deleteFAQ/:_faqNum", async (req, res) => {
 
     if (removedRecord) {
       res.json({ message: "Record deleted successfully" });
-      toast.success("Record Deleted Successfully");
     } else {
-      toast.error("Please try again!");
       res.status(404).json({ message: "Record not found" });
     }
   } catch (error) {
@@ -1046,6 +1040,26 @@ router.get("/get-products", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch order data" });
   }
 });
+router.get("/get-products2", async (req, res) => {
+  try {
+    const allProducts = await Inventory.find();
+
+    // Fetch all listing names
+    const listingNames = (await Listing.find()).map(
+      (item) => item._listingName
+    );
+
+    // Filter out products that are already in the Listing
+    const availableProducts = allProducts.filter(
+      (product) => !listingNames.includes(product._itemName)
+    );
+
+    res.json(availableProducts);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Failed to fetch product data" });
+  }
+});
 
 const getNextListingNum = async () => {
   try {
@@ -1054,17 +1068,22 @@ const getNextListingNum = async () => {
       { $inc: { value: 1 } },
       { new: true, upsert: true }
     );
-    return counter.value;
+    const offset = 20000;
+    const orderIdWithOffset = counter.value + offset;
+
+    return orderIdWithOffset;
   } catch (err) {
     console.error("Error getting the next inventory number:", err);
     throw err;
   }
 };
-
+const sanitizeFilename = (filename) => {
+  return filename.replace(/[^\w\s.-]/g, "_");
+};
 const storage2 = multer.diskStorage({
   destination: "../src/images/listings/",
   filename: function (req, file, cb) {
-    const listingName = req.body._listingName;
+    const listingName = sanitizeFilename(req.body._listingName);
 
     const extname = path.extname(file.originalname);
 
@@ -1285,6 +1304,7 @@ router.post("/addOrder", async (req, res) => {
         _orderDet: _orderDet,
       });
       await order.save();
+
       res.json({ message: "Order saved successfully" });
     } else {
       order._name = _name;
@@ -1361,6 +1381,27 @@ router.get("/fetch-adminNotifications", async (req, res) => {
   } catch (error) {
     console.error("Error fetching data:", error);
     res.status(500).json({ error: "Failed to fetch order data" });
+  }
+});
+
+router.post("/delete-listing", async (req, res) => {
+  try {
+    const id = req.body._listingId;
+
+    const removedRecord = await Listing.findOneAndRemove({
+      _listingID: id,
+    });
+
+    if (removedRecord) {
+      res.json({ message: "Record deleted successfully" });
+    } else {
+      res.status(404).json({ message: "Record not found" });
+    }
+  } catch (error) {
+    console.error("Error deleting record", error);
+    res
+      .status(500)
+      .json({ message: "Failed to delete the record", error: error.message });
   }
 });
 

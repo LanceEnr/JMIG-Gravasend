@@ -86,13 +86,19 @@ export default function DataGridDriverManagement(props) {
     setOpen(false);
   };
 
-  //FIX THIS-
+  const generateRandomId = () => {
+    // Generate a random 6-digit number
+    const randomId = Math.floor(Math.random() * 1000000);
+    return randomId.toString().padStart(6, "0");
+  };
+
   const handleClick = async () => {
+    const id2 = generateRandomId();
     const newRow = {
-      id: "auto-generated",
+      id: id2,
     };
     setRows((prevRows) => [...prevRows, newRow]);
-    setActionId("auto-generated");
+    setActionId(id2);
   };
 
   const handleRowEditStop = (params, event) => {
@@ -109,9 +115,16 @@ export default function DataGridDriverManagement(props) {
   const handleSaveClick =
     (id, driverName, contact, date, status, plateNo, email, licenseNo) =>
     () => {
+      const existingRow = rows.find((row) => row.id === id);
+
+      if (!existingRow) {
+        toast.error("No row with the specified ID found");
+        return;
+      }
+
       setRowModesModel({
         ...rowModesModel,
-        [actionId]: { mode: GridRowModes.Edit },
+        [id]: { mode: GridRowModes.Edit },
       });
       setAction("save");
       setActionId(id);
@@ -124,11 +137,25 @@ export default function DataGridDriverManagement(props) {
       setLicenseNo(licenseNo);
       setOpen(true);
     };
+
   //FIX
 
   const handleSaveConfirmed = async (e) => {
     e.preventDefault();
-
+    if (
+      !actionId ||
+      !driverName ||
+      !contact ||
+      !date ||
+      !status ||
+      !plateNo ||
+      !email ||
+      !licenseNo
+    ) {
+      toast.error("Please fill in all required fields");
+      setOpen(false);
+      return;
+    }
     setRowModesModel({
       ...rowModesModel,
       [actionId]: { mode: GridRowModes.View },

@@ -11,56 +11,28 @@ import trailerbed from "../assets/trailerbed.webp";
 import loader from "../assets/loader.webp";
 import dumptruck from "../assets/dumptruck.webp";
 
-export const MenuList = [
-  {
-    name: "Vibro Sand",
+const fetchListingData = async () => {
+  try {
+    const response = await axios.get("http://localhost:3001/get-listing");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+const transformListingData = (data) => {
+  return data.map((item) => ({
+    name: item._listingName,
     image: Gravel1,
-    price: 3000,
+    price: item._listingPrice,
     status: "Available",
-  },
-  {
-    name: "White Sand",
-    image: Gravel2,
-    price: 4000,
-    status: "Available",
-  },
-  {
-    name: "Lahar",
-    image: Gravel3,
-    price: 5000,
-    status: "Available",
-  },
-  {
-    name: "Escombro",
-    image: Sand1,
-    price: 4000,
-    status: "Available",
-  },
-  {
-    name: "S1",
-    image: Sand2,
-    price: 3400,
-    status: "Unavailable",
-  },
-  {
-    name: "Gravel 3/8",
-    image: Sand3,
-    price: 3400,
-    status: "Unavailable",
-  },
-  {
-    name: "Gravel 3/4",
-    image: Gravel1,
-    price: 3000,
-    status: "Available",
-  },
-  {
-    name: "G1",
-    image: Gravel2,
-    price: 4000,
-    status: "Available",
-  },
-];
+  }));
+};
+
+const MenuList = transformListingData(await fetchListingData());
+
+export { MenuList };
 
 export const ServicesList = [
   {

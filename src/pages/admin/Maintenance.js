@@ -21,7 +21,7 @@ function Maintenance() {
         const response = await fetch("http://localhost:3001/fetch-trucks");
         if (response.ok) {
           const data = await response.json();
-          const plates = Object.keys(data).map((key) => data[key].plateNo2);
+          const plates = Object.keys(data).map((key) => data[key].plateNo);
           setPlates(plates);
         } else {
           console.error("Failed to fetch plates");
@@ -80,7 +80,7 @@ function Maintenance() {
       flex: 1,
       editable: true,
       type: "singleSelect",
-      valueOptions: ["Pending", "Overdue", "Completed"],
+      valueOptions: ["Pending", "Completed"],
     },
   ];
 

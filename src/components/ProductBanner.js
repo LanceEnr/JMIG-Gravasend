@@ -3,9 +3,12 @@ import React, { useRef, useEffect } from "react";
 import { Button, Box, Hidden } from "@mui/material";
 import Typography from "../components/common/Typography";
 import ProductBannerLayout from "./ProductBannerLayout";
+import { fetchBannerDataProduct } from "../components/cms";
 
-import productImage from "../assets/excavator.webp"; // Replace with your product image
+import productImage from "../assets/excavator.webp";
+const valuesData = await fetchBannerDataProduct();
 
+//import productImage from `${valuesData}`;
 export default function ProductBanner() {
   const productListSectionRef = useRef(null);
 
@@ -49,7 +52,7 @@ export default function ProductBanner() {
                 width: "100%",
               }}
             >
-              AGGREGATE MATERIALS
+              {valuesData._heading}
             </Typography>
             <Typography
               color="textPrimary"
@@ -60,7 +63,7 @@ export default function ProductBanner() {
                 width: "100%",
               }}
             >
-              Build Your Dream Project with Quality Aggregate Materials Now!
+              {valuesData._subheading}
             </Typography>
 
             <Button

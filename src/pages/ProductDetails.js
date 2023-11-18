@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { Box, Button, Typography, LinearProgress, Link } from "@mui/material";
+import React, { useState, useRef, useEffect } from "react";
+import { Box, Button, Typography, LinearProgress } from "@mui/material";
 import { withStyles } from "@mui/styles";
 import { Container } from "react-bootstrap";
 import Carousel from "react-multi-carousel";
@@ -11,6 +11,7 @@ import "../styles/UserDashboard.css";
 import { MenuList } from "../helpers/MenuList";
 import MoreProducts from "../components/MoreProducts";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
+import { Link } from "react-router-dom";
 
 const ColoredLinearProgress = withStyles({
   colorPrimary: {
@@ -52,7 +53,26 @@ const ProductDetails = () => {
   const handleBeforeChange = (nextSlide) => {
     setSelectedImageIndex(nextSlide);
   };
-  const images = [Sand1, Sand2, Sand3]; // Add your image paths to this array
+  const images = [Sand1, Sand2, Sand3];
+
+  useEffect(() => {
+    const currentUrl = window.location.href;
+    const url = new URL(currentUrl);
+
+    const productName = url.searchParams.get("productName");
+
+    console.log(productName);
+  }, []);
+
+  async function fetchProductDetails() {
+    try {
+      const response = await axios.get("http://localhost:3001/fetch-values");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching values:", error);
+      throw error;
+    }
+  }
 
   return (
     <div className="userDashboard">
@@ -98,7 +118,7 @@ const ProductDetails = () => {
             <Box flex="1 1 50%" mb="40px">
               <Box m="10px 0 25px 0">
                 <Breadcrumbs aria-label="breadcrumb">
-                  <Link underline="hover" color="inherit" href="/">
+                  <Link underline="hover" color="inherit" to="/">
                     Home
                   </Link>
                   <Link underline="hover" color="inherit" href="#">
