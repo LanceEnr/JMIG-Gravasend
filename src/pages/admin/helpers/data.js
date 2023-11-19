@@ -187,9 +187,9 @@ export const columnsDriverManagement = [
         src={
           isValidUrl(params.row.profilePicture)
             ? params.row.profilePicture
-            : "../blank.webp"
+            : "./blank.webp"
         }
-        alt={"Profile"}
+        alt="./blank.webp"
         style={{ width: 50, height: 50, borderRadius: "50%" }}
       />
     ),
