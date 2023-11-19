@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
@@ -9,7 +10,6 @@ import Box from "@mui/material/Box";
 import Typography from "../components/common/Typography";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
 import { toast } from "react-toastify";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -199,9 +199,9 @@ export default function Register() {
           >
             SIGN UP
           </Typography>
-          <Typography variant="caption" align="center">
+          <Typography align="center">
             {"Already have an account? "}
-            <Link href="/login" align="center" underline="none">
+            <Link to="/login" align="center" className="link">
               Login here
             </Link>
           </Typography>
@@ -348,7 +348,7 @@ export default function Register() {
           </form>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="/" variant="caption" underline="none">
+              <Link to="/" variant="caption" className="link">
                 Go back to home
               </Link>
             </Grid>

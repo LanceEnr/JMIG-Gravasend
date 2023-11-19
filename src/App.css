@@ -13,3 +13,12 @@ body {
   font-family: "Montserrat", sans-serif; /* Updated font */
   background-color: #f6f9fc;
 }
+
+.link {
+  color: #1976d2; /* Standard hyperlink color */
+  text-decoration: none;
+}
+
+.link:visited {
+  color: #1976d2; /* Prevent color change on visited */
+}

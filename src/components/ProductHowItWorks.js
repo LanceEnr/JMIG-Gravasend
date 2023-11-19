@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link } from "react-router-dom";
 
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -144,8 +145,8 @@ function ProductHowItWorks() {
         <Button
           size="large"
           variant="contained"
-          component="a"
-          href="/products"
+          component={Link}
+          to={"/products"}
           sx={{
             mt: 8,
             backgroundColor: "#004aad",

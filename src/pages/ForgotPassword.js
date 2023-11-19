@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
+import { Link } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "../components/common/Typography";
@@ -90,9 +90,9 @@ export default function ForgetPassword() {
           )}
           {!otpSent ? (
             <>
-              <Typography variant="caption" align="center">
+              <Typography align="center">
                 {"Changed your mind? "}
-                <Link href="/register" align="center" underline="none">
+                <Link to="/register" align="center" className="link">
                   Login here
                 </Link>
               </Typography>
@@ -132,7 +132,7 @@ export default function ForgetPassword() {
           )}
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="/" variant="caption" underline="none">
+              <Link to="/" variant="caption" className="link">
                 Go back to home
               </Link>
             </Grid>

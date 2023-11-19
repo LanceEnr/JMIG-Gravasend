@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
+
 import axios from "axios";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "../components/common/Typography";
@@ -18,7 +18,7 @@ import BannerImage from "../assets/about.webp";
 import { makeStyles } from "@mui/styles"; // Import makeStyles for custom styles
 import { useTheme } from "@mui/material/styles";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   signin: {
@@ -147,9 +147,9 @@ export default function Login({ dispatch }) {
           >
             SIGN IN
           </Typography>
-          <Typography variant="caption" align="center">
+          <Typography align="center">
             {"Not a member yet? "}
-            <Link href="/register" align="center" underline="none">
+            <Link to="/register" align="center" className="link">
               Sign Up here
             </Link>
           </Typography>
@@ -223,12 +223,12 @@ export default function Login({ dispatch }) {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="/forgotpassword" variant="caption" underline="none">
+                <Link to="/forgotpassword" variant="caption" className="link">
                   Forgot password?
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="/" variant="caption" underline="none">
+                <Link to="/" variant="caption" className="link">
                   Go back to home
                 </Link>
               </Grid>

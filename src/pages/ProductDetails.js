@@ -171,10 +171,10 @@ const ProductDetails = () => {
             <Box flex="1 1 50%" mb="40px">
               <Box m="10px 0 25px 0">
                 <Breadcrumbs aria-label="breadcrumb">
-                  <Link underline="hover" color="inherit" to="/">
+                  <Link className="link" color="inherit" to="/">
                     Home
                   </Link>
-                  <Link underline="hover" color="inherit" to="/products">
+                  <Link className="link" color="inherit" to="/products">
                     Products
                   </Link>
                   <Typography color="text.primary">
