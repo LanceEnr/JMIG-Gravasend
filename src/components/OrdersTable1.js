@@ -35,6 +35,7 @@ import EventIcon from "@mui/icons-material/Event";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import InfoIcon from "@mui/icons-material/Info";
 import IconButton from "@mui/material/IconButton";
+import PrintIcon from "@mui/icons-material/Print";
 
 const getColor = (status) => {
   switch (status) {
@@ -150,9 +151,9 @@ export default function OrdersTable1(props) {
         component={Box}
         sx={{
           bgcolor: "background.paper",
-          border: "2px solid #000",
           boxShadow: 24,
           p: 4,
+          borderRadius: "16px",
         }}
       >
         <Box
@@ -186,16 +187,33 @@ export default function OrdersTable1(props) {
               />
             )}
           </Box>
-          <IconButton
-            edge="end"
-            color="inherit"
-            onClick={handleCloseModal}
-            aria-label="close"
+          <Box
+            sx={{
+              display: "flex",
+            }}
           >
-            <CloseIcon />
-          </IconButton>
+            <IconButton
+              edge="end"
+              color="inherit"
+              onClick={() => window.print()} // Add this line
+              aria-label="print"
+              sx={{ mr: 1 }}
+            >
+              <PrintIcon />
+            </IconButton>
+
+            <IconButton
+              edge="end"
+              color="inherit"
+              onClick={handleCloseModal}
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
         </Box>
-        <Divider />
+        <Divider style={{ borderStyle: "dashed", borderColor: "#bd8512" }} />
+
         {!fullScreen && (
           <Box sx={{ width: "100%", py: 2 }}>
             <Stepper activeStep={2}>

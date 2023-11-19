@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Box, Button, Typography, LinearProgress } from "@mui/material";
+import { Box, Button, Typography, styled } from "@mui/material";
 import { withStyles } from "@mui/styles";
 import { Container } from "react-bootstrap";
 import Carousel from "react-multi-carousel";
@@ -13,16 +13,22 @@ import MoreProducts from "../components/MoreProducts";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import LinearProgress, {
+  linearProgressClasses,
+} from "@mui/material/LinearProgress";
 
-const ColoredLinearProgress = withStyles({
-  colorPrimary: {
-    backgroundColor: "#f5f0e0", // Lighter color
+const ColoredLinearProgress = styled(LinearProgress)(({ theme }) => ({
+  width: "75%",
+  height: 10,
+  borderRadius: 5,
+  [`&.${linearProgressClasses.colorPrimary}`]: {
+    backgroundColor: "#f5f0e0", // Lighter color for the progress bar background
   },
-  barColorPrimary: {
-    backgroundColor: "#bd8512", // Darker color
+  [`& .${linearProgressClasses.bar}`]: {
+    borderRadius: 5,
+    backgroundColor: "#bd8512", // Darker color for the progress
   },
-})(LinearProgress);
-
+}));
 const responsive = {
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
@@ -193,42 +199,21 @@ const ProductDetails = () => {
                   Stocks:
                 </Typography>
 
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  p={2}
-                  borderRadius={4}
-                  mt={1}
-                  style={{
-                    backgroundColor:
-                      pandiStocks.map((stock) => stock._quantity) ||
-                      mindanaoStocks.map((stock) => stock._quantity) > 0
-                        ? "#8dd290"
-                        : "#f5c9c9",
-                  }}
-                >
-                  <Typography variant="body" color="text.secondary">
+                <Box display="flex" flexDirection="column" mt={2}>
+                  <Typography variant="body2" color="text.secondary">
                     <strong>Pandi:</strong>{" "}
                     {pandiStocks.map((stock) => stock._quantity) > 0
                       ? `${pandiStocks.map((stock) => stock._quantity)} cu. mt.`
                       : "Out of Stocks"}
                   </Typography>
+                  <ColoredLinearProgress
+                    variant="determinate"
+                    value={pandiStocks.map((stock) => stock._quantity)}
+                  />
                 </Box>
 
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  p={2}
-                  borderRadius={4}
-                  mt={1}
-                  style={{
-                    backgroundColor:
-                      mindanaoStocks.map((stock) => stock._quantity) > 0
-                        ? "#8dd290"
-                        : "#f5c9c9",
-                  }}
-                >
-                  <Typography variant="body" color="text.secondary">
+                <Box display="flex" flexDirection="column" mt={2}>
+                  <Typography variant="body2" color="text.secondary">
                     <strong>Mindanao Ave:</strong>{" "}
                     {mindanaoStocks.map((stock) => stock._quantity) > 0
                       ? `${mindanaoStocks.map(
@@ -236,6 +221,10 @@ const ProductDetails = () => {
                         )} cu. mt.`
                       : "Out of Stocks"}
                   </Typography>
+                  <ColoredLinearProgress
+                    variant="determinate"
+                    value={mindanaoStocks.map((stock) => stock._quantity)}
+                  />
                 </Box>
               </Box>
 
@@ -250,7 +239,7 @@ const ProductDetails = () => {
                       backgroundColor: "#003882",
                     },
                   }}
-                  onClick={() => navigate("/contact")}
+                  onClick={() => navigate("/Dashboard")}
                 >
                   REQUEST ORDER
                 </Button>

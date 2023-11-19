@@ -7,7 +7,7 @@ import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+import Typography from "../components/common/Typography";
 import Container from "@mui/material/Container";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -195,7 +195,7 @@ export default function Login({ dispatch }) {
                 ),
               }}
             />
-            <Box sx={{ mt: 1 }}>
+            <Box sx={{ mt: 1, display: "flex", justifyContent: "center" }}>
               <GoogleReCAPTCHA
                 sitekey="6LdkquooAAAAAGeJmM27oPgcUtRcQZIGTof4VyY-"
                 onChange={handleRecaptchaChange}

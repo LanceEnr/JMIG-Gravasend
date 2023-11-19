@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Paper } from "@mui/material";
-import FullFeaturedCrudGrid from "./components/FleetDataGrid";
+import { Paper, Box } from "@mui/material";
 import { rowsFleetInformation } from "./helpers/data";
+import Typography from "../../components/common/Typography";
+import FleetDataGrid from "./components/FleetDataGrid";
 
 function FleetInformation() {
   const [drivers, setDrivers] = useState([]);
@@ -30,48 +31,144 @@ function FleetInformation() {
   }, []);
 
   const columnsFleetInformation = [
-    { field: "id", headerName: "ID", flex: 1 },
+    {
+      field: "id",
+      headerName: "ID",
+      flex: 1,
+      hidden: true,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
     {
       field: "bodyNo",
-      headerName: "Body No.",
-      flex: 1,
-      flex: 1,
+      headerName: "BODY NO.",
+      flex: 1.5,
       editable: true,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
     },
-    { field: "plateNo", headerName: "Tractor No.", flex: 1, editable: true },
-    { field: "plateNo2", headerName: "Trailer No.", flex: 1, editable: true },
-    { field: "chassisNo", headerName: "Chassis No.", flex: 1, editable: true },
-    { field: "engineNo", headerName: "Engine No.", flex: 1, editable: true },
-    { field: "model", headerName: "Model", flex: 2, editable: true },
     {
-      field: "mileage",
-      headerName: "Mileage",
+      field: "plateNo",
+      headerName: "TRACTOR NO.",
       flex: 2,
       editable: true,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "plateNo2",
+      headerName: "TRAILER NO.",
+      flex: 2,
+      editable: true,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "chassisNo",
+      headerName: "CHASSIS NO.",
+      flex: 2.5,
+      editable: true,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "engineNo",
+      headerName: "ENGINE NO.",
+      flex: 2.5,
+      editable: true,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "model",
+      headerName: "MODEL",
+      flex: 1.5,
+      editable: true,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "mileage",
+      headerName: "MILEAGE",
+      flex: 2,
+      editable: true,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
     },
     {
       field: "driverName",
-      headerName: "Driver",
-      flex: 2,
+      headerName: "DRIVER",
+      flex: 3,
       editable: true,
       type: "singleSelect",
       valueOptions: drivers,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
     },
-    { field: "status", headerName: "Status", flex: 1 },
+    {
+      field: "status",
+      headerName: "STATUS",
+      flex: 1.5,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
     {
       field: "location",
-      headerName: "Location",
+      headerName: "LOCATION",
       flex: 2,
       editable: true,
       type: "singleSelect",
       valueOptions: ["Pandi", "Mindanao Ave"],
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
     },
   ];
+
   return (
-    <div>
-      <Paper sx={{ my: 2, p: 2, display: "flex", flexDirection: "column" }}>
-        <FullFeaturedCrudGrid
-          title="Fleet Information"
+    <Box sx={{ my: 14, mx: 6 }}>
+      <Typography
+        variant="h3"
+        marked="left"
+        style={{ fontWeight: "bold", fontSize: "30px" }}
+        gutterBottom
+      >
+        Fleet Information
+      </Typography>
+      <Paper sx={{ mt: 3, p: 2, display: "flex", flexDirection: "column" }}>
+        <FleetDataGrid
           columns={columnsFleetInformation}
           rows={rowsFleetInformation}
           newRow={{
@@ -86,7 +183,7 @@ function FleetInformation() {
           fieldToFocus="plateNo"
         />
       </Paper>
-    </div>
+    </Box>
   );
 }
 

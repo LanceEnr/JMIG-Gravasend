@@ -78,7 +78,7 @@ export default function ProfileCard({ profile }) {
             <Typography
               gutterBottom
               variant="h5"
-              style={{ fontWeight: "bold" }}
+              style={{ fontWeight: "bold", textAlign: "center" }}
               component="div"
             >
               {profile.name}
@@ -86,11 +86,15 @@ export default function ProfileCard({ profile }) {
             <Typography
               variant="body2"
               gutterBottom
-              sx={{ color: "#004aad", fontWeight: "bold" }}
+              sx={{ color: "#004aad", fontWeight: "bold", textAlign: "center" }}
             >
               @{userName}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ textAlign: "center" }}
+            >
               {profile.city}
             </Typography>
           </Box>

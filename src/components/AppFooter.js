@@ -192,11 +192,11 @@ export default function AppFooter() {
                       marginRight: 1,
                       width: {
                         xs: "16px", // Width for extra small screens (mobile)
-                        sm: "22px", // Width for small screens and above
+                        sm: "30px", // Width for small screens and above
                       },
                       height: {
                         xs: "16px", // Height for extra small screens (mobile)
-                        sm: "22px", // Height for small screens and above
+                        sm: "30px", // Height for small screens and above
                       },
                     }}
                   >
@@ -213,11 +213,11 @@ export default function AppFooter() {
                       marginRight: 1,
                       width: {
                         xs: "16px", // Width for extra small screens (mobile)
-                        sm: "22px", // Width for small screens and above
+                        sm: "30px", // Width for small screens and above
                       },
                       height: {
                         xs: "16px", // Height for extra small screens (mobile)
-                        sm: "22px", // Height for small screens and above
+                        sm: "30px", // Height for small screens and above
                       },
                     }}
                   >
