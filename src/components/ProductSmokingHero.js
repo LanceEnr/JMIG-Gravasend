@@ -1,5 +1,7 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
+import { Link } from "react-router-dom";
+
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import { Avatar, IconButton } from "@mui/material";
@@ -18,8 +20,8 @@ function ProductSmokingHero() {
       }}
     >
       <Button
-        component="a"
-        href="/contact"
+        component={Link}
+        to={"/contact"}
         sx={{
           border: "4px solid #004aad",
           borderRadius: 0,

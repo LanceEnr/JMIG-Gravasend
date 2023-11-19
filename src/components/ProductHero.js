@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, useMediaQuery } from "@mui/material";
 import Typography from "../components/common/Typography";
 import ProductHeroLayout from "./ProductHeroLayout";
-
+import { Link } from "react-router-dom";
 import homeBGImage from "../assets/homeBG.webp";
 import catalogImage from "../assets/catalog.webp";
 import contactImage from "../assets/contact.webp";
@@ -79,8 +79,8 @@ export default function ProductHero() {
             backgroundColor: "#003882",
           },
         }}
-        component="a"
-        href="/about"
+        component={Link}
+        to={"/about"}
       >
         Learn More
       </Button>
