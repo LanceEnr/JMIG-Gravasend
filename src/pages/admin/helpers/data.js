@@ -141,6 +141,7 @@ const transformDriverData = (data) => {
           licenseNo: userData.licenseNo,
           plateNo: userData.plateNo,
           status: userData.status,
+          profilePicture: userData.ProfileImageURL,
         };
 
         transformedData.push(mappedData);
@@ -167,8 +168,32 @@ const rowsDriverManagement = transformDriverData(
 
 export { rowsDriverManagement };
 
+const isValidUrl = (url) => {
+  try {
+    new URL(url);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
 export const columnsDriverManagement = [
   { field: "id", headerName: "ID", flex: 1 },
+  {
+    field: "profilePicture",
+    headerName: "Picture",
+    flex: 1,
+    renderCell: (params) => (
+      <img
+        src={
+          isValidUrl(params.row.profilePicture)
+            ? params.row.profilePicture
+            : "../blank.webp"
+        }
+        alt={"Profile"}
+        style={{ width: 50, height: 50, borderRadius: "50%" }}
+      />
+    ),
+  },
   { field: "driverName", headerName: "Name", flex: 1, editable: true },
   { field: "contact", headerName: "Contact", flex: 1, editable: true },
   {

@@ -115,12 +115,6 @@ export default function FullFeaturedCrudGrid(props) {
     }
   };
 
-  const handleRowEditStop = (params, event) => {
-    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-      event.defaultMuiPrevented = true;
-    }
-  };
-
   const handleSaveClick =
     (id, plateNo, service, frequency, nextDueMileage, status, uid) => () => {
       const existingRow = rows.find((row) => row.id === id);
@@ -252,32 +246,30 @@ export default function FullFeaturedCrudGrid(props) {
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
   };
-  const handleEditCellChange = (params, event) => {
-    const { id, field } = params;
-    const value = params.props.value; // Access value from params.props
 
-    // Update the corresponding state variable based on the edited cell
-    switch (field) {
-      case "plateNo":
-        setplateNo(value);
-        break;
-      case "service":
-        setservice(value);
-        break;
-      case "frequency":
-        setfrequency(value);
-        break;
-      case "nextDueMileage":
-        setnextDueMileage(value);
-        break;
-      case "status":
-        setStatus(value);
-        break;
-      case "uid":
-        setUID(value);
-        break;
-      default:
-        break;
+  const handleRowEditStop = (params, event) => {
+    const id = params.row.id;
+
+    toast.error("here: " + event.target.value);
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View },
+    });
+
+    const selectedRow = rows.find((row) => row.id === id);
+
+    setActionId(id);
+    setplateNo(selectedRow.plateNo);
+    setservice(selectedRow.service);
+    setfrequency(selectedRow.frequency);
+    setnextDueMileage(selectedRow.nextDueMileage);
+    setStatus(selectedRow.status);
+    setUID(selectedRow.uid);
+
+    //toast.error(params.row.id + " plateNo: " + plateNo);
+
+    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+      event.defaultMuiPrevented = true;
     }
   };
 
@@ -361,18 +353,15 @@ export default function FullFeaturedCrudGrid(props) {
         checkboxSelection
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
-        onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
         density="compact"
-        onEditCellChange={(params, event) =>
-          handleEditCellChange(params, event)
-        }
         slots={{
           toolbar: EditToolbar,
         }}
         slotProps={{
           toolbar: { setRows, setRowModesModel, handleClick },
         }}
+        onRowEditStop={handleRowEditStop}
       />
       <Dialog open={open} onClose={handleDialogClose}>
         <DialogTitle>Are you sure?</DialogTitle>
