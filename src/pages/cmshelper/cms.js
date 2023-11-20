@@ -69,6 +69,7 @@ const transformFAQData = (data) => {
     id: item._faqNum,
     title: item._question,
     content: item._answer,
+    image: item._image,
   }));
 };
 
@@ -77,3 +78,39 @@ const rowsFaqs = transformFAQData(await fetchFAQData());
 
 // Export the transformed data
 export { rowsFaqs };
+
+export async function fetchBannerDataFAQ() {
+  try {
+    const response = await axios.get(
+      "http://localhost:3001/fetch-category-values/FAQS Page"
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching banner:", error);
+    throw error;
+  }
+}
+
+export async function fetchBannerDataAbout() {
+  try {
+    const response = await axios.get(
+      "http://localhost:3001/fetch-category-values/About Page"
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching banner:", error);
+    throw error;
+  }
+}
+
+export async function fetchBannerDataContact() {
+  try {
+    const response = await axios.get(
+      "http://localhost:3001/fetch-category-values/Contact Page"
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching banner:", error);
+    throw error;
+  }
+}

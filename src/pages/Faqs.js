@@ -4,8 +4,8 @@ import CustomizedAccordions, {
 } from "../components/CustomizedAccordions";
 import "../styles/Faqs.css";
 import { Container, Box } from "@mui/material";
-import Banner from "../components/Banner";
-import { rowsFaqs } from "./cmshelper/cms";
+import Banner from "../components/FAQBanner";
+import { rowsFaqs, fetchBannerDataFAQ } from "./cmshelper/cms";
 
 import BannerImage from "../assets/faqs1.webp";
 import ProductSmokingHero from "../components/ProductSmokingHero";
@@ -13,7 +13,7 @@ import ProductSmokingHero from "../components/ProductSmokingHero";
 function Faqs() {
   return (
     <div className="faqs">
-      <Banner bannerImage={BannerImage} title="FREQUENTLY ASKED QUESTIONS" />
+      <Banner />
 
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
         <CustomizedAccordions items={rowsFaqs} />

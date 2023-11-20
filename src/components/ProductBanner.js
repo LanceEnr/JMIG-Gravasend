@@ -4,11 +4,12 @@ import { Button, Box, Hidden } from "@mui/material";
 import Typography from "../components/common/Typography";
 import ProductBannerLayout from "./ProductBannerLayout";
 import { fetchBannerDataProduct } from "../components/cms";
-
 import productImage from "../assets/excavator.webp";
-const valuesData = await fetchBannerDataProduct();
 
-//import productImage from `${valuesData}`;
+const valuesData = await fetchBannerDataProduct();
+const imagePath = valuesData._image;
+const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+
 export default function ProductBanner() {
   const productListSectionRef = useRef(null);
 
@@ -85,9 +86,8 @@ export default function ProductBanner() {
           </Box>
           <Hidden mdDown>
             <Box>
-              {/* Add your product image */}
               <img
-                src={productImage}
+                src={require(`../images/banner/uploads/${filename}`)}
                 alt="Product"
                 style={{ width: "100%", marginTop: "20px" }}
               />

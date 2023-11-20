@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
+import image from "../helpers/images/blank.webp";
 import { Typography } from "@mui/material";
 
 const fetchInventoryData = async () => {
@@ -188,9 +189,9 @@ export const columnsDriverManagement = [
         src={
           isValidUrl(params.row.profilePicture)
             ? params.row.profilePicture
-            : "../blank.webp"
+            : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
         }
-        alt={"Profile"}
+        alt={"Picture"}
         style={{ width: 50, height: 50, borderRadius: "50%" }}
       />
     ),

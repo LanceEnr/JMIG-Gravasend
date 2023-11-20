@@ -14,7 +14,7 @@ import ProfileCard from "../components/common/ProfileCard";
 
 function UserDashboard() {
   const [orders, setOrders] = useState([]);
-  const [activeComponent, setActiveComponent] = useState("Orders");
+  const [activeComponent, setActiveComponent] = useState("User Profile");
   const isMobile = useMediaQuery("(max-width:600px)");
 
   const handleActiveComponentChange = (newComponent) => {

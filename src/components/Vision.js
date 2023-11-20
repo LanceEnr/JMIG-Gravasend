@@ -4,8 +4,13 @@ import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
 import Typography from "../components/common/Typography";
 import ImageDots from "../assets/productCTAImageDots.webp";
+import { fetchVisionData } from "../components/cms";
 
 import VisionImage from "../assets/vision.webp";
+
+const valuesData = await fetchVisionData();
+const imagePath = valuesData.image;
+const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 
 function Vision() {
   return (
@@ -30,7 +35,7 @@ function Vision() {
           />
           <Box
             component="img"
-            src={VisionImage}
+            src={require(`../images/banner/uploads/${filename}`)}
             alt="call to action"
             sx={{
               position: "absolute",
@@ -73,18 +78,7 @@ function Vision() {
               >
                 VISION
               </Typography>
-              <Typography variant="subtitle1">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Curabitur mattis, eros et lobortis lobortis, risus est rhoncus
-                magna, sed rhoncus nibh arcu eget augue. Vestibulum a justo
-                quam. Vestibulum tristique volutpat pretium. Aliquam facilisis
-                ante at magna sagittis, eget dapibus purus hendrerit. Aliquam ut
-                rutrum mi. Integer accumsan aliquam turpis, et condimentum erat
-                elementum vitae. Maecenas sem nunc, convallis vel mollis
-                rhoncus, venenatis ac lorem. Sed vehicula sem arcu, egestas
-                congue ex scelerisque in. Pellentesque fermentum posuere augue,
-                et tristique sem suscipit et.
-              </Typography>
+              <Typography variant="subtitle1">{valuesData._vision}</Typography>
             </Box>
           </Box>
         </Grid>

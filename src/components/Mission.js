@@ -5,6 +5,11 @@ import Container from "@mui/material/Container";
 import Typography from "../components/common/Typography";
 import ImageDots from "../assets/productCTAImageDots.webp";
 import MissionImage from "../assets/mission.webp";
+import { fetchMissionData } from "../components/cms";
+
+const valuesData = await fetchMissionData();
+const imagePath = valuesData.image;
+const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 
 function Mission() {
   return (
@@ -35,18 +40,7 @@ function Mission() {
               >
                 MISSION
               </Typography>
-              <Typography variant="subtitle1">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Curabitur mattis, eros et lobortis lobortis, risus est rhoncus
-                magna, sed rhoncus nibh arcu eget augue. Vestibulum a justo
-                quam. Vestibulum tristique volutpat pretium. Aliquam facilisis
-                ante at magna sagittis, eget dapibus purus hendrerit. Aliquam ut
-                rutrum mi. Integer accumsan aliquam turpis, et condimentum erat
-                elementum vitae. Maecenas sem nunc, convallis vel mollis
-                rhoncus, venenatis ac lorem. Sed vehicula sem arcu, egestas
-                congue ex scelerisque in. Pellentesque fermentum posuere augue,
-                et tristique sem suscipit et.
-              </Typography>
+              <Typography variant="subtitle1">{valuesData._mission}</Typography>
             </Box>
           </Box>
         </Grid>
@@ -73,7 +67,7 @@ function Mission() {
 
           <Box
             component="img"
-            src={MissionImage}
+            src={require(`../images/banner/uploads/${filename}`)}
             alt="call to action"
             sx={{
               position: "absolute",

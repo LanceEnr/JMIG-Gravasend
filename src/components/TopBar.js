@@ -5,6 +5,9 @@ import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import PhoneIcon from "@mui/icons-material/Phone";
 import { Box } from "@mui/material";
+import { fetchContactData } from "../components/cms";
+
+const valuesData = await fetchContactData();
 
 export default function TopBar() {
   return (
@@ -81,7 +84,7 @@ export default function TopBar() {
               },
             }}
           >
-            +639774548584
+            {valuesData._landline}
           </Typography>
         </div>
       </Container>

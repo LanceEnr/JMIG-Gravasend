@@ -14,7 +14,8 @@ const Notification2 = require("../models/adminNotification");
 const Appointment = require("../models/appointment");
 const Testimonial = require("../models/testimonial");
 const Inquiry = require("../models/inquiry");
-const About = require("../models/about");
+const Vision = require("../models/vision");
+const Mission = require("../models/mission");
 const Contact = require("../models/contact");
 const Banner = require("../models/banner");
 const FAQ = require("../models/faq");
@@ -78,6 +79,40 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
+  limits: {
+    fileSize: 10000000,
+  },
+});
+
+const storageVision = multer.diskStorage({
+  destination: "../src/images/banner/uploads/",
+  filename: function (req, file, cb) {
+    const category = req.body.v;
+    const extname = path.extname(file.originalname);
+    const filename = category + extname;
+    cb(null, filename);
+  },
+});
+
+const uploadVision = multer({
+  storage: storageVision,
+  limits: {
+    fileSize: 10000000,
+  },
+});
+
+const storageMission = multer.diskStorage({
+  destination: "../src/images/banner/uploads/",
+  filename: function (req, file, cb) {
+    const category = req.body.m;
+    const extname = path.extname(file.originalname);
+    const filename = category + extname;
+    cb(null, filename);
+  },
+});
+
+const uploadMission = multer({
+  storage: storageMission,
   limits: {
     fileSize: 10000000,
   },
@@ -735,7 +770,7 @@ router.put("/update-banner", upload.single("image"), async (req, res) => {
 
   try {
     let image = req.body.image;
-
+    console.log(req.body.image);
     if (req.file) {
       image = req.file.path;
 
@@ -871,37 +906,116 @@ router.get("/fetch-values", async (req, res) => {
   }
 });
 
-router.put("/update-about", async (req, res) => {
-  const updatedAboutData = req.body;
+router.put(
+  "/update-about",
+  uploadVision.single("image"),
 
+  async (req, res) => {
+    const _vision = req.body._vision;
+
+    try {
+      let image = req.body.image;
+
+      if (req.file) {
+        image = req.file.path;
+
+        const existingCategory = req.body.v;
+
+        const extname = path.extname(image);
+
+        const oldImagePath =
+          "images/banner/uploads/" + existingCategory + extname;
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      }
+
+      const existingAbout = await Vision.findOne();
+
+      if (!existingAbout) {
+        return res.status(404).json({ error: "Banner not found" });
+      }
+
+      existingAbout._vision = _vision;
+      existingAbout.image = image;
+
+      await existingAbout.save();
+
+      res.status(200).json({ message: "Banner updated successfully" });
+    } catch (error) {
+      console.error("Error updating banner:", error);
+      res.status(500).json({ error: "Banner update failed" });
+    }
+  }
+);
+router.put(
+  "/update-about2",
+  uploadMission.single("image"),
+
+  async (req, res) => {
+    const _mission = req.body._mission;
+
+    try {
+      let image = req.body.image;
+
+      if (req.file) {
+        image = req.file.path;
+
+        const existingCategory = req.body.m;
+
+        const extname = path.extname(image);
+
+        const oldImagePath =
+          "images/banner/uploads/" + existingCategory + extname;
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      }
+
+      const existingAbout = await Mission.findOne();
+
+      if (!existingAbout) {
+        return res.status(404).json({ error: "Banner not found" });
+      }
+
+      existingAbout._mission = _mission;
+      existingAbout.image = image;
+
+      await existingAbout.save();
+
+      res.status(200).json({ message: "Banner updated successfully" });
+    } catch (error) {
+      console.error("Error updating banner:", error);
+      res.status(500).json({ error: "Banner update failed" });
+    }
+  }
+);
+
+router.get("/fetch-vision", async (req, res) => {
   try {
-    const existingAbout = await About.findOne();
+    const vision = await Vision.findOne();
 
-    if (!existingAbout) {
-      return res.status(404).json({ error: "About not found" });
+    if (!vision) {
+      return res.status(404).json({ error: "Contact not found" });
     }
 
-    existingAbout.set(updatedAboutData);
-
-    await existingAbout.save();
-
-    res.json({ message: "About updated successfully" });
+    res.json(vision);
   } catch (error) {
-    console.error("Error updating About:", error);
+    console.error("Error retrieving Vision:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
-router.get("/fetch-about", async (req, res) => {
+router.get("/fetch-mission", async (req, res) => {
   try {
-    const about = await About.findOne();
+    const mission = await Mission.findOne();
 
-    if (!about) {
-      return res.status(404).json({ error: "About not found" });
+    if (!mission) {
+      return res.status(404).json({ error: "Contact not found" });
     }
 
-    res.json(about);
+    res.json(mission);
   } catch (error) {
-    console.error("Error retrieving about:", error);
+    console.error("Error retrieving Mission:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });

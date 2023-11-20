@@ -5,6 +5,8 @@ const aboutSchema = new mongoose.Schema(
   {
     _mission: String,
     _vision: String,
+    image1: String,
+    image2: String,
   },
   { collection: "about" }
 );
