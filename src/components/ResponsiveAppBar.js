@@ -400,14 +400,21 @@ function ResponsiveAppBar() {
                             window.location.reload();
                           },
                         });
-                      } else if (setting === "Account") {
-                        window.location.href = "/ProfileInfo";
                       } else {
-                        window.location.href = `/${setting}`;
+                        setAnchorElSettings(null);
                       }
                     }}
                   >
-                    <Typography textAlign="center">{setting}</Typography>
+                    <Link
+                      to={
+                        setting === "Account" ? "/ProfileInfo" : `/${setting}`
+                      }
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    >
+                      <Typography variant="inherit" textAlign="center">
+                        {setting}
+                      </Typography>
+                    </Link>
                   </MenuItem>
                 ))}
               </Menu>

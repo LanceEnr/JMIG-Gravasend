@@ -3,7 +3,7 @@ import { Paper, Box, Tab, Tabs } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import FullFeaturedCrudGrid from "./components/MaintenanceDataGrid";
 import FullFeaturedCrudGrid2 from "./components/MaintenanceRecordDataGrid";
-import Title from "./components/Title";
+import Typography from "../../components/common/Typography";
 import axios from "axios";
 import {
   rowsMaintenanceScheduling,
@@ -39,7 +39,16 @@ function Maintenance() {
   };
 
   const columnsMaintenanceScheduling = [
-    { field: "id", headerName: "ID", flex: 1 },
+    {
+      field: "id",
+      headerName: "ID",
+      flex: 2,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
     {
       field: "plateNo",
       headerName: "Tractor No.",
@@ -47,9 +56,23 @@ function Maintenance() {
       editable: true,
       type: "singleSelect",
       valueOptions: plates,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
     },
-    { field: "service", headerName: "Service", flex: 2, editable: true },
-
+    {
+      field: "service",
+      headerName: "Service",
+      flex: 2,
+      editable: true,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
     {
       field: "frequency",
       headerName: "Frequency",
@@ -57,11 +80,21 @@ function Maintenance() {
       editable: true,
       type: "singleSelect",
       valueOptions: ["1000", "3000", "5000", "10000", "15000", "20000"],
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
     },
     {
       field: "mileage",
       headerName: "Start Mileage",
-      flex: 1,
+      flex: 2,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
     },
     {
       field: "nextDueMileage",
@@ -72,47 +105,65 @@ function Maintenance() {
         const frequency = params.row.frequency;
         return parseInt(frequency) + parseInt(mileage);
       },
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
     },
-
     {
       field: "status",
       headerName: "Status",
-      flex: 1,
+      flex: 2,
       editable: true,
       type: "singleSelect",
       valueOptions: ["Pending", "Completed"],
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
     },
   ];
 
   return (
     <div>
-      <Paper sx={{ my: 2, p: 2, display: "flex", flexDirection: "column" }}>
-        <Title>Maintenance</Title>
-        <Box sx={{ width: "100%" }}>
-          <Box sx={{ mb: 2, borderBottom: 1, borderColor: "divider" }}>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              aria-label="Maintenance"
-            >
-              <Tab label="Scheduling" />
-              <Tab label="Records" />
-            </Tabs>
+      <Box sx={{ my: 12, mx: 6 }}>
+        <Typography
+          variant="h3"
+          marked="left"
+          style={{ fontWeight: "bold", fontSize: "30px" }}
+          gutterBottom
+        >
+          Maintenance
+        </Typography>
+        <Paper sx={{ mt: 3, p: 2, display: "flex", flexDirection: "column" }}>
+          <Box sx={{ width: "100%" }}>
+            <Box sx={{ mb: 2, borderBottom: 1, borderColor: "divider" }}>
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="Maintenance"
+              >
+                <Tab label="Scheduling" />
+                <Tab label="Records" />
+              </Tabs>
+            </Box>
+            {value === 0 && (
+              <FullFeaturedCrudGrid
+                columns={columnsMaintenanceScheduling}
+                rows={rowsMaintenanceScheduling}
+              />
+            )}
+            {value === 1 && (
+              <FullFeaturedCrudGrid2
+                columns={columnsMaintenanceRecords}
+                rows={rowsMaintenanceRecords}
+              />
+            )}
           </Box>
-          {value === 0 && (
-            <FullFeaturedCrudGrid
-              columns={columnsMaintenanceScheduling}
-              rows={rowsMaintenanceScheduling}
-            />
-          )}
-          {value === 1 && (
-            <FullFeaturedCrudGrid2
-              columns={columnsMaintenanceRecords}
-              rows={rowsMaintenanceRecords}
-            />
-          )}
-        </Box>
-      </Paper>
+        </Paper>
+      </Box>
     </div>
   );
 }

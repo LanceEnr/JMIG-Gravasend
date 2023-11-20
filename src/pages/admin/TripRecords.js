@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { DataGrid, GridActionsCellItem, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
@@ -15,22 +15,10 @@ import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Box from "@mui/material/Box";
-import { Paper } from "@mui/material";
 import { green, red } from "@mui/material/colors";
 import Signature from "../../assets/e-signature.webp";
-import DriveEtaIcon from "@mui/icons-material/DriveEta"; // Icon for Driver's License
-import DescriptionIcon from "@mui/icons-material/Description"; // Icon for OR/CR
-import LocalShippingIcon from "@mui/icons-material/LocalShipping"; // Icon for Local Transport Permit
-import EditIcon from "@mui/icons-material/Edit"; // Icon for Driver E-Signature
-import LocalGasStationIcon from "@mui/icons-material/LocalGasStation"; // Icon for Oil Levels
-import OpacityIcon from "@mui/icons-material/Opacity"; // Icon for Coolant Levels
-import AirIcon from "@mui/icons-material/Air"; // Icon for Air Pressure
-import LinkIcon from "@mui/icons-material/Link"; // Icon for Steering Linkage and Suspension
-import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh"; // Icon for Brakes
-import ConstructionIcon from "@mui/icons-material/Construction"; // Icon for Dumpbed Operation
-import Title from "./components/Title";
+
 import axios from "axios";
-import GestureIcon from "@mui/icons-material/Gesture";
 
 const transformTripOngoing = (data, data2, data3, data4) => {
   const transformedData = [];
@@ -308,7 +296,6 @@ export default function TripVerification() {
       <DataGrid
         rows={rows}
         columns={columns}
-        pageSize={5}
         disableColumnFilter
         disableColumnSelector
         density="compact"

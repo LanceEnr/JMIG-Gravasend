@@ -11,6 +11,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { Typography } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Title from "./Title";
@@ -168,12 +169,11 @@ export default function FullFeaturedCrudGrid(props) {
       const response = await axios.post(
         "http://localhost:3001/addMaintenance",
         {
-          actionId: actionId,
+          id: actionId,
           plateNo: plateNo,
           service: service,
           frequency: frequency,
           nextDueMileage: nextDueMileage,
-          mileage: "",
           status: status,
           uid: uid,
         }
@@ -190,7 +190,7 @@ export default function FullFeaturedCrudGrid(props) {
     } catch (error) {
       console.error("Maintenance add failed", error);
       setOpen(false);
-      toast.error("Maintenance name already exists!");
+      toast.error("Failed to save the record");
     }
   };
 
@@ -281,6 +281,11 @@ export default function FullFeaturedCrudGrid(props) {
     headerName: "Actions",
     width: props.actionWidth || 100,
     cellClassName: "actions",
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
     getActions: (params) => {
       const { id, plateNo, service, frequency, nextDueMileage, status, uid } =
         params.row;
@@ -354,7 +359,7 @@ export default function FullFeaturedCrudGrid(props) {
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
         processRowUpdate={processRowUpdate}
-        density="compact"
+        density="comfortable"
         slots={{
           toolbar: EditToolbar,
         }}
@@ -362,6 +367,14 @@ export default function FullFeaturedCrudGrid(props) {
           toolbar: { setRows, setRowModesModel, handleClick },
         }}
         onRowEditStop={handleRowEditStop}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 5,
+            },
+          },
+        }}
+        pageSizeOptions={[5, 10, 25]}
       />
       <Dialog open={open} onClose={handleDialogClose}>
         <DialogTitle>Are you sure?</DialogTitle>

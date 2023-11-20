@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
+import { Typography } from "@mui/material";
 
 const fetchInventoryData = async () => {
   try {
@@ -419,25 +420,67 @@ const CustomTable = () => {
 export default CustomTable;
 
 export const columnsMaintenanceRecords = [
-  { field: "id", headerName: "ID", flex: 1 },
-  { field: "plateNo", headerName: "Tractor No.", flex: 2 },
-  { field: "service", headerName: "Service", flex: 2 },
+  {
+    field: "id",
+    headerName: "ID",
+    flex: 1,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
+  },
+  {
+    field: "plateNo",
+    headerName: "Tractor No.",
+    flex: 2,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
+  },
+  {
+    field: "service",
+    headerName: "Service",
+    flex: 2,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
+  },
   {
     field: "mileage",
     headerName: "Mileage",
     flex: 1,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
   },
   {
     field: "provider",
     headerName: "Service Provider",
     flex: 2,
     editable: true,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
   },
   {
     field: "cost",
     headerName: "Total Cost",
     flex: 2,
     editable: true,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
   },
 ];
 const transformMaintenanceRecordData = (data) => {
