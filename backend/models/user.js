@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema(
     _address: String,
     _iv: String,
     _encryptionKey: String,
+    _profilePicture: String,
   },
   { collection: "user" }
 );

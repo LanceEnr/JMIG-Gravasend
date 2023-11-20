@@ -23,11 +23,60 @@ import ProfileCard from "./common/ProfileCard";
 import ProfilePic from "../assets/formal1x1.webp";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera"; // Import the PhotoCameraIcon
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import { fetchProfilePic } from "../components/cms";
+
+const storedUsername = localStorage.getItem("userName");
+const valuesData = await fetchProfilePic(storedUsername);
+const imagePath = valuesData._profilePicture;
+const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 
 export default function ProfileInfo(props) {
   const isMobile = useMediaQuery("(max-width:600px)");
   const [showPassword, setShowPassword] = useState(false);
   const [passwordInputType, setPasswordInputType] = useState("password");
+
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState(null);
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setUploadedImage(file);
+      setDialogOpen(true);
+    }
+  };
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
+  const storedUsername = localStorage.getItem("userName");
+
+  const handleConfirmChange = async (event) => {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append("_userName", storedUsername);
+    formData.append("image", uploadedImage);
+
+    try {
+      const response = await axios.put(
+        "http://localhost:3001/update-user-profilepic",
+        formData
+      );
+
+      toast.success("Profile picture changed successfully!");
+
+      console.log("Profile picture changed successfully ", response.data);
+    } catch (error) {
+      toast.error("Error submitting picture");
+      console.error("Error submitting picture:", error);
+    }
+    setDialogOpen(false);
+  };
+
   const handleShowPasswordToggle = () => {
     setShowPassword(!showPassword);
     setPasswordInputType(showPassword ? "password" : "text");
@@ -64,10 +113,12 @@ export default function ProfileInfo(props) {
         console.error("Error fetching user data:", error);
       });
   }, []);
+
   const profile = {
     name: userData.fName + " " + userData.lName,
     city: userData.address,
   };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setUserData({ ...userData, [name]: value });
@@ -309,7 +360,8 @@ export default function ProfileInfo(props) {
                     <Grid item xs={3}>
                       <Avatar
                         alt={profile.name}
-                        src={ProfilePic}
+                        src={require(`../images/profile/${filename}`)}
+                        //src={ProfilePic}
                         sx={{
                           width: 40,
                           height: 40,
@@ -317,19 +369,29 @@ export default function ProfileInfo(props) {
                       />
                     </Grid>
                     <Grid item xs={9}>
-                      <Button
-                        variant="contained"
-                        startIcon={<PhotoCameraIcon />}
-                        sx={{
-                          backgroundColor: "#004aad",
-                          color: "#fff",
-                          "&:hover": {
-                            backgroundColor: "#003882",
-                          },
-                        }}
-                      >
-                        Upload
-                      </Button>
+                      <input
+                        type="file"
+                        id="upload-button"
+                        accept=".webp, .img, .png, .jpg"
+                        style={{ display: "none" }}
+                        onChange={handleFileUpload}
+                      />
+                      <label htmlFor="upload-button">
+                        <Button
+                          variant="contained"
+                          startIcon={<PhotoCameraIcon />}
+                          sx={{
+                            backgroundColor: "#004aad",
+                            color: "#fff",
+                            "&:hover": {
+                              backgroundColor: "#003882",
+                            },
+                          }}
+                          component="span"
+                        >
+                          Upload
+                        </Button>
+                      </label>
                     </Grid>
                   </Grid>
                 </Grid>
@@ -338,6 +400,18 @@ export default function ProfileInfo(props) {
           </Grid>
         </Grid>
       </Grid>
+      <Dialog open={isDialogOpen} onClose={handleDialogClose}>
+        <DialogTitle>Change Profile Picture</DialogTitle>
+        <DialogContent>
+          <Typography>Do you want to change your profile picture?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose}>Cancel</Button>
+          <Button onClick={handleConfirmChange} variant="contained">
+            Yes, Change
+          </Button>
+        </DialogActions>
+      </Dialog>
     </List>
   );
 }

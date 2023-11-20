@@ -12,6 +12,12 @@ import {
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import UserDrawer from "./common/UserDrawer";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { fetchProfilePic } from "../components/cms";
+
+const storedUsername = localStorage.getItem("userName");
+const valuesData = await fetchProfilePic(storedUsername);
+const imagePath = valuesData._profilePicture;
+const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 
 export default function ProfileInfo(props) {
   const isMobile = useMediaQuery("(max-width:600px)");
@@ -95,7 +101,7 @@ export default function ProfileInfo(props) {
           >
             <Avatar
               alt={userName}
-              src={userAvatarUrl}
+              src={require(`../images/profile/${filename}`)}
               style={{ width: "60px", height: "60px", marginLeft: "16px" }}
             />
             <Typography variant="h5" style={{ marginLeft: "16px" }}>

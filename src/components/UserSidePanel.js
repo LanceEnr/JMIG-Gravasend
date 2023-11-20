@@ -19,6 +19,12 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import { withStyles } from "@mui/styles";
 import ProfilePic from "../assets/formal1x1.webp";
+import { fetchProfilePic } from "../components/cms";
+
+const storedUsername = localStorage.getItem("userName");
+const valuesData = await fetchProfilePic(storedUsername);
+const imagePath = valuesData._profilePicture;
+const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 
 const ColoredBadge = withStyles({
   badge: {
@@ -94,7 +100,7 @@ function SidePanel({ setActiveComponent }) {
         <ListItem sx={{ marginBottom: "16px" }}>
           <Avatar
             alt={userName}
-            src={ProfilePic} // Replace with the actual path to the user's avatar
+            src={require(`../images/profile/${filename}`)}
             sx={{ width: 64, height: 64, marginRight: "16px" }}
           />
           <div>

@@ -23,6 +23,17 @@ export async function fetchBannerDataProduct() {
     throw error;
   }
 }
+export async function fetchProfilePic(_userName) {
+  try {
+    const response = await axios.get(
+      `http://localhost:3001/fetch-profile-pic/${_userName}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching banner:", error);
+    throw error;
+  }
+}
 
 export async function fetchTestimonialData() {
   try {
@@ -32,6 +43,25 @@ export async function fetchTestimonialData() {
     return response.data;
   } catch (error) {
     console.error("Error fetching testimonials:", error);
+    throw error;
+  }
+}
+export async function fetchVisionData() {
+  try {
+    const response = await axios.get("http://localhost:3001/fetch-vision");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching vision:", error);
+    throw error;
+  }
+}
+
+export async function fetchMissionData() {
+  try {
+    const response = await axios.get("http://localhost:3001/fetch-mission");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching mission:", error);
     throw error;
   }
 }
@@ -62,6 +92,17 @@ export async function fetchContactData() {
     return response.data;
   } catch (error) {
     console.error("Error fetching contact:", error);
+    throw error;
+  }
+}
+export async function fetchBannerDataFAQ() {
+  try {
+    const response = await axios.get(
+      "http://localhost:3001/fetch-category-values/FAQS Page"
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching banner:", error);
     throw error;
   }
 }

@@ -61,6 +61,7 @@ export default function EditBanners() {
     };
     reader.readAsDataURL(file);
   }, []);
+
   const validateForm = () => {
     setIsFormValid(!!category && !!selectedFile && !!heading && !!subheading);
   };
@@ -132,7 +133,7 @@ export default function EditBanners() {
                             Drag & drop banner image here, or click to select an
                             image. <br></br>
                             <center>
-                              (This will override the stored photo.)
+                              (This will replace the stored photo.)
                             </center>
                           </p>
                         )}
@@ -168,11 +169,6 @@ export default function EditBanners() {
                     label="Heading"
                     name="heading"
                     type="text"
-                    disabled={
-                      category === "FAQS Page" ||
-                      category === "About Page" ||
-                      category === "Contact Page"
-                    }
                     value={heading}
                     fullWidth
                     onChange={(e) => {

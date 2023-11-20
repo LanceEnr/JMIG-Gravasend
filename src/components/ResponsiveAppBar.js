@@ -38,6 +38,12 @@ import LiveHelpIcon from "@mui/icons-material/LiveHelp";
 import InfoIcon from "@mui/icons-material/Info";
 import MailIcon from "@mui/icons-material/Mail";
 import ProfilePic from "../assets/formal1x1.webp";
+import { fetchProfilePic } from "../components/cms";
+
+const storedUsername = localStorage.getItem("userName");
+const valuesData = await fetchProfilePic(storedUsername);
+const imagePath = valuesData._profilePicture;
+const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 
 const ColoredBadge = withStyles({
   badge: {
@@ -366,7 +372,10 @@ function ResponsiveAppBar() {
             <Box sx={{ flexGrow: 0, mr: 2 }}>
               <Tooltip title="Settings">
                 <IconButton onClick={handleOpenSettingsMenu} sx={{ p: 0 }}>
-                  <Avatar alt={userName} src={ProfilePic} />
+                  <Avatar
+                    alt={userName}
+                    src={require(`../images/profile/${filename}`)}
+                  />
                 </IconButton>
               </Tooltip>
 

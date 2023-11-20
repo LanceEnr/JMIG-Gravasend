@@ -14,6 +14,26 @@ const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const iv = crypto.randomBytes(16).toString("hex");
 const encryptionKey = crypto.randomBytes(32).toString("hex");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+
+const storage = multer.diskStorage({
+  destination: "../src/images/profile/",
+  filename: function (req, file, cb) {
+    const username = req.body._userName;
+    const extname = path.extname(file.originalname);
+    const filename = username + extname;
+    cb(null, filename);
+  },
+});
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 10000000,
+  },
+});
 
 const transporter = nodemailer.createTransport({
   service: "Gmail", // Use a valid email service (e.g., Gmail, Outlook, etc.)
@@ -285,7 +305,8 @@ router.get("/user", async (req, res) => {
         ...user._doc,
         totalOrders,
         pendingOrders,
-        _email: decryptedEmail, // Replace the encrypted email with the decrypted one
+        _email: decryptedEmail,
+        pic: user._profilePicture,
       });
     }
 
@@ -309,6 +330,7 @@ router.get("/setuser", async (req, res) => {
         fName: user._fName,
         lName: user._lName,
         address: user._address,
+        pic: user._profilePicture,
       };
     });
 
@@ -685,6 +707,57 @@ router.get("/fetch-notifications", async (req, res) => {
   } catch (error) {
     console.error("Error fetching data:", error);
     res.status(500).json({ error: "Failed to fetch order data" });
+  }
+});
+router.put(
+  "/update-user-profilepic",
+  upload.single("image"),
+  async (req, res) => {
+    try {
+      let image = req.body.image;
+
+      if (req.file) {
+        image = req.file.path;
+
+        const existingCategory = req.body._userName;
+
+        const extname = path.extname(image);
+
+        const oldImagePath = "images/profile/" + existingCategory + extname;
+
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      }
+
+      const existingUser = await User.findOne();
+
+      if (!existingUser) {
+        return res.status(404).json({ error: "Banner not found" });
+      }
+
+      existingUser._profilePicture = image;
+
+      await existingUser.save();
+
+      res.status(200).json({ message: "Banner updated successfully" });
+    } catch (error) {
+      console.error("Error updating banner:", error);
+      res.status(500).json({ error: "Banner update failed" });
+    }
+  }
+);
+
+router.get("/fetch-profile-pic/:_userName", async (req, res) => {
+  const { _userName } = req.params;
+
+  try {
+    const user = await User.findOne({ _userName: _userName });
+
+    res.json(user);
+  } catch (error) {
+    console.error("Error retrieving banner:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 

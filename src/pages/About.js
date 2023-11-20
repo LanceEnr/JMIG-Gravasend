@@ -12,6 +12,11 @@ import ContactBanner from "../components/ContactBanner";
 import AboutData, { fetchAboutData } from "./cmshelper/cms";
 import Mission from "../components/Mission";
 import Vision from "../components/Vision";
+import { fetchBannerDataAbout } from "./cmshelper/cms";
+
+const valuesData = await fetchBannerDataAbout();
+const imagePath = valuesData._image;
+const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 
 function About() {
   const [vision, setVision] = useState("");
@@ -33,7 +38,10 @@ function About() {
   }, []);
   return (
     <div>
-      <Banner bannerImage={BannerImage} title="ABOUT US" />
+      <Banner
+        bannerImage={require(`../images/banner/uploads/${filename}`)}
+        title={valuesData._heading}
+      />
       <Mission />
       <Vision />
     </div>

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useDropzone } from "react-dropzone";
 import {
   Box,
   Grid,
@@ -9,33 +10,89 @@ import {
   Typography,
   Divider,
 } from "@mui/material";
-import { useDropzone } from "react-dropzone";
 
 export default function AboutContent() {
-  const { getRootProps, getInputProps, isDragActive } = useDropzone();
   const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile2, setSelectedFile2] = useState(null);
   const [filePreview, setFilePreview] = useState(null);
+  const [filePreview2, setFilePreview2] = useState(null);
+  const [img1, setImg1] = useState(null);
+  const [img2, setImg2] = useState(null);
+  const [base64Image, setBase64Image] = useState(null);
+  const [vision, setVision] = useState("");
+  const [mission, setMission] = useState("");
+  const [isFormValid, setIsFormValid] = useState(false);
 
-  const [formData, setFormData] = useState({});
+  const onDrop1 = useCallback((acceptedFiles) => {
+    const file = acceptedFiles[0];
+    setSelectedFile(file);
 
-  const handleFormChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
-  };
+    const previewURL = URL.createObjectURL(file);
+    setFilePreview(previewURL);
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64Data = reader.result;
+      setBase64Image(base64Data);
+    };
+    reader.readAsDataURL(file);
+  }, []);
+  const onDrop2 = useCallback((acceptedFiles) => {
+    const file = acceptedFiles[0];
+    setSelectedFile2(file);
+
+    const previewURL = URL.createObjectURL(file);
+    setFilePreview2(previewURL);
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64Data = reader.result;
+      setBase64Image(base64Data);
+    };
+    reader.readAsDataURL(file);
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/fetch-vision");
+        const response2 = await axios.get(
+          "http://localhost:3001/fetch-mission"
+        );
+
+        setVision(response.data._vision);
+        setMission(response2.data._mission);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const valueData = {
-      _vision: formData._vision,
-      _mission: formData._mission,
-    };
 
-    // Send data to the server using Axios (update the URL)
+    const formData = new FormData();
+    formData.append("_vision", vision);
+    formData.append("v", "vision");
+    formData.append("image", selectedFile);
+
+    const formData2 = new FormData();
+    formData2.append("_mission", mission);
+    formData2.append("m", "mission");
+    formData2.append("image", selectedFile2);
+
     try {
       const response = await axios.put(
         "http://localhost:3001/update-about",
-        valueData
+        formData
       );
+      const response2 = await axios.put(
+        "http://localhost:3001/update-about2",
+        formData2
+      );
+
       toast.success("About edited successfully!");
       console.log("About submitted:", response.data);
     } catch (error) {
@@ -43,7 +100,16 @@ export default function AboutContent() {
       console.error("Error submitting about:", error);
     }
   };
-
+  const {
+    getRootProps: getRootProps1,
+    getInputProps: getInputProps1,
+    isDragActive: isDragActive1,
+  } = useDropzone({ onDrop: onDrop1 });
+  const {
+    getRootProps: getRootProps2,
+    getInputProps: getInputProps2,
+    isDragActive: isDragActive2,
+  } = useDropzone({ onDrop: onDrop2 });
   return (
     <div>
       <Box>
@@ -56,7 +122,7 @@ export default function AboutContent() {
                 </Grid>
                 <Grid item xs={12}>
                   <Box
-                    {...getRootProps()}
+                    {...getRootProps1()}
                     sx={{
                       height: 200,
                       border: "1px dashed gray",
@@ -65,8 +131,8 @@ export default function AboutContent() {
                       alignItems: "center",
                     }}
                   >
-                    <input {...getInputProps()} />
-                    {isDragActive ? (
+                    <input {...getInputProps1()} />
+                    {isDragActive1 ? (
                       <p>Drop the image here...</p>
                     ) : (
                       <div>
@@ -81,7 +147,11 @@ export default function AboutContent() {
                           </div>
                         ) : (
                           <p>
-                            Drag & drop image here, or click to select an image
+                            Drag & drop banner image here, or click to select an
+                            image. <br></br>
+                            <center>
+                              (This will replace the stored photo.)
+                            </center>
                           </p>
                         )}
                       </div>
@@ -98,8 +168,8 @@ export default function AboutContent() {
                     rows={4}
                     variant="outlined"
                     required
-                    value={formData._vision}
-                    onChange={handleFormChange}
+                    value={vision}
+                    onChange={(event) => setVision(event.target.value)}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -111,7 +181,7 @@ export default function AboutContent() {
                 </Grid>
                 <Grid item xs={12}>
                   <Box
-                    {...getRootProps()}
+                    {...getRootProps2()}
                     sx={{
                       height: 200,
                       border: "1px dashed gray",
@@ -120,23 +190,27 @@ export default function AboutContent() {
                       alignItems: "center",
                     }}
                   >
-                    <input {...getInputProps()} />
-                    {isDragActive ? (
+                    <input {...getInputProps2()} />
+                    {isDragActive2 ? (
                       <p>Drop the image here...</p>
                     ) : (
                       <div>
-                        {selectedFile ? (
+                        {selectedFile2 ? (
                           <div>
                             <img
-                              src={filePreview}
-                              alt={selectedFile.name}
+                              src={filePreview2}
+                              alt={selectedFile2.name}
                               style={{ maxWidth: "300px", maxHeight: "100px" }}
                             />
-                            <p>Selected file: {selectedFile.name}</p>
+                            <p>Selected file: {selectedFile2.name}</p>
                           </div>
                         ) : (
                           <p>
-                            Drag & drop image here, or click to select an image
+                            Drag & drop banner image here, or click to select an
+                            image. <br></br>
+                            <center>
+                              (This will replace the stored photo.)
+                            </center>
                           </p>
                         )}
                       </div>
@@ -152,8 +226,8 @@ export default function AboutContent() {
                     rows={4}
                     variant="outlined"
                     required
-                    value={formData._mission}
-                    onChange={handleFormChange}
+                    value={mission}
+                    onChange={(event) => setMission(event.target.value)}
                   />
                 </Grid>
 

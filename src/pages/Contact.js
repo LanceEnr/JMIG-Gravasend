@@ -18,6 +18,11 @@ import { toast } from "react-toastify";
 import { fetchContactData } from "./cmshelper/cms";
 import ProductCTA from "../components/ProductCTA";
 import ContactValues from "../components/ContactValues";
+import { fetchBannerDataContact } from "./cmshelper/cms";
+
+const valuesData = await fetchBannerDataContact();
+const imagePath = valuesData._image;
+const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 
 function Contact() {
   const [inquiryData, SetInquiryData] = useState({
@@ -90,7 +95,11 @@ function Contact() {
 
   return (
     <div>
-      <Banner bannerImage={BannerImage} title="CONTACT US" text="Talk to us!" />
+      <Banner
+        bannerImage={require(`../images/banner/uploads/${filename}`)}
+        title={valuesData._heading}
+        text="Talk to us!"
+      />
       <Box>
         <Container maxWidth="lg" sx={{ pt: 3 }}>
           <Box
