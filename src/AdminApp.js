@@ -49,9 +49,13 @@ function AdminApp() {
   };
 
   return (
-    <div className="AdminApp">
+    <div>
       <Router>
-        <div style={{ display: "flex" }}>
+        <Box
+          style={{
+            display: "flex",
+          }}
+        >
           <AdminDashboard />
           <Box
             component="main"
@@ -140,7 +144,7 @@ function AdminApp() {
               </Grid>
             </Grid>
           </Box>
-        </div>
+        </Box>
         <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
       </Router>
     </div>

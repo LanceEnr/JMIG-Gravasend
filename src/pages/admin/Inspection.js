@@ -9,6 +9,7 @@ import {
   columnsInspectionRecords,
   rowsInspectionRecords,
 } from "./helpers/data";
+import Typography from "../../components/common/Typography";
 
 function Inspection() {
   const [value, setValue] = useState(0);
@@ -33,35 +34,64 @@ function Inspection() {
     fetchPlates();
   }, []);
   const columnsInspectionScheduling = [
-    { field: "id", headerName: "ID", flex: 1 },
+    {
+      field: "id",
+      headerName: "ID",
+      flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
     {
       field: "plateNo",
-      headerName: "Plate No.",
+      headerName: "PLATE NO.",
       flex: 2,
       editable: true,
       type: "singleSelect",
       valueOptions: plates,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
     },
     {
       field: "inspectionType",
-      headerName: "Inspection Type",
+      headerName: "INSPECTION TYPE",
       flex: 2,
       editable: true,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
     },
     {
       field: "nextInspectionDate",
-      headerName: "Inspection Date",
+      headerName: "INSPECTION DATE",
       type: "date",
       flex: 3,
       editable: true,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
     },
     {
       field: "verdict",
-      headerName: "Verdict",
+      headerName: "VERDICT",
       flex: 2,
       editable: true,
       type: "singleSelect",
       valueOptions: ["Pending", "On Going", "Pass", "Failed"],
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
     },
   ];
 
@@ -70,43 +100,60 @@ function Inspection() {
   };
   return (
     <div>
-      <Paper sx={{ my: 2, p: 2, display: "flex", flexDirection: "column" }}>
-        <Title>Inspection</Title>
-        <Box sx={{ width: "100%" }}>
-          <Box sx={{ mb: 2, borderBottom: 1, borderColor: "divider" }}>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              aria-label="basic tabs example"
-            >
-              <Tab label="Scheduling" />
-              <Tab label="Records" />
-            </Tabs>
+      <Box sx={{ my: 12, mx: 6 }}>
+        <Typography
+          variant="h3"
+          marked="left"
+          style={{ fontWeight: "bold", fontSize: "30px" }}
+          gutterBottom
+        >
+          Inspection
+        </Typography>
+        <Paper sx={{ mt: 3, p: 2, display: "flex", flexDirection: "column" }}>
+          <Box sx={{ width: "100%" }}>
+            <Box sx={{ mb: 2, borderBottom: 1, borderColor: "divider" }}>
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="basic tabs example"
+              >
+                <Tab label="Scheduling" />
+                <Tab label="Records" />
+              </Tabs>
+            </Box>
+            {value === 0 && (
+              <FullFeaturedCrudGrid
+                columns={columnsInspectionScheduling}
+                rows={rowsInspectionScheduling}
+              />
+            )}
+            {value === 1 && (
+              <DataGrid
+                checkboxSelection
+                disableColumnFilter
+                disableColumnSelector
+                density="comfortable"
+                columns={columnsInspectionRecords}
+                rows={rowsInspectionRecords}
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{
+                  toolbar: {
+                    showQuickFilter: true,
+                  },
+                }}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: 5,
+                    },
+                  },
+                }}
+                pageSizeOptions={[5, 10, 25]}
+              />
+            )}
           </Box>
-          {value === 0 && (
-            <FullFeaturedCrudGrid
-              columns={columnsInspectionScheduling}
-              rows={rowsInspectionScheduling}
-            />
-          )}
-          {value === 1 && (
-            <DataGrid
-              checkboxSelection
-              disableColumnFilter
-              disableColumnSelector
-              density="compact"
-              columns={columnsInspectionRecords}
-              rows={rowsInspectionRecords}
-              slots={{ toolbar: GridToolbar }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
-            />
-          )}
-        </Box>
-      </Paper>
+        </Paper>
+      </Box>
     </div>
   );
 }

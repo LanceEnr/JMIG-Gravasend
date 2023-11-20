@@ -11,7 +11,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Badge, IconButton, Avatar } from "@mui/material";
+import { Typography } from "@mui/material";
 import CameraEnhanceIcon from "@mui/icons-material/CameraEnhance";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -262,9 +262,14 @@ export default function DataGridDriverManagement(props) {
   columns.push({
     field: "actions",
     type: "actions",
-    headerName: "Actions",
+    headerName: "ACTIONS",
     width: props.actionWidth || 100,
     cellClassName: "actions",
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
     getActions: (params) => {
       //edit
       const {
