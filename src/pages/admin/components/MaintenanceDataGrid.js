@@ -278,7 +278,7 @@ export default function FullFeaturedCrudGrid(props) {
   columns.push({
     field: "actions",
     type: "actions",
-    headerName: "Actions",
+    headerName: "ACTIONS",
     width: props.actionWidth || 100,
     cellClassName: "actions",
     renderHeader: (params) => (

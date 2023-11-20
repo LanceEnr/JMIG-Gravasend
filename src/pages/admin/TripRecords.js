@@ -11,7 +11,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import ListItemText from "@mui/material/ListItemText";
-import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
+import Typography from "@mui/material/Typography";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Box from "@mui/material/Box";
@@ -255,15 +255,69 @@ export default function TripVerification() {
   };
 
   const columns = [
-    { field: "id", headerName: "ID", flex: 1 },
-    { field: "driver", headerName: "Driver name", flex: 1 },
-    { field: "number", headerName: "Contact No.", flex: 1 },
-    { field: "datetime", headerName: "Date and Time", flex: 1 },
-    { field: "cargoType", headerName: "Cargo Type", flex: 1 },
-    { field: "cargoWeight", headerName: "Cargo Weight", flex: 1 },
+    {
+      field: "id",
+      headerName: "ID",
+      flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "driver",
+      headerName: "DRIVER NAME",
+      flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "number",
+      headerName: "CONTACT NO.",
+      flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "datetime",
+      headerName: "DATE AND TIME",
+      flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "cargoType",
+      headerName: "CARGO TYPE",
+      flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "cargoWeight",
+      headerName: "CARGO WEIGHT",
+      flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
     {
       field: "documents",
-      headerName: "Documents",
+      headerName: "DOCUMENTS",
       sortable: false,
       flex: 1,
       renderCell: (params) => (
@@ -274,10 +328,15 @@ export default function TripVerification() {
           <Visibility />
         </IconButton>
       ),
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
     },
     {
       field: "safetyChecks",
-      headerName: "Safety Checks",
+      headerName: "SAFETY CHECKS",
       sortable: false,
       flex: 1,
       renderCell: (params) => (
@@ -287,6 +346,11 @@ export default function TripVerification() {
         >
           <Visibility />
         </IconButton>
+      ),
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
       ),
     },
   ];
@@ -298,13 +362,21 @@ export default function TripVerification() {
         columns={columns}
         disableColumnFilter
         disableColumnSelector
-        density="compact"
+        density="comfortable"
         slots={{ toolbar: GridToolbar }}
         slotProps={{
           toolbar: {
             showQuickFilter: true,
           },
         }}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 5,
+            },
+          },
+        }}
+        pageSizeOptions={[5, 10, 25]}
       />
       <Dialog onClose={handleClose} open={open}>
         <DialogTitle>Document Check</DialogTitle>

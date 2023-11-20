@@ -4,6 +4,7 @@ import axios from "axios";
 import { Button } from "@mui/material";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import { toast, ToastContainer } from "react-toastify";
+import Typography from "../../components/common/Typography";
 
 const transformTripOngoing = (data, data2, data3) => {
   const transformedData = [];
@@ -42,18 +43,88 @@ const transformTripOngoing = (data, data2, data3) => {
 export default function TripOngoing({ onFindClick }) {
   const [rowsTripOngoing, setRowsTripOngoing] = useState([]);
   const columnsTripOngoing = [
-    { field: "id", headerName: "Driver name", flex: 1.5 },
-    { field: "datetime", headerName: "Date and Time", flex: 1.5 },
-    { field: "currentSpeed", headerName: "Current Speed", flex: 1 },
-    { field: "averageSpeed", headerName: "Avg Speed", flex: 1 },
-    { field: "maxSpeed", headerName: "Max Speed", flex: 1 },
-    { field: "harshBraking", headerName: "Harsh Braking", flex: 1 },
-    { field: "suddenAcceleration", headerName: "Sudden Acceleration", flex: 1 },
+    {
+      field: "id",
+      headerName: "DRIVER NAME",
+      flex: 1.5,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "datetime",
+      headerName: "DATE AND TIME",
+      flex: 1.5,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "currentSpeed",
+      headerName: "CURRENT SPEED",
+      flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "averageSpeed",
+      headerName: "AVG SPEED",
+      flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "maxSpeed",
+      headerName: "MAX SPEED",
+      flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "harshBraking",
+      headerName: "HARSH BRAKING",
+      flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "suddenAcceleration",
+      headerName: "SUDDEN ACCELERATION",
+      flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
     {
       field: "track",
-      headerName: "Actions",
+      headerName: "ACTIONS",
       sortable: false,
-      flex: 1,
+      width: 100,
+      cellClassName: "actions",
+
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
       renderCell: (params) => (
         <Button
           variant="contained"
@@ -129,7 +200,15 @@ export default function TripOngoing({ onFindClick }) {
       <DataGrid
         rows={rowsTripOngoing}
         columns={columnsTripOngoing}
-        pageSize={5}
+        density="comfortable"
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 5,
+            },
+          },
+        }}
+        pageSizeOptions={[5, 10, 25]}
       />
     </div>
   );

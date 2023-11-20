@@ -3,6 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import axios from "axios";
+import Typography from "../../components/common/Typography";
 
 import {
   Button,
@@ -19,7 +20,6 @@ import {
   InputLabel,
   FormControl,
   InputAdornment,
-  Typography,
 } from "@mui/material";
 import Title from "./components/Title";
 import { toast } from "react-toastify";
@@ -467,46 +467,59 @@ const JobOrderSystem = () => {
   }
 
   return (
-    <Paper sx={{ p: 2 }}>
-      <Title>Job Orders</Title>
-      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleCreateClick}
-          sx={{ mb: 2 }}
-        >
-          Create Job Order
-        </Button>
+    <Box sx={{ my: 3, mx: 6 }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
+          <Typography
+            variant="h3"
+            marked="left"
+            style={{ fontWeight: "bold", fontSize: "30px" }}
+          >
+            Job Orders
+          </Typography>
+        </Box>
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleCreateClick}
+          >
+            Create Job Order
+          </Button>
+        </Box>
       </Box>
-      <JobOrderModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onSubmit={handleSubmit}
-        onDelete={handleDelete}
-        jobOrder={selectedEvent}
-        formData={formData}
-        setFormData={setFormData}
-      />
-      <FullCalendar
-        plugins={[dayGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
-        events={events}
-        eventClick={handleEventClick}
-        eventContent={renderEventContent}
-        height={"auto"} // Adjust this value as needed
-      />
 
-      <ValidationDialog
-        isOpen={validationDialogOpen}
-        onConfirm={() => {
-          action(formData);
-          setValidationDialogOpen(false);
-        }}
-        onCancel={() => setValidationDialogOpen(false)}
-        formData={formData} // Pass formData as a prop
-      />
-    </Paper>
+      <Paper sx={{ mt: 3, p: 2, display: "flex", flexDirection: "column" }}>
+        <JobOrderModal
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          onSubmit={handleSubmit}
+          onDelete={handleDelete}
+          jobOrder={selectedEvent}
+          formData={formData}
+          setFormData={setFormData}
+        />
+        <FullCalendar
+          plugins={[dayGridPlugin, interactionPlugin]}
+          initialView="dayGridMonth"
+          events={events}
+          eventClick={handleEventClick}
+          eventContent={renderEventContent}
+          height="auto"
+          width="100%"
+        />
+
+        <ValidationDialog
+          isOpen={validationDialogOpen}
+          onConfirm={() => {
+            action(formData);
+            setValidationDialogOpen(false);
+          }}
+          onCancel={() => setValidationDialogOpen(false)}
+          formData={formData} // Pass formData as a prop
+        />
+      </Paper>
+    </Box>
   );
 };
 

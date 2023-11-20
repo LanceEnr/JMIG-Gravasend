@@ -11,6 +11,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Title from "./Title";
@@ -250,9 +251,14 @@ export default function FullFeaturedCrudGrid(props) {
   columns.push({
     field: "actions",
     type: "actions",
-    headerName: "Actions",
+    headerName: "ACTIONS",
     width: props.actionWidth || 100,
     cellClassName: "actions",
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
     getActions: (params) => {
       const { id, plateNo, inspectionType, nextInspectionDate, verdict } =
         params.row;
@@ -331,13 +337,21 @@ export default function FullFeaturedCrudGrid(props) {
         onRowModesModelChange={handleRowModesModelChange}
         onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
-        density="compact"
+        density="comfortable"
         slots={{
           toolbar: EditToolbar,
         }}
         slotProps={{
           toolbar: { setRows, setRowModesModel, handleClick },
         }}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 5,
+            },
+          },
+        }}
+        pageSizeOptions={[5, 10, 25]}
       />
       <Dialog open={open} onClose={handleDialogClose}>
         <DialogTitle>Are you sure?</DialogTitle>

@@ -310,24 +310,57 @@ const rowsInspectionRecords = transformInspectionRecordsData(
 export { rowsInspectionRecords };
 
 export const columnsInspectionRecords = [
-  { field: "id", headerName: "ID", flex: 1 },
-  { field: "plateNo", headerName: "Plate No.", flex: 2 },
+  {
+    field: "id",
+    headerName: "ID",
+    flex: 2,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
+  },
+  {
+    field: "plateNo",
+    headerName: "PLATE NO.",
+    flex: 2,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
+  },
   {
     field: "inspectionType",
-    headerName: "Inspection Type",
+    headerName: "INSPECTION TYPE",
     flex: 2,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
   },
 
   {
     field: "nextInspectionDate",
-    headerName: "Inspection Date",
+    headerName: "INSPECTION DATE",
     type: "date",
-    flex: 3,
+    flex: 2,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
   },
   {
     field: "verdict",
-    headerName: "Verdict",
+    headerName: "VERDICT",
     flex: 2,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
   },
 ];
 
@@ -424,7 +457,7 @@ export const columnsMaintenanceRecords = [
   {
     field: "id",
     headerName: "ID",
-    flex: 1,
+    flex: 2,
     renderHeader: (params) => (
       <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
         {params.colDef.headerName}
@@ -433,7 +466,7 @@ export const columnsMaintenanceRecords = [
   },
   {
     field: "plateNo",
-    headerName: "Tractor No.",
+    headerName: "TRACTOR NO.",
     flex: 2,
     renderHeader: (params) => (
       <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
@@ -443,7 +476,7 @@ export const columnsMaintenanceRecords = [
   },
   {
     field: "service",
-    headerName: "Service",
+    headerName: "SERVICE",
     flex: 2,
     renderHeader: (params) => (
       <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
@@ -453,8 +486,8 @@ export const columnsMaintenanceRecords = [
   },
   {
     field: "mileage",
-    headerName: "Mileage",
-    flex: 1,
+    headerName: "MILEAGE",
+    flex: 2,
     renderHeader: (params) => (
       <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
         {params.colDef.headerName}
@@ -463,7 +496,7 @@ export const columnsMaintenanceRecords = [
   },
   {
     field: "provider",
-    headerName: "Service Provider",
+    headerName: "SERVICE PROVIDER",
     flex: 2,
     editable: true,
     renderHeader: (params) => (
@@ -474,7 +507,7 @@ export const columnsMaintenanceRecords = [
   },
   {
     field: "cost",
-    headerName: "Total Cost",
+    headerName: "TOTAL COST",
     flex: 2,
     editable: true,
     renderHeader: (params) => (

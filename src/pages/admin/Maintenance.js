@@ -51,7 +51,7 @@ function Maintenance() {
     },
     {
       field: "plateNo",
-      headerName: "Tractor No.",
+      headerName: "TRACTOR NO.",
       flex: 2,
       editable: true,
       type: "singleSelect",
@@ -64,7 +64,7 @@ function Maintenance() {
     },
     {
       field: "service",
-      headerName: "Service",
+      headerName: "SERVICE",
       flex: 2,
       editable: true,
       renderHeader: (params) => (
@@ -75,7 +75,7 @@ function Maintenance() {
     },
     {
       field: "frequency",
-      headerName: "Frequency",
+      headerName: "FREQUENCY",
       flex: 2,
       editable: true,
       type: "singleSelect",
@@ -88,7 +88,7 @@ function Maintenance() {
     },
     {
       field: "mileage",
-      headerName: "Start Mileage",
+      headerName: "START MILEAGE",
       flex: 2,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
@@ -98,7 +98,7 @@ function Maintenance() {
     },
     {
       field: "nextDueMileage",
-      headerName: "Next Due Mileage",
+      headerName: "NEXT DUE MILEAGE",
       flex: 2,
       valueGetter: (params) => {
         const mileage = params.row.mileage;
@@ -113,7 +113,7 @@ function Maintenance() {
     },
     {
       field: "status",
-      headerName: "Status",
+      headerName: "STATUS",
       flex: 2,
       editable: true,
       type: "singleSelect",
