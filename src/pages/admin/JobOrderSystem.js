@@ -505,7 +505,6 @@ const JobOrderSystem = () => {
           events={events}
           eventClick={handleEventClick}
           eventContent={renderEventContent}
-          height="auto"
           width="100%"
         />
 
