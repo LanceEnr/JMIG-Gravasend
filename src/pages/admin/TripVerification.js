@@ -278,16 +278,6 @@ export default function TripVerification() {
       ),
     },
     {
-      field: "number",
-      headerName: "CONTACT NO.",
-      flex: 1,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
       field: "datetime",
       headerName: "DATE AND TIME",
       flex: 1,
@@ -477,7 +467,13 @@ export default function TripVerification() {
                   )}
                 </Avatar>
               </ListItemAvatar>
+
               <ListItemText primary={documentName} />
+              <img
+                src={Signature}
+                alt="Rectangle Picture"
+                style={{ width: "160px", height: "70px" }}
+              />
             </ListItem>
           ))}
         </List>

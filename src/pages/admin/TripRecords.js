@@ -20,31 +20,29 @@ import Signature from "../../assets/e-signature.webp";
 
 import axios from "axios";
 
-const transformTripOngoing = (data, data2, data3, data4) => {
+const transformTripOngoing = (data, data2, data3) => {
   const transformedData = [];
 
-  if (data && data2 && data3 && data4) {
+  if (data && data2 && data3) {
     for (const uid in data) {
       const userData = data[uid];
       const userData2 = data2[uid];
       const userData3 = data3[uid];
-      const userData4 = data4[uid];
 
-      const mappedData = {
-        id: uid,
-        driver: userData.driverName,
-        datetime: userData.dateTime,
-      };
+      for (const id in userData) {
+        if (userData.hasOwnProperty(id)) {
+          const mappedData = {
+            uid: uid,
+            id: id,
+            driver: userData[id].driverName,
+            datetime: userData[id].dateTime,
+            cargoType: userData[id].cargo,
+            cargoWeight: userData[id].weight,
+          };
 
-      if (userData2) {
-        mappedData.cargoType = userData2.cargoType;
-        mappedData.cargoWeight = userData2.cargoWeight;
-      } else {
-        mappedData.cargoType = "No Cargo Type";
-        mappedData.cargoWeight = "No Cargo Weight";
+          transformedData.push(mappedData);
+        }
       }
-
-      transformedData.push(mappedData);
     }
   }
 
@@ -56,6 +54,7 @@ export default function TripVerification() {
   const [open, setOpen] = React.useState(false);
   const [documentChecklist, setDocumentChecklist] = useState([]);
   const [selectedID, setSelectedID] = useState(null);
+  const [driver, setDriver] = useState(null);
   const [id, setId] = useState(null);
   const [sign, setSignature] = useState(null);
   const [isLoadingImage, setIsLoadingImage] = useState(true);
@@ -75,26 +74,20 @@ export default function TripVerification() {
 
   const fetchTripOngoing = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/fetch-tripDash");
+      const response = await axios.get(
+        "http://localhost:3001/fetch-tripHistory"
+      );
       return response.data;
     } catch (error) {
       console.error("Error fetching data:", error);
       return [];
     }
   };
-  const fetchCargo = async () => {
-    try {
-      const response = await axios.get("http://localhost:3001/fetch-cargo");
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      return [];
-    }
-  };
+
   const fetchDocuments = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/fetch-documentCheck"
+        "http://localhost:3001/fetch-documentCheckRecord"
       );
       return response.data;
     } catch (error) {
@@ -105,7 +98,7 @@ export default function TripVerification() {
   const fetchSafetyCheck = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/fetch-schecklist"
+        "http://localhost:3001/fetch-schecklistrecord"
       );
       return response.data;
     } catch (error) {
@@ -113,7 +106,7 @@ export default function TripVerification() {
       return [];
     }
   };
-  const fetchDocumentChecklist = async (id) => {
+  const fetchDocumentChecklist = async (id, driver) => {
     try {
       setDocumentChecklistData({
         driversLicenseChecked: false,
@@ -122,7 +115,7 @@ export default function TripVerification() {
       });
 
       const response = await axios.get(
-        `http://localhost:3001/fetch-documentCheck/${id}`
+        `http://localhost:3001/fetch-documentCheckRecord/${id}/${driver}`
       );
       const checklistData = response.data;
 
@@ -139,7 +132,7 @@ export default function TripVerification() {
       return [];
     }
   };
-  const fetchsetSafetyChecklistData = async (id) => {
+  const fetchsetSafetyChecklistData = async (id, driver) => {
     try {
       setSafetyChecklistData({
         suspension: false,
@@ -151,7 +144,7 @@ export default function TripVerification() {
       });
 
       const response = await axios.get(
-        `http://localhost:3001/fetch-safetychecklist/${id}`
+        `http://localhost:3001/fetch-sCheckRecord/${id}/${driver}`
       );
       const checklistData = response.data;
       setSafetyChecklistData((prevState) => ({
@@ -170,10 +163,10 @@ export default function TripVerification() {
       return [];
     }
   };
-  const fetchSignatureImage = async (id) => {
+  const fetchSignatureImage = async (id, driver) => {
     try {
       const response = await axios.get(
-        `http://localhost:3001/fetch-signature/${id}`
+        `http://localhost:3001/fetch-signaturerecord/${id}/${driver}`
       );
       return response.data;
     } catch (error) {
@@ -182,7 +175,7 @@ export default function TripVerification() {
     }
   };
   useEffect(() => {
-    fetchSignatureImage(selectedID)
+    fetchSignatureImage(selectedID, driver)
       .then((imageLocation) => {
         if (imageLocation) {
           setSignature(imageLocation);
@@ -193,18 +186,16 @@ export default function TripVerification() {
         console.error("Error fetching signature image:", error);
         setIsLoadingImage(false);
       });
-  }, [selectedID]);
+  }, [selectedID, driver]);
 
   useEffect(() => {
     const fetchData = async () => {
       const tripData = await fetchTripOngoing();
-      const cargoData = await fetchCargo();
       const documentData = await fetchDocuments();
       const safetyData = await fetchSafetyCheck();
 
       const updatedData = transformTripOngoing(
         tripData,
-        cargoData,
         documentData,
         safetyData
       );
@@ -215,10 +206,11 @@ export default function TripVerification() {
     fetchData();
   }, []);
 
-  const handleClickOpen = (id) => {
+  const handleClickOpen = (id, driver) => {
     setSelectedID(id);
+    setDriver(driver);
     setId(id);
-    fetchDocumentChecklist(id)
+    fetchDocumentChecklist(id, driver)
       .then((data) => {
         setDocumentChecklist(data);
       })
@@ -236,10 +228,10 @@ export default function TripVerification() {
 
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
-  const handleDialogOpen = (id) => {
+  const handleDialogOpen = (id, driver) => {
     setSelectedID(id);
     setId(id);
-    fetchsetSafetyChecklistData(id)
+    fetchsetSafetyChecklistData(id, driver)
       .then((data) => {
         setSafetyChecklistData(data);
       })
@@ -275,16 +267,7 @@ export default function TripVerification() {
         </Typography>
       ),
     },
-    {
-      field: "number",
-      headerName: "CONTACT NO.",
-      flex: 1,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
+
     {
       field: "datetime",
       headerName: "DATE AND TIME",
@@ -323,7 +306,7 @@ export default function TripVerification() {
       renderCell: (params) => (
         <IconButton
           color="primary"
-          onClick={() => handleClickOpen(params.row.id)}
+          onClick={() => handleClickOpen(params.row.id, params.row.driver)}
         >
           <Visibility />
         </IconButton>
@@ -342,7 +325,7 @@ export default function TripVerification() {
       renderCell: (params) => (
         <IconButton
           color="primary"
-          onClick={() => handleDialogOpen(params.row.id)}
+          onClick={() => handleDialogOpen(params.row.id, params.row.driver)}
         >
           <Visibility />
         </IconButton>
@@ -475,6 +458,11 @@ export default function TripVerification() {
                 </Avatar>
               </ListItemAvatar>
               <ListItemText primary={documentName} />
+              <img
+                src={Signature}
+                alt="Rectangle Picture"
+                style={{ width: "160px", height: "70px" }}
+              />
             </ListItem>
           ))}
         </List>

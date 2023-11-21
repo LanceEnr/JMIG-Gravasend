@@ -170,6 +170,165 @@ router.get("/fetch-tripHistory", (req, res) => {
     });
 });
 
+router.get("/fetch-documentCheckRecord", (req, res) => {
+  axios
+    .get(
+      "https://gravasend-965f7-default-rtdb.firebaseio.com/DocumentCheckRecord.json"
+    )
+    .then((response) => {
+      const documentData = response.data;
+
+      if (documentData) {
+        res.json(documentData);
+      } else {
+        console.log('No data found in the "Trip History" collection.');
+        res.status(404).json({ message: "No data found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
+
+router.get("/fetch-schecklistrecord", (req, res) => {
+  axios
+    .get(
+      "https://gravasend-965f7-default-rtdb.firebaseio.com/SafetyChecklistRecord.json"
+    )
+    .then((response) => {
+      const schecklistData = response.data;
+
+      if (schecklistData) {
+        res.json(schecklistData);
+      } else {
+        console.log('No data found in the "Trip History" collection.');
+        res.status(404).json({ message: "No data found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
+router.get("/fetch-documentCheckRecord/:id/:driver", async (req, res) => {
+  try {
+    const { id, driver } = req.params;
+
+    // Fetch the driver data from Firebase
+    const driverResponse = await axios.get(
+      "https://gravasend-965f7-default-rtdb.firebaseio.com/DriverManagement.json"
+    );
+
+    const driverData = driverResponse.data;
+    if (driverData) {
+      // Find the driver with the specified name
+      const matchingDriver = Object.values(driverData).find(
+        (driverObj) => driverObj.driverName === driver
+      );
+
+      if (matchingDriver) {
+        const uid = matchingDriver.UID;
+
+        const firebaseUrl = `https://gravasend-965f7-default-rtdb.firebaseio.com/DocumentCheckRecord/${uid}/${id}.json`;
+
+        const response = await axios.get(firebaseUrl);
+
+        if (response.data) {
+          res.json(response.data);
+        } else {
+          res.status(404).json({ error: "Data not found" });
+        }
+      } else {
+        res.status(404).json({ error: "Driver not found" });
+      }
+    } else {
+      res.status(404).json({ error: "No driver data available" });
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.get("/fetch-sCheckRecord/:id/:driver", async (req, res) => {
+  try {
+    const { id, driver } = req.params;
+    // Fetch the driver data from Firebase
+    const driverResponse = await axios.get(
+      "https://gravasend-965f7-default-rtdb.firebaseio.com/DriverManagement.json"
+    );
+
+    const driverData = driverResponse.data;
+    if (driverData) {
+      // Find the driver with the specified name
+      const matchingDriver = Object.values(driverData).find(
+        (driverObj) => driverObj.driverName === driver
+      );
+
+      if (matchingDriver) {
+        const uid = matchingDriver.UID;
+
+        const firebaseUrl = `https://gravasend-965f7-default-rtdb.firebaseio.com/SafetyChecklistRecord/${uid}/${id}.json`;
+
+        const response = await axios.get(firebaseUrl);
+
+        if (response.data) {
+          res.json(response.data);
+        } else {
+          res.status(404).json({ error: "Data not found" });
+        }
+      } else {
+        res.status(404).json({ error: "Driver not found" });
+      }
+    } else {
+      res.status(404).json({ error: "No driver data available" });
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.get("/fetch-signaturerecord/:id/:driver", async (req, res) => {
+  try {
+    const { id, driver } = req.params;
+
+    // Fetch the driver data from Firebase
+    const driverResponse = await axios.get(
+      "https://gravasend-965f7-default-rtdb.firebaseio.com/DriverManagement.json"
+    );
+
+    const driverData = driverResponse.data;
+    if (driverData) {
+      // Find the driver with the specified name
+      const matchingDriver = Object.values(driverData).find(
+        (driverObj) => driverObj.driverName === driver
+      );
+
+      if (matchingDriver) {
+        const uid = matchingDriver.UID;
+        const firebaseUrl = `https://gravasend-965f7-default-rtdb.firebaseio.com/DocumentCheckSignaturesRecord/${uid}/${id}.json`;
+
+        const response = await axios.get(firebaseUrl);
+
+        if (response.data) {
+          res.json(response.data);
+        } else {
+          res.status(404).json({ error: "Data not found" });
+        }
+      } else {
+        res.status(404).json({ error: "Driver not found" });
+      }
+    } else {
+      res.status(404).json({ error: "No driver data available" });
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.get("/fetch-inspectionRecords", (req, res) => {
   axios
     .get(
@@ -555,6 +714,7 @@ router.post("/addJob", async (req, res) => {
               } else {
                 // Proceed to add the job data
                 jobData.UID = uid;
+                jobData.status = "OnGoing";
                 const ref = db.ref(`Trip Dashboard/${uid}`);
                 ref.set(jobData, (jobDataError) => {
                   if (jobDataError) {
@@ -578,6 +738,11 @@ router.post("/addJob", async (req, res) => {
     console.error("Firebase Authentication error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
+});
+
+router.post("/HoldStatus", async (req, res) => {
+  const holdData = req.body;
+  console.log(holdData);
 });
 
 router.get("/fetch-upcominginspection", (req, res) => {
@@ -799,7 +964,6 @@ async function getUIDFromPlate(plateNo) {
 
 router.post("/addMaintenance", async (req, res) => {
   const maintenanceData = req.body;
-  console.log(maintenanceData);
 
   try {
     const plateNo = maintenanceData.plateNo;
