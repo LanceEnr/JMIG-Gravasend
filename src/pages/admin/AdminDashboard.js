@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import axios from "axios";
 import MuiDrawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import MuiAppBar from "@mui/material/AppBar";
@@ -17,6 +18,8 @@ import Paper from "@mui/material/Paper";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import PeopleIcon from "@mui/icons-material/People";
+import OrderIcon from "@mui/icons-material/LocalShipping";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
@@ -27,7 +30,6 @@ import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
 import TrackChangesIcon from "@mui/icons-material/TrackChanges";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import ReportIcon from "@mui/icons-material/Report";
-import PeopleIcon from "@mui/icons-material/People";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import WebIcon from "@mui/icons-material/Web";
 import Collapse from "@mui/material/Collapse";
@@ -141,18 +143,64 @@ const Drawer = styled(MuiDrawer, {
     color: "white",
   },
 }));
-const notifications = [
-  {
-    icon: EventIcon,
-    heading: "Upcoming Appointment",
-    text: "You have an appointment with JMIG tomorrow.",
-  },
-  {
-    icon: CheckCircleIcon,
-    heading: "Order Acknowledged",
-    text: "Your order has been received and is being processed.",
-  },
-];
+const timeAgo = (timestamp) => {
+  const currentDate = new Date();
+  const notificationDate = new Date(timestamp);
+  const timeDifference = currentDate - notificationDate;
+  const seconds = Math.floor(timeDifference / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+
+  if (minutes < 1) {
+    // Display seconds if less than 1 minute
+    return `${seconds} second${seconds === 1 ? "" : "s"} ago`;
+  } else if (hours < 1) {
+    // Display minutes if less than 1 hour
+    return `${minutes} minute${minutes === 1 ? "" : "s"} ago`;
+  } else if (hours < 24) {
+    // Display hours if less than 24 hours
+    return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+  } else {
+    // If more than 24 hours, display the full date
+    const options = {
+      weekday: "short",
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      timeZoneName: "short",
+    };
+    return notificationDate.toLocaleString("en-US", options);
+  }
+};
+
+const fetchNotifications = async () => {
+  const storedUsername = localStorage.getItem("userName");
+
+  try {
+    const response = await axios.get(
+      `http://localhost:3001/fetch-adminNotifications`
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+const transformNotification = (data) => {
+  return data.map((item) => ({
+    icon: item._title.toLowerCase().includes("order") ? OrderIcon : EventIcon,
+    heading: item._title,
+    text: item._description,
+    date: item._date,
+  }));
+};
+
+const notifications = transformNotification(await fetchNotifications());
 
 const settings = ["Settings", "Logout"];
 

@@ -519,7 +519,6 @@ export const columnsMaintenanceRecords = [
 ];
 const transformMaintenanceRecordData = (data) => {
   const transformedData = [];
-  console.log(data);
   if (data) {
     for (const uid in data) {
       if (data.hasOwnProperty(uid)) {

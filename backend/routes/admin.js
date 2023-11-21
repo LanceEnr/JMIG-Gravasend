@@ -1247,6 +1247,7 @@ router.post("/add-listing", upload2.array("image", 6), async (req, res) => {
   const price = req.body._listingPrice;
   const description = req.body._isPublished;
   const images = req.files.map((file) => file.path);
+  console.log(description);
   const id = await getNextListingNum();
   if (images.length === 0) {
     return res.status(400).json({ error: "No images were uploaded" });

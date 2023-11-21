@@ -16,7 +16,7 @@ const theme = createTheme({
     fontFamily: "Montserrat, sans-serif",
   },
 });
-
+document.title = "GravaSend";
 const shouldRenderAdminApp = window.location.pathname.startsWith("/admin");
 
 ReactDOM.render(

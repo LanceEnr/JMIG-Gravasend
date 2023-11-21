@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useReducer } from "react";
+import React, { useReducer, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -32,6 +32,7 @@ import AdminRegister from "./pages/admin/AdminRegister";
 import Services from "./pages/Services";
 import AppFooter from "./components/AppFooter";
 import TopBar from "./components/TopBar";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 const initialState = {
   isAuthenticated: !!localStorage.getItem("token"),
@@ -42,6 +43,7 @@ function PrivateRoute({ element, isAuthenticated }) {
 }
 
 function App() {
+  document.title = "GravaSend";
   const [authState, authDispatch] = useReducer(authReducer, initialState);
 
   const isAuthenticated = authState.isAuthenticated;
@@ -76,6 +78,33 @@ function MainApp({ handleLogout, isAuthenticated, authDispatch }) {
     "/forgotpassword",
   ].includes(location.pathname);
 
+  useEffect(() => {
+    document.title = "GravaSend";
+    const title = getTitle(location.pathname);
+    document.title = title;
+  }, [location.pathname]);
+
+  const getTitle = (path) => {
+    switch (path) {
+      case "/":
+        return "GravaSend";
+      case "/Products":
+        return "Products";
+      case "/FAQs":
+        return "FAQ";
+      case "/About":
+        return "About Us";
+      case "/Contact":
+        return "Contact Us";
+      case "/Dashboard":
+        return "Dashboard";
+      case "/productdetails":
+        return "Product Details";
+
+      default:
+        return "GravaSend";
+    }
+  };
   return (
     <>
       {!hideAppBarAndFooter && <TopBar />}
