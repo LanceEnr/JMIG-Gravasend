@@ -81,9 +81,7 @@ const JobOrderModal = ({
   useEffect(() => {
     async function fetchDrivers() {
       try {
-        const response = await fetch(
-          "http://localhost:3001/fetch-fleet-available"
-        );
+        const response = await fetch("http://localhost:3001/fetch-trucks");
         if (response.ok) {
           const data = await response.json();
           const driverNames = Object.keys(data).map(
@@ -168,8 +166,10 @@ const JobOrderModal = ({
             label="Origin"
             required
           >
-            <MenuItem value="Quarry A">Quarry A</MenuItem>
-            <MenuItem value="Quarry B">Quarry B</MenuItem>
+            <MenuItem value="DFS Pampanga">DFS Pampanga</MenuItem>
+            <MenuItem value="Gainersand Corporation">
+              Gainersand Corporation
+            </MenuItem>
           </Select>
         </FormControl>
         <FormControl fullWidth sx={{ mb: 2 }}>
@@ -195,9 +195,9 @@ const JobOrderModal = ({
             onChange={(e) => handleFieldChange("cargo", e.target.value)}
             label="Product"
           >
-            {products.map((product) => (
-              <MenuItem key={product._inventoryID} value={product._itemName}>
-                {product._itemName}
+            {products.map((product, index) => (
+              <MenuItem key={index} value={product}>
+                {product}
               </MenuItem>
             ))}
           </Select>

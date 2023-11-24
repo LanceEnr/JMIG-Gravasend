@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Paper, Box, Tab, Tabs } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import FullFeaturedCrudGrid from "./components/CustomDataGrid";
 import IncomingDataGrid from "./components/IncomingDataGrid";
 import Title from "./components/Title";
+import axios from "axios";
 import {
   columnsCurrentInventory,
   rowsCurrentInventory,
@@ -15,6 +16,76 @@ import {
 
 function Inventory() {
   const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const response = await fetch("http://localhost:3001/fetch-add");
+        if (response.ok) {
+          const data = await response.json();
+
+          // Make a request to /addStocks with the entire data array
+          const addStocksResponse = await fetch(
+            "http://localhost:3001/addStocks",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            }
+          );
+
+          if (addStocksResponse.ok) {
+            const addStocksData = await addStocksResponse.json();
+          } else {
+            console.error("Failed to add stocks");
+          }
+        } else {
+          console.error("Failed to fetch products");
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    }
+
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    async function UpdateStatus() {
+      try {
+        const response = await fetch("http://localhost:3001/fetch-add");
+        if (response.ok) {
+          const data = await response.json();
+
+          // Make a request to /addStocks with the entire data array
+          const addStocksResponse = await fetch(
+            "http://localhost:3001/update-TripHistory",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            }
+          );
+
+          if (addStocksResponse.ok) {
+            const addStocksData = await addStocksResponse.json();
+          } else {
+            console.error("Failed to add stocks");
+          }
+        } else {
+          console.error("Failed to fetch products");
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    }
+
+    UpdateStatus();
+  }, []);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

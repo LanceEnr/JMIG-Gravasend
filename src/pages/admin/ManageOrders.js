@@ -35,9 +35,8 @@ function ManageOrders() {
         const response = await fetch("http://localhost:3001/get-products");
         if (response.ok) {
           const data = await response.json();
-          const productNames = data.map((p) => `${p._itemName}`);
 
-          setProduct(productNames);
+          setProduct(data);
         } else {
           console.error("Failed to fetch products");
         }

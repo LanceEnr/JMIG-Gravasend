@@ -391,6 +391,45 @@ router.post("/addInventory", async (req, res) => {
   res.json({ message: "Inventory item saved successfully" });
 });
 
+router.post("/addStocks", async (req, res) => {
+  const stockDataArray = req.body;
+  if (!stockDataArray || stockDataArray.length === 0) {
+    return;
+  }
+  try {
+    // Iterate over the stock data array
+    for (const stockData of stockDataArray) {
+      const itemName = stockData[0];
+      const location = stockData[2];
+
+      const quantityToAdd = parseInt(stockData[1], 10); // Convert to a number
+
+      // Find the existing inventory item
+      const existingInventory = await Inventory.findOne({
+        _itemName: itemName,
+        _location: location,
+        _status: "current",
+      });
+
+      if (existingInventory) {
+        const existingQuantity = parseInt(existingInventory._quantity, 10);
+
+        existingInventory._quantity = existingQuantity + quantityToAdd;
+
+        // Update lastUpdated if needed
+        existingInventory._lastUpdated = new Date().toISOString();
+
+        await existingInventory.save();
+      }
+    }
+
+    res.json({ message: "Inventory items updated successfully" });
+  } catch (error) {
+    console.error("Error updating inventory items:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.post("/deleteRecord", async (req, res) => {
   try {
     const id = req.body._inventoryID;
@@ -1169,7 +1208,7 @@ router.get("/get-listing-stocks", async (req, res) => {
 
 router.get("/get-products", async (req, res) => {
   try {
-    const inventory = await Inventory.find();
+    const inventory = await Inventory.distinct("_itemName");
     res.json(inventory);
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -1189,7 +1228,6 @@ router.get("/get-products2", async (req, res) => {
     const availableProducts = allProducts.filter(
       (product) => !listingNames.includes(product._itemName)
     );
-
     res.json(availableProducts);
   } catch (error) {
     console.error("Error fetching data:", error);

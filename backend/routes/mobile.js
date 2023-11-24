@@ -169,6 +169,100 @@ router.get("/fetch-tripHistory", (req, res) => {
       res.status(500).json({ message: "Internal server error" });
     });
 });
+router.get("/fetch-add", (req, res) => {
+  axios
+    .get("https://gravasend-965f7-default-rtdb.firebaseio.com/TripHistory.json")
+    .then((response) => {
+      const tripHistoryData = response.data;
+      if (tripHistoryData) {
+        const filteredData = filterDataByStatus(tripHistoryData, "tobeadd");
+        const cargoWeightArray = extractCargoAndWeight(filteredData);
+
+        res.json(cargoWeightArray);
+      } else {
+        console.log('No data found in the "Trip History" collection.');
+        res.status(404).json({ message: "No data found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
+
+function filterDataByStatus(data, status) {
+  const filteredData = {};
+
+  for (const uid in data) {
+    for (const id in data[uid]) {
+      const tripData = data[uid][id];
+
+      if (tripData.status === status) {
+        if (!filteredData[uid]) {
+          filteredData[uid] = {};
+        }
+        filteredData[uid][id] = tripData;
+      }
+    }
+  }
+
+  return filteredData;
+}
+function extractCargoAndWeight(filteredData) {
+  const cargoWeightArray = [];
+
+  for (const uid in filteredData) {
+    for (const id in filteredData[uid]) {
+      const tripData = filteredData[uid][id];
+
+      const cargo = tripData.cargo;
+      const weight = tripData.weight;
+      const destination = tripData.destination;
+
+      cargoWeightArray.push([cargo, weight, destination, uid, id]);
+    }
+  }
+
+  return cargoWeightArray;
+}
+router.get("/fetch-SpeedRecord", (req, res) => {
+  axios
+    .get("https://gravasend-965f7-default-rtdb.firebaseio.com/SpeedRecord.json")
+    .then((response) => {
+      const speedData = response.data;
+
+      if (speedData) {
+        res.json(speedData);
+      } else {
+        console.log('No data found in the "Trip History" collection.');
+        res.status(404).json({ message: "No data found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
+router.get("/fetch-ProofRecords", (req, res) => {
+  axios
+    .get(
+      "https://gravasend-965f7-default-rtdb.firebaseio.com/ProofRecords.json"
+    )
+    .then((response) => {
+      const proofData = response.data;
+
+      if (proofData) {
+        res.json(proofData);
+      } else {
+        console.log('No data found in the "Trip History" collection.');
+        res.status(404).json({ message: "No data found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
 
 router.get("/fetch-documentCheckRecord", (req, res) => {
   axios
@@ -979,7 +1073,7 @@ router.post("/addMaintenance", async (req, res) => {
 
       const db = admin.database();
       const refReminders = db.ref(
-        `maintenanceReminders/${maintenanceData.uid}/${maintenanceData.actionId}`
+        `maintenanceReminders/${maintenanceData.uid}/${maintenanceData.id}`
       );
 
       // Check if status is "Completed"
@@ -1186,6 +1280,27 @@ router.post("/update-maintenanceRecords", async (req, res) => {
   } catch (error) {
     console.error("Firebase Authentication error:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+});
+router.post("/update-TripHistory", async (req, res) => {
+  const data = req.body;
+  for (const stockData of data) {
+    const uid = stockData[3];
+    const id = stockData[4];
+
+    try {
+      const db = admin.database();
+      const ref = db.ref(`TripHistory/${uid}/${id}`);
+
+      await ref.update({
+        status: "added",
+      });
+
+      res.status(200).json({ message: "Inventory updated successfully" });
+    } catch (error) {
+      console.error("Firebase Authentication error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
   }
 });
 

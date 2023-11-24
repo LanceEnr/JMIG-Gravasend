@@ -33,7 +33,7 @@ const columns = [
     ),
   },
   {
-    field: "driverName",
+    field: "driver",
     headerName: "DRIVER NAME",
     flex: 2,
     renderHeader: (params) => (
@@ -43,7 +43,7 @@ const columns = [
     ),
   },
   {
-    field: "dateTimeCompleted",
+    field: "date",
     headerName: "DATE AND TIME COMPLETED",
     flex: 3,
     renderHeader: (params) => (
@@ -83,7 +83,7 @@ const columns = [
     ),
   },
   {
-    field: "suddenAcceleration",
+    field: "sua",
     headerName: "SUDDEN ACCELERATION",
     flex: 2,
     renderHeader: (params) => (
@@ -103,7 +103,7 @@ const columns = [
     ),
     renderCell: (params) => (
       <img
-        src={params.value}
+        src={params.row.signature}
         alt="E-Signature"
         style={{ width: "100%", height: "auto" }}
       />
@@ -111,20 +111,6 @@ const columns = [
   },
 ];
 
-const rows = [
-  {
-    id: 1,
-    driverName: "John Doe",
-    dateTimeCompleted: "2023-11-19 09:05:25",
-    avgSpeed: "60 km/h",
-    maxSpeed: "80 km/h",
-    harshBraking: "3",
-    suddenAcceleration: "4",
-    eSignature:
-      "https://signaturely.com/wp-content/uploads/2020/04/mark-cuban-signature-signaturely-image.png",
-  },
-  // Add more rows as needed
-];
 function DeliveryMonitoring() {
   const [truckLocations, setTruckLocations] = useState({});
   const [isMapLoaded, setIsMapLoaded] = useState(false);
@@ -132,6 +118,86 @@ function DeliveryMonitoring() {
   const [zoomLevel, setZoomLevel] = useState(12);
   const [lockZoom, setLockZoom] = useState(false);
   const [hoveredTruck, setHoveredTruck] = useState(null);
+  const [rows, setRows] = useState([]);
+
+  const transformTripOngoing = (data, data2, data3) => {
+    const transformedData = [];
+
+    if (data && data2 && data3) {
+      for (const uid in data) {
+        const userData = data[uid];
+        const userData2 = data2[uid];
+        const userData3 = data3[uid];
+
+        for (const id in userData) {
+          if (userData.hasOwnProperty(id)) {
+            const mappedData = {
+              id: id,
+              driver: userData[id].driverName,
+              date: userData3[id].date + " " + userData3[id].time,
+              signature: userData3[id].esignature,
+              avgSpeed: userData2[id].average_speed,
+              maxSpeed: userData2[id].max_speed,
+              harshBraking: userData2[id].harsh_braking_count,
+              sua: userData2[id].sudden_acceleration_count,
+            };
+
+            transformedData.push(mappedData);
+          }
+        }
+      }
+    }
+
+    return transformedData;
+  };
+
+  const fetchTripHistory = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/fetch-tripHistory"
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return [];
+    }
+  };
+  const fetchSpeedRecord = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/fetch-SpeedRecord"
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return [];
+    }
+  };
+  const fetchProofRecords = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/fetch-ProofRecords"
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return [];
+    }
+  };
+  useEffect(() => {
+    const fetchData = async () => {
+      const tripData = await fetchTripHistory();
+      const speedData = await fetchSpeedRecord();
+      const proofData = await fetchProofRecords();
+
+      const updatedData = transformTripOngoing(tripData, speedData, proofData);
+
+      setRows(updatedData);
+    };
+
+    fetchData();
+  }, []);
+
   const handleLoad = () => {
     setIsMapLoaded(true);
   };
