@@ -16,6 +16,9 @@ const theme = createTheme({
   },
   components: {
     MuiButton: {
+      defaultProps: {
+        color: "primary",
+      },
       styleOverrides: {
         contained: {
           backgroundColor: "#83948a",
@@ -29,7 +32,7 @@ const theme = createTheme({
         outlined: {
           borderColor: "#83948a",
           "&:hover": {
-            borderColor: "#aebcbf", // replace with the color you want when hovered
+            borderColor: "#aebcbf",
           },
           "&:active": {
             borderColor: "#aebcbf",
@@ -61,6 +64,24 @@ const theme = createTheme({
           },
         },
       },
+    },
+    MuiRadio: {
+      defaultProps: {
+        color: "primary",
+      },
+      styleOverrides: {
+        root: {
+          color: "#83948a",
+          "&.Mui-checked": {
+            color: "#5b6a58",
+          },
+        },
+      },
+    },
+  },
+  palette: {
+    primary: {
+      main: "#83948a",
     },
   },
 });

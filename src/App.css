@@ -22,3 +22,11 @@ body {
 .link:visited {
   color: #83948a; /* Prevent color change on visited */
 }
+
+.unstyled-link {
+  color: inherit;
+  text-decoration: none;
+}
+.striped-row {
+  background-color: #eaecea;
+}
