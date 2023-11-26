@@ -29,9 +29,9 @@ const MyCard = ({ card }) => (
           component="img"
           sx={{
             height: 250,
-            transition: "transform 0.3s ease-in-out", // Add transition for smooth zoom effect
+            transition: "transform 0.3s ease-in-out",
             ":hover": {
-              transform: "scale(1.015)", // Scale the image up to 105% when hovered
+              transform: "scale(1.015)",
             },
           }}
           image={card.image}

@@ -20,6 +20,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import PeopleIcon from "@mui/icons-material/People";
 import OrderIcon from "@mui/icons-material/LocalShipping";
+import BuildIcon from "@mui/icons-material/Build";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
@@ -31,6 +32,7 @@ import TrackChangesIcon from "@mui/icons-material/TrackChanges";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import ReportIcon from "@mui/icons-material/Report";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
+import InspectionIcon from "@mui/icons-material/FindInPage";
 import WebIcon from "@mui/icons-material/Web";
 import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
@@ -193,7 +195,11 @@ const fetchNotifications = async () => {
 
 const transformNotification = (data) => {
   return data.map((item) => ({
-    icon: item._title.toLowerCase().includes("order") ? OrderIcon : EventIcon,
+    icon: item._title.toLowerCase().includes("appointment")
+      ? EventIcon
+      : item._title.toLowerCase().includes("inspection")
+      ? InspectionIcon
+      : BuildIcon,
     heading: item._title,
     text: item._description,
     date: item._date,
@@ -322,6 +328,12 @@ export default function AdminDashboard() {
                     {notification.heading}
                   </Typography>
                   <Typography variant="body2">{notification.text}</Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{ fontSize: 10, color: "blue" }}
+                  >
+                    {timeAgo(notification.date)}
+                  </Typography>
                 </div>
               </MenuItem>
             ))}

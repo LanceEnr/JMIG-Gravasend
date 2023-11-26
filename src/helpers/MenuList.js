@@ -21,16 +21,55 @@ const fetchListingData = async () => {
   }
 };
 
-const transformListingData = (data) => {
-  return data.map((item) => ({
-    name: item._listingName,
-    image: Gravel1,
-    price: item._listingPrice,
-    status: "Available",
-  }));
+const fetchStocks = async (productName) => {
+  try {
+    const response = await axios.get(
+      "http://localhost:3001/get-listing-stocks",
+      {
+        params: { productName },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching stocks:", error);
+    return [];
+  }
 };
 
-const MenuList = transformListingData(await fetchListingData());
+const transformListingData = async (data) => {
+  const transformedData = await Promise.all(
+    data.map(async (item) => {
+      const imageFileName =
+        item._imgPath && item._imgPath.length > 0
+          ? item._imgPath[0].substring(item._imgPath[0].lastIndexOf("\\") + 1)
+          : "defaultImage.jpg";
+
+      try {
+        const stocks = await fetchStocks(item._listingName);
+        console.log(stocks);
+
+        return {
+          name: item._listingName,
+          image: require(`../images/listings/${imageFileName}`),
+          price: item._listingPrice,
+          //status: stocks && stocks.length > 0 ? "Available" : "Out of Stock",
+        };
+      } catch (error) {
+        console.error("Error fetching stocks:", error);
+        return {
+          name: item._listingName,
+          image: require(`../images/listings/${imageFileName}`),
+          price: item._listingPrice,
+          //status: "Error fetching stocks",
+        };
+      }
+    })
+  );
+
+  return transformedData;
+};
+
+const MenuList = await transformListingData(await fetchListingData());
 
 export { MenuList };
 

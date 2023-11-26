@@ -4,6 +4,7 @@ const axios = require("axios");
 const admin = require("firebase-admin");
 const Counter = require("../models/counter");
 const IncomingInventory = require("../models/incomingInventory");
+const Notification2 = require("../models/adminNotification");
 
 router.get("/fetch-cargo", (req, res) => {
   axios
@@ -1375,5 +1376,123 @@ function hasDateInTripHistory(tripHistoryData, dateToCheck) {
   }
   return false;
 }
+
+const getNextNotifId = async () => {
+  try {
+    const counter = await Counter.findOneAndUpdate(
+      { name: "_notifId" },
+      { $inc: { value: 1 } },
+      { new: true, upsert: true }
+    );
+    return counter.value;
+  } catch (err) {
+    console.error("Error getting the next inventory number:", err);
+    throw err;
+  }
+};
+router.post("/maintenance-notif", async (req, res) => {
+  const {
+    status,
+    plateNo,
+    service,
+    currentMileage,
+    date,
+    uidMaintenance,
+    idMaintenance,
+  } = req.body;
+
+  if (status == "pending") {
+    const id = await getNextNotifId();
+    let adminNotification = new Notification2({
+      _notifID: id,
+      _date: date,
+      _name: plateNo,
+      _title: "Truck Maintenance: " + plateNo,
+      _description: `Maintenance (${service}) due for ${plateNo}. Mileage: ${currentMileage}`,
+    });
+    await adminNotification.save();
+    const db = admin.database();
+    const refReminders = db.ref(
+      `maintenanceReminders/${uidMaintenance}/${idMaintenance}`
+    );
+    const newStatus = "overdue";
+    refReminders
+      .update({
+        status: newStatus,
+      })
+      .then(() => {
+        console.log(
+          `Status updated successfully for maintenance with ID ${idMaintenance}`
+        );
+      })
+      .catch((error) => {
+        console.error(
+          `Error updating status for maintenance with ID ${idMaintenance}:`,
+          error
+        );
+      });
+  } else {
+  }
+});
+router.post("/inspection-notif", async (req, res) => {
+  const { plateNo, uid, id, inspectionType, verdict, date } = req.body;
+
+  const id2 = await getNextNotifId();
+  let adminNotification = new Notification2({
+    _notifID: id,
+    _date: date,
+    _name: plateNo,
+    _title: "Truck Inspection: " + plateNo,
+    _description: `Inspection (${inspectionType}) for ${plateNo}. (${verdict})`,
+  });
+  await adminNotification.save();
+  const db = admin.database();
+  const refReminders = db.ref(`upcomingInspections/${uid}/${id}`);
+
+  refReminders
+    .update({
+      verdict: verdict,
+    })
+    .then(() => {
+      console.log(`Status updated successfully for inspection with ID ${id}`);
+    })
+    .catch((error) => {
+      console.error(
+        `Error updating status for inspection with ID ${id}:`,
+        error
+      );
+    });
+});
+
+router.post("/inspection-notif2", async (req, res) => {
+  const { plateNo, uid, id, inspectionType, verdict, date, duration } =
+    req.body;
+
+  const id2 = await getNextNotifId();
+  let adminNotification = new Notification2({
+    _notifID: id,
+    _date: date,
+    _name: plateNo,
+    _title: "Truck Inspection: " + plateNo,
+    _description: `Inspection (${inspectionType}) for ${plateNo} in ${duration}`,
+  });
+  await adminNotification.save();
+  const db = admin.database();
+  const refReminders = db.ref(`upcomingInspections/${uid}/${id}`);
+
+  refReminders
+    .update({
+      verdict: verdict,
+    })
+    .then(() => {
+      console.log(`Status updated successfully for inspection with ID ${id}`);
+    })
+    .catch((error) => {
+      console.error(
+        `Error updating status for inspection with ID ${id}:`,
+        error
+      );
+    });
+});
 
 module.exports = router;
