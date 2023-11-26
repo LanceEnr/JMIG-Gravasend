@@ -47,7 +47,7 @@ export default function UserDrawer(props) {
       sx={{
         p: 2,
         height: 1,
-        backgroundColor: "#e8f2ff",
+        backgroundColor: "#EAECEA",
         width: anchor === "top" || anchor === "bottom" ? "auto" : 250,
       }}
       role="presentation"
@@ -66,7 +66,7 @@ export default function UserDrawer(props) {
             component="div"
             id="nested-list-subheader"
             sx={{
-              backgroundColor: "#e8f2ff", // Set the background color here
+              backgroundColor: "#EAECEA", // Set the background color here
             }}
           >
             DASHBOARD
@@ -82,10 +82,10 @@ export default function UserDrawer(props) {
               }}
               sx={{
                 borderLeft:
-                  selectedItem === text ? "4px solid #004aad" : "none",
-                color: selectedItem === text ? "#004aad" : "inherit",
+                  selectedItem === text ? "4px solid #83948a" : "none",
+                color: selectedItem === text ? "#83948a" : "inherit",
                 "& .MuiListItemIcon-root": {
-                  color: selectedItem === text ? "#004aad" : "#808080",
+                  color: selectedItem === text ? "#83948a" : "#808080",
                 },
               }}
             >
@@ -105,7 +105,7 @@ export default function UserDrawer(props) {
             component="div"
             id="nested-list-subheader"
             sx={{
-              backgroundColor: "#e8f2ff", // Set the background color here
+              backgroundColor: "#EAECEA", // Set the background color here
             }}
           >
             ACCOUNT SETTINGS
@@ -121,10 +121,10 @@ export default function UserDrawer(props) {
               }}
               sx={{
                 borderLeft:
-                  selectedItem === text ? "4px solid #004aad" : "none",
-                color: selectedItem === text ? "#004aad" : "inherit",
+                  selectedItem === text ? "4px solid #83948a" : "none",
+                color: selectedItem === text ? "#83948a" : "inherit",
                 "& .MuiListItemIcon-root": {
-                  color: selectedItem === text ? "#004aad" : "#808080",
+                  color: selectedItem === text ? "#83948a" : "#808080",
                 },
               }}
             >

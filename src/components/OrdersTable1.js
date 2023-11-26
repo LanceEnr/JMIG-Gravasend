@@ -313,7 +313,7 @@ export default function OrdersTable1(props) {
           <Typography
             component="h1"
             variant="h5"
-            sx={{ color: "#004aad", fontWeight: "bold", my: 1 }}
+            sx={{ color: "#83948a", fontWeight: "bold", my: 1 }}
           >
             <ShoppingCartIcon sx={{ mr: 2, verticalAlign: "middle" }} />
             Orders
@@ -388,7 +388,7 @@ export default function OrdersTable1(props) {
                   secondary={
                     <React.Fragment>
                       <Typography
-                        sx={{ color: "#004aad" }}
+                        sx={{ color: "#83948a" }}
                         variant="body2"
                         noWrap
                       >
@@ -410,7 +410,7 @@ export default function OrdersTable1(props) {
                       )}
                     </Typography>
                     <Typography
-                      sx={{ color: "#004aad" }}
+                      sx={{ color: "#83948a" }}
                       variant="body2"
                       noWrap
                     >

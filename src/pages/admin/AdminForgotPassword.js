@@ -72,7 +72,7 @@ export default function ForgotPassword() {
           <Typography
             component="h1"
             variant="h5"
-            sx={{ color: "#004aad", fontWeight: "bold" }}
+            sx={{ color: "#83948a", fontWeight: "bold" }}
           >
             Forgot Password
           </Typography>
@@ -110,7 +110,7 @@ export default function ForgotPassword() {
                   type="submit"
                   fullWidth
                   variant="contained"
-                  sx={{ mt: 3, mb: 2, backgroundColor: "#004aad" }}
+                  sx={{ mt: 3, mb: 2, backgroundColor: "#83948a" }}
                 >
                   Send OTP
                 </Button>

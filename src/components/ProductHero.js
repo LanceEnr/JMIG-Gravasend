@@ -73,11 +73,8 @@ export default function ProductHero() {
         size="large"
         sx={{
           minWidth: 200,
-          backgroundColor: "#004aad",
+
           color: "#fff",
-          "&:hover": {
-            backgroundColor: "#003882",
-          },
         }}
         component={Link}
         to={"/about"}

@@ -79,7 +79,7 @@ function MainApp({ handleLogout, isAuthenticated, authDispatch }) {
   ].includes(location.pathname);
 
   useEffect(() => {
-    document.title = "GravaSend";
+    document.title = "JMIG Gravel and Sand Supply";
     const title = getTitle(location.pathname);
     document.title = title;
   }, [location.pathname]);
@@ -87,7 +87,7 @@ function MainApp({ handleLogout, isAuthenticated, authDispatch }) {
   const getTitle = (path) => {
     switch (path) {
       case "/":
-        return "GravaSend";
+        return "JMIG Gravel and Sand Supply";
       case "/Products":
         return "Products";
       case "/FAQs":
@@ -102,7 +102,7 @@ function MainApp({ handleLogout, isAuthenticated, authDispatch }) {
         return "Product Details";
 
       default:
-        return "GravaSend";
+        return "JMIG Gravel and Sand Supply";
     }
   };
   return (

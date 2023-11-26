@@ -45,7 +45,7 @@ export default function ServiceBanner() {
                 marginTop: {
                   sm: "80px",
                 },
-                color: "#004aad",
+                color: "#83948a",
                 width: "100%",
               }}
             >
@@ -69,11 +69,6 @@ export default function ServiceBanner() {
               sx={{
                 marginTop: 4,
                 maxWidth: 200,
-                backgroundColor: "#004aad",
-                color: "#fff",
-                "&:hover": {
-                  backgroundColor: "#003882",
-                },
               }}
               onClick={scrollToProductListSection}
             >

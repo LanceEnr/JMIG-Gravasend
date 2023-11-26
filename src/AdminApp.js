@@ -15,7 +15,7 @@ import AdminLogin from "./pages/admin/AdminLogin";
 import AdminRegister from "./pages/admin/AdminRegister";
 import AdminForgotPassword from "./pages/admin/AdminForgotPassword";
 import AdminProfileInfo from "./pages/admin/AdminProfileInfo";
-import FleetInformation from "./pages/admin/FleetInformation";
+import NewFleetInformation from "./pages/admin/NewFleetInformation";
 import Maintenance from "./pages/admin/Maintenance";
 import Inspection from "./pages/admin/Inspection";
 import Trips from "./pages/admin/Trips";
@@ -31,6 +31,8 @@ import Content from "./pages/admin/Content";
 import UserManagement from "./pages/admin/UserManagement";
 import ManageContactForm from "./pages/admin/ManageContactForm";
 import Listings from "./pages/admin/Listings";
+import AddFleet from "./pages/admin/components/AddFleet";
+import EditFleet from "./pages/admin/components/EditFleet";
 
 const initialState = {
   isAuthenticated: !!localStorage.getItem("admintoken"),
@@ -74,6 +76,13 @@ function AdminApp() {
               <Grid item xs={12}>
                 <Suspense fallback={<div>Loading...</div>}>
                   <Routes>
+                    <Route path="/adminaddfleet" exact element={<AddFleet />} />
+                    <Route
+                      path="/admineditfleet"
+                      exact
+                      element={<EditFleet />}
+                    />
+
                     <Route
                       path="/adminprofileinfo"
                       exact
@@ -82,7 +91,7 @@ function AdminApp() {
                     <Route
                       path="/adminfleetinformation"
                       exact
-                      element={<FleetInformation />}
+                      element={<NewFleetInformation />}
                     />
                     <Route
                       path="/adminmaintenance"

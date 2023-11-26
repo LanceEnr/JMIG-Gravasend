@@ -166,14 +166,9 @@ function ContactValues() {
               </Typography>
               <a href="mailto:jmiggravelandsand@gmail.com">
                 <Button
-                  variant="primary"
+                  variant="contained"
                   sx={{
                     mt: 2,
-                    backgroundColor: "#004aad",
-                    color: "#fff", // adjust text color as needed
-                    "&:hover": {
-                      backgroundColor: "#003882", // darker shade for hover state
-                    },
                   }}
                 >
                   Email Us

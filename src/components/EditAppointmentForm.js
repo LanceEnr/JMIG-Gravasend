@@ -155,7 +155,7 @@ export default function EditAppointmentForm(props) {
           component="h1"
           variant="h5"
           sx={{
-            color: "#004aad",
+            color: "#83948a",
             fontWeight: "bold",
             display: "flex",
             alignItems: "center",
@@ -287,23 +287,17 @@ export default function EditAppointmentForm(props) {
               sx={{
                 mt: 2,
                 marginRight: 2,
-                color: "#004aad",
-                borderColor: "#004aad",
+                color: "#83948a",
+                borderColor: "#83948a",
               }}
             >
               Go Back
             </Button>
             <Button
               variant="contained"
-              color="primary"
               type="submit"
               sx={{
                 mt: 2,
-                backgroundColor: "#004aad",
-                color: "#fff", // adjust text color as needed
-                "&:hover": {
-                  backgroundColor: "#003882", // darker shade for hover state
-                },
               }}
               onClick={handleUpdateAppointment}
             >

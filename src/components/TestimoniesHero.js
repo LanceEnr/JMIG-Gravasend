@@ -128,7 +128,7 @@ export default function TestimoniesHero() {
                 <Typography
                   variant="h6"
                   component="div"
-                  sx={{ pt: 2, color: "#004aad" }}
+                  sx={{ pt: 2, color: "#83948a" }}
                 >
                   {testimony.name}
                 </Typography>

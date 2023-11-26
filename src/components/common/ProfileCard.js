@@ -93,7 +93,7 @@ export default function ProfileCard({ profile }) {
             <Typography
               variant="body2"
               gutterBottom
-              sx={{ color: "#004aad", fontWeight: "bold", textAlign: "center" }}
+              sx={{ color: "#83948a", fontWeight: "bold", textAlign: "center" }}
             >
               @{userName}
             </Typography>

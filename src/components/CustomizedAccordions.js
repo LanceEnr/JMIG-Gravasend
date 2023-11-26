@@ -27,7 +27,7 @@ const Accordion = styled((props) => (
     display: "none",
   },
   "&.Mui-expanded": {
-    borderLeft: "5px solid #004aad", // Add a line to the right side of the border
+    borderLeft: "5px solid #83948a", // Add a line to the right side of the border
     backgroundColor: "#F4F4F4", // Add a darker color
   },
   "&:hover": {

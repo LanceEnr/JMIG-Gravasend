@@ -94,7 +94,7 @@ export default function ChangePassword({ email }) {
       <Typography
         component="h1"
         variant="h5"
-        sx={{ color: "#004aad", fontWeight: "bold" }}
+        sx={{ color: "#83948a", fontWeight: "bold" }}
       >
         Change Password
       </Typography>
@@ -139,7 +139,7 @@ export default function ChangePassword({ email }) {
           type="submit"
           fullWidth
           variant="contained"
-          sx={{ mt: 3, mb: 2, backgroundColor: "#004aad" }}
+          sx={{ mt: 3, mb: 2, backgroundColor: "#83948a" }}
         >
           Reset Password
         </Button>

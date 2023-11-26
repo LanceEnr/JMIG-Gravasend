@@ -10,13 +10,83 @@ import AdminApp from "./AdminApp";
 import reportWebVitals from "./reportWebVitals";
 
 const store = createStore(rootReducer);
-
 const theme = createTheme({
   typography: {
     fontFamily: "Montserrat, sans-serif",
   },
+  components: {
+    MuiButton: {
+      defaultProps: {
+        color: "primary",
+      },
+      styleOverrides: {
+        contained: {
+          backgroundColor: "#83948a",
+          "&:hover": {
+            backgroundColor: "#6d7f71",
+          },
+          "&:active": {
+            backgroundColor: "#5b6a58",
+          },
+        },
+        outlined: {
+          borderColor: "#83948a",
+          "&:hover": {
+            borderColor: "#aebcbf",
+          },
+          "&:active": {
+            borderColor: "#aebcbf",
+          },
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#83948a",
+          },
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#6d7f71",
+          },
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#5b6a58",
+          },
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          color: "#83948a",
+          "&.Mui-focused": {
+            color: "#5b6a58",
+          },
+        },
+      },
+    },
+    MuiRadio: {
+      defaultProps: {
+        color: "primary",
+      },
+      styleOverrides: {
+        root: {
+          color: "#83948a",
+          "&.Mui-checked": {
+            color: "#5b6a58",
+          },
+        },
+      },
+    },
+  },
+  palette: {
+    primary: {
+      main: "#83948a",
+    },
+  },
 });
-document.title = "GravaSend";
+
+document.title = "JMIG Gravel and Sand Supply";
 const shouldRenderAdminApp = window.location.pathname.startsWith("/admin");
 
 ReactDOM.render(

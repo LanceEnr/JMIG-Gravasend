@@ -137,7 +137,7 @@ export default function AdminLogin({ dispatch }) {
           <Typography
             component="h1"
             variant="h5"
-            sx={{ color: "#004aad", fontWeight: "bold" }}
+            sx={{ color: "#83948a", fontWeight: "bold" }}
           >
             Admin Login
           </Typography>
@@ -195,7 +195,7 @@ export default function AdminLogin({ dispatch }) {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2, backgroundColor: "#004aad" }}
+              sx={{ mt: 3, mb: 2, backgroundColor: "#83948a" }}
             >
               Login
             </Button>

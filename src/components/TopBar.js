@@ -13,11 +13,10 @@ export default function TopBar() {
   return (
     <Box
       sx={{
-        backgroundColor: "#004aad",
+        backgroundColor: "#829088",
       }}
     >
       <Container
-        maxWidth="xl"
         sx={{
           display: "flex",
           justifyContent: "space-between",

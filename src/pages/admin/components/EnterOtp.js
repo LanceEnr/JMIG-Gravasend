@@ -88,7 +88,7 @@ export default function EnterOTP({
       <Typography
         component="h1"
         variant="h5"
-        sx={{ color: "#004aad", fontWeight: "bold" }}
+        sx={{ color: "#83948a", fontWeight: "bold" }}
       >
         Verify OTP
       </Typography>
@@ -122,7 +122,7 @@ export default function EnterOTP({
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2, backgroundColor: "#004aad" }}
+              sx={{ mt: 3, mb: 2, backgroundColor: "#83948a" }}
               disabled={resetInProgress}
             >
               Verify OTP
@@ -135,7 +135,7 @@ export default function EnterOTP({
               <Button
                 variant="text"
                 onClick={handleResendOTP}
-                sx={{ color: "#004aad" }}
+                sx={{ color: "#83948a" }}
               >
                 Resend OTP
               </Button>
