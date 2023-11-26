@@ -14,6 +14,7 @@ import backhoe from "../assets/backhoe.webp";
 import trailerbed from "../assets/trailerbed.webp";
 import loader from "../assets/loader.webp";
 import dumptruck from "../assets/dumptruck.webp";
+import axios from "axios";
 
 const ImageBackdrop = styled("div")(({ theme }) => ({
   position: "absolute",
@@ -65,23 +66,33 @@ const ImageIconButton = styled(ButtonBase)(({ theme }) => ({
   },
 }));
 
-const images = [
-  {
-    url: Gravel1,
-    title: "Vibro Sand",
-    width: "40%",
-  },
-  {
-    url: Sand1,
-    title: "G1",
-    width: "20%",
-  },
-  {
-    url: Gravel3,
-    title: "Lahar",
-    width: "40%",
-  },
-];
+const fetchListingData = async () => {
+  try {
+    const response = await axios.get("http://localhost:3001/get-listing");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+const transformListingData2 = (data) => {
+  return data.slice(0, 3).map((item, index) => {
+    console.log(item._imgPath[0]);
+    const imageFileName =
+      item._imgPath && item._imgPath.length > 0
+        ? item._imgPath[0].substring(item._imgPath[0].lastIndexOf("\\") + 1)
+        : "";
+    console.log(imageFileName);
+    return {
+      url: require(`../images/listings/${imageFileName}`),
+      title: item._listingName || `Default Title ${index + 1}`,
+      width: index === 1 ? "20%" : "40%",
+    };
+  });
+};
+
+const images = transformListingData2(await fetchListingData());
 
 export default function ProductCategories() {
   return (

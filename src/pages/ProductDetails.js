@@ -17,18 +17,29 @@ import LinearProgress, {
   linearProgressClasses,
 } from "@mui/material/LinearProgress";
 
-const ColoredLinearProgress = styled(LinearProgress)(({ theme }) => ({
-  width: "75%",
-  height: 10,
-  borderRadius: 5,
-  [`&.${linearProgressClasses.colorPrimary}`]: {
-    backgroundColor: "#f5f0e0", // Lighter color for the progress bar background
-  },
-  [`& .${linearProgressClasses.bar}`]: {
-    borderRadius: 5,
-    backgroundColor: "#bd8512", // Darker color for the progress
-  },
-}));
+const ColoredLinearProgress = ({ value, color, bgcolor }) => {
+  const normalizedValue = Math.min(100, Math.max(0, (value / 100) * 100));
+
+  return (
+    <LinearProgress
+      variant="determinate"
+      value={normalizedValue}
+      sx={{
+        width: "75%",
+        height: 10,
+        borderRadius: 5,
+        [`&.${linearProgressClasses.colorPrimary}`]: {
+          backgroundColor: bgcolor,
+        },
+        [`& .${linearProgressClasses.bar}`]: {
+          borderRadius: 5,
+          backgroundColor: color,
+        },
+      }}
+    />
+  );
+};
+
 const responsive = {
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
@@ -45,8 +56,6 @@ const responsive = {
 };
 
 const ProductDetails = () => {
-  const stocksLeft = 50;
-  const totalStocks = 100;
   const navigate = useNavigate();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
@@ -60,11 +69,11 @@ const ProductDetails = () => {
   const handleBeforeChange = (nextSlide) => {
     setSelectedImageIndex(nextSlide);
   };
-  const images = [Sand1, Sand2, Sand3];
 
   const [productDetails, setProductDetails] = useState(null);
   const [pandiStocks, setPandiStocks] = useState([]);
   const [mindanaoStocks, setMindanaoStocks] = useState([]);
+  const [pic, setPic] = useState([]);
 
   useEffect(() => {
     const currentUrl = window.location.href;
@@ -82,6 +91,7 @@ const ProductDetails = () => {
         );
 
         const productDetailsData = response.data;
+        setPic(productDetailsData._imgPath || []);
 
         if (productDetailsData) {
           setProductDetails(productDetailsData);
@@ -127,6 +137,10 @@ const ProductDetails = () => {
     fetchProductDetails();
   }, [navigate, window.location.href]);
 
+  const images = pic
+    .slice(0, 3)
+    .map((path, index) => path || [Sand1, Sand2, Sand3][index]);
+
   return (
     <div className="userDashboard">
       <Container>
@@ -137,15 +151,15 @@ const ProductDetails = () => {
                 responsive={responsive}
                 ref={carouselRef}
                 beforeChange={(nextSlide) => handleBeforeChange(nextSlide)}
-                className="carousel" // Add this line
+                className="carousel"
               >
                 {images.map((image, index) => (
                   <div key={index} className="carousel-slide">
-                    {" "}
-                    {/* Add this line */}
                     <img
-                      alt="Sand"
-                      src={image}
+                      alt={`Sand Image ${index + 1}`}
+                      src={require(`../images/listings/${image.substring(
+                        image.lastIndexOf("\\") + 1
+                      )}`)}
                       width="100%"
                       height="100%"
                       style={{ objectFit: "contain", transform: "scale(1.1)" }}
@@ -162,7 +176,12 @@ const ProductDetails = () => {
                     }`}
                     onClick={() => handleThumbnailClick(index)}
                   >
-                    <img src={image} alt="Thumbnail" />
+                    <img
+                      alt={`Thumbnail ${index + 1}`}
+                      src={require(`../images/listings/${image.substring(
+                        image.lastIndexOf("\\") + 1
+                      )}`)}
+                    />
                   </div>
                 ))}
               </Box>
@@ -204,11 +223,14 @@ const ProductDetails = () => {
                     <strong>Pandi:</strong>{" "}
                     {pandiStocks.map((stock) => stock._quantity) > 0
                       ? `${pandiStocks.map((stock) => stock._quantity)} cu. mt.`
-                      : "Out of Stocks"}
+                      : "Out of Stock"}
                   </Typography>
                   <ColoredLinearProgress
-                    variant="determinate"
                     value={pandiStocks.map((stock) => stock._quantity)}
+                    color={pandiStocks.map((stock) =>
+                      stock._quantity > 0 ? "#bd8512" : "#f5c9c9"
+                    )}
+                    bgcolor="#f5f0e0"
                   />
                 </Box>
 
@@ -219,11 +241,14 @@ const ProductDetails = () => {
                       ? `${mindanaoStocks.map(
                           (stock) => stock._quantity
                         )} cu. mt.`
-                      : "Out of Stocks"}
+                      : "Out of Stock"}
                   </Typography>
                   <ColoredLinearProgress
-                    variant="determinate"
                     value={mindanaoStocks.map((stock) => stock._quantity)}
+                    color={mindanaoStocks.map((stock) =>
+                      stock._quantity > 0 ? "#bd8512" : "#f5c9c9"
+                    )}
+                    bgcolor="#f5f0e0"
                   />
                 </Box>
               </Box>
@@ -235,7 +260,7 @@ const ProductDetails = () => {
                     minWidth: "150px",
                     padding: "10px 40px",
                   }}
-                  onClick={() => navigate("/Dashboard")}
+                  onClick={() => navigate("/contact")}
                 >
                   REQUEST ORDER
                 </Button>
@@ -248,6 +273,7 @@ const ProductDetails = () => {
               More Products
             </Typography>
             <Box mt="20px">
+              {/* Assuming 'MenuList' is an array of more products */}
               <MoreProducts cards={MenuList} />
             </Box>
           </Box>

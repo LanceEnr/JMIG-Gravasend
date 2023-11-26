@@ -7,6 +7,7 @@ import ProductHowItWorks from "../components/ProductHowItWorks";
 import ProductCTA from "../components/ProductCTA";
 
 function Home() {
+  window.scrollTo({ top: 0 });
   return (
     <div>
       <ProductHero />

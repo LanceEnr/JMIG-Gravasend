@@ -46,13 +46,51 @@ const transformListingData = async (data) => {
 
       try {
         const stocks = await fetchStocks(item._listingName);
-        console.log(stocks);
+        const pandiStocks = stocks.filter(
+          (stock) => stock._location.toLowerCase() === "pandi"
+        );
+
+        // Filter stocks for Mindanao
+        const mindanaoStocks = stocks.filter(
+          (stock) => stock._location.toLowerCase() === "mindanao ave."
+        );
+
+        let status;
+        let color;
+        let bgcolor;
+
+        const isAvailableInPandi =
+          pandiStocks.length > 0 &&
+          pandiStocks.some((stock) => parseInt(stock._quantity, 10) > 0);
+        const isAvailableInMindanao =
+          mindanaoStocks.length > 0 &&
+          mindanaoStocks.some((stock) => parseInt(stock._quantity, 10) > 0);
+
+        if (isAvailableInPandi && isAvailableInMindanao) {
+          status = "Available";
+          color = "success.dark";
+          bgcolor = "#8dd290";
+        } else if (isAvailableInPandi) {
+          status = "Pandi";
+          color = "success.dark";
+          bgcolor = "#8dd290";
+        } else if (isAvailableInMindanao) {
+          status = "Mindanao Ave.";
+          color = "success.dark";
+          bgcolor = "#8dd290";
+        } else {
+          status = "Out of Stock";
+          color = "error.dark";
+          bgcolor = "#f5c9c9";
+        }
 
         return {
           name: item._listingName,
           image: require(`../images/listings/${imageFileName}`),
           price: item._listingPrice,
-          //status: stocks && stocks.length > 0 ? "Available" : "Out of Stock",
+          status: status,
+          color: color,
+          bgcolor: bgcolor,
         };
       } catch (error) {
         console.error("Error fetching stocks:", error);
@@ -60,7 +98,7 @@ const transformListingData = async (data) => {
           name: item._listingName,
           image: require(`../images/listings/${imageFileName}`),
           price: item._listingPrice,
-          //status: "Error fetching stocks",
+          status: "Error fetching stocks",
         };
       }
     })

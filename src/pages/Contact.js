@@ -25,6 +25,8 @@ const imagePath = valuesData._image;
 const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 
 function Contact() {
+  window.scrollTo({ top: 0 });
+
   const [inquiryData, SetInquiryData] = useState({
     _name: "",
     _email: "",
@@ -96,7 +98,7 @@ function Contact() {
   return (
     <div>
       <Banner
-        bannerImage={require(`../images/banner/uploads/${filename}`)}
+        bannerImage={filename}
         title={valuesData._heading}
         text="Talk to us!"
       />

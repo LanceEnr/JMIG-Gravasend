@@ -62,9 +62,8 @@ const MyCard = ({ card }) => (
               label={card.status}
               size="small"
               sx={{
-                color:
-                  card.status === "Available" ? "success.dark" : "error.dark",
-                bgcolor: card.status === "Available" ? "#8dd290" : "#f5c9c9",
+                color: card.color,
+                bgcolor: card.bgcolor,
               }}
             />
           </Box>

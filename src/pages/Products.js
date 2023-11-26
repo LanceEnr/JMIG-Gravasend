@@ -7,6 +7,7 @@ import ProductSmokingHero from "../components/ProductSmokingHero";
 import ProductBanner from "../components/ProductBanner";
 
 function Products() {
+  window.scrollTo({ top: 0 });
   return (
     <Box>
       <div id="product-list-section">

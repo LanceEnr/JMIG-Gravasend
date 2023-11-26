@@ -11,6 +11,7 @@ import BannerImage from "../assets/faqs1.webp";
 import ProductSmokingHero from "../components/ProductSmokingHero";
 
 function Faqs() {
+  window.scrollTo({ top: 0 });
   return (
     <div className="faqs">
       <Banner />

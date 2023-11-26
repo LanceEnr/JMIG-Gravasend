@@ -67,10 +67,14 @@ function generateOTP() {
 }
 const registeredUsers = [];
 
+const sanitizeFilename = (filename) => {
+  return filename.replace(/[^\w\s.-]/g, "").replace(/\s+/g, "_");
+};
 const storage = multer.diskStorage({
   destination: "../src/images/banner/uploads/",
   filename: function (req, file, cb) {
-    const category = req.body.category;
+    const category = sanitizeFilename(req.body.category);
+    console.log(category);
     const extname = path.extname(file.originalname);
     const filename = category + extname;
     cb(null, filename);
@@ -809,7 +813,7 @@ router.put("/update-banner", upload.single("image"), async (req, res) => {
 
   try {
     let image = req.body.image;
-    console.log(req.body.image);
+
     if (req.file) {
       image = req.file.path;
 
@@ -1251,13 +1255,13 @@ const getNextListingNum = async () => {
     throw err;
   }
 };
-const sanitizeFilename = (filename) => {
-  return filename.replace(/[^\w\s.-]/g, "_");
-};
+
 const storage2 = multer.diskStorage({
   destination: "../src/images/listings/",
   filename: function (req, file, cb) {
-    const listingName = sanitizeFilename(req.body._listingName);
+    const listingName = sanitizeFilename(
+      req.body._listingName.replace(/\s+/g, "")
+    );
 
     const extname = path.extname(file.originalname);
 
@@ -1306,11 +1310,9 @@ router.post("/add-listing", upload2.array("image", 6), async (req, res) => {
 router.put("/update-listing", upload2.array("image", 6), async (req, res) => {
   try {
     const listingName = req.body._listingName;
-    const category = req.body._listingCategory;
     const price = req.body._listingPrice;
-    const description = req.body._listingDescription;
+    const description = req.body._isPublished;
     const images = req.files.map((file) => file.path);
-
     if (images.length === 0) {
       return res.status(400).json({ error: "No images were uploaded" });
     }
@@ -1319,7 +1321,6 @@ router.put("/update-listing", upload2.array("image", 6), async (req, res) => {
       { _listingName: listingName },
       {
         _listingName: listingName,
-        _listingCategory: category,
         _listingPrice: price,
         _listingDescription: description,
         _imgPath: images,
