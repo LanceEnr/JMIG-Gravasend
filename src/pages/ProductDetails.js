@@ -230,6 +230,7 @@ const ProductDetails = () => {
 
               <Box display="flex" alignItems="center" minHeight="50px" mt={2}>
                 <Button
+                  variant="contained"
                   sx={{
                     minWidth: "150px",
                     padding: "10px 40px",

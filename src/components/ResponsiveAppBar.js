@@ -226,21 +226,28 @@ function ResponsiveAppBar() {
               </Box>
             </SwipeableDrawer>
           </Box>
-          <Link to="/">
-            <Box
-              component="img"
-              src={LogoGravasend}
-              alt="Logo"
-              sx={{
-                width: "90px",
-                height: "auto",
-                mr: 2,
-                pt: "5px", // Adjust this value as needed
-                pb: "5px", // Adjust this value as needed
-                display: { xs: "flex", md: "none" },
-              }}
-            />
-          </Link>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "flex", md: "none" },
+              justifyContent: "center", // Add this line to center horizontally
+              alignItems: "center", // Add this line to center vertically
+            }}
+          >
+            <Link to="/">
+              <Box
+                component="img"
+                src={LogoGravasend}
+                alt="Logo"
+                sx={{
+                  width: "90px",
+                  height: "auto",
+                  pt: "5px", // Adjust this value as needed
+                  pb: "5px", // Adjust this value as needed
+                }}
+              />
+            </Link>
+          </Box>
 
           <Box
             sx={{
@@ -314,25 +321,48 @@ function ResponsiveAppBar() {
                     <ListItemIcon>
                       <notification.icon fontSize="small" />
                     </ListItemIcon>
-                    <Box sx={{ width: "300px" }}>
-                      {/* Add this line */}
+                    <Box
+                      sx={{
+                        width: "200px",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
                       <Typography
                         variant="subtitle2"
-                        sx={{ fontWeight: "bold", whiteSpace: "nowrap" }} // Add whiteSpace: "normal"
+                        sx={{
+                          fontWeight: "bold",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
                       >
                         {notification.heading}
                       </Typography>
 
-                      <Typography variant="body2">
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
                         {notification.text}
                       </Typography>
                       <Typography
                         variant="body2"
-                        sx={{ fontSize: 10, color: "#83948a" }}
+                        sx={{
+                          fontSize: 10,
+                          color: "#83948a",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
                       >
                         {timeAgo(notification.date)}
                       </Typography>
-                    </Box>{" "}
+                    </Box>
                   </MenuItem>
                 ))}
               </Menu>

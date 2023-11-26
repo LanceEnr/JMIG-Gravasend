@@ -10,7 +10,6 @@ import AdminApp from "./AdminApp";
 import reportWebVitals from "./reportWebVitals";
 
 const store = createStore(rootReducer);
-
 const theme = createTheme({
   typography: {
     fontFamily: "Montserrat, sans-serif",
@@ -38,8 +37,34 @@ const theme = createTheme({
         },
       },
     },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#83948a",
+          },
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#6d7f71",
+          },
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#5b6a58",
+          },
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          color: "#83948a",
+          "&.Mui-focused": {
+            color: "#5b6a58",
+          },
+        },
+      },
+    },
   },
 });
+
 document.title = "JMIG Gravel and Sand Supply";
 const shouldRenderAdminApp = window.location.pathname.startsWith("/admin");
 
