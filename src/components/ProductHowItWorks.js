@@ -33,7 +33,7 @@ function ProductHowItWorks() {
   return (
     <Box
       component="section"
-      sx={{ display: "flex", bgcolor: "#e8f2ff", overflow: "hidden" }}
+      sx={{ display: "flex", bgcolor: "#EAECEA", overflow: "hidden" }}
     >
       <Container
         sx={{
@@ -149,11 +149,6 @@ function ProductHowItWorks() {
           to={"/products"}
           sx={{
             mt: 8,
-            backgroundColor: "#004aad",
-            color: "#fff",
-            "&:hover": {
-              backgroundColor: "#003882",
-            },
           }}
         >
           Get started

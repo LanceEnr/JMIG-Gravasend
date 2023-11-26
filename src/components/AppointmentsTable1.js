@@ -319,7 +319,7 @@ export default function AppointmentsTable1(props) {
           component="h1"
           variant="h5"
           sx={{
-            color: "#004aad",
+            color: "#83948a",
             fontWeight: "bold",
             display: "flex",
             alignItems: "center",
@@ -334,7 +334,7 @@ export default function AppointmentsTable1(props) {
             variant="contained"
             onClick={handleSetAppointmentClick}
             sx={{
-              backgroundColor: "#004aad",
+              backgroundColor: "#83948a",
             }}
           >
             Set Appointment
@@ -344,7 +344,7 @@ export default function AppointmentsTable1(props) {
             color="primary"
             onClick={handleSetAppointmentClick}
             sx={{
-              color: "#004aad",
+              color: "#83948a",
             }}
           >
             <AddCircleIcon />
@@ -399,7 +399,7 @@ export default function AppointmentsTable1(props) {
                 }
                 secondary={
                   <Typography
-                    sx={{ color: "#004aad" }}
+                    sx={{ color: "#83948a" }}
                     variant="body2"
                   >{`${item._date}`}</Typography>
                 }

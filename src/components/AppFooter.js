@@ -5,6 +5,8 @@ import Link from "@mui/material/Link";
 import Container from "@mui/material/Container";
 import Typography from "../components/common/Typography";
 import Avatar from "@mui/material/Avatar";
+import LogoGravasend from "../assets/LogoGravasend.webp";
+
 import PhoneIcon from "@mui/icons-material/Phone";
 import FacebookOutlinedIcon from "@mui/icons-material/FacebookOutlined";
 import MapsUgcOutlinedIcon from "@mui/icons-material/MapsUgcOutlined";
@@ -52,12 +54,12 @@ export default function AppFooter() {
       component="footer"
       sx={{
         display: "flex",
-        bgcolor: "#e8f2ff",
+        bgcolor: "#EAECEA",
       }}
     >
       <Container sx={{ my: 8, display: "flex" }}>
         <Grid container spacing={5}>
-          <Grid item xs={12} sm={6} md={3} sx={{ mr: 4 }}>
+          <Grid item xs={12} sm={6} md={3} sx={{ mr: 4, pb: { xs: 3, md: 0 } }}>
             <Grid
               container
               direction="row"
@@ -67,24 +69,19 @@ export default function AppFooter() {
               sx={{ height: 120 }}
             >
               <Grid item sx={{ display: "flex" }}>
-                <Typography
-                  variant="h6"
-                  noWrap
-                  component="a"
-                  href="/"
-                  sx={{
-                    mr: 2,
-                    display: { xs: "flex", md: "flex" },
-                    fontFamily: "sans-serif",
-                    fontWeight: 700,
-                    letterSpacing: ".2rem",
-                    color: "#004aad",
-                    textDecoration: "none",
-                  }}
-                >
-                  JMIG Gravel & Sand
-                </Typography>
+                <a href="/">
+                  <img
+                    src={LogoGravasend}
+                    alt="Logo"
+                    style={{
+                      width: "125px",
+                      height: "auto",
+                      display: { xs: "flex", md: "flex" },
+                    }}
+                  />
+                </a>
               </Grid>
+
               <Grid item>
                 <Typography variant="caption">
                   Supplying the highest quality gravel and sand for all your
@@ -99,7 +96,10 @@ export default function AppFooter() {
             <Typography
               variant="h6"
               marked="left"
-              style={{ fontSize: "16px", fontWeight: "bold" }}
+              style={{
+                fontSize: "16px",
+                fontWeight: "bold",
+              }}
               gutterBottom
             >
               ABOUT US

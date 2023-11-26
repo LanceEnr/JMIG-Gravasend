@@ -233,11 +233,6 @@ const ProductDetails = () => {
                   sx={{
                     minWidth: "150px",
                     padding: "10px 40px",
-                    backgroundColor: "#004aad",
-                    color: "#fff",
-                    "&:hover": {
-                      backgroundColor: "#003882",
-                    },
                   }}
                   onClick={() => navigate("/Dashboard")}
                 >

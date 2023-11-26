@@ -36,7 +36,7 @@ const styles = ({ theme }) => ({
     width: 73,
     display: "block",
     margin: `${theme.spacing(1)} auto 0`,
-    backgroundColor: "#004aad",
+    backgroundColor: "#83948a",
     borderRadius: 2, // Add borderRadius for rounded underline
   },
   [`& .${markClassesMapping.center.h3}`]: {
@@ -44,7 +44,7 @@ const styles = ({ theme }) => ({
     width: 73,
     display: "block",
     margin: `${theme.spacing(1)} auto 0`,
-    backgroundColor: "#004aad",
+    backgroundColor: "#83948a",
     borderRadius: 2, // Add borderRadius for rounded underline
   },
   [`& .${markClassesMapping.left.h3}`]: {
@@ -52,7 +52,7 @@ const styles = ({ theme }) => ({
     width: 73,
     display: "block",
     margin: `${theme.spacing(1)} 0 0 0`, // Adjust margin to push it to the left
-    backgroundColor: "#004aad",
+    backgroundColor: "#83948a",
     borderRadius: 2,
   },
   [`& .${markClassesMapping.center.h4}`]: {
@@ -60,7 +60,7 @@ const styles = ({ theme }) => ({
     width: 55,
     display: "block",
     margin: `${theme.spacing(1)} auto 0`,
-    backgroundColor: "#004aad",
+    backgroundColor: "#83948a",
     borderRadius: 2, // Add borderRadius for rounded underline
   },
   [`& .${markClassesMapping.left.h6}`]: {

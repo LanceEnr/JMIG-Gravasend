@@ -23,18 +23,21 @@ function ProductSmokingHero() {
         component={Link}
         to={"/contact"}
         sx={{
-          border: "4px solid #004aad",
+          border: "4px solid #83948a",
           borderRadius: 0,
           height: "auto",
           py: 2,
           px: 5,
           borderRadius: 2,
+          "&:hover, &:active": {
+            backgroundColor: "#bdcac5", // lightest color of #83948a
+          },
         }}
       >
         <Typography
           variant="h4"
           component="span"
-          style={{ color: "#004aad", fontWeight: "bold" }}
+          style={{ color: "#83948a", fontWeight: "bold" }}
         >
           Got any questions? Need help?
         </Typography>

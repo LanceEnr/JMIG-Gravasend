@@ -15,7 +15,7 @@ function Orders() {
             <Typography
               component="h1"
               variant="h5"
-              sx={{ color: "#004aad", fontWeight: "bold" }}
+              sx={{ color: "#83948a", fontWeight: "bold" }}
             >
               Your Orders
             </Typography>

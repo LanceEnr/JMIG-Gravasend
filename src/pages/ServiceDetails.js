@@ -122,11 +122,6 @@ const ServiceDetails = () => {
                   sx={{
                     minWidth: "150px",
                     padding: "10px 40px",
-                    backgroundColor: "#004aad",
-                    color: "#fff", // adjust text color as needed
-                    "&:hover": {
-                      backgroundColor: "#003882", // darker shade for hover state
-                    },
                   }}
                 >
                   REQUEST ORDER

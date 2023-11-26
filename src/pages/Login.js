@@ -217,7 +217,7 @@ export default function Login({ dispatch }) {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2, backgroundColor: "#004aad" }}
+              sx={{ mt: 3, mb: 2, backgroundColor: "#83948a" }}
             >
               Login
             </Button>

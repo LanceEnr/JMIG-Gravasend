@@ -112,7 +112,7 @@ function SidePanel({ setActiveComponent }) {
             </Typography>
             <Typography
               variant="body2"
-              sx={{ marginBottom: "8px", color: "#004aad", fontWeight: "bold" }}
+              sx={{ marginBottom: "8px", color: "#83948a", fontWeight: "bold" }}
             >
               {userName}
             </Typography>
@@ -140,21 +140,21 @@ function SidePanel({ setActiveComponent }) {
             disablePadding
             onClick={() => handleClick(text)}
             sx={{
-              borderLeft: text === selected ? "4px solid #004aad" : "none",
+              borderLeft: text === selected ? "4px solid #83948a" : "none",
             }}
           >
             <ListItemButton sx={{ justifyContent: "space-between" }}>
               <ListItemIcon
                 sx={{
                   pointerEvents: "none",
-                  color: text === selected ? "#004aad" : "#808080",
+                  color: text === selected ? "#83948a" : "#808080",
                 }}
               >
                 {index % 2 === 0 ? <ShoppingCartIcon /> : <EventNoteIcon />}
               </ListItemIcon>
               <ListItemText
                 primary={text}
-                sx={{ color: text === selected ? "#004aad" : "inherit" }}
+                sx={{ color: text === selected ? "#83948a" : "inherit" }}
               />
               <ColoredBadge badgeContent={badgeContentMap[text]} />
             </ListItemButton>
@@ -180,21 +180,21 @@ function SidePanel({ setActiveComponent }) {
             disablePadding
             onClick={() => handleClick(text)}
             sx={{
-              borderLeft: text === selected ? "4px solid #004aad" : "none",
+              borderLeft: text === selected ? "4px solid #83948a" : "none",
             }}
           >
             <ListItemButton>
               <ListItemIcon
                 sx={{
                   pointerEvents: "none",
-                  color: text === selected ? "#004aad" : "#808080",
+                  color: text === selected ? "#83948a" : "#808080",
                 }}
               >
                 {index % 2 === 0 ? <AccountCircleIcon /> : <EditIcon />}
               </ListItemIcon>
               <ListItemText
                 primary={text}
-                sx={{ color: text === selected ? "#004aad" : "inherit" }}
+                sx={{ color: text === selected ? "#83948a" : "inherit" }}
               />
             </ListItemButton>
           </ListItem>

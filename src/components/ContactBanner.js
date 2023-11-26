@@ -35,11 +35,9 @@ export default function Banner() {
           variant="contained"
           size={window.innerWidth <= 600 ? "small" : "large"}
           sx={{
-            backgroundColor: "#004aad",
+            backgroundColor: "#83948a",
             color: "#fff",
-            "&:hover": {
-              backgroundColor: "#003882",
-            },
+
             mt: { xs: 2, sm: 0 }, // add top margin on small screens
           }}
         >

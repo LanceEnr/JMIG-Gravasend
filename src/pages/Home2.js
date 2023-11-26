@@ -78,17 +78,7 @@ function Home() {
           {subheading}
         </Typography>
         <Link to="/about">
-          <Button
-            variant="contained"
-            size="large"
-            sx={{
-              backgroundColor: "#004aad",
-              color: "#fff",
-              "&:hover": {
-                backgroundColor: "#003882",
-              },
-            }}
-          >
+          <Button variant="contained" size="large">
             Learn More
           </Button>
         </Link>

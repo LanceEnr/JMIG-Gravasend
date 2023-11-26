@@ -121,7 +121,7 @@ export default function ForgetPassword() {
                   type="submit"
                   fullWidth
                   variant="contained"
-                  sx={{ mt: 3, mb: 2, backgroundColor: "#004aad" }}
+                  sx={{ mt: 3, mb: 2, backgroundColor: "#83948a" }}
                 >
                   Send OTP
                 </Button>

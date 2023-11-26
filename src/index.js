@@ -15,8 +15,32 @@ const theme = createTheme({
   typography: {
     fontFamily: "Montserrat, sans-serif",
   },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        contained: {
+          backgroundColor: "#83948a",
+          "&:hover": {
+            backgroundColor: "#6d7f71",
+          },
+          "&:active": {
+            backgroundColor: "#5b6a58",
+          },
+        },
+        outlined: {
+          borderColor: "#83948a",
+          "&:hover": {
+            borderColor: "#aebcbf", // replace with the color you want when hovered
+          },
+          "&:active": {
+            borderColor: "#aebcbf",
+          },
+        },
+      },
+    },
+  },
 });
-document.title = "GravaSend";
+document.title = "JMIG Gravel and Sand Supply";
 const shouldRenderAdminApp = window.location.pathname.startsWith("/admin");
 
 ReactDOM.render(

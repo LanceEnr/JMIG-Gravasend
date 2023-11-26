@@ -215,7 +215,7 @@ export default function ProfileInfo(props) {
           component="h1"
           variant="h5"
           sx={{
-            color: "#004aad",
+            color: "#83948a",
             fontWeight: "bold",
             display: "flex",
             alignItems: "center",
@@ -267,15 +267,8 @@ export default function ProfileInfo(props) {
               </Grid>
               <Grid item xs={12}>
                 <Button
-                  variant="primary"
+                  variant="contained"
                   type="submit"
-                  sx={{
-                    backgroundColor: "#004aad",
-                    color: "#fff",
-                    "&:hover": {
-                      backgroundColor: "#003882",
-                    },
-                  }}
                   onClick={handlePhoneAddressChange} // Call the appropriate function here
                 >
                   Save User Details
@@ -326,15 +319,8 @@ export default function ProfileInfo(props) {
               </Grid>
               <Grid item xs={12}>
                 <Button
-                  variant="primary"
+                  variant="contained"
                   type="submit"
-                  sx={{
-                    backgroundColor: "#004aad",
-                    color: "#fff",
-                    "&:hover": {
-                      backgroundColor: "#003882",
-                    },
-                  }}
                   onClick={handlePasswordChange} // Call the appropriate function here
                 >
                   Save changes
@@ -380,13 +366,6 @@ export default function ProfileInfo(props) {
                         <Button
                           variant="contained"
                           startIcon={<PhotoCameraIcon />}
-                          sx={{
-                            backgroundColor: "#004aad",
-                            color: "#fff",
-                            "&:hover": {
-                              backgroundColor: "#003882",
-                            },
-                          }}
                           component="span"
                         >
                           Upload

@@ -63,7 +63,7 @@ function ProductValues1() {
                   style={{ color: "#bd8512" }}
                 />
               </Avatar>
-              <Typography variant="h6" sx={{ my: 2, color: "#004aad" }}>
+              <Typography variant="h6" sx={{ my: 2, color: "#83948a" }}>
                 {heading1}
               </Typography>
               <Typography
@@ -89,7 +89,7 @@ function ProductValues1() {
                   style={{ color: "#bd8512" }}
                 />
               </Avatar>
-              <Typography variant="h6" sx={{ my: 2, color: "#004aad" }}>
+              <Typography variant="h6" sx={{ my: 2, color: "#83948a" }}>
                 {heading2}
               </Typography>
               <Typography
@@ -115,7 +115,7 @@ function ProductValues1() {
                   style={{ color: "#bd8512" }}
                 />
               </Avatar>
-              <Typography variant="h6" sx={{ my: 2, color: "#004aad" }}>
+              <Typography variant="h6" sx={{ my: 2, color: "#83948a" }}>
                 {heading3}
               </Typography>
               <Typography

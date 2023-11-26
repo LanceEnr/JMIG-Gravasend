@@ -39,6 +39,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import MailIcon from "@mui/icons-material/Mail";
 import ProfilePic from "../assets/formal1x1.webp";
 import { fetchProfilePic } from "../components/cms";
+import LogoGravasend from "../assets/LogoGravasend.webp";
 
 const storedUsername = localStorage.getItem("userName");
 const valuesData = await fetchProfilePic(storedUsername);
@@ -159,39 +160,23 @@ function ResponsiveAppBar() {
   };
   const userName = localStorage.getItem("userName");
   return (
-    <AppBar position="sticky" style={{ backgroundColor: "#e8f2ff " }}>
-      <Container maxWidth="xl">
+    <AppBar position="sticky" style={{ backgroundColor: "#EAECEA" }}>
+      <Container>
         <Toolbar disableGutters>
           <Link to="/">
-            <DonutSmallSharpIcon
+            <Box
+              component="img"
+              src={LogoGravasend}
+              alt="Logo"
               sx={{
-                mr: 1,
-                position: "relative",
+                width: "125px",
+                height: "auto",
+                pt: "10px", // Adjust this value as needed
+                pb: "10px", // Adjust this value as needed
                 display: { xs: "none", md: "flex" },
-                color: "#bd8512",
-                pointerEvents: "none",
-                fontSize: "40px",
               }}
             />
           </Link>
-
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "sans-serif",
-              fontWeight: 700,
-              letterSpacing: ".2rem",
-              color: "#004aad",
-              textDecoration: "none",
-            }}
-          >
-            JMIG Gravel & Sand
-          </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
@@ -201,7 +186,7 @@ function ResponsiveAppBar() {
               onClick={handleOpenNavMenu}
             >
               <MenuIcon
-                sx={{ color: "#343231", "&:hover": { color: "#004aad" } }}
+                sx={{ color: "#343231", "&:hover": { color: "#83948a" } }}
               />
             </IconButton>
 
@@ -214,7 +199,7 @@ function ResponsiveAppBar() {
                 sx={{
                   p: 2,
                   height: 1,
-                  backgroundColor: "#e8f2ff",
+                  backgroundColor: "#EAECEA",
                 }}
                 role="presentation"
                 onClick={handleCloseNavMenu}
@@ -242,34 +227,20 @@ function ResponsiveAppBar() {
             </SwipeableDrawer>
           </Box>
           <Link to="/">
-            <DonutSmallSharpIcon
+            <Box
+              component="img"
+              src={LogoGravasend}
+              alt="Logo"
               sx={{
-                ml: 3,
-                mr: 1,
+                width: "90px",
+                height: "auto",
+                mr: 2,
+                pt: "5px", // Adjust this value as needed
+                pb: "5px", // Adjust this value as needed
                 display: { xs: "flex", md: "none" },
-                color: "#bd8512",
-                pointerEvents: "none",
-                fontSize: "40px",
               }}
             />
           </Link>
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              display: { xs: "flex", md: "none" },
-              flexGrow: 1,
-              fontFamily: "sans-serif",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "#004aad",
-              textDecoration: "none",
-            }}
-          >
-            JMIG
-          </Typography>
 
           <Box
             sx={{
@@ -301,11 +272,6 @@ function ResponsiveAppBar() {
               variant="contained"
               sx={{
                 ml: 2,
-                backgroundColor: "#004aad",
-                color: "#fff",
-                "&:hover": {
-                  backgroundColor: "#003882",
-                },
               }}
             >
               Login
@@ -323,7 +289,9 @@ function ResponsiveAppBar() {
                 </IconButton>
               </Tooltip>
               <Menu
-                sx={{ mt: "45px" }}
+                sx={{
+                  mt: "45px",
+                }}
                 id="notification-appbar"
                 anchorEl={anchorElNotifications}
                 anchorOrigin={{
@@ -346,23 +314,25 @@ function ResponsiveAppBar() {
                     <ListItemIcon>
                       <notification.icon fontSize="small" />
                     </ListItemIcon>
-                    <div>
+                    <Box sx={{ width: "300px" }}>
+                      {/* Add this line */}
                       <Typography
                         variant="subtitle2"
-                        sx={{ fontWeight: "bold" }}
+                        sx={{ fontWeight: "bold", whiteSpace: "nowrap" }} // Add whiteSpace: "normal"
                       >
                         {notification.heading}
                       </Typography>
+
                       <Typography variant="body2">
                         {notification.text}
                       </Typography>
                       <Typography
                         variant="body2"
-                        sx={{ fontSize: 10, color: "blue" }}
+                        sx={{ fontSize: 10, color: "#83948a" }}
                       >
                         {timeAgo(notification.date)}
                       </Typography>
-                    </div>
+                    </Box>{" "}
                   </MenuItem>
                 ))}
               </Menu>

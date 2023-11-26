@@ -201,8 +201,8 @@ export default function AddListing({ onBackClick }) {
                       variant="outlined"
                       sx={{
                         marginRight: 2,
-                        color: "#004aad",
-                        borderColor: "#004aad",
+                        color: "#83948a",
+                        borderColor: "#83948a",
                       }}
                       onClick={onBackClick}
                     >

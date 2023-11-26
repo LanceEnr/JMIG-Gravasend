@@ -15,10 +15,10 @@ body {
 }
 
 .link {
-  color: #1976d2; /* Standard hyperlink color */
+  color: #83948a; /* Standard hyperlink color */
   text-decoration: none;
 }
 
 .link:visited {
-  color: #1976d2; /* Prevent color change on visited */
+  color: #83948a; /* Prevent color change on visited */
 }
