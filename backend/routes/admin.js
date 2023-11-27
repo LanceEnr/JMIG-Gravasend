@@ -84,7 +84,7 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 10000000,
+    fileSize: 100000000,
   },
 });
 
@@ -101,7 +101,7 @@ const storageVision = multer.diskStorage({
 const uploadVision = multer({
   storage: storageVision,
   limits: {
-    fileSize: 10000000,
+    fileSize: 100000000,
   },
 });
 
@@ -118,7 +118,7 @@ const storageMission = multer.diskStorage({
 const uploadMission = multer({
   storage: storageMission,
   limits: {
-    fileSize: 10000000,
+    fileSize: 100000000,
   },
 });
 
@@ -238,6 +238,7 @@ router.post("/adminLogin", async (req, res) => {
       const adminToken = jwt.sign({ userId: user._id }, "JMIGGravelandSand", {
         expiresIn: "7d",
       });
+      console.log(adminToken);
 
       return res.status(200).json({
         message: "Authentication successful",

@@ -40,10 +40,7 @@ function About() {
   }, []);
   return (
     <div>
-      <Banner
-        bannerImage={require(`../images/banner/uploads/${filename}`)}
-        title={valuesData._heading}
-      />
+      <Banner bannerImage={filename} title={valuesData._heading} />
       <Mission />
       <Vision />
     </div>

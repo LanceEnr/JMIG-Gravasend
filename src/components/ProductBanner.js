@@ -84,7 +84,12 @@ export default function ProductBanner() {
               <img
                 src={require(`../images/banner/uploads/${filename}`)}
                 alt="Product"
-                style={{ width: "100%", marginTop: "20px" }}
+                style={{
+                  maxWidth: 500,
+                  maxHeight: 500,
+                  width: "100%",
+                  marginTop: "20px",
+                }}
               />
             </Box>
           </Hidden>

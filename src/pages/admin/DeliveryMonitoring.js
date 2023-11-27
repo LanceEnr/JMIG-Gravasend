@@ -136,10 +136,10 @@ function DeliveryMonitoring() {
               driver: userData[id].driverName,
               date: userData3[id].date + " " + userData3[id].time,
               signature: userData3[id].esignature,
-              avgSpeed: userData2[id].average_speed,
-              maxSpeed: userData2[id].max_speed,
-              harshBraking: userData2[id].harsh_braking_count,
-              sua: userData2[id].sudden_acceleration_count,
+              //avgSpeed: userData2[id].average_speed,
+              //maxSpeed: userData2[id].max_speed,
+              //harshBraking: userData2[id].harsh_braking_count,
+              //sua: userData2[id].sudden_acceleration_count,
             };
 
             transformedData.push(mappedData);

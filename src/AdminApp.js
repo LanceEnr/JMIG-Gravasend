@@ -33,18 +33,16 @@ import ManageContactForm from "./pages/admin/ManageContactForm";
 import Listings from "./pages/admin/Listings";
 import AddFleet from "./pages/admin/components/AddFleet";
 import EditFleet from "./pages/admin/components/EditFleet";
+import ResponsiveAppBar from "./components/ResponsiveAppBar";
 
 const initialState = {
   isAuthenticated: !!localStorage.getItem("admintoken"),
 };
 
-function PrivateRoute({ element, isAuthenticated }) {
-  return isAuthenticated ? element : <Navigate to="/adminLogin" />;
-}
-
 function AdminApp() {
   const [authState, authDispatch] = useReducer(authReducer, initialState);
   const isAuthenticated = authState.isAuthenticated;
+
   const handleLogout = () => {
     localStorage.removeItem("adminToken");
     authDispatch({ type: "LOGOUT" });
@@ -53,107 +51,172 @@ function AdminApp() {
   return (
     <div>
       <Router>
-        <Box
-          style={{
-            display: "flex",
-          }}
-        >
-          <AdminDashboard />
-          <Box
-            component="main"
-            sx={{
-              backgroundColor: (theme) =>
-                theme.palette.mode === "light"
-                  ? theme.palette.grey[100]
-                  : theme.palette.grey[900],
-              flexGrow: 1,
-              height: "100vh",
-              overflow: "auto",
-            }}
-          >
-            <Toolbar />
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Suspense fallback={<div>Loading...</div>}>
-                  <Routes>
-                    <Route path="/adminaddfleet" exact element={<AddFleet />} />
-                    <Route
-                      path="/admineditfleet"
-                      exact
-                      element={<EditFleet />}
-                    />
+        <Routes>
+          <Route
+            path="/adminlogin"
+            element={
+              <React.Fragment>
+                <AdminLogin />
+              </React.Fragment>
+            }
+          />
+          <Route
+            path="/adminregister"
+            element={
+              <React.Fragment>
+                <AdminRegister />
+              </React.Fragment>
+            }
+          />
+          <Route
+            path="/adminForgotPassword"
+            element={
+              <React.Fragment>
+                <AdminForgotPassword />
+              </React.Fragment>
+            }
+          />
+          <Route
+            path="/*"
+            element={
+              <React.Fragment>
+                {window.location.pathname !== "/adminlogin" &&
+                  window.location.pathname !== "/adminregister" &&
+                  window.location.pathname !== "/adminForgotPassword" && (
+                    <Box
+                      style={{
+                        display: "flex",
+                      }}
+                    >
+                      <AdminDashboard />
+                      <Box
+                        component="main"
+                        sx={{
+                          backgroundColor: (theme) =>
+                            theme.palette.mode === "light"
+                              ? theme.palette.grey[100]
+                              : theme.palette.grey[900],
+                          flexGrow: 1,
+                          height: "100vh",
+                          overflow: "auto",
+                        }}
+                      >
+                        <Toolbar />
+                        <Grid container spacing={3}>
+                          <Grid item xs={12}>
+                            <Routes>
+                              <Route
+                                path="/adminlogin"
+                                exact
+                                element={<AdminLogin />}
+                              />
+                              <Route
+                                path="/adminregister"
+                                exact
+                                element={<AdminRegister />}
+                              />
+                              <Route
+                                path="/adminForgotPassword"
+                                exact
+                                element={<AdminForgotPassword />}
+                              />
+                              <Route
+                                path="/admineditfleet"
+                                exact
+                                element={<EditFleet />}
+                              />
 
-                    <Route
-                      path="/adminprofileinfo"
-                      exact
-                      element={<AdminProfileInfo />}
-                    />
-                    <Route
-                      path="/adminfleetinformation"
-                      exact
-                      element={<NewFleetInformation />}
-                    />
-                    <Route
-                      path="/adminmaintenance"
-                      exact
-                      element={<Maintenance />}
-                    />
-                    <Route
-                      path="/admininspection"
-                      exact
-                      element={<Inspection />}
-                    />
-                    <Route path="/admintrips" exact element={<Trips />} />
-                    <Route
-                      path="/adminjoborders"
-                      exact
-                      element={<JobOrderSystem />}
-                    />
-                    <Route
-                      path="/admindeliverymonitoring"
-                      exact
-                      element={<DeliveryMonitoring />}
-                    />
-                    <Route path="/adminreports" exact element={<Reports />} />
-                    <Route
-                      path="/admindrivermanagement"
-                      exact
-                      element={<DriverManagement />}
-                    />
-                    <Route
-                      path="/adminmanageappointments"
-                      exact
-                      element={<ManageAppointments />}
-                    />
-                    <Route
-                      path="/adminmanageorders"
-                      exact
-                      element={<ManageOrders />}
-                    />
-                    <Route
-                      path="/admininventory"
-                      exact
-                      element={<Inventory />}
-                    />
+                              <Route
+                                path="/adminprofileinfo"
+                                exact
+                                element={<AdminProfileInfo />}
+                              />
+                              <Route
+                                path="/adminfleetinformation"
+                                exact
+                                element={<NewFleetInformation />}
+                              />
+                              <Route
+                                path="/adminmaintenance"
+                                exact
+                                element={<Maintenance />}
+                              />
+                              <Route
+                                path="/admininspection"
+                                exact
+                                element={<Inspection />}
+                              />
+                              <Route
+                                path="/admintrips"
+                                exact
+                                element={<Trips />}
+                              />
+                              <Route
+                                path="/adminjoborders"
+                                exact
+                                element={<JobOrderSystem />}
+                              />
+                              <Route
+                                path="/admindeliverymonitoring"
+                                exact
+                                element={<DeliveryMonitoring />}
+                              />
+                              <Route
+                                path="/adminreports"
+                                exact
+                                element={<Reports />}
+                              />
+                              <Route
+                                path="/admindrivermanagement"
+                                exact
+                                element={<DriverManagement />}
+                              />
+                              <Route
+                                path="/adminmanageappointments"
+                                exact
+                                element={<ManageAppointments />}
+                              />
+                              <Route
+                                path="/adminmanageorders"
+                                exact
+                                element={<ManageOrders />}
+                              />
+                              <Route
+                                path="/admininventory"
+                                exact
+                                element={<Inventory />}
+                              />
 
-                    <Route path="/admincontent" exact element={<Content />} />
-                    <Route
-                      path="/adminusermanagement"
-                      exact
-                      element={<UserManagement />}
-                    />
-                    <Route
-                      path="/adminmanagecontactform"
-                      exact
-                      element={<ManageContactForm />}
-                    />
-                    <Route path="/adminlistings" exact element={<Listings />} />
-                  </Routes>
-                </Suspense>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
+                              <Route
+                                path="/admincontent"
+                                exact
+                                element={<Content />}
+                              />
+                              <Route
+                                path="/adminusermanagement"
+                                exact
+                                element={<UserManagement />}
+                              />
+                              <Route
+                                path="/adminmanagecontactform"
+                                exact
+                                element={<ManageContactForm />}
+                              />
+                              <Route
+                                path="/adminlistings"
+                                exact
+                                element={<Listings />}
+                              />
+                            </Routes>
+                          </Grid>
+                        </Grid>
+                      </Box>
+                    </Box>
+                  )}
+              </React.Fragment>
+            }
+          />
+        </Routes>
         <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
       </Router>
     </div>

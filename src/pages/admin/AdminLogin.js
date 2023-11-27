@@ -6,7 +6,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -19,7 +18,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function Copyright(props) {
   return (
@@ -93,7 +92,6 @@ export default function AdminLogin({ dispatch }) {
             navigate("/adminDashboard");
           },
         });
-        dispatch({ type: "LOGIN" });
       } else {
         console.error("Login failed", response.data);
       }
@@ -199,14 +197,18 @@ export default function AdminLogin({ dispatch }) {
             >
               Login
             </Button>
-            <Grid container>
+            <Grid container alignItems="flex-start">
               <Grid item xs>
-                <Link href="/adminForgotPassword" variant="body2">
+                <Link
+                  component={Link}
+                  to="/adminForgotPassword"
+                  variant="body2"
+                >
                   Forgot password?
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="/adminregister" variant="body2">
+                <Link component={Link} to="/adminregister" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>

@@ -30,7 +30,7 @@ export default function AddListing({ onBackClick }) {
 
   const onDrop = useCallback(
     (acceptedFiles) => {
-      const remainingSlots = 6 - selectedFiles.length;
+      const remainingSlots = 3 - selectedFiles.length;
       const filesToAdd = acceptedFiles.slice(0, remainingSlots);
       setSelectedFiles([...selectedFiles, ...filesToAdd]);
     },
