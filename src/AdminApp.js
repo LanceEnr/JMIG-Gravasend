@@ -128,6 +128,26 @@ function AdminApp() {
                                 exact
                                 element={<EditFleet />}
                               />
+                              <Route
+                                path="/adminaddfleet"
+                                exact
+                                element={<AddFleet />}
+                              />
+                              <Route
+                                path="/adminaddmaintenancescheduling"
+                                exact
+                                element={<AddMaintenanceScheduling />}
+                              />
+                              <Route
+                                path="/adminaddinspectionscheduling"
+                                exact
+                                element={<AddMaintenanceScheduling />}
+                              />
+                              <Route
+                                path="/admineditmaintenancescheduling"
+                                exact
+                                element={<EditMaintenanceScheduling />}
+                              />
 
                               <Route
                                 path="/adminprofileinfo"
