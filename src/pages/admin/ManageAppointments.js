@@ -174,6 +174,7 @@ const ManageAppointments = () => {
 
   const [view, setView] = useState("details");
   const handleEventClick = ({ event }) => {
+    toast.error(event);
     setSelectedEvent(event);
     setOpen(true);
   };

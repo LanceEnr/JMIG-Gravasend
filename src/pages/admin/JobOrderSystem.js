@@ -347,6 +347,7 @@ const JobOrderSystem = () => {
                 return {
                   title: `${driverName} - ${cargo} - ${weight}`,
                   start: dateTime,
+                  status: "order",
                 };
               }
 
@@ -367,6 +368,7 @@ const JobOrderSystem = () => {
                   return {
                     title: `${driverName} - ${cargo} - ${weight}`,
                     start: dateTime,
+                    status: "records",
                   };
                 }
 
@@ -441,18 +443,20 @@ const JobOrderSystem = () => {
     setValidationDialogOpen(true);
   };
 
-  const handleEventClick = (info) => {
+  const handleEventClick = ({ info }) => {
     setSelectedEvent(info);
 
     setModalOpen(true);
   };
 
   function renderEventContent(eventInfo) {
+    const backgroundColor =
+      eventInfo.event.extendedProps.status === "order" ? "green" : "#87CEEB ";
     return (
       <Box
         sx={{
           color: "white",
-          backgroundColor: "secondary.main",
+          backgroundColor: backgroundColor,
           p: 1,
           overflow: "hidden",
           wordWrap: "break-word",

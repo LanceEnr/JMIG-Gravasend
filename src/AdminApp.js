@@ -46,13 +46,10 @@ const initialState = {
   isAuthenticated: !!localStorage.getItem("admintoken"),
 };
 
-function PrivateRoute({ element, isAuthenticated }) {
-  return isAuthenticated ? element : <Navigate to="/adminLogin" />;
-}
-
 function AdminApp() {
   const [authState, authDispatch] = useReducer(authReducer, initialState);
   const isAuthenticated = authState.isAuthenticated;
+
   const handleLogout = () => {
     localStorage.removeItem("adminToken");
     authDispatch({ type: "LOGOUT" });
@@ -181,24 +178,36 @@ function AdminApp() {
                       element={<Inventory />}
                     />
 
-                    <Route path="/admincontent" exact element={<Content />} />
-                    <Route
-                      path="/adminusermanagement"
-                      exact
-                      element={<UserManagement />}
-                    />
-                    <Route
-                      path="/adminmanagecontactform"
-                      exact
-                      element={<ManageContactForm />}
-                    />
-                    <Route path="/adminlistings" exact element={<Listings />} />
-                  </Routes>
-                </Suspense>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
+                              <Route
+                                path="/admincontent"
+                                exact
+                                element={<Content />}
+                              />
+                              <Route
+                                path="/adminusermanagement"
+                                exact
+                                element={<UserManagement />}
+                              />
+                              <Route
+                                path="/adminmanagecontactform"
+                                exact
+                                element={<ManageContactForm />}
+                              />
+                              <Route
+                                path="/adminlistings"
+                                exact
+                                element={<Listings />}
+                              />
+                            </Routes>
+                          </Grid>
+                        </Grid>
+                      </Box>
+                    </Box>
+                  )}
+              </React.Fragment>
+            }
+          />
+        </Routes>
         <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
       </Router>
     </div>

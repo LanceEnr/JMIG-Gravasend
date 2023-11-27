@@ -94,6 +94,7 @@ export default function EditBanners() {
       console.error("Form submission failed", error);
     }
   };
+  const isCategoryEmpty = !category || category.trim().length === 0;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
   return (
@@ -103,45 +104,6 @@ export default function EditBanners() {
           <Grid item xs={12}>
             <form onSubmit={handleFormSubmit}>
               <Grid container spacing={3} alignItems="center">
-                <Grid item xs={12}>
-                  <Box
-                    {...getRootProps()}
-                    sx={{
-                      height: 200,
-                      border: "1px dashed gray",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <input {...getInputProps()} />
-                    {isDragActive ? (
-                      <p>Drop the image here...</p>
-                    ) : (
-                      <div>
-                        {selectedFile ? (
-                          <div>
-                            <img
-                              src={filePreview}
-                              alt={selectedFile.name}
-                              style={{ maxWidth: "300px", maxHeight: "100px" }}
-                            />
-                            <p>Selected file: {selectedFile.name}</p>
-                          </div>
-                        ) : (
-                          <p>
-                            Drag & drop banner image here, or click to select an
-                            image. <br></br>
-                            <center>
-                              (This will replace the stored photo.)
-                            </center>
-                          </p>
-                        )}
-                      </div>
-                    )}
-                  </Box>
-                </Grid>
-
                 <Grid item xs={6}>
                   <FormControl fullWidth>
                     <InputLabel id="category-label">Banner</InputLabel>
@@ -170,6 +132,7 @@ export default function EditBanners() {
                     name="heading"
                     type="text"
                     value={heading}
+                    disabled={isCategoryEmpty}
                     fullWidth
                     onChange={(e) => {
                       setHeading(e.target.value);
@@ -193,11 +156,57 @@ export default function EditBanners() {
                     disabled={
                       category === "FAQS Page" ||
                       category === "About Page" ||
-                      category === "Contact Page"
+                      category === "Contact Page" ||
+                      isCategoryEmpty
                     }
                   />
                 </Grid>
 
+                <Grid item xs={12}>
+                  {!isCategoryEmpty ? (
+                    <Box
+                      {...getRootProps()}
+                      sx={{
+                        height: 200,
+                        border: "1px dashed gray",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <input {...getInputProps()} />
+                      {isDragActive ? (
+                        <p>Drop the image here...</p>
+                      ) : (
+                        <div>
+                          {selectedFile ? (
+                            <div>
+                              <img
+                                src={filePreview}
+                                alt={selectedFile.name}
+                                style={{
+                                  maxWidth: "300px",
+                                  maxHeight: "100px",
+                                }}
+                              />
+                              <p>Selected file: {selectedFile.name}</p>
+                            </div>
+                          ) : (
+                            <p>
+                              Drag & drop banner image here, or click to select
+                              an image. <br></br>
+                              <center>
+                                (This will replace the stored photo.)
+                              </center>
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </Box>
+                  ) : (
+                    <p>Select a banner you want to modify</p>
+                  )}
+                </Grid>
                 <Grid item xs={12}>
                   <Button
                     variant="contained"

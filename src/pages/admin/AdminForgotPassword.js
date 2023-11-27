@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -10,6 +9,7 @@ import Container from "@mui/material/Container";
 import { useTheme } from "@mui/material/styles";
 import { toast } from "react-toastify";
 import EnterOTP from "../../components/EnterOtp";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function ForgotPassword() {
   const [_email, setEmail] = useState("");
@@ -121,7 +121,7 @@ export default function ForgotPassword() {
           )}
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="/adminLogin" variant="body2">
+              <Link to="/adminLogin" variant="body2">
                 Return to login
               </Link>
             </Grid>

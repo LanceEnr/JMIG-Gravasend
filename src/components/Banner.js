@@ -9,7 +9,7 @@ const Banner = ({ bannerImage, title, text }) => {
     <div
       className="aboutImage"
       style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${image}})`,
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${image})`,
       }}
     >
       <Typography
