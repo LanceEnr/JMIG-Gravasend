@@ -33,6 +33,9 @@ import ManageContactForm from "./pages/admin/ManageContactForm";
 import Listings from "./pages/admin/Listings";
 import AddFleet from "./pages/admin/components/AddFleet";
 import EditFleet from "./pages/admin/components/EditFleet";
+import AddMaintenanceScheduling from "./pages/admin/components/AddMaintenanceScheduling";
+import EditMaintenanceScheduling from "./pages/admin/components/EditMaintenanceScheduling";
+import EditMaintenanceRecord from "./pages/admin/components/EditMaintenanceRecord";
 
 const initialState = {
   isAuthenticated: !!localStorage.getItem("admintoken"),
@@ -76,6 +79,22 @@ function AdminApp() {
               <Grid item xs={12}>
                 <Suspense fallback={<div>Loading...</div>}>
                   <Routes>
+                    <Route
+                      path="/adminaddmaintenancescheduling"
+                      exact
+                      element={<AddMaintenanceScheduling />}
+                    />
+
+                    <Route
+                      path="/admineditmaintenancescheduling"
+                      exact
+                      element={<EditMaintenanceScheduling />}
+                    />
+                    <Route
+                      path="/admineditmaintenancerecord"
+                      exact
+                      element={<EditMaintenanceRecord />}
+                    />
                     <Route path="/adminaddfleet" exact element={<AddFleet />} />
                     <Route
                       path="/admineditfleet"
