@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Typography from "../../components/common/Typography";
 import Chip from "@mui/material/Chip";
 import {
   DataGrid,
@@ -10,11 +9,10 @@ import {
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import { rowsFleetInformation } from "./helpers/data";
+import { rowsMaintenanceScheduling } from "../helpers/data";
 import { Link } from "react-router-dom";
 import { alpha, styled } from "@mui/material/styles";
-import AddIcon from "@mui/icons-material/Add";
-
+import Typography from "../../../components/common/Typography";
 import { toast } from "react-toastify";
 
 import {
@@ -28,8 +26,6 @@ import {
   DialogContentText,
   DialogActions,
 } from "@mui/material";
-import Title from "./components/Title";
-import FleetInformation from "./FleetInformation";
 
 const ODD_OPACITY = 0.2;
 
@@ -66,7 +62,7 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
   },
 }));
 
-export default function NewFleetInformation() {
+export default function NewMaintenanceScheduling() {
   const [open, setOpen] = React.useState(false);
   const [action, setAction] = React.useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -102,22 +98,11 @@ export default function NewFleetInformation() {
     }
   };
 
-  const columnsFleetInformation = [
+  const columnsMaintenanceScheduling = [
     {
       field: "id",
       headerName: "ID",
-      flex: 1,
-      hidden: true,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "bodyNo",
-      headerName: "BODY NO.",
-      flex: 1.5,
+      flex: 2,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -135,8 +120,8 @@ export default function NewFleetInformation() {
       ),
     },
     {
-      field: "plateNo2",
-      headerName: "TRAILER NO.",
+      field: "service",
+      headerName: "SERVICE",
       flex: 2,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
@@ -145,29 +130,9 @@ export default function NewFleetInformation() {
       ),
     },
     {
-      field: "chassisNo",
-      headerName: "CHASSIS NO.",
-      flex: 2.5,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "engineNo",
-      headerName: "ENGINE NO.",
-      flex: 2.5,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "model",
-      headerName: "MODEL",
-      flex: 1.5,
+      field: "frequency",
+      headerName: "FREQUENCY",
+      flex: 2,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -176,7 +141,7 @@ export default function NewFleetInformation() {
     },
     {
       field: "mileage",
-      headerName: "MILEAGE",
+      headerName: "START MILEAGE",
       flex: 2,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
@@ -185,26 +150,20 @@ export default function NewFleetInformation() {
       ),
     },
     {
-      field: "driverName",
-      headerName: "DRIVER",
-      flex: 3,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "location",
-      headerName: "LOCATION",
+      field: "nextDueMileage",
+      headerName: "NEXT DUE MILEAGE",
       flex: 2,
+      valueGetter: (params) => {
+        const mileage = params.row.mileage;
+        const frequency = params.row.frequency;
+        return parseInt(frequency) + parseInt(mileage);
+      },
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
         </Typography>
       ),
     },
-
     {
       field: "status",
       headerName: "STATUS",
@@ -219,7 +178,7 @@ export default function NewFleetInformation() {
                   color: "success.dark",
                 }}
               >
-                Available
+                Completed
               </Typography>
             }
             sx={{ bgcolor: "#8dd290" }}
@@ -231,13 +190,13 @@ export default function NewFleetInformation() {
               <Typography
                 sx={{
                   fontSize: "10px",
-                  color: "error.dark",
+                  color: "warning.main",
                 }}
               >
-                Unavailable
+                Pending
               </Typography>
             }
-            sx={{ bgcolor: "#f5c9c9" }}
+            sx={{ bgcolor: "#ffc890" }}
             size="small"
           />
         );
@@ -260,7 +219,7 @@ export default function NewFleetInformation() {
       ),
       renderCell: (params) => (
         <React.Fragment>
-          <Link to="/admineditfleet" className="unstyled-link">
+          <Link to="/admineditmaintenancescheduling" className="unstyled-link">
             <GridActionsCellItem
               icon={<EditIcon />}
               className="textPrimary"
@@ -280,82 +239,56 @@ export default function NewFleetInformation() {
   ];
 
   return (
-    <Box sx={{ my: 14, mx: 6 }}>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        marginBottom={2}
-      >
-        <Typography
-          variant="h3"
-          marked="left"
-          style={{ fontWeight: "bold", fontSize: "30px" }}
-          gutterBottom
-        >
-          Fleet Information
-        </Typography>
-        <Button
-          component={Link}
-          to={"/adminaddfleet"}
-          variant="contained"
-          sx={{ ml: 1 }}
-          startIcon={<AddIcon />}
-        >
-          Add a Truck
-        </Button>
-      </Box>
-      <Paper sx={{ mt: 3, p: 2, display: "flex", flexDirection: "column" }}>
-        <StripedDataGrid
-          sx={{
-            border: 1,
-            borderColor: "primary.light",
-            "& .MuiDataGrid-cell:hover": {
-              fontWeight: "bold",
+    <Box>
+      <StripedDataGrid
+        sx={{
+          border: 1,
+          borderColor: "primary.light",
+          "& .MuiDataGrid-cell:hover": {
+            fontWeight: "bold",
+          },
+        }}
+        rows={rowsMaintenanceScheduling}
+        columns={columnsMaintenanceScheduling}
+        pageSize={5}
+        disableColumnFilter
+        disableColumnSelector
+        density="comfortable"
+        slots={{ toolbar: GridToolbar }}
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true,
+          },
+        }}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 5,
             },
-          }}
-          rows={rowsFleetInformation}
-          columns={columnsFleetInformation}
-          pageSize={5}
-          disableColumnFilter
-          disableColumnSelector
-          density="comfortable"
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
-              },
-            },
-          }}
-          pageSizeOptions={[5, 10, 25]}
-          getRowClassName={(params) =>
-            params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
-          }
-        />
+          },
+        }}
+        pageSizeOptions={[5, 10, 25]}
+        getRowClassName={(params) =>
+          params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
+        }
+      />
 
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Are you sure?</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              {action === "save"
-                ? "Do you want to save changes?"
-                : "Do you want to delete this row?"}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button color="primary" autoFocus>
-              Confirm
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Paper>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Are you sure?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {action === "save"
+              ? "Do you want to save changes?"
+              : "Do you want to delete this row?"}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button color="primary" autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

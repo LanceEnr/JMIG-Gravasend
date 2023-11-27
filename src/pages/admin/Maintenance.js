@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Paper, Box, Tab, Tabs } from "@mui/material";
+import { Paper, Box, Tab, Tabs, Button } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import FullFeaturedCrudGrid from "./components/MaintenanceDataGrid";
 import FullFeaturedCrudGrid2 from "./components/MaintenanceRecordDataGrid";
@@ -11,6 +11,10 @@ import {
   columnsMaintenanceRecords,
   rowsMaintenanceRecords,
 } from "./helpers/data";
+import NewMaintenanceScheduling from "./components/NewMaintenanceScheduling";
+import { Link } from "react-router-dom";
+import NewMaintenanceRecords from "./components/NewMaintenanceRecords";
+import AddIcon from "@mui/icons-material/Add";
 
 function Maintenance() {
   const [value, setValue] = useState(0);
@@ -139,105 +143,35 @@ function Maintenance() {
     setValue(newValue);
   };
 
-  const columnsMaintenanceScheduling = [
-    {
-      field: "id",
-      headerName: "ID",
-      flex: 2,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "plateNo",
-      headerName: "TRACTOR NO.",
-      flex: 2,
-      editable: true,
-      type: "singleSelect",
-      valueOptions: plates,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "service",
-      headerName: "SERVICE",
-      flex: 2,
-      editable: true,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "frequency",
-      headerName: "FREQUENCY",
-      flex: 2,
-      editable: true,
-      type: "singleSelect",
-      valueOptions: ["1000", "3000", "5000", "10000", "15000", "20000"],
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "mileage",
-      headerName: "START MILEAGE",
-      flex: 2,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "nextDueMileage",
-      headerName: "NEXT DUE MILEAGE",
-      flex: 2,
-      valueGetter: (params) => {
-        const mileage = params.row.mileage;
-        const frequency = params.row.frequency;
-        return parseInt(frequency) + parseInt(mileage);
-      },
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "status",
-      headerName: "STATUS",
-      flex: 2,
-      editable: true,
-      type: "singleSelect",
-      valueOptions: ["Pending", "Completed"],
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-  ];
-
   return (
     <div>
       <Box sx={{ my: 12, mx: 6 }}>
-        <Typography
-          variant="h3"
-          marked="left"
-          style={{ fontWeight: "bold", fontSize: "30px" }}
-          gutterBottom
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          marginBottom={2}
         >
-          Maintenance
-        </Typography>
+          <Typography
+            variant="h3"
+            marked="left"
+            style={{ fontWeight: "bold", fontSize: "30px" }}
+            gutterBottom
+          >
+            Maintenance
+          </Typography>
+          {value === 0 && (
+            <Button
+              component={Link}
+              to={"/adminaddmaintenancescheduling"}
+              variant="contained"
+              sx={{ ml: 1 }}
+              startIcon={<AddIcon />}
+            >
+              Add Maintenance
+            </Button>
+          )}
+        </Box>
         <Paper sx={{ mt: 3, p: 2, display: "flex", flexDirection: "column" }}>
           <Box sx={{ width: "100%" }}>
             <Box sx={{ mb: 2, borderBottom: 1, borderColor: "divider" }}>
@@ -250,18 +184,8 @@ function Maintenance() {
                 <Tab label="Records" />
               </Tabs>
             </Box>
-            {value === 0 && (
-              <FullFeaturedCrudGrid
-                columns={columnsMaintenanceScheduling}
-                rows={rowsMaintenanceScheduling}
-              />
-            )}
-            {value === 1 && (
-              <FullFeaturedCrudGrid2
-                columns={columnsMaintenanceRecords}
-                rows={rowsMaintenanceRecords}
-              />
-            )}
+            {value === 0 && <NewMaintenanceScheduling />}
+            {value === 1 && <NewMaintenanceRecords />}
           </Box>
         </Paper>
       </Box>

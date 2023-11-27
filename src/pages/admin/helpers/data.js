@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import image from "../helpers/images/blank.webp";
-import { Typography } from "@mui/material";
+import { Typography, Chip } from "@mui/material";
 
 const fetchInventoryData = async () => {
   try {
@@ -352,15 +352,87 @@ export const columnsInspectionRecords = [
       </Typography>
     ),
   },
+
   {
     field: "verdict",
     headerName: "VERDICT",
-    flex: 2,
+    flex: 1.5,
     renderHeader: (params) => (
       <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
         {params.colDef.headerName}
       </Typography>
     ),
+    renderCell: (params) => {
+      if (params.value === "Passed") {
+        return (
+          <Chip
+            label={
+              <Typography
+                sx={{
+                  fontSize: "10px",
+                  color: "success.dark",
+                }}
+              >
+                Passed
+              </Typography>
+            }
+            sx={{ bgcolor: "#8dd290" }}
+            size="small"
+          />
+        );
+      } else if (params.value === "On-going") {
+        return (
+          <Chip
+            label={
+              <Typography
+                sx={{
+                  fontSize: "10px",
+                  color: "info.main",
+                }}
+              >
+                On-going
+              </Typography>
+            }
+            sx={{ bgcolor: "#90caf9" }}
+            size="small"
+          />
+        );
+      } else if (params.value === "Failed") {
+        return (
+          <Chip
+            label={
+              <Typography
+                sx={{
+                  fontSize: "10px",
+                  color: "error.main",
+                }}
+              >
+                Failed
+              </Typography>
+            }
+            sx={{ bgcolor: "#f44336" }}
+            size="small"
+          />
+        );
+      } else {
+        return (
+          <Chip
+            label={
+              <Typography
+                sx={{
+                  fontSize: "10px",
+                  color: "warning.main",
+                }}
+              >
+                Pending
+              </Typography>
+            }
+            sx={{ bgcolor: "#ffc890" }}
+            size="small"
+          />
+        );
+      }
+    },
   },
 ];
 
@@ -453,70 +525,6 @@ const CustomTable = () => {
 
 export default CustomTable;
 
-export const columnsMaintenanceRecords = [
-  {
-    field: "id",
-    headerName: "ID",
-    flex: 2,
-    renderHeader: (params) => (
-      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-        {params.colDef.headerName}
-      </Typography>
-    ),
-  },
-  {
-    field: "plateNo",
-    headerName: "TRACTOR NO.",
-    flex: 2,
-    renderHeader: (params) => (
-      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-        {params.colDef.headerName}
-      </Typography>
-    ),
-  },
-  {
-    field: "service",
-    headerName: "SERVICE",
-    flex: 2,
-    renderHeader: (params) => (
-      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-        {params.colDef.headerName}
-      </Typography>
-    ),
-  },
-  {
-    field: "mileage",
-    headerName: "MILEAGE",
-    flex: 2,
-    renderHeader: (params) => (
-      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-        {params.colDef.headerName}
-      </Typography>
-    ),
-  },
-  {
-    field: "provider",
-    headerName: "SERVICE PROVIDER",
-    flex: 2,
-    editable: true,
-    renderHeader: (params) => (
-      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-        {params.colDef.headerName}
-      </Typography>
-    ),
-  },
-  {
-    field: "cost",
-    headerName: "TOTAL COST",
-    flex: 2,
-    editable: true,
-    renderHeader: (params) => (
-      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-        {params.colDef.headerName}
-      </Typography>
-    ),
-  },
-];
 const transformMaintenanceRecordData = (data) => {
   const transformedData = [];
   if (data) {
