@@ -101,13 +101,11 @@ function AdminApp() {
                       exact
                       element={<EditInspection />}
                     />
-
                     <Route
                       path="/adminaddmaintenancescheduling"
                       exact
                       element={<AddMaintenanceScheduling />}
                     />
-
                     <Route
                       path="/admineditmaintenancescheduling"
                       exact
@@ -124,7 +122,6 @@ function AdminApp() {
                       exact
                       element={<EditFleet />}
                     />
-
                     <Route
                       path="/adminprofileinfo"
                       exact
@@ -177,37 +174,24 @@ function AdminApp() {
                       exact
                       element={<Inventory />}
                     />
-
-                              <Route
-                                path="/admincontent"
-                                exact
-                                element={<Content />}
-                              />
-                              <Route
-                                path="/adminusermanagement"
-                                exact
-                                element={<UserManagement />}
-                              />
-                              <Route
-                                path="/adminmanagecontactform"
-                                exact
-                                element={<ManageContactForm />}
-                              />
-                              <Route
-                                path="/adminlistings"
-                                exact
-                                element={<Listings />}
-                              />
-                            </Routes>
-                          </Grid>
-                        </Grid>
-                      </Box>
-                    </Box>
-                  )}
-              </React.Fragment>
-            }
-          />
-        </Routes>
+                    <Route path="/admincontent" exact element={<Content />} />
+                    <Route
+                      path="/adminusermanagement"
+                      exact
+                      element={<UserManagement />}
+                    />
+                    <Route
+                      path="/adminmanagecontactform"
+                      exact
+                      element={<ManageContactForm />}
+                    />
+                    <Route path="/adminlistings" exact element={<Listings />} />
+                  </Routes>
+                </Suspense>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
         <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
       </Router>
     </div>
