@@ -232,6 +232,7 @@ export default function SetAppointmentForm(props) {
             <FormControl component="fieldset">
               <FormLabel component="legend">Select Time</FormLabel>
               <RadioGroup
+                row={true}
                 aria-label="Time"
                 name="time"
                 value={userData.IsAM ? "AM" : "PM"}
@@ -244,7 +245,7 @@ export default function SetAppointmentForm(props) {
               </RadioGroup>
             </FormControl>
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12}>
             <FormLabel component="legend">Appointment Type</FormLabel>
             <FormControl fullWidth>
               <Select

@@ -387,7 +387,7 @@ export const columnsInspectionRecords = [
               <Typography
                 sx={{
                   fontSize: "10px",
-                  color: "info.main",
+                  color: "info.dark",
                 }}
               >
                 On-going
@@ -404,13 +404,13 @@ export const columnsInspectionRecords = [
               <Typography
                 sx={{
                   fontSize: "10px",
-                  color: "error.main",
+                  color: "error.dark",
                 }}
               >
                 Failed
               </Typography>
             }
-            sx={{ bgcolor: "#f44336" }}
+            sx={{ bgcolor: "#f5c9c9" }}
             size="small"
           />
         );
@@ -421,7 +421,7 @@ export const columnsInspectionRecords = [
               <Typography
                 sx={{
                   fontSize: "10px",
-                  color: "warning.main",
+                  color: "warning.dark",
                 }}
               >
                 Pending

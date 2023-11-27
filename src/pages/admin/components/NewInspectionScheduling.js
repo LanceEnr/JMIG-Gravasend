@@ -170,7 +170,7 @@ export default function NewInspectionScheduling() {
                 <Typography
                   sx={{
                     fontSize: "10px",
-                    color: "info.main",
+                    color: "info.dark",
                   }}
                 >
                   On-going
@@ -204,7 +204,7 @@ export default function NewInspectionScheduling() {
                 <Typography
                   sx={{
                     fontSize: "10px",
-                    color: "warning.main",
+                    color: "warning.dark",
                   }}
                 >
                   Pending
@@ -230,7 +230,7 @@ export default function NewInspectionScheduling() {
       ),
       renderCell: (params) => (
         <React.Fragment>
-          <Link to="/admineditinspectionscheduling" className="unstyled-link">
+          <Link to="/admineditinspection" className="unstyled-link">
             <GridActionsCellItem
               icon={<EditIcon />}
               className="textPrimary"
