@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { Paper, Box, Tab, Tabs } from "@mui/material";
+import { Paper, Box, Tab, Tabs, Button } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import FullFeaturedCrudGrid from "./components/InspectionDataGrid";
-import Title from "./components/Title";
 import {
   rowsInspectionScheduling,
   columnsInspectionRecords,
   rowsInspectionRecords,
 } from "./helpers/data";
+import { Link } from "react-router-dom";
+import AddIcon from "@mui/icons-material/Add";
+
 import Typography from "../../components/common/Typography";
+import NewInspectionScheduling from "./components/NewInspectionScheduling";
+import NewInspectionRecords from "./components/NewInspectionRecords";
 
 function Inspection() {
   const [value, setValue] = useState(0);
@@ -276,56 +279,46 @@ function Inspection() {
   return (
     <div>
       <Box sx={{ my: 12, mx: 6 }}>
-        <Typography
-          variant="h3"
-          marked="left"
-          style={{ fontWeight: "bold", fontSize: "30px" }}
-          gutterBottom
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          marginBottom={2}
         >
-          Inspection
-        </Typography>
+          <Typography
+            variant="h3"
+            marked="left"
+            style={{ fontWeight: "bold", fontSize: "30px" }}
+            gutterBottom
+          >
+            Inspection
+          </Typography>
+          {value === 0 && (
+            <Button
+              component={Link}
+              to={"/adminaddinspectionscheduling"}
+              variant="contained"
+              sx={{ ml: 1 }}
+              startIcon={<AddIcon />}
+            >
+              Add Inspection
+            </Button>
+          )}
+        </Box>
         <Paper sx={{ mt: 3, p: 2, display: "flex", flexDirection: "column" }}>
           <Box sx={{ width: "100%" }}>
             <Box sx={{ mb: 2, borderBottom: 1, borderColor: "divider" }}>
               <Tabs
                 value={value}
                 onChange={handleChange}
-                aria-label="basic tabs example"
+                aria-label="Inspection"
               >
                 <Tab label="Scheduling" />
                 <Tab label="Records" />
               </Tabs>
             </Box>
-            {value === 0 && (
-              <FullFeaturedCrudGrid
-                columns={columnsInspectionScheduling}
-                rows={rowsInspectionScheduling}
-              />
-            )}
-            {value === 1 && (
-              <DataGrid
-                checkboxSelection
-                disableColumnFilter
-                disableColumnSelector
-                density="comfortable"
-                columns={columnsInspectionRecords}
-                rows={rowsInspectionRecords}
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{
-                  toolbar: {
-                    showQuickFilter: true,
-                  },
-                }}
-                initialState={{
-                  pagination: {
-                    paginationModel: {
-                      pageSize: 5,
-                    },
-                  },
-                }}
-                pageSizeOptions={[5, 10, 25]}
-              />
-            )}
+            {value === 0 && <NewInspectionScheduling />}
+            {value === 1 && <NewInspectionRecords />}
           </Box>
         </Paper>
       </Box>

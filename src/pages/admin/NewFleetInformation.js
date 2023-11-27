@@ -297,12 +297,12 @@ export default function NewFleetInformation() {
         </Typography>
         <Button
           component={Link}
-          to={"/adminaddmaintenancescheduling"}
+          to={"/adminaddfleet"}
           variant="contained"
           sx={{ ml: 1 }}
           startIcon={<AddIcon />}
         >
-          Add Record
+          Add a Truck
         </Button>
       </Box>
       <Paper sx={{ mt: 3, p: 2, display: "flex", flexDirection: "column" }}>
