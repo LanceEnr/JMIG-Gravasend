@@ -104,14 +104,7 @@ export default function ManageListings({ onAddClick, onEditClick }) {
     {
       field: "published",
       headerName: "Published",
-      sortable: false,
       flex: 1,
-      renderCell: (params) => (
-        <Switch
-          defaultChecked={params.row.published}
-          onClick={() => handleClickOpen("save", params.row)}
-        />
-      ),
     },
     {
       field: "actions",

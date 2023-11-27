@@ -138,7 +138,7 @@ const JobOrderModal = ({
       <DialogContent>
         <Box sx={{ my: 2 }}>
           <FormControl fullWidth>
-            <InputLabel id="driver-label">Driver Name</InputLabel>
+            <InputLabel id="driver-label">Driver Name:</InputLabel>
             <Select
               labelId="driver-label"
               id="driverName"

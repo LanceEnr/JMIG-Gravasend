@@ -1166,7 +1166,7 @@ router.post("/deleteFAQ/:_faqNum", async (req, res) => {
 
 router.get("/get-listing", async (req, res) => {
   try {
-    const listings = await Listing.find();
+    const listings = await Listing.find({ _isPublished: true });
     res.json(listings);
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -1312,7 +1312,8 @@ router.put("/update-listing", upload2.array("image", 6), async (req, res) => {
   try {
     const listingName = req.body._listingName;
     const price = req.body._listingPrice;
-    const description = req.body._isPublished;
+    const description = req.body._listingDescription;
+    const isPublished = req.body._isPublished;
     const images = req.files.map((file) => file.path);
     if (images.length === 0) {
       return res.status(400).json({ error: "No images were uploaded" });
@@ -1325,6 +1326,7 @@ router.put("/update-listing", upload2.array("image", 6), async (req, res) => {
         _listingPrice: price,
         _listingDescription: description,
         _imgPath: images,
+        _isPublished: isPublished,
       },
       { new: true }
     );

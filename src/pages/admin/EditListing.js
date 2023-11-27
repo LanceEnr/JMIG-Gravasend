@@ -23,6 +23,8 @@ export default function EditListing({ onBackClick }) {
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [products, setProducts] = useState([]);
+  const [isPublished, setIsPublished] = useState(false);
+
   const handleCategoryChange = (event) => {
     setCategory(event.target.value);
   };
@@ -41,7 +43,8 @@ export default function EditListing({ onBackClick }) {
     formData.append("_listingName", productName);
     formData.append("_listingCategory", category);
     formData.append("_listingPrice", price);
-    formData.append("_isPublished", description);
+    formData.append("_listingDescription", description);
+    formData.append("_isPublished", isPublished);
     selectedFiles.forEach((file) => {
       formData.append("image", file);
     });
@@ -62,6 +65,7 @@ export default function EditListing({ onBackClick }) {
       setPrice(0);
       setDescription("");
       setSelectedFiles([]);
+      setIsPublished("");
       console.log("Form submitted successfully", response.data);
     } catch (error) {
       toast.error("Modification failed, please try again!");
@@ -100,6 +104,7 @@ export default function EditListing({ onBackClick }) {
             setCategory(data._listingCategory);
             setPrice(data._listingPrice);
             setDescription(data._listingDescription);
+            setIsPublished(data._isPublished);
           } else {
             console.error("Failed to fetch products");
           }
@@ -243,6 +248,22 @@ export default function EditListing({ onBackClick }) {
                     )}
                   </Grid>
 
+                  <Grid item xs={12}>
+                    <InputLabel id="publish-label">Publish</InputLabel>
+                    <Select
+                      labelId="publish-label"
+                      id="isPublished"
+                      name="isPublished"
+                      value={isPublished}
+                      onChange={(e) => {
+                        setIsPublished(e.target.value);
+                      }}
+                      label="Publish"
+                    >
+                      <MenuItem value={false}>No</MenuItem>
+                      <MenuItem value={true}>Yes</MenuItem>
+                    </Select>
+                  </Grid>
                   <Grid item xs={12}>
                     <Button
                       variant="outlined"
