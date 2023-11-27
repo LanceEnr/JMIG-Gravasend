@@ -211,68 +211,6 @@ function Inspection() {
     fetchUpcomingInspection();
   }, []);
 
-  const columnsInspectionScheduling = [
-    {
-      field: "id",
-      headerName: "ID",
-      flex: 1,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "plateNo",
-      headerName: "PLATE NO.",
-      flex: 2,
-      editable: true,
-      type: "singleSelect",
-      valueOptions: plates,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "inspectionType",
-      headerName: "INSPECTION TYPE",
-      flex: 2,
-      editable: true,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "nextInspectionDate",
-      headerName: "INSPECTION DATE",
-      type: "date",
-      flex: 3,
-      editable: true,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "verdict",
-      headerName: "VERDICT",
-      flex: 2,
-      editable: true,
-      type: "singleSelect",
-      valueOptions: ["Pending", "On Going", "Pass", "Failed"],
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-  ];
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -296,7 +234,7 @@ function Inspection() {
           {value === 0 && (
             <Button
               component={Link}
-              to={"/adminaddinspectionscheduling"}
+              to={"/adminaddinspection"}
               variant="contained"
               sx={{ ml: 1 }}
               startIcon={<AddIcon />}

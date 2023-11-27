@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { DataGrid, GridActionsCellItem, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, gridClasses, GridToolbar } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
@@ -18,9 +18,44 @@ import Box from "@mui/material/Box";
 import { Typography } from "@mui/material";
 import { green, red } from "@mui/material/colors";
 import Signature from "../../assets/e-signature.webp";
-
+import { alpha, styled } from "@mui/material/styles";
 import axios from "axios";
 import GestureIcon from "@mui/icons-material/Gesture";
+
+const ODD_OPACITY = 0.2;
+
+const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
+  [`& .${gridClasses.row}.even`]: {
+    backgroundColor: "#EAECEA",
+    "&:hover, &.Mui-hovered": {
+      backgroundColor: alpha(theme.palette.primary.main, ODD_OPACITY),
+      "@media (hover: none)": {
+        backgroundColor: "transparent",
+      },
+    },
+    "&.Mui-selected": {
+      backgroundColor: alpha(
+        theme.palette.primary.main,
+        ODD_OPACITY + theme.palette.action.selectedOpacity
+      ),
+      "&:hover, &.Mui-hovered": {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          ODD_OPACITY +
+            theme.palette.action.selectedOpacity +
+            theme.palette.action.hoverOpacity
+        ),
+        // Reset on touch devices, it doesn't add specificity
+        "@media (hover: none)": {
+          backgroundColor: alpha(
+            theme.palette.primary.main,
+            ODD_OPACITY + theme.palette.action.selectedOpacity
+          ),
+        },
+      },
+    },
+  },
+}));
 
 const transformTripOngoing = (data, data2, data3, data4) => {
   const transformedData = [];
@@ -349,7 +384,14 @@ export default function TripVerification() {
 
   return (
     <Box style={{ width: "100%" }}>
-      <DataGrid
+      <StripedDataGrid
+        sx={{
+          border: 1,
+          borderColor: "primary.light",
+          "& .MuiDataGrid-cell:hover": {
+            fontWeight: "bold",
+          },
+        }}
         rows={rows}
         columns={columns}
         pageSize={5}
@@ -370,6 +412,9 @@ export default function TripVerification() {
           },
         }}
         pageSizeOptions={[5, 10, 25]}
+        getRowClassName={(params) =>
+          params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
+        }
       />
       <Dialog onClose={handleClose} open={open}>
         <DialogTitle>Document Check</DialogTitle>

@@ -6,7 +6,7 @@ import {
   InfoWindow,
 } from "@react-google-maps/api";
 import Typography from "../../components/common/Typography";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar, gridClasses } from "@mui/x-data-grid";
 
 import axios from "axios";
 import { Grid, Paper, Avatar, Box, Button, Tab, Tabs } from "@mui/material";
@@ -15,6 +15,42 @@ import TripRecords from "./TripRecords";
 
 import TripOngoing from "./TripOngoing";
 import truckIcon from "../../assets/truck.png";
+import { alpha, styled } from "@mui/material/styles";
+
+const ODD_OPACITY = 0.2;
+
+const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
+  [`& .${gridClasses.row}.even`]: {
+    backgroundColor: "#EAECEA",
+    "&:hover, &.Mui-hovered": {
+      backgroundColor: alpha(theme.palette.primary.main, ODD_OPACITY),
+      "@media (hover: none)": {
+        backgroundColor: "transparent",
+      },
+    },
+    "&.Mui-selected": {
+      backgroundColor: alpha(
+        theme.palette.primary.main,
+        ODD_OPACITY + theme.palette.action.selectedOpacity
+      ),
+      "&:hover, &.Mui-hovered": {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          ODD_OPACITY +
+            theme.palette.action.selectedOpacity +
+            theme.palette.action.hoverOpacity
+        ),
+        // Reset on touch devices, it doesn't add specificity
+        "@media (hover: none)": {
+          backgroundColor: alpha(
+            theme.palette.primary.main,
+            ODD_OPACITY + theme.palette.action.selectedOpacity
+          ),
+        },
+      },
+    },
+  },
+}));
 
 const mapStyles = {
   height: "450px",
@@ -327,11 +363,16 @@ function DeliveryMonitoring() {
                 </Box>
                 {value === 0 && <TripOngoing onFindClick={handleFindClick} />}
                 {value === 1 && (
-                  <DataGrid
+                  <StripedDataGrid
+                    sx={{
+                      border: 1,
+                      borderColor: "primary.light",
+                      "& .MuiDataGrid-cell:hover": {
+                        fontWeight: "bold",
+                      },
+                    }}
                     rows={rows}
                     columns={columns}
-                    pageSize={5}
-                    rowsPerPageOptions={[5]}
                     checkboxSelection
                     disableColumnFilter
                     disableColumnSelector
@@ -342,6 +383,19 @@ function DeliveryMonitoring() {
                         showQuickFilter: true,
                       },
                     }}
+                    initialState={{
+                      pagination: {
+                        paginationModel: {
+                          pageSize: 5,
+                        },
+                      },
+                    }}
+                    pageSizeOptions={[5, 10, 25]}
+                    getRowClassName={(params) =>
+                      params.indexRelativeToCurrentPage % 2 === 0
+                        ? "even"
+                        : "odd"
+                    }
                   />
                 )}
               </Box>

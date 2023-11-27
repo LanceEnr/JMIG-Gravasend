@@ -1,10 +1,46 @@
 import React, { useState, useEffect, useRef } from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, gridClasses } from "@mui/x-data-grid";
 import axios from "axios";
 import { Button } from "@mui/material";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import { toast, ToastContainer } from "react-toastify";
 import Typography from "../../components/common/Typography";
+import { alpha, styled } from "@mui/material/styles";
+
+const ODD_OPACITY = 0.2;
+
+const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
+  [`& .${gridClasses.row}.even`]: {
+    backgroundColor: "#EAECEA",
+    "&:hover, &.Mui-hovered": {
+      backgroundColor: alpha(theme.palette.primary.main, ODD_OPACITY),
+      "@media (hover: none)": {
+        backgroundColor: "transparent",
+      },
+    },
+    "&.Mui-selected": {
+      backgroundColor: alpha(
+        theme.palette.primary.main,
+        ODD_OPACITY + theme.palette.action.selectedOpacity
+      ),
+      "&:hover, &.Mui-hovered": {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          ODD_OPACITY +
+            theme.palette.action.selectedOpacity +
+            theme.palette.action.hoverOpacity
+        ),
+        // Reset on touch devices, it doesn't add specificity
+        "@media (hover: none)": {
+          backgroundColor: alpha(
+            theme.palette.primary.main,
+            ODD_OPACITY + theme.palette.action.selectedOpacity
+          ),
+        },
+      },
+    },
+  },
+}));
 
 const transformTripOngoing = (data, data2, data3) => {
   const transformedData = [];
@@ -197,7 +233,14 @@ export default function TripOngoing({ onFindClick }) {
 
   return (
     <div style={{ width: "100%" }}>
-      <DataGrid
+      <StripedDataGrid
+        sx={{
+          border: 1,
+          borderColor: "primary.light",
+          "& .MuiDataGrid-cell:hover": {
+            fontWeight: "bold",
+          },
+        }}
         rows={rowsTripOngoing}
         columns={columnsTripOngoing}
         density="comfortable"
@@ -209,6 +252,9 @@ export default function TripOngoing({ onFindClick }) {
           },
         }}
         pageSizeOptions={[5, 10, 25]}
+        getRowClassName={(params) =>
+          params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
+        }
       />
     </div>
   );

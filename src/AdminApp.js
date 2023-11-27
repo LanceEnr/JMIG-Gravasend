@@ -36,6 +36,11 @@ import EditFleet from "./pages/admin/components/EditFleet";
 import AddMaintenanceScheduling from "./pages/admin/components/AddMaintenanceScheduling";
 import EditMaintenanceScheduling from "./pages/admin/components/EditMaintenanceScheduling";
 import EditMaintenanceRecord from "./pages/admin/components/EditMaintenanceRecord";
+import AddInspection from "./pages/admin/components/AddInspection";
+import EditInspection from "./pages/admin/components/EditInspection";
+import NewDriverManagement from "./pages/admin/NewDriverManagement";
+import AddDriver from "./pages/admin/components/AddDriver";
+import EditDriver from "./pages/admin/components/EditDriver";
 
 const initialState = {
   isAuthenticated: !!localStorage.getItem("admintoken"),
@@ -79,6 +84,27 @@ function AdminApp() {
               <Grid item xs={12}>
                 <Suspense fallback={<div>Loading...</div>}>
                   <Routes>
+                    <Route
+                      path="/admineditdriver"
+                      exact
+                      element={<EditDriver />}
+                    />
+                    <Route
+                      path="/adminadddriver"
+                      exact
+                      element={<AddDriver />}
+                    />
+                    <Route
+                      path="/adminaddinspection"
+                      exact
+                      element={<AddInspection />}
+                    />
+                    <Route
+                      path="/admineditinspection"
+                      exact
+                      element={<EditInspection />}
+                    />
+
                     <Route
                       path="/adminaddmaintenancescheduling"
                       exact
@@ -137,7 +163,7 @@ function AdminApp() {
                     <Route
                       path="/admindrivermanagement"
                       exact
-                      element={<DriverManagement />}
+                      element={<NewDriverManagement />}
                     />
                     <Route
                       path="/adminmanageappointments"
