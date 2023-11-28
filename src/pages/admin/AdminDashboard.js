@@ -70,21 +70,6 @@ import EditListing from "./EditListing";
 import SideNavImage from "../../assets/asd.webp";
 import LogoGravasend from "../../assets/LogoGravasend.webp";
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      {new Date().getFullYear()}
-      {" JMIG Gravel and Sand Supply."}
-    </Typography>
-  );
-}
-
 const drawerWidth = 250;
 
 const AppBar = styled(MuiAppBar, {
@@ -208,8 +193,6 @@ const transformNotification = (data) => {
 };
 
 const notifications = transformNotification(await fetchNotifications());
-
-const settings = ["Settings", "Logout"];
 
 export default function AdminDashboard() {
   const [anchorElSettings, setAnchorElSettings] = React.useState(null);
@@ -387,30 +370,24 @@ export default function AdminDashboard() {
                 open={Boolean(anchorElSettings)}
                 onClose={handleCloseSettingsMenu}
               >
-                {settings.map((setting) => (
-                  <MenuItem
-                    key={setting}
-                    onClick={() => {
-                      if (setting === "Logout") {
-                        localStorage.removeItem("adminToken");
-                        dispatch({ type: "LOGOUT" });
-                        toast.success("Logout successfully", {
-                          autoClose: 50,
-                          onClose: () => {
-                            navigate("/adminLogin");
-                            window.location.reload();
-                          },
-                        });
-                      } else if (setting === "Settings") {
-                        window.location.href = "/settings";
-                      } else {
-                        window.location.href = `/${setting}`;
-                      }
-                    }}
-                  >
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
-                ))}
+                <MenuItem component={Link} to="/adminprofileinfo">
+                  <Typography textAlign="center">Settings</Typography>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    localStorage.removeItem("adminToken");
+                    dispatch({ type: "LOGOUT" });
+                    toast.success("Logout successfully", {
+                      autoClose: 50,
+                      onClose: () => {
+                        navigate("/adminLogin");
+                        window.location.reload();
+                      },
+                    });
+                  }}
+                >
+                  <Typography textAlign="center">Logout</Typography>
+                </MenuItem>
               </Menu>
             </Box>
           </Box>

@@ -1,45 +1,43 @@
 import React, { useState, useEffect } from "react";
+
 import axios from "axios";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
-import BannerImage from "../../assets/catalog.webp";
+import Box from "@mui/material/Box";
+import Typography from "../../components/common/Typography";
+import Container from "@mui/material/Container";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
-
+import GoogleReCAPTCHA from "react-google-recaptcha";
+import BannerImage from "../../assets/choose.webp";
+import { makeStyles } from "@mui/styles"; // Import makeStyles for custom styles
+import { useTheme } from "@mui/material/styles";
 import { toast } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom";
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      {new Date().getFullYear()}
-      {" JMIG Gravel and Sand Supply."}
-    </Typography>
-  );
-}
+const useStyles = makeStyles((theme) => ({
+  signin: {
+    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${BannerImage})`,
+    backgroundSize: "cover",
+    minHeight: "100vh", // Set the minimum height to fill the screen
+  },
+}));
 
 export default function AdminLogin({ dispatch }) {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [passwordInputType, setPasswordInputType] = useState("password");
+  const [recaptchaValue, setRecaptchaValue] = useState(null);
+
+  const handleRecaptchaChange = (value) => {
+    setRecaptchaValue(value);
+  };
   const handleShowPasswordToggle = () => {
     setShowPassword(!showPassword);
     setPasswordInputType(showPassword ? "password" : "text");
@@ -103,49 +101,44 @@ export default function AdminLogin({ dispatch }) {
     }
   };
 
+  const theme = useTheme();
+  const classes = useStyles(); // Add Material-UI styles
+
   return (
-    <Grid container component="main" sx={{ height: "100vh" }}>
-      <CssBaseline />
-      <Grid
-        item
-        xs={false}
-        sm={4}
-        md={7}
-        sx={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${BannerImage})`,
-          backgroundRepeat: "no-repeat",
-          backgroundColor: (t) =>
-            t.palette.mode === "light"
-              ? t.palette.grey[50]
-              : t.palette.grey[900],
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+    <div className={classes.signin}>
+      <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
         <Box
           sx={{
-            my: 8,
-            mx: 4,
+            boxShadow: 3,
+            borderRadius: 2,
+            px: 4,
+            py: 6,
+            marginTop: 8,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            backgroundColor: theme.palette.background.paper,
           }}
         >
           <Typography
-            component="h1"
-            variant="h5"
-            sx={{ color: "#83948a", fontWeight: "bold" }}
+            variant="h4"
+            sx={{ fontSize: "30px", fontWeight: "bold" }}
+            gutterBottom
+            marked="center"
+            align="center"
           >
-            Admin Login
+            ADMIN SIGN IN
           </Typography>
-          <Typography component="h1" variant="body1" color="textSecondary">
-            Sign in below to access dashboard
+          <Typography align="center">
+            {"Not a member yet? "}
+            <Link to="/adminregister" align="center" className="link">
+              Sign Up here
+            </Link>
           </Typography>
           <Box
             component="form"
-            noValidate
             onSubmit={handleSubmit}
+            noValidate
             sx={{ mt: 1 }}
           >
             <TextField
@@ -185,8 +178,22 @@ export default function AdminLogin({ dispatch }) {
                 ),
               }}
             />
+            <Box sx={{ mt: 1, display: "flex", justifyContent: "center" }}>
+              <GoogleReCAPTCHA
+                sitekey="6LdkquooAAAAAGeJmM27oPgcUtRcQZIGTof4VyY-"
+                onChange={handleRecaptchaChange}
+              />
+            </Box>
+
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
+              control={
+                <Checkbox
+                  name="rememberMe"
+                  color="primary"
+                  onChange={handleRememberChange}
+                  checked={rememberMe}
+                />
+              }
               label="Remember me"
             />
             <Button
@@ -197,26 +204,25 @@ export default function AdminLogin({ dispatch }) {
             >
               Login
             </Button>
-            <Grid container alignItems="flex-start">
+            <Grid container>
               <Grid item xs>
                 <Link
-                  component={Link}
-                  to="/adminForgotPassword"
-                  variant="body2"
+                  to="/adminforgotpassword"
+                  variant="caption"
+                  className="link"
                 >
                   Forgot password?
                 </Link>
               </Grid>
               <Grid item>
-                <Link component={Link} to="/adminregister" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                <Link to="/" variant="caption" className="link">
+                  Go back to home
                 </Link>
               </Grid>
             </Grid>
-            <Copyright sx={{ mt: 5 }} />
           </Box>
         </Box>
-      </Grid>
-    </Grid>
+      </Container>
+    </div>
   );
 }

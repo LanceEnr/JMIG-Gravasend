@@ -156,9 +156,6 @@ function MainApp({ handleLogout, isAuthenticated, authDispatch }) {
             )
           }
         />
-
-        <Route path="/adminlogin" exact element={<AdminLogin />} />
-        <Route path="/adminregister" exact element={<AdminRegister />} />
       </Routes>
 
       {!hideAppBarAndFooter && <AppFooter />}
