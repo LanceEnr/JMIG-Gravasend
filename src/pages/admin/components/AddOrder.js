@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
   Grid,
@@ -28,11 +28,26 @@ export default function AddOrder() {
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [totalPrice, setTotalPrice] = useState("");
-  const [location, setLocation] = useState("");
+  const [status, setStatus] = useState("");
   const [details, setDetails] = useState("");
   const [name, setName] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState("");
   const [customers, setCustomers] = useState([]);
   const [product, setProduct] = useState([]);
+  const navigate = useNavigate();
+
+  const currentDate = new Date();
+  const options = {
+    weekday: "short",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short",
+  };
+  const formattedDate = currentDate.toLocaleString("en-US", options);
 
   useEffect(() => {
     async function fetchCustomerName() {
@@ -105,20 +120,24 @@ export default function AddOrder() {
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    toast.error(
-      price +
-        " " +
-        quantity +
-        " " +
-        totalPrice +
-        " " +
-        location +
-        " " +
-        details +
-        " " +
-        name +
-        " "
-    );
+    try {
+      const response = await axios.post("http://localhost:3001/addOrder", {
+        _name: name,
+        _materialType: selectedProduct,
+        _date: formattedDate,
+        _status: status,
+        _price: parseInt(price, 10) * parseInt(quantity, 10),
+        _quantity: quantity,
+        _orderDet: details,
+      });
+
+      console.log("Order added successfully", response.data);
+      toast.success(response.data.message);
+      navigate("/adminmanageorders");
+    } catch (error) {
+      console.error("Order add failed", error);
+      toast.error("Order  already exists!");
+    }
   };
 
   return (
@@ -147,18 +166,7 @@ export default function AddOrder() {
                   <Grid item xs={6}>
                     <Autocomplete
                       options={customers}
-                      filterOptions={(options, state) => {
-                        if (state.inputValue === "") {
-                          return options.slice(0, 3);
-                        }
-
-                        let results = options.filter((option) =>
-                          option
-                            .toLowerCase()
-                            .includes(state.inputValue.toLowerCase())
-                        );
-                        return results;
-                      }}
+                      getOptionLabel={(option) => option}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -166,6 +174,7 @@ export default function AddOrder() {
                           name="customername"
                           type="text"
                           fullWidth
+                          required
                           placeholder="Search customers..."
                           InputProps={{
                             ...params.InputProps,
@@ -190,25 +199,15 @@ export default function AddOrder() {
                   <Grid item xs={6}>
                     <Autocomplete
                       options={product}
-                      filterOptions={(options, state) => {
-                        if (state.inputValue === "") {
-                          return options.slice(0, 3);
-                        }
-
-                        let results = options.filter((option) =>
-                          option
-                            .toLowerCase()
-                            .includes(state.inputValue.toLowerCase())
-                        );
-                        return results;
-                      }}
+                      getOptionLabel={(option) => option}
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Product Name" // Change the label to "Product Name"
+                          label="Product Name"
                           name="productname"
                           type="text"
                           fullWidth
+                          required
                           placeholder="Search products..."
                           InputProps={{
                             ...params.InputProps,
@@ -222,9 +221,9 @@ export default function AddOrder() {
                       )}
                       onChange={(event, value) => {
                         if (value) {
-                          setProduct(value);
+                          setSelectedProduct(value);
                         } else {
-                          setProduct("");
+                          setSelectedProduct("");
                         }
                       }}
                     />
@@ -234,6 +233,7 @@ export default function AddOrder() {
                       label="Price"
                       name="price"
                       type="number"
+                      required
                       fullWidth
                       InputProps={{
                         startAdornment: (
@@ -249,6 +249,7 @@ export default function AddOrder() {
                       label="Quantity"
                       name="qty"
                       type="number"
+                      required
                       fullWidth
                       InputProps={{
                         endAdornment: (
@@ -266,6 +267,7 @@ export default function AddOrder() {
                       label="Total Price"
                       name="totalPrice"
                       type="number"
+                      required
                       fullWidth
                       InputProps={{
                         startAdornment: (
@@ -278,22 +280,32 @@ export default function AddOrder() {
                   </Grid>
                   <Grid item xs={6}>
                     <FormControl component="fieldset">
-                      <FormLabel component="legend">Location</FormLabel>
+                      <FormLabel component="legend">Status</FormLabel>
                       <RadioGroup
                         aria-label="options"
                         row={true}
-                        onChange={(event) => setLocation(event.target.value)}
+                        onChange={(event) => setStatus(event.target.value)}
                         required
                       >
                         <FormControlLabel
-                          value="Pandi"
+                          value="Pending"
                           control={<Radio />}
-                          label="Pandi"
+                          label="Pending"
                         />
                         <FormControlLabel
-                          value="Mindanao Avenue"
+                          value="Fetch from quarry"
                           control={<Radio />}
-                          label="Mindanao Avenue"
+                          label="Fetch from quarry"
+                        />
+                        <FormControlLabel
+                          value="Available for pickup-PANDI"
+                          control={<Radio />}
+                          label="Available for pickup-PANDI"
+                        />
+                        <FormControlLabel
+                          value="Available for pickup-MindanaoAve."
+                          control={<Radio />}
+                          label="Available for pickup-MindanaoAve."
                         />
                       </RadioGroup>
                     </FormControl>
@@ -304,8 +316,10 @@ export default function AddOrder() {
                       name="orderdet"
                       type="text"
                       fullWidth
+                      required
                       multiline
                       rows={4}
+                      onChange={(event) => setDetails(event.target.value)}
                     />
                   </Grid>
 

@@ -880,6 +880,18 @@ router.get("/fetch-category-values/:category", async (req, res) => {
   }
 });
 
+router.get("/fetch-order/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const order = await Order.findOne({ _orderNum: id });
+    res.json(order);
+  } catch (error) {
+    console.error("Error retrieving banner:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.put("/update-testimonials", async (req, res) => {
   const updatedTestimonialData = req.body;
 
@@ -900,6 +912,30 @@ router.put("/update-testimonials", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+router.put("/update-order", async (req, res) => {
+  const orderData = req.body;
+  const id = orderData.id;
+  const parsedId = parseInt(id, 10);
+
+  try {
+    const order = await Order.findOne({ _orderNum: parsedId });
+
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    order.set(orderData);
+
+    await order.save();
+
+    res.json({ message: "Order updated successfully" });
+  } catch (error) {
+    console.error("Error updating order:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.get("/fetch-testimonials", async (req, res) => {
   try {
     const testimonial = await Testimonial.findOne();
@@ -1382,16 +1418,9 @@ const getNextNotifId = async () => {
   }
 };
 router.post("/addOrder", async (req, res) => {
-  const {
-    _orderNum,
-    _name,
-    _materialType,
-    _date,
-    _status,
-    _price,
-    _quantity,
-    _orderDet,
-  } = req.body;
+  const { _name, _materialType, _date, _status, _price, _quantity, _orderDet } =
+    req.body;
+  const _orderNum = await getNextOrderNum();
 
   try {
     let order = await Order.findOne({ _orderNum: _orderNum });

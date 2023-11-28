@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
   Grid,
@@ -15,15 +15,68 @@ import {
   InputLabel,
   InputAdornment,
   Autocomplete,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
 } from "@mui/material";
 import Typography from "../../../components/common/Typography";
 import SearchIcon from "@mui/icons-material/Search";
 
 export default function EditOrder() {
+  const currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  const id = url.searchParams.get("id");
+  const navigate = useNavigate();
   const [driver, setDriver] = React.useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [totalPrice, setTotalPrice] = useState("");
+  const [status, setStatus] = useState("");
+  const [details, setDetails] = useState("");
+  const [name, setName] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState("");
+  const [customers, setCustomers] = useState([]);
+  const [product, setProduct] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3001/fetch-order/${id}`
+        );
+        setName(response.data._name);
+        setDetails(response.data._orderDet);
+        setPrice(response.data._price);
+        setQuantity(response.data._quantity);
+        setSelectedProduct(response.data._materialType);
+        setStatus(response.data._status);
+        setDriver(response.data._status);
+        setTotalPrice(response.data._price * response.data._quantity);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, [id]);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.put("http://localhost:3001/update-order", {
+        status: status,
+        details: details,
+        name: name,
+        quantity: quantity,
+        id: id,
+      });
+
+      console.log("Order edited successfully", response.data);
+      toast.success("Order added successfully");
+      navigate("/adminmanageorders");
+    } catch (error) {
+      console.error("Order edit failed", error);
+      toast.error("Order not yet registered!");
+    }
+  };
 
   const handlePriceChange = (event) => {
     const newPrice = parseFloat(event.target.value) || 0;
@@ -52,39 +105,27 @@ export default function EditOrder() {
     setValue(event.target.value);
   };
 
-  const customerNames = [
-    "Customer 1",
-    "Customer 2",
-    "Customer 3",
-    "Customer 4",
-    "Customer 5",
-    "Customer 6",
-    "Customer 7",
-    "Customer 8",
-    "Customer 9",
-    "Customer 10",
-    "Customer 11",
-    "Customer 12",
-    "Customer 13",
-    "Customer 14",
-    "Customer 15",
-  ];
-  const productNames = [
-    "Product 1",
-    "Product 2",
-    "Product 3",
-    "Product 4",
-    "Product 5",
-  ];
-  const valueOptions = [
-    "Pending",
-    "Fetch from Quarry",
-    "Arrived (Pandi)",
-    "Available for Pick-up (Pandi)",
-    "Available for Pick-up (Mindanao Ave.)",
-    "Delayed",
-    "Cancelled",
-  ];
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const response = await fetch("http://localhost:3001/get-products");
+        if (response.ok) {
+          const data = await response.json();
+          const productNames = data.map(
+            (product) => `${product._itemName}_${product._location}`
+          );
+          setProduct(productNames);
+        } else {
+          console.error("Failed to fetch products");
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    }
+
+    fetchProducts();
+  }, []);
+
   return (
     <div>
       <Box sx={{ my: 14, mx: 6 }}>
@@ -106,86 +147,36 @@ export default function EditOrder() {
         >
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <Grid container spacing={3} alignItems="center">
                   <Grid item xs={6}>
-                    <Autocomplete
-                      options={customerNames}
-                      filterOptions={(options, state) => {
-                        // If the input is empty, return the first 3 options
-                        if (state.inputValue === "") {
-                          return options.slice(0, 3);
-                        }
-                        // Otherwise, use the default filter
-                        let results = options.filter((option) =>
-                          option
-                            .toLowerCase()
-                            .includes(state.inputValue.toLowerCase())
-                        );
-                        return results;
-                      }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Customer Name"
-                          name="customername"
-                          type="text"
-                          fullWidth
-                          placeholder="Search customers..."
-                          InputProps={{
-                            ...params.InputProps,
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <SearchIcon />
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      )}
+                    <TextField
+                      label="Customer Name"
+                      name="customerName"
+                      type="text"
+                      value={name}
+                      fullWidth
+                      disabled
                     />
                   </Grid>
 
                   <Grid item xs={6}>
-                    <Autocomplete
-                      options={productNames}
-                      filterOptions={(options, state) => {
-                        // If the input is empty, return the first 3 options
-                        if (state.inputValue === "") {
-                          return options.slice(0, 3);
-                        }
-                        // Otherwise, use the default filter
-                        let results = options.filter((option) =>
-                          option
-                            .toLowerCase()
-                            .includes(state.inputValue.toLowerCase())
-                        );
-                        return results;
-                      }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Product Name" // Change the label to "Product Name"
-                          name="productname"
-                          type="text"
-                          fullWidth
-                          placeholder="Search products..."
-                          InputProps={{
-                            ...params.InputProps,
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <SearchIcon />
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      )}
+                    <TextField
+                      label="Product Name"
+                      name="productName"
+                      type="text"
+                      value={selectedProduct}
+                      fullWidth
+                      disabled
                     />
                   </Grid>
+
                   <Grid item xs={6}>
                     <TextField
                       label="Price"
                       name="price"
                       type="number"
+                      disabled
                       fullWidth
                       InputProps={{
                         startAdornment: (
@@ -201,6 +192,7 @@ export default function EditOrder() {
                       label="Quantity"
                       name="qty"
                       type="number"
+                      value={quantity}
                       fullWidth
                       InputProps={{
                         endAdornment: (
@@ -209,7 +201,6 @@ export default function EditOrder() {
                           </InputAdornment>
                         ),
                       }}
-                      value={quantity}
                       onChange={handleQuantityChange}
                     />
                   </Grid>
@@ -219,6 +210,7 @@ export default function EditOrder() {
                       name="totalPrice"
                       type="number"
                       fullWidth
+                      disabled
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">₱</InputAdornment>
@@ -228,22 +220,58 @@ export default function EditOrder() {
                       readOnly
                     />
                   </Grid>
-                  <Grid item xs={6}>
-                    <FormControl fullWidth>
-                      <InputLabel id="driver-label">Status</InputLabel>
-                      <Select
-                        labelId="driver-label"
-                        id="driver-select"
-                        value={driver}
-                        label="Driver"
-                        onChange={handleChange}
+                  <Grid item xs={6}></Grid>
+                  <Grid item xs={12}>
+                    <FormControl component="fieldset">
+                      <FormLabel component="legend">Status</FormLabel>
+                      <RadioGroup
+                        aria-label="options"
+                        value={status}
+                        row={true}
+                        onChange={(event) => setStatus(event.target.value)}
+                        required
                       >
-                        {valueOptions.map((option, index) => (
-                          <MenuItem key={index} value={option}>
-                            {option}
-                          </MenuItem>
-                        ))}
-                      </Select>
+                        <FormControlLabel
+                          value="Pending"
+                          control={<Radio />}
+                          label="Pending"
+                        />
+                        <FormControlLabel
+                          value="Fetch from quarry"
+                          control={<Radio />}
+                          label="Fetch from quarry"
+                        />
+                        <FormControlLabel
+                          value="Available for pickup-PANDI"
+                          control={<Radio />}
+                          label="Available for pickup Pandi"
+                        />
+                        <FormControlLabel
+                          value="Available for pickup-MindanaoAve."
+                          control={<Radio />}
+                          label="Available for pickup Mindanao Avenue"
+                        />
+                        <FormControlLabel
+                          value="Cancelled"
+                          control={<Radio />}
+                          label="Cancelled"
+                        />
+                        <FormControlLabel
+                          value="Arrived at Pandi"
+                          control={<Radio />}
+                          label="Arrived at Pandi"
+                        />
+                        <FormControlLabel
+                          value="Arrived at MindanaoAve."
+                          control={<Radio />}
+                          label="Arrived at Mindanao Avenue"
+                        />
+                        <FormControlLabel
+                          value="Completed"
+                          control={<Radio />}
+                          label="Completed"
+                        />
+                      </RadioGroup>
                     </FormControl>
                   </Grid>
                   <Grid item xs={12}>
@@ -251,8 +279,10 @@ export default function EditOrder() {
                       label="Order Details"
                       name="orderdet"
                       type="text"
+                      onChange={(event) => setDetails(event.target.value)}
                       fullWidth
                       multiline
+                      value={details}
                       rows={4}
                     />
                   </Grid>

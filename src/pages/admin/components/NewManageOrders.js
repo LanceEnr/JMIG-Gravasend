@@ -210,7 +210,7 @@ export default function NewManageOrders() {
         </Typography>
       ),
       renderCell: (params) => {
-        if (params.value === "Available for Pick-up (Pandi)") {
+        if (params.value === "Available for pickup-PANDI") {
           return (
             <Chip
               label={
@@ -227,7 +227,7 @@ export default function NewManageOrders() {
               size="small"
             />
           );
-        } else if (params.value === "Available for Pick-up (Mindanao Ave.)") {
+        } else if (params.value === "Available for pickup-MindanaoAve.") {
           return (
             <Chip
               label={
@@ -244,7 +244,7 @@ export default function NewManageOrders() {
               size="small"
             />
           );
-        } else if (params.value === "Arrived (Pandi)") {
+        } else if (params.value === "Arrived at Pandi") {
           return (
             <Chip
               label={
@@ -261,7 +261,7 @@ export default function NewManageOrders() {
               size="small"
             />
           );
-        } else if (params.value === "Arrived (Mindanao Ave.)") {
+        } else if (params.value === "Arrived at MindanaoAve.") {
           return (
             <Chip
               label={
@@ -278,7 +278,7 @@ export default function NewManageOrders() {
               size="small"
             />
           );
-        } else if (params.value === "Fetch from Quarry") {
+        } else if (params.value === "Fetch from quarry") {
           return (
             <Chip
               label={
@@ -362,7 +362,10 @@ export default function NewManageOrders() {
       ),
       renderCell: (params) => (
         <React.Fragment>
-          <Link to="/admineditorder" className="unstyled-link">
+          <Link
+            to={`/admineditorder?id=${params.row.id}`}
+            className="unstyled-link"
+          >
             <GridActionsCellItem
               icon={<EditIcon />}
               className="textPrimary"
