@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
   Grid,
@@ -27,9 +27,6 @@ import SearchIcon from "@mui/icons-material/Search";
 export default function EditFleet() {
   const [driver, setDriver] = React.useState("");
   const [drivers, setDrivers] = useState([]);
-  const currentUrl = window.location.href;
-  const url = new URL(currentUrl);
-  const id = url.searchParams.get("id");
   const [driverName, setdriverName] = React.useState("");
   const [bodyNo, setbodyNo] = React.useState("");
   const [chassisNo, setchassisNo] = React.useState("");
@@ -41,6 +38,11 @@ export default function EditFleet() {
   const status = "available";
   const [location, setLocation] = React.useState("");
   const [value, setValue] = React.useState("Pandi");
+
+  const currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  const id = url.searchParams.get("id");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,6 +59,7 @@ export default function EditFleet() {
         setmileage(response.data.mileage);
         setmodel(response.data.model);
         setValue(response.data.location);
+        setLocation(response.data.location);
         setDriver(response.data.driverName);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -117,7 +120,7 @@ export default function EditFleet() {
 
       console.log("Truck edited successfully", response.data);
       toast.success("Truck added successfully");
-      window.location.reload();
+      navigate("/adminfleetinformation");
     } catch (error) {
       console.error("Truck edit failed", error);
       toast.error("Truck not yet registered!");

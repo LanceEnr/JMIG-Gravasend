@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
   Grid,
@@ -28,8 +28,25 @@ export default function AddMaintenanceScheduling() {
   const [plates, setPlates] = useState([]);
   const amounts = [1000, 3000, 5000, 10000, 20000, 50000, 100000];
 
+  const [plateNo, setPlateNo] = React.useState("");
+  const [service, setService] = React.useState("");
+  const [frequency, setfrequency] = React.useState("");
+  const [startmileage, setStartMileage] = React.useState("");
+  const [nextDue, setNextDue] = React.useState(0);
+  const [status, setStatus] = React.useState("");
+
+  const currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  const id = url.searchParams.get("id");
+  const navigate = useNavigate();
+
+  const formatNumberWithCommas = (number) => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   const handleChange = (event) => {
     setDriver(event.target.value);
+    setfrequency(event.target.value);
   };
 
   const [value, setValue] = React.useState("Pandi");
@@ -37,26 +54,58 @@ export default function AddMaintenanceScheduling() {
   const handleLocChange = (event) => {
     setValue(event.target.value);
   };
-  const dummyTractorNumbers = [
-    "Tractor 001",
-    "Tractor 002",
-    "Tractor 003",
-    "Tractor 004",
-    "Tractor 005",
-    "Tractor 006",
-    "Tractor 007",
-    "Tractor 008",
-    "Tractor 009",
-    "Tractor 010",
-    "Tractor 011",
-    "Tractor 012",
-    "Tractor 013",
-    "Tractor 014",
-    "Tractor 015",
-  ];
+  useEffect(() => {
+    const calculateNextDue = () => {
+      const frequencyValue = parseInt(frequency, 10) || 0;
+      const startMileageValue = parseInt(startmileage, 10) || 0;
+      setNextDue(startMileageValue + frequencyValue);
+    };
 
-  // Assuming valueOptions is an array of driver names
-  const valueOptions = ["1000", "3000", "5000"];
+    calculateNextDue();
+  }, [frequency, startmileage]);
+
+  useEffect(() => {
+    async function fetchPlates() {
+      try {
+        const response = await fetch("http://localhost:3001/fetch-trucks");
+        if (response.ok) {
+          const data = await response.json();
+          const plates = Object.keys(data).map((key) => data[key].plateNo);
+          setPlates(plates);
+        } else {
+          console.error("Failed to fetch plates");
+        }
+      } catch (error) {
+        console.error("Error fetching plates:", error);
+      }
+    }
+
+    fetchPlates();
+  }, []);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/addMaintenance",
+        {
+          plateNo: plateNo,
+          service: service,
+          frequency: frequency,
+          nextDueMileage: nextDue,
+          status: status,
+        }
+      );
+
+      toast.success(response.data.message);
+      navigate("/adminmaintenance");
+    } catch (error) {
+      console.error("Maintenance add failed", error);
+
+      toast.error("Failed to save the record");
+    }
+  };
+
   return (
     <div>
       <Box sx={{ my: 14, mx: 6 }}>
@@ -78,11 +127,12 @@ export default function AddMaintenanceScheduling() {
         >
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <Grid container spacing={3} alignItems="center">
                   <Grid item xs={6}>
                     <Autocomplete
-                      options={dummyTractorNumbers}
+                      options={plates}
+                      getOptionLabel={(option) => option}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -90,6 +140,7 @@ export default function AddMaintenanceScheduling() {
                           name="tractorno"
                           type="text"
                           fullWidth
+                          required
                           placeholder="Search tractor numbers..."
                           InputProps={{
                             ...params.InputProps,
@@ -101,6 +152,14 @@ export default function AddMaintenanceScheduling() {
                           }}
                         />
                       )}
+                      onChange={(event, value) => {
+                        if (value) {
+                          setPlateNo(value);
+                        } else {
+                          // Handle the case when the user clears the selection
+                          setPlateNo("");
+                        }
+                      }}
                     />
                   </Grid>
 
@@ -110,6 +169,8 @@ export default function AddMaintenanceScheduling() {
                       name="serviceno"
                       type="text"
                       fullWidth
+                      onChange={(event) => setService(event.target.value)}
+                      required
                     />
                   </Grid>
                   <Grid item xs={6}>
@@ -124,7 +185,7 @@ export default function AddMaintenanceScheduling() {
                       >
                         {amounts.map((option, index) => (
                           <MenuItem key={index} value={option}>
-                            {option}
+                            {formatNumberWithCommas(option)}
                           </MenuItem>
                         ))}
                       </Select>
@@ -134,19 +195,25 @@ export default function AddMaintenanceScheduling() {
                     <TextField
                       label="Start Mileage"
                       name="startmileage"
-                      type="number"
+                      type="text"
                       fullWidth
-                      InputProps={{
-                        readOnly: true,
+                      value={formatNumberWithCommas(startmileage)}
+                      onChange={(event) => {
+                        const inputValue = event.target.value;
+                        const numericValue =
+                          parseFloat(inputValue.replace(/,/g, "")) || 0;
+                        setStartMileage(numericValue);
                       }}
+                      required
                     />
                   </Grid>
                   <Grid item xs={6}>
                     <TextField
                       label="Next Due Mileage"
                       name="nextduemileage"
-                      type="number"
+                      type="text"
                       fullWidth
+                      value={formatNumberWithCommas(nextDue)}
                       InputProps={{
                         readOnly: true,
                       }}
@@ -158,9 +225,9 @@ export default function AddMaintenanceScheduling() {
                       <FormLabel component="legend">Status</FormLabel>
                       <RadioGroup
                         aria-label="options"
-                        value={value}
-                        onChange={handleLocChange}
-                        row={true} // This makes the radio group vertical
+                        row={true}
+                        onChange={(event) => setStatus(event.target.value)}
+                        required
                       >
                         <FormControlLabel
                           value="Pending"

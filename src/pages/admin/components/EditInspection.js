@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
   Grid,
@@ -24,33 +24,88 @@ import Typography from "../../../components/common/Typography";
 import SearchIcon from "@mui/icons-material/Search";
 
 export default function EditInspection() {
+  const currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  const uid = url.searchParams.get("uid");
+  const id = url.searchParams.get("id");
+  const navigate = useNavigate();
   const [driver, setDriver] = React.useState("");
+  const [plates, setPlates] = useState([]);
+  const [inspectionDate, setInspectionDate] = useState("");
+  const [plateNo, setPlateNo] = useState("");
+  const [inspectionType, setinspectionType] = useState("");
+  const [verdict, setverdict] = useState("");
+
+  useEffect(() => {
+    async function fetchPlates() {
+      try {
+        const response = await fetch("http://localhost:3001/fetch-trucks");
+        if (response.ok) {
+          const data = await response.json();
+          const plates = Object.keys(data).map((key) => data[key].plateNo);
+          setPlates(plates);
+        } else {
+          console.error("Failed to fetch plates");
+        }
+      } catch (error) {
+        console.error("Error fetching plates:", error);
+      }
+    }
+
+    fetchPlates();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3001/fetch-inspections2/${uid}/${id}`
+        );
+        const originalDate = response.data.nextInspectionDate;
+        const convertedDate = new Date(originalDate)
+          .toISOString()
+          .split("T")[0];
+
+        setPlateNo(response.data.plateNo);
+        setinspectionType(response.data.inspectionType);
+        setInspectionDate(convertedDate);
+        setverdict(response.data.verdict);
+        setValue(response.data.verdict);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, [uid, id]);
 
   const handleChange = (event) => {
     setDriver(event.target.value);
   };
-  const dummyLicensePlateNumbers = [
-    "ABC 123",
-    "XYZ 789",
-    "DEF 456",
-    "GHI 789",
-    "JKL 012",
-    "ABC 123",
-    "XYZ 789",
-    "DEF 456",
-    "GHI 789",
-    "JKL 012",
-    "ABC 123",
-    "XYZ 789",
-    "DEF 456",
-    "GHI 789",
-    "JKL 012",
-    "ABC 123",
-    "XYZ 789",
-    "DEF 456",
-    "GHI 789",
-    "JKL 012",
-  ];
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/editInspection",
+        {
+          plateNo: plateNo,
+          inspectionType: inspectionType,
+          nextInspectionDate: inspectionDate,
+          verdict: verdict,
+          uid: uid,
+          id: id,
+        }
+      );
+
+      toast.success(response.data.message);
+
+      navigate("/admininspection");
+    } catch (error) {
+      console.error("Inspection add failed", error);
+
+      toast.error("Inspection name already exists!");
+    }
+  };
 
   const [value, setValue] = React.useState("Pandi");
 
@@ -58,8 +113,6 @@ export default function EditInspection() {
     setValue(event.target.value);
   };
 
-  // Assuming valueOptions is an array of driver names
-  const valueOptions = ["Driver 1", "Driver 2", "Driver 3"];
   return (
     <div>
       <Box sx={{ my: 14, mx: 6 }}>
@@ -81,37 +134,29 @@ export default function EditInspection() {
         >
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <Grid container spacing={3} alignItems="center">
                   <Grid item xs={6}>
-                    <Autocomplete
-                      options={dummyLicensePlateNumbers}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Plate No." // Change the label to "Plate No."
-                          name="platenumber"
-                          type="text"
-                          fullWidth
-                          placeholder="Search license plates..."
-                          InputProps={{
-                            ...params.InputProps,
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <SearchIcon />
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      )}
+                    <TextField
+                      label="Tractor No."
+                      name="tractorNo"
+                      value={plateNo}
+                      disabled
+                      type="text"
+                      fullWidth
+                      onChange={(event) => setPlateNo(event.target.value)}
                     />
                   </Grid>
                   <Grid item xs={6}>
                     <TextField
                       label="Inspection Type"
-                      name="inspectiontype"
+                      name="inspectionType"
+                      value={inspectionType}
                       type="text"
                       fullWidth
+                      onChange={(event) =>
+                        setinspectionType(event.target.value)
+                      }
                     />
                   </Grid>
 
@@ -121,6 +166,10 @@ export default function EditInspection() {
                       name="inspectiondate"
                       type="date"
                       fullWidth
+                      value={inspectionDate}
+                      onChange={(event) =>
+                        setInspectionDate(event.target.value)
+                      }
                     />
                   </Grid>
 
@@ -130,19 +179,26 @@ export default function EditInspection() {
                       <RadioGroup
                         aria-label="options"
                         value={value}
-                        onChange={handleLocChange}
-                        row={true} // This makes the radio group vertical
+                        onChange={(event) => {
+                          setverdict(event.target.value);
+                          setValue(event.target.value);
+                        }}
+                        row={true}
                       >
-                        <FormControlLabel
-                          value="Pending"
-                          control={<Radio />}
-                          label="Pending"
-                        />
-                        <FormControlLabel
-                          value="On-Going"
-                          control={<Radio />}
-                          label="On-Going"
-                        />
+                        {verdict !== "overdue" && (
+                          <>
+                            <FormControlLabel
+                              value="Pending"
+                              control={<Radio />}
+                              label="Pending"
+                            />
+                            <FormControlLabel
+                              value="ongoing"
+                              control={<Radio />}
+                              label="On-Going"
+                            />
+                          </>
+                        )}
                         <FormControlLabel
                           value="Failed"
                           control={<Radio />}
@@ -153,6 +209,13 @@ export default function EditInspection() {
                           control={<Radio />}
                           label="Passed"
                         />
+                        {verdict === "overdue" && (
+                          <FormControlLabel
+                            value="overdue"
+                            control={<Radio />}
+                            label="Overdue"
+                          />
+                        )}
                       </RadioGroup>
                     </FormControl>
                   </Grid>

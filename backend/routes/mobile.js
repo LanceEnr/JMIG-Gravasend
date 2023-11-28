@@ -506,6 +506,74 @@ router.get("/fetch-maintenanceReminders", (req, res) => {
     });
 });
 
+router.get("/fetch-maintenanceReminders2/:uid/:id", (req, res) => {
+  const { uid, id } = req.params;
+
+  axios
+    .get(
+      `https://gravasend-965f7-default-rtdb.firebaseio.com/maintenanceReminders/${uid}/${id}.json`
+    )
+    .then((response) => {
+      const maintenanceRemindersData = response.data;
+
+      if (maintenanceRemindersData) {
+        res.json(maintenanceRemindersData);
+      } else {
+        console.log('No data found in the "Maintenance Reminders" collection.');
+        res.status(404).json({ message: "No data found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
+router.get("/fetch-maintenanceHistory2/:uid/:id", (req, res) => {
+  const { uid, id } = req.params;
+
+  axios
+    .get(
+      `https://gravasend-965f7-default-rtdb.firebaseio.com/maintenanceHistory/${uid}/${id}.json`
+    )
+    .then((response) => {
+      const maintenanceRemindersData = response.data;
+
+      if (maintenanceRemindersData) {
+        res.json(maintenanceRemindersData);
+      } else {
+        console.log('No data found in the "Maintenance Reminders" collection.');
+        res.status(404).json({ message: "No data found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
+
+router.get("/fetch-inspections2/:uid/:id", (req, res) => {
+  const { uid, id } = req.params;
+
+  axios
+    .get(
+      `https://gravasend-965f7-default-rtdb.firebaseio.com/upcomingInspections/${uid}/${id}.json`
+    )
+    .then((response) => {
+      const inspectionData = response.data;
+
+      if (inspectionData) {
+        res.json(inspectionData);
+      } else {
+        console.log('No data found in the "Maintenance Reminders" collection.');
+        res.status(404).json({ message: "No data found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
+
 router.get("/fetch-trucks", (req, res) => {
   axios
     .get("https://gravasend-965f7-default-rtdb.firebaseio.com/trucks.json")
@@ -752,6 +820,7 @@ router.post("/addTruck", async (req, res) => {
 
 router.post("/editTruck", async (req, res) => {
   const truckData = req.body;
+  console.log(truckData);
   const uid = truckData.id;
   const driverName = truckData.driverName;
   const current = truckData.current;
@@ -765,7 +834,7 @@ router.post("/editTruck", async (req, res) => {
       snapshot.forEach((childSnapshot) => {
         const driverData = childSnapshot.val();
 
-        if (driverData.driverName === driverName) {
+        if (driverData.driverName === current) {
           uid = childSnapshot.key;
 
           driverData.status = "assigned";
@@ -779,7 +848,7 @@ router.post("/editTruck", async (req, res) => {
           });
         }
 
-        if (driverData.driverName === current && driverName !== current) {
+        if (driverData.driverName === driverName && driverName !== current) {
           uid = childSnapshot.key;
 
           driverData.status = "unassigned";
@@ -1031,6 +1100,21 @@ const getNextMaintenanceNum = async () => {
     throw err;
   }
 };
+const getNextInspectionNum = async () => {
+  try {
+    const counter = await Counter.findOneAndUpdate(
+      { name: "_inspectionID" },
+      { $inc: { value: 1 } },
+      { new: true, upsert: true }
+    );
+    const offset = 21000000;
+    const orderIdWithOffset = counter.value + offset;
+    return orderIdWithOffset;
+  } catch (err) {
+    console.error("Error getting the next maintenance number:", err);
+    throw err;
+  }
+};
 router.get("/generateMaintenanceId", async (req, res) => {
   try {
     const id = await getNextMaintenanceNum();
@@ -1148,6 +1232,8 @@ async function getUIDFromPlate(plateNo) {
 
 router.post("/addMaintenance", async (req, res) => {
   const maintenanceData = req.body;
+  const id = await getNextMaintenanceNum();
+  maintenanceData.id = id;
 
   try {
     const plateNo = maintenanceData.plateNo;
@@ -1171,6 +1257,53 @@ router.post("/addMaintenance", async (req, res) => {
         // Move the record to maintenanceHistory
         const refHistory = db.ref(
           `maintenanceHistory/${maintenanceData.uid}/${maintenanceData.actionId}`
+        );
+        await refHistory.set(maintenanceData);
+
+        // Remove the record from maintenanceReminders
+        await refReminders.remove();
+      } else {
+        // Add the record to maintenanceReminders
+        await refReminders.set(maintenanceData);
+      }
+
+      res
+        .status(200)
+        .json({ message: "Maintenance record updated successfully" });
+    } else {
+      res.status(404).json({ message: "Plate number not found" });
+    }
+  } catch (error) {
+    console.error("Firebase Authentication error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/editMaintenance", async (req, res) => {
+  const maintenanceData = req.body;
+
+  try {
+    const plateNo = maintenanceData.plateNo;
+    const mileage = await getMileageFromPlate(plateNo);
+    const uid = await getUIDFromPlate(plateNo);
+
+    if (mileage !== null) {
+      const frequency = maintenanceData.frequency;
+      const nextDueMileage = parseInt(mileage) + parseInt(frequency);
+
+      maintenanceData.mileage = parseInt(mileage);
+      maintenanceData.uid = uid;
+
+      const db = admin.database();
+      const refReminders = db.ref(
+        `maintenanceReminders/${maintenanceData.uid}/${maintenanceData.id}`
+      );
+
+      // Check if status is "Completed"
+      if (maintenanceData.status === "Completed") {
+        // Move the record to maintenanceHistory
+        const refHistory = db.ref(
+          `maintenanceHistory/${maintenanceData.uid}/${maintenanceData.id}`
         );
         await refHistory.set(maintenanceData);
 
@@ -1270,6 +1403,8 @@ router.get("/fetch-signature/:id", async (req, res) => {
 });
 router.post("/addInspection", async (req, res) => {
   const inspectionData = req.body;
+  const id = await getNextMaintenanceNum();
+  inspectionData.actionId = id;
 
   try {
     const plateNo = inspectionData.plateNo;
@@ -1309,12 +1444,49 @@ router.post("/addInspection", async (req, res) => {
   }
 });
 
+router.post("/editInspection", async (req, res) => {
+  const inspectionData = req.body;
+  const uid = inspectionData.uid;
+  const id = inspectionData.id;
+  const verdict = inspectionData.verdict;
+  const db = admin.database();
+  try {
+    if (verdict === "Passed" || verdict === "Failed") {
+      const recordsRef = db.ref(`inspectionRecords/${uid}/${id}`);
+      await recordsRef.set({ ...inspectionData, verdict });
+
+      const upcomingRef = db.ref(`upcomingInspections/${uid}/${id}`);
+      const snapshot = await upcomingRef.once("value");
+      if (snapshot.val()) {
+        await upcomingRef.remove();
+      }
+
+      res
+        .status(200)
+        .json({ message: "Inspection added to records successfully" });
+    } else {
+      const ref = db.ref(`upcomingInspections/${uid}/${actionId}`);
+      await ref.set(inspectionData);
+
+      res.status(200).json({
+        message: "Inspection updated successfully",
+      });
+    }
+  } catch (error) {
+    console.error("Firebase Authentication error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.post("/deleteInspection", async (req, res) => {
-  const _inspectionId = req.body._inspectionId;
+  const _inspectionId = req.body.id;
+  const uid = req.body.uid;
 
   try {
     const db = admin.database();
-    const maintenanceRef = db.ref(`upcomingInspections/${_inspectionId}`);
+    const maintenanceRef = db.ref(
+      `upcomingInspections/${uid}/${_inspectionId}`
+    );
 
     await maintenanceRef.remove();
 
@@ -1349,13 +1521,10 @@ router.post("/update-maintenanceRecords", async (req, res) => {
 
   try {
     const plateNo = maintenanceData.plateNo;
-    const uid = await getUIDFromPlate(plateNo);
-
-    maintenanceData.uid = uid;
 
     const db = admin.database();
     const ref = db.ref(
-      `maintenanceHistory/${maintenanceData.uid}/${maintenanceData.actionId}`
+      `maintenanceHistory/${maintenanceData.uid}/${maintenanceData.id}`
     );
 
     // Use update to append new fields without deleting existing ones
@@ -1372,6 +1541,7 @@ router.post("/update-maintenanceRecords", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
 router.post("/update-TripHistory", async (req, res) => {
   const data = req.body;
   for (const stockData of data) {
@@ -1489,8 +1659,8 @@ router.post("/maintenance-notif", async (req, res) => {
     uidMaintenance,
     idMaintenance,
   } = req.body;
-
-  if (status == "pending") {
+  console.log(status);
+  if (status == "Pending") {
     const id = await getNextNotifId();
     let adminNotification = new Notification2({
       _notifID: id,

@@ -10,7 +10,7 @@ import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { rowsMaintenanceScheduling } from "../helpers/data";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { alpha, styled } from "@mui/material/styles";
 import Typography from "../../../components/common/Typography";
 import { toast } from "react-toastify";
@@ -66,31 +66,41 @@ export default function NewMaintenanceScheduling() {
   const [open, setOpen] = React.useState(false);
   const [action, setAction] = React.useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [id, setId] = useState(null);
+  const [uid, setUID] = useState(null);
+  const navigate = useNavigate();
 
   const handleClickOpen = (action, row) => {
     setAction(action);
     setOpen(true);
     setSelectedRow(row);
+    setId(row.id);
+    setUID(row.uid);
   };
 
   const handleClose = () => {
     setOpen(false);
   };
-
-  const deleteRecord = async (id) => {
+  const handleDialogConfirm = () => {
+    deleteRecord();
+    setOpen(false);
+  };
+  const deleteRecord = async () => {
     try {
-      const _listingId = parseInt(id, 10);
+      const _maintenanceId = parseInt(id, 10);
       const response = await axios.post(
-        "http://localhost:3001/delete-listing",
-        { _listingId }
+        "http://localhost:3001/deleteMaintenanceRecord",
+        { _maintenanceId, uid }
       );
 
       if (response.status === 200) {
-        toast.success("Listing deleted successfully");
+        setOpen(false);
+        toast.success("Record deleted successfully");
+        navigate("/adminmaintenance");
       } else if (response.status === 404) {
         toast.error("Record not found");
       } else {
-        toast.error("Failed to delete the listing");
+        toast.error("Failed to delete the record");
       }
     } catch (error) {
       console.error("Error deleting record", error);
@@ -172,19 +182,19 @@ export default function NewMaintenanceScheduling() {
       headerName: "STATUS",
       flex: 1.5,
       renderCell: (params) => {
-        return params.value === "Available" ? (
+        return params.value === "overdue" ? (
           <Chip
             label={
               <Typography
                 sx={{
                   fontSize: "10px",
-                  color: "success.dark",
+                  color: "white",
                 }}
               >
-                Completed
+                OverDue
               </Typography>
             }
-            sx={{ bgcolor: "#8dd290" }}
+            sx={{ bgcolor: "red" }}
             size="small"
           />
         ) : (
@@ -199,7 +209,7 @@ export default function NewMaintenanceScheduling() {
                 Pending
               </Typography>
             }
-            sx={{ bgcolor: "#ffc890" }}
+            sx={{ bgcolor: "yellow" }}
             size="small"
           />
         );
@@ -222,7 +232,10 @@ export default function NewMaintenanceScheduling() {
       ),
       renderCell: (params) => (
         <React.Fragment>
-          <Link to="/admineditmaintenancescheduling" className="unstyled-link">
+          <Link
+            to={`/admineditmaintenancescheduling?uid=${params.row.uid}&id=${params.row.id}`}
+            className="unstyled-link"
+          >
             <GridActionsCellItem
               icon={<EditIcon />}
               className="textPrimary"
@@ -287,7 +300,7 @@ export default function NewMaintenanceScheduling() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button color="primary" autoFocus>
+          <Button color="primary" onClick={handleDialogConfirm} autoFocus>
             Confirm
           </Button>
         </DialogActions>

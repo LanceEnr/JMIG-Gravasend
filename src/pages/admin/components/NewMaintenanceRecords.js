@@ -165,7 +165,9 @@ export default function NewMaintenanceRecords() {
       ),
       renderCell: (params) => (
         <React.Fragment>
-          <Link to="/admineditmaintenancerecord" className="unstyled-link">
+          <Link
+            to={`/admineditmaintenancerecord?uid=${params.row.uid}&id=${params.row.id}`}
+          >
             <GridActionsCellItem
               icon={<EditIcon />}
               className="textPrimary"

@@ -11,7 +11,7 @@ import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { rowsFleetInformation } from "./helpers/data";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { alpha, styled } from "@mui/material/styles";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -71,7 +71,7 @@ export default function NewFleetInformation() {
   const [action, setAction] = React.useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
   const [id, setId] = useState(null);
-
+  const navigate = useNavigate();
   const handleClickOpen = (action, row) => {
     setAction(action);
     setOpen(true);
@@ -100,7 +100,7 @@ export default function NewFleetInformation() {
       if (response.status === 200) {
         setOpen(false);
         toast.success("Record deleted successfully");
-        window.location.reload();
+        navigate("/adminfleetinformation");
       } else if (response.status === 404) {
         toast.error("Record not found");
       } else {

@@ -90,7 +90,7 @@ function Maintenance() {
                           const uidTruck = truckItem.UID;
 
                           if (
-                            status === "pending" &&
+                            status === "Pending" &&
                             currentMileage >= nextduemileage
                           ) {
                             toast.warning(

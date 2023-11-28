@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
   Grid,
@@ -25,13 +25,38 @@ import SearchIcon from "@mui/icons-material/Search";
 
 export default function AddInspection() {
   const [driver, setDriver] = React.useState("");
-  const dummyLicensePlateNumbers = [
-    "ABC 123",
-    "XYZ 789",
-    "DEF 456",
-    "GHI 789",
-    "JKL 012",
-  ];
+  const [plates, setPlates] = useState([]);
+  const [inspectionDate, setInspectionDate] = useState("");
+  const [plateNo, setPlateNo] = useState("");
+  const [inspectionType, setinspectionType] = useState("");
+  const navigate = useNavigate();
+
+  const getCurrentDate = () => {
+    const today = new Date();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    const year = today.getFullYear();
+    return `${year}-${month}-${day}`;
+  };
+
+  useEffect(() => {
+    async function fetchPlates() {
+      try {
+        const response = await fetch("http://localhost:3001/fetch-trucks");
+        if (response.ok) {
+          const data = await response.json();
+          const plates = Object.keys(data).map((key) => data[key].plateNo);
+          setPlates(plates);
+        } else {
+          console.error("Failed to fetch plates");
+        }
+      } catch (error) {
+        console.error("Error fetching plates:", error);
+      }
+    }
+
+    fetchPlates();
+  }, []);
 
   const handleChange = (event) => {
     setDriver(event.target.value);
@@ -42,9 +67,23 @@ export default function AddInspection() {
   const handleLocChange = (event) => {
     setValue(event.target.value);
   };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:3001/addInspection", {
+        plateNo: plateNo,
+        inspectionType: inspectionType,
+        nextInspectionDate: inspectionDate,
+        verdict: "Pending",
+      });
 
-  // Assuming valueOptions is an array of driver names
-  const valueOptions = ["Driver 1", "Driver 2", "Driver 3"];
+      toast.success(response.data.message);
+      navigate("/admininspection");
+    } catch (error) {
+      console.error("Inspection add failed", error);
+      toast.error("Inspection name already exists!");
+    }
+  };
   return (
     <div>
       <Box sx={{ my: 14, mx: 6 }}>
@@ -66,19 +105,21 @@ export default function AddInspection() {
         >
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <Grid container spacing={3} alignItems="center">
                   <Grid item xs={6}>
                     <Autocomplete
-                      options={dummyLicensePlateNumbers}
+                      options={plates}
+                      getOptionLabel={(option) => option}
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Plate No." // Change the label to "Plate No."
-                          name="platenumber"
+                          label="Tractor No."
+                          name="tractorno"
                           type="text"
                           fullWidth
-                          placeholder="Search license plates..."
+                          required
+                          placeholder="Search tractor numbers..."
                           InputProps={{
                             ...params.InputProps,
                             startAdornment: (
@@ -89,6 +130,14 @@ export default function AddInspection() {
                           }}
                         />
                       )}
+                      onChange={(event, value) => {
+                        if (value) {
+                          setPlateNo(value);
+                        } else {
+                          // Handle the case when the user clears the selection
+                          setPlateNo("");
+                        }
+                      }}
                     />
                   </Grid>
                   <Grid item xs={6}>
@@ -97,50 +146,28 @@ export default function AddInspection() {
                       name="inspectiontype"
                       type="text"
                       fullWidth
+                      required
+                      onChange={(event) =>
+                        setinspectionType(event.target.value)
+                      }
                     />
                   </Grid>
 
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
                     <TextField
                       label="Inspection Date"
                       name="inspectiondate"
                       type="date"
                       fullWidth
+                      required
+                      value={inspectionDate}
+                      onChange={(event) =>
+                        setInspectionDate(event.target.value)
+                      }
+                      inputProps={{ min: getCurrentDate() }}
                     />
                   </Grid>
 
-                  <Grid item xs={6}>
-                    <FormControl component="fieldset">
-                      <FormLabel component="legend">Verdict</FormLabel>
-                      <RadioGroup
-                        aria-label="options"
-                        value={value}
-                        onChange={handleLocChange}
-                        row={true} // This makes the radio group vertical
-                      >
-                        <FormControlLabel
-                          value="Pending"
-                          control={<Radio />}
-                          label="Pending"
-                        />
-                        <FormControlLabel
-                          value="On-Going"
-                          control={<Radio />}
-                          label="On-Going"
-                        />
-                        <FormControlLabel
-                          value="Failed"
-                          control={<Radio />}
-                          label="Failed"
-                        />
-                        <FormControlLabel
-                          value="Passed"
-                          control={<Radio />}
-                          label="Passed"
-                        />
-                      </RadioGroup>
-                    </FormControl>
-                  </Grid>
                   <Grid item xs={6}>
                     <Button
                       variant="outlined"

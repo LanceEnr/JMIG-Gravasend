@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
   Grid,
@@ -23,10 +23,30 @@ import Typography from "../../../components/common/Typography";
 import SearchIcon from "@mui/icons-material/Search";
 
 export default function EditMaintenanceScheduling() {
+  const currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  const uid = url.searchParams.get("uid");
+  const id = url.searchParams.get("id");
+  const navigate = useNavigate();
+
+  const [plateNo, setPlateNo] = React.useState("");
+  const [service, setService] = React.useState("");
+  const [frequency, setfrequency] = React.useState("");
+  const [startmileage, setStartMileage] = React.useState("");
+  const [nextDue, setNextDue] = React.useState(0);
+  const [status, setStatus] = React.useState("");
+
   const [driver, setDriver] = React.useState("");
+
+  const amounts = [1000, 3000, 5000, 10000, 20000, 50000, 100000];
+
+  const formatNumberWithCommas = (number) => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
 
   const handleChange = (event) => {
     setDriver(event.target.value);
+    setfrequency(event.target.value);
   };
 
   const [value, setValue] = React.useState("Pandi");
@@ -34,26 +54,63 @@ export default function EditMaintenanceScheduling() {
   const handleLocChange = (event) => {
     setValue(event.target.value);
   };
-  const dummyTractorNumbers = [
-    "Tractor 001",
-    "Tractor 002",
-    "Tractor 003",
-    "Tractor 004",
-    "Tractor 005",
-    "Tractor 006",
-    "Tractor 007",
-    "Tractor 008",
-    "Tractor 009",
-    "Tractor 010",
-    "Tractor 011",
-    "Tractor 012",
-    "Tractor 013",
-    "Tractor 014",
-    "Tractor 015",
-  ];
 
-  // Assuming valueOptions is an array of driver names
-  const valueOptions = ["1000", "3000", "5000"];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3001/fetch-maintenanceReminders2/${uid}/${id}`
+        );
+        setService(response.data.service);
+        setPlateNo(response.data.plateNo);
+        setStatus(response.data.status);
+        setValue(response.data.status);
+        setfrequency(response.data.frequency);
+        setDriver(response.data.frequency);
+        setStartMileage(response.data.mileage);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, [uid, id]);
+
+  useEffect(() => {
+    const calculateNextDue = () => {
+      const frequencyValue = parseInt(frequency, 10) || 0;
+      const startMileageValue = parseInt(startmileage, 10) || 0;
+      setNextDue(startMileageValue + frequencyValue);
+    };
+
+    calculateNextDue();
+  }, [frequency, startmileage]);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/editMaintenance",
+        {
+          id: id,
+          uid: uid,
+          plateNo: plateNo,
+          service: service,
+          frequency: frequency,
+          startmileage: startmileage,
+          nextDue: nextDue,
+          status: status,
+        }
+      );
+
+      console.log("Maintenance edited successfully", response.data);
+      toast.success("Maintenance added successfully");
+      navigate("/adminmaintenance");
+    } catch (error) {
+      console.error("Maintenance edit failed", error);
+      toast.error("Maintenance not yet registered!");
+    }
+  };
+  const isOverdue = status === "overdue";
   return (
     <div>
       <Box sx={{ my: 14, mx: 6 }}>
@@ -68,37 +125,27 @@ export default function EditMaintenanceScheduling() {
         <Paper sx={{ mt: 3, p: 2, display: "flex", flexDirection: "column" }}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <Grid container spacing={3} alignItems="center">
                   <Grid item xs={6}>
-                    <Autocomplete
-                      options={dummyTractorNumbers}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Tractor No."
-                          name="tractorno"
-                          type="text"
-                          fullWidth
-                          placeholder="Search tractor numbers..."
-                          InputProps={{
-                            ...params.InputProps,
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <SearchIcon />
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      )}
+                    <TextField
+                      label="Tractor No."
+                      name="tractorNo"
+                      type="text"
+                      fullWidth
+                      disabled
+                      value={plateNo}
                     />
                   </Grid>
                   <Grid item xs={6}>
                     <TextField
                       label="Service"
                       name="serviceno"
+                      value={service}
                       type="text"
                       fullWidth
+                      onChange={(event) => setService(event.target.value)}
+                      disabled={isOverdue}
                     />
                   </Grid>
                   <Grid item xs={6}>
@@ -108,12 +155,13 @@ export default function EditMaintenanceScheduling() {
                         labelId="driver-label"
                         id="driver-select"
                         value={driver}
+                        disabled={isOverdue}
                         label="Driver"
                         onChange={handleChange}
                       >
-                        {valueOptions.map((option, index) => (
+                        {amounts.map((option, index) => (
                           <MenuItem key={index} value={option}>
-                            {option}
+                            {formatNumberWithCommas(option)}
                           </MenuItem>
                         ))}
                       </Select>
@@ -123,19 +171,26 @@ export default function EditMaintenanceScheduling() {
                     <TextField
                       label="Start Mileage"
                       name="startmileage"
-                      type="number"
+                      type="text"
+                      disabled={isOverdue}
                       fullWidth
-                      InputProps={{
-                        readOnly: true,
+                      value={formatNumberWithCommas(startmileage)}
+                      onChange={(event) => {
+                        const inputValue = event.target.value;
+                        const numericValue =
+                          parseFloat(inputValue.replace(/,/g, "")) || 0;
+                        setStartMileage(numericValue);
                       }}
+                      required
                     />
                   </Grid>
                   <Grid item xs={6}>
                     <TextField
                       label="Next Due Mileage"
                       name="nextduemileage"
-                      type="number"
+                      type="text"
                       fullWidth
+                      value={formatNumberWithCommas(nextDue)}
                       InputProps={{
                         readOnly: true,
                       }}
@@ -148,13 +203,25 @@ export default function EditMaintenanceScheduling() {
                       <RadioGroup
                         aria-label="options"
                         value={value}
-                        onChange={handleLocChange}
-                        row={true} // This makes the radio group vertical
+                        onChange={(event) => {
+                          setStatus(event.target.value);
+                          setValue(event.target.value);
+                        }}
+                        row={true}
                       >
+                        {!isOverdue && (
+                          <>
+                            <FormControlLabel
+                              value="Pending"
+                              control={<Radio />}
+                              label="Pending"
+                            />
+                          </>
+                        )}
                         <FormControlLabel
-                          value="Pending"
+                          value="overdue"
                           control={<Radio />}
-                          label="Pending"
+                          label="Overdue"
                         />
                         <FormControlLabel
                           value="Completed"
@@ -164,6 +231,7 @@ export default function EditMaintenanceScheduling() {
                       </RadioGroup>
                     </FormControl>
                   </Grid>
+
                   <Grid item xs={12}>
                     <Button
                       variant="outlined"

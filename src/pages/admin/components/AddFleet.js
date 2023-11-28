@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
   Grid,
@@ -26,7 +26,7 @@ import SearchIcon from "@mui/icons-material/Search";
 export default function AddFleet() {
   const [driver, setDriver] = React.useState("");
   const [drivers, setDrivers] = useState([]);
-
+  const navigate = useNavigate();
   const [driverName, setdriverName] = React.useState("");
   const [bodyNo, setbodyNo] = React.useState("");
   const [chassisNo, setchassisNo] = React.useState("");
@@ -80,7 +80,7 @@ export default function AddFleet() {
 
       console.log("Truck added successfully", response.data);
       toast.success("Truck added successfully");
-      window.location.reload();
+      navigate("/adminfleetinformation");
     } catch (error) {
       console.error("Truck add failed", error);
       toast.error("Truck not yet registered!");
@@ -175,13 +175,12 @@ export default function AddFleet() {
                   </Grid>
                   <Grid item xs={6}>
                     <Autocomplete
-                      options={dummyDriverNames}
+                      options={drivers}
                       filterOptions={(options, state) => {
-                        // If the input is empty, return the first 3 options
                         if (state.inputValue === "") {
                           return options.slice(0, 3);
                         }
-                        // Otherwise, use the default filter
+
                         return options.filter((option) =>
                           option
                             .toLowerCase()
@@ -195,6 +194,10 @@ export default function AddFleet() {
                           name="drivername"
                           type="text"
                           fullWidth
+                          onChange={(event) =>
+                            setdriverName(event.target.value)
+                          }
+                          required
                           placeholder="Search drivers..."
                           InputProps={{
                             ...params.InputProps,
