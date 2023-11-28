@@ -198,7 +198,7 @@ export default function NewDriverManagement() {
       headerName: "STATUS",
       flex: 1.5,
       renderCell: (params) => {
-        return params.value === "Assigned" ? (
+        return params.value === "assigned" ? (
           <Chip
             label={
               <Typography

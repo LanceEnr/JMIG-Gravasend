@@ -11,7 +11,7 @@ import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { rowsFleetInformation } from "./helpers/data";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { alpha, styled } from "@mui/material/styles";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -70,31 +70,41 @@ export default function NewFleetInformation() {
   const [open, setOpen] = React.useState(false);
   const [action, setAction] = React.useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [id, setId] = useState(null);
 
   const handleClickOpen = (action, row) => {
     setAction(action);
     setOpen(true);
     setSelectedRow(row);
+    setId(row.id);
   };
 
   const handleClose = () => {
     setOpen(false);
   };
+  const handleDialogConfirm = () => {
+    deleteRecord();
+    setOpen(false);
+  };
 
-  const deleteRecord = async (id) => {
+  const deleteRecord = async () => {
     try {
-      const _listingId = parseInt(id, 10);
+      const _truckID = id;
       const response = await axios.post(
-        "http://localhost:3001/delete-listing",
-        { _listingId }
+        "http://localhost:3001/deleteTruckRecord",
+        {
+          _truckID: _truckID,
+        }
       );
 
       if (response.status === 200) {
-        toast.success("Listing deleted successfully");
+        setOpen(false);
+        toast.success("Record deleted successfully");
+        window.location.reload();
       } else if (response.status === 404) {
         toast.error("Record not found");
       } else {
-        toast.error("Failed to delete the listing");
+        toast.error("Failed to delete the record");
       }
     } catch (error) {
       console.error("Error deleting record", error);
@@ -210,7 +220,7 @@ export default function NewFleetInformation() {
       headerName: "STATUS",
       flex: 1.5,
       renderCell: (params) => {
-        return params.value === "Available" ? (
+        return params.value === "available" ? (
           <Chip
             label={
               <Typography
@@ -260,7 +270,10 @@ export default function NewFleetInformation() {
       ),
       renderCell: (params) => (
         <React.Fragment>
-          <Link to="/admineditfleet" className="unstyled-link">
+          <Link
+            to={`/admineditfleet?id=${params.row.id}`}
+            className="unstyled-link"
+          >
             <GridActionsCellItem
               icon={<EditIcon />}
               className="textPrimary"
@@ -350,7 +363,7 @@ export default function NewFleetInformation() {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button color="primary" autoFocus>
+            <Button color="primary" onClick={handleDialogConfirm} autoFocus>
               Confirm
             </Button>
           </DialogActions>

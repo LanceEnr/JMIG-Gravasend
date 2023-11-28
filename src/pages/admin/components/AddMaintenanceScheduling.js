@@ -22,6 +22,8 @@ import Typography from "../../../components/common/Typography";
 
 export default function AddMaintenanceScheduling() {
   const [driver, setDriver] = React.useState("");
+  const [plates, setPlates] = useState([]);
+  const amounts = [1000, 3000, 5000, 10000, 20000, 50000, 100000];
 
   const handleChange = (event) => {
     setDriver(event.target.value);
@@ -33,8 +35,24 @@ export default function AddMaintenanceScheduling() {
     setValue(event.target.value);
   };
 
-  // Assuming valueOptions is an array of driver names
-  const valueOptions = ["Driver 1", "Driver 2", "Driver 3"];
+  useEffect(() => {
+    async function fetchPlates() {
+      try {
+        const response = await fetch("http://localhost:3001/fetch-trucks");
+        if (response.ok) {
+          const data = await response.json();
+          const plates = Object.keys(data).map((key) => data[key].plateNo);
+          setPlates(plates);
+        } else {
+          console.error("Failed to fetch plates");
+        }
+      } catch (error) {
+        console.error("Error fetching plates:", error);
+      }
+    }
+
+    fetchPlates();
+  }, []);
   return (
     <div>
       <Box sx={{ my: 14, mx: 6 }}>
@@ -68,7 +86,7 @@ export default function AddMaintenanceScheduling() {
                         label="Driver"
                         onChange={handleChange}
                       >
-                        {valueOptions.map((option, index) => (
+                        {plates.map((option, index) => (
                           <MenuItem key={index} value={option}>
                             {option}
                           </MenuItem>
@@ -94,7 +112,7 @@ export default function AddMaintenanceScheduling() {
                         label="Driver"
                         onChange={handleChange}
                       >
-                        {valueOptions.map((option, index) => (
+                        {amounts.map((option, index) => (
                           <MenuItem key={index} value={option}>
                             {option}
                           </MenuItem>

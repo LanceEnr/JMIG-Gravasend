@@ -524,6 +524,29 @@ router.get("/fetch-trucks", (req, res) => {
       res.status(500).json({ message: "Internal server error" });
     });
 });
+router.get("/fetch-trucks2/:id", (req, res) => {
+  const { id } = req.params;
+
+  axios
+    .get(
+      `https://gravasend-965f7-default-rtdb.firebaseio.com/trucks/${id}.json`
+    )
+    .then((response) => {
+      const truckData = response.data;
+
+      if (truckData) {
+        res.json(truckData);
+      } else {
+        console.log(`No data found for truck with ID ${id}.`);
+        res.status(404).json({ message: "Truck not found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
+
 router.get("/fetch-fleet-available", (req, res) => {
   axios
     .get("https://gravasend-965f7-default-rtdb.firebaseio.com/trucks.json")
@@ -694,6 +717,72 @@ router.post("/addTruck", async (req, res) => {
           uid = childSnapshot.key;
 
           driverData.status = "assigned";
+          driverData.UID = uid;
+          const driverRef = db.ref(`DriverManagement/${uid}`);
+          driverRef.set(driverData, (error) => {
+            if (error) {
+              console.error("Firebase set error:", error);
+              res.status(500).json({ message: "Internal server error" });
+            }
+          });
+        }
+      });
+
+      if (uid) {
+        truckData.UID = uid;
+
+        const ref = db.ref(`trucks/${uid}`);
+        ref.set(truckData, (error) => {
+          if (error) {
+            console.error("Firebase set error:", error);
+            res.status(500).json({ message: "Internal server error" });
+          } else {
+            res.status(200).json({ message: "Truck added successfully" });
+          }
+        });
+      } else {
+        res.status(400).json({ message: "Driver not found" });
+      }
+    });
+  } catch (error) {
+    console.error("Firebase Authentication error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/editTruck", async (req, res) => {
+  const truckData = req.body;
+  const uid = truckData.id;
+  const driverName = truckData.driverName;
+  const current = truckData.current;
+  try {
+    const db = admin.database();
+    const driversRef = db.ref("DriverManagement");
+
+    driversRef.once("value", (snapshot) => {
+      let uid = null;
+
+      snapshot.forEach((childSnapshot) => {
+        const driverData = childSnapshot.val();
+
+        if (driverData.driverName === driverName) {
+          uid = childSnapshot.key;
+
+          driverData.status = "assigned";
+          driverData.UID = uid;
+          const driverRef = db.ref(`DriverManagement/${uid}`);
+          driverRef.set(driverData, (error) => {
+            if (error) {
+              console.error("Firebase set error:", error);
+              res.status(500).json({ message: "Internal server error" });
+            }
+          });
+        }
+
+        if (driverData.driverName === current && driverName !== current) {
+          uid = childSnapshot.key;
+
+          driverData.status = "unassigned";
           driverData.UID = uid;
           const driverRef = db.ref(`DriverManagement/${uid}`);
           driverRef.set(driverData, (error) => {
