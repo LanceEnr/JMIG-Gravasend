@@ -145,6 +145,11 @@ export default function NewInspectionScheduling() {
       field: "verdict",
       headerName: "VERDICT",
       flex: 1.5,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
       renderCell: (params) => {
         if (params.value === "Passed") {
           return (

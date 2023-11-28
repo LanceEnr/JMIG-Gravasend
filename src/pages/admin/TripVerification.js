@@ -336,6 +336,7 @@ export default function TripVerification() {
       field: "cargoWeight",
       headerName: "CARGO WEIGHT",
       flex: 1,
+      valueFormatter: (params) => `${params.value.toLocaleString()} cu. mt.`,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}

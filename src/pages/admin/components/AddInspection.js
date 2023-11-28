@@ -17,11 +17,21 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  InputAdornment,
+  Autocomplete,
 } from "@mui/material";
 import Typography from "../../../components/common/Typography";
+import SearchIcon from "@mui/icons-material/Search";
 
 export default function AddInspection() {
   const [driver, setDriver] = React.useState("");
+  const dummyLicensePlateNumbers = [
+    "ABC 123",
+    "XYZ 789",
+    "DEF 456",
+    "GHI 789",
+    "JKL 012",
+  ];
 
   const handleChange = (event) => {
     setDriver(event.target.value);
@@ -59,22 +69,27 @@ export default function AddInspection() {
               <form>
                 <Grid container spacing={3} alignItems="center">
                   <Grid item xs={6}>
-                    <FormControl fullWidth>
-                      <InputLabel id="driver-label">Plate No.</InputLabel>
-                      <Select
-                        labelId="driver-label"
-                        id="driver-select"
-                        value={driver}
-                        label="Driver"
-                        onChange={handleChange}
-                      >
-                        {valueOptions.map((option, index) => (
-                          <MenuItem key={index} value={option}>
-                            {option}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                    <Autocomplete
+                      options={dummyLicensePlateNumbers}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Plate No." // Change the label to "Plate No."
+                          name="platenumber"
+                          type="text"
+                          fullWidth
+                          placeholder="Search license plates..."
+                          InputProps={{
+                            ...params.InputProps,
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <SearchIcon />
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      )}
+                    />
                   </Grid>
                   <Grid item xs={6}>
                     <TextField

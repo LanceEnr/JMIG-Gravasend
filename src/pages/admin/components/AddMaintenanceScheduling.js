@@ -17,8 +17,11 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  InputAdornment,
+  Autocomplete,
 } from "@mui/material";
 import Typography from "../../../components/common/Typography";
+import SearchIcon from "@mui/icons-material/Search";
 
 export default function AddMaintenanceScheduling() {
   const [driver, setDriver] = React.useState("");
@@ -34,25 +37,26 @@ export default function AddMaintenanceScheduling() {
   const handleLocChange = (event) => {
     setValue(event.target.value);
   };
+  const dummyTractorNumbers = [
+    "Tractor 001",
+    "Tractor 002",
+    "Tractor 003",
+    "Tractor 004",
+    "Tractor 005",
+    "Tractor 006",
+    "Tractor 007",
+    "Tractor 008",
+    "Tractor 009",
+    "Tractor 010",
+    "Tractor 011",
+    "Tractor 012",
+    "Tractor 013",
+    "Tractor 014",
+    "Tractor 015",
+  ];
 
-  useEffect(() => {
-    async function fetchPlates() {
-      try {
-        const response = await fetch("http://localhost:3001/fetch-trucks");
-        if (response.ok) {
-          const data = await response.json();
-          const plates = Object.keys(data).map((key) => data[key].plateNo);
-          setPlates(plates);
-        } else {
-          console.error("Failed to fetch plates");
-        }
-      } catch (error) {
-        console.error("Error fetching plates:", error);
-      }
-    }
-
-    fetchPlates();
-  }, []);
+  // Assuming valueOptions is an array of driver names
+  const valueOptions = ["1000", "3000", "5000"];
   return (
     <div>
       <Box sx={{ my: 14, mx: 6 }}>
@@ -77,23 +81,29 @@ export default function AddMaintenanceScheduling() {
               <form>
                 <Grid container spacing={3} alignItems="center">
                   <Grid item xs={6}>
-                    <FormControl fullWidth>
-                      <InputLabel id="driver-label">Tractor No.</InputLabel>
-                      <Select
-                        labelId="driver-label"
-                        id="driver-select"
-                        value={driver}
-                        label="Driver"
-                        onChange={handleChange}
-                      >
-                        {plates.map((option, index) => (
-                          <MenuItem key={index} value={option}>
-                            {option}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                    <Autocomplete
+                      options={dummyTractorNumbers}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Tractor No."
+                          name="tractorno"
+                          type="text"
+                          fullWidth
+                          placeholder="Search tractor numbers..."
+                          InputProps={{
+                            ...params.InputProps,
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <SearchIcon />
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      )}
+                    />
                   </Grid>
+
                   <Grid item xs={6}>
                     <TextField
                       label="Service"

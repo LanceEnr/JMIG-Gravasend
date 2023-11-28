@@ -133,6 +133,7 @@ export default function NewMaintenanceScheduling() {
       field: "frequency",
       headerName: "FREQUENCY",
       flex: 2,
+      valueFormatter: (params) => `${params.value.toLocaleString()} km.`,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -143,6 +144,7 @@ export default function NewMaintenanceScheduling() {
       field: "mileage",
       headerName: "START MILEAGE",
       flex: 2,
+      valueFormatter: (params) => `${params.value.toLocaleString()} km.`,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -153,6 +155,7 @@ export default function NewMaintenanceScheduling() {
       field: "nextDueMileage",
       headerName: "NEXT DUE MILEAGE",
       flex: 2,
+      valueFormatter: (params) => `${params.value.toLocaleString()} km.`,
       valueGetter: (params) => {
         const mileage = params.row.mileage;
         const frequency = params.row.frequency;

@@ -41,6 +41,9 @@ import EditInspection from "./pages/admin/components/EditInspection";
 import NewDriverManagement from "./pages/admin/NewDriverManagement";
 import AddDriver from "./pages/admin/components/AddDriver";
 import EditDriver from "./pages/admin/components/EditDriver";
+import NewManageOrders from "./pages/admin/components/NewManageOrders";
+import AddOrder from "./pages/admin/components/AddOrder";
+import EditOrder from "./pages/admin/components/EditOrder";
 
 const initialState = {
   isAuthenticated: !!localStorage.getItem("admintoken"),
@@ -81,6 +84,13 @@ function AdminApp() {
               <Grid item xs={12}>
                 <Suspense fallback={<div>Loading...</div>}>
                   <Routes>
+                    <Route
+                      path="/admineditorder"
+                      exact
+                      element={<EditOrder />}
+                    />
+
+                    <Route path="/adminaddorder" exact element={<AddOrder />} />
                     <Route
                       path="/admineditdriver"
                       exact
@@ -167,7 +177,7 @@ function AdminApp() {
                     <Route
                       path="/adminmanageorders"
                       exact
-                      element={<ManageOrders />}
+                      element={<NewManageOrders />}
                     />
                     <Route
                       path="/admininventory"

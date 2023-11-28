@@ -17,8 +17,11 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  InputAdornment,
+  Autocomplete,
 } from "@mui/material";
 import Typography from "../../../components/common/Typography";
+import SearchIcon from "@mui/icons-material/Search";
 
 export default function AddFleet() {
   const [driver, setDriver] = React.useState("");
@@ -171,23 +174,39 @@ export default function AddFleet() {
                     />
                   </Grid>
                   <Grid item xs={6}>
-                    <FormControl fullWidth>
-                      <InputLabel id="driver-label">Driver</InputLabel>
-                      <Select
-                        labelId="driver-label"
-                        id="driver-select"
-                        value={driverName}
-                        label="Driver"
-                        onChange={(event) => setdriverName(event.target.value)}
-                        required
-                      >
-                        {drivers.map((option, index) => (
-                          <MenuItem key={index} value={option}>
-                            {option}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                    <Autocomplete
+                      options={dummyDriverNames}
+                      filterOptions={(options, state) => {
+                        // If the input is empty, return the first 3 options
+                        if (state.inputValue === "") {
+                          return options.slice(0, 3);
+                        }
+                        // Otherwise, use the default filter
+                        return options.filter((option) =>
+                          option
+                            .toLowerCase()
+                            .includes(state.inputValue.toLowerCase())
+                        );
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Driver Name" // Change the label to "Driver Name"
+                          name="drivername"
+                          type="text"
+                          fullWidth
+                          placeholder="Search drivers..."
+                          InputProps={{
+                            ...params.InputProps,
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <SearchIcon />
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      )}
+                    />
                   </Grid>
                   <Grid item xs={6}>
                     <FormControl component="fieldset">
