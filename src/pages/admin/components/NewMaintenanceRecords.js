@@ -123,6 +123,7 @@ export default function NewMaintenanceRecords() {
       field: "mileage",
       headerName: "MILEAGE",
       flex: 2,
+      valueFormatter: (params) => `${params.value.toLocaleString()} km.`,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -143,12 +144,15 @@ export default function NewMaintenanceRecords() {
       field: "cost",
       headerName: "TOTAL COST",
       flex: 2,
+      valueFormatter: (params) =>
+        `₱${params.value ? params.value.toLocaleString() : 0}`,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
         </Typography>
       ),
     },
+
     {
       field: "actions",
       headerName: "ACTIONS",

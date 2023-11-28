@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Typography from "../../components/common/Typography";
+import Typography from "../../../components/common/Typography";
 import Chip from "@mui/material/Chip";
 import {
   DataGrid,
@@ -10,7 +10,7 @@ import {
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import { rowsFleetInformation } from "./helpers/data";
+import { rowsManageOrders } from "../helpers/data";
 import { Link } from "react-router-dom";
 import { alpha, styled } from "@mui/material/styles";
 import AddIcon from "@mui/icons-material/Add";
@@ -28,8 +28,14 @@ import {
   DialogContentText,
   DialogActions,
 } from "@mui/material";
-import Title from "./components/Title";
-import FleetInformation from "./FleetInformation";
+const isValidUrl = (url) => {
+  try {
+    new URL(url);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
 
 const ODD_OPACITY = 0.2;
 
@@ -66,7 +72,7 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
   },
 }));
 
-export default function NewFleetInformation() {
+export default function NewManageOrders() {
   const [open, setOpen] = React.useState(false);
   const [action, setAction] = React.useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -102,83 +108,42 @@ export default function NewFleetInformation() {
     }
   };
 
-  const columnsFleetInformation = [
+  const columnsManageOrders = [
     {
       field: "id",
-      headerName: "ID",
+      headerName: "ORDER NO.",
+      flex: 2,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "customerName",
+      headerName: "CUSTOMER NAME",
+      flex: 2,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "product",
+      headerName: "PRODUCT NAME",
+      flex: 2,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "price",
+      headerName: "PRICE",
       flex: 1,
-      hidden: true,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "bodyNo",
-      headerName: "BODY NO.",
-      flex: 1.5,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "plateNo",
-      headerName: "TRACTOR NO.",
-      flex: 2,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "plateNo2",
-      headerName: "TRAILER NO.",
-      flex: 2,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "chassisNo",
-      headerName: "CHASSIS NO.",
-      flex: 2.5,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "engineNo",
-      headerName: "ENGINE NO.",
-      flex: 2.5,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "model",
-      headerName: "MODEL",
-      flex: 1.5,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "mileage",
-      headerName: "MILEAGE",
-      flex: 2,
-      valueFormatter: (params) => `${params.value.toLocaleString()} km.`,
+      valueFormatter: (params) => `₱${params.value.toLocaleString()}`,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -187,19 +152,10 @@ export default function NewFleetInformation() {
     },
 
     {
-      field: "driverName",
-      headerName: "DRIVER",
-      flex: 3,
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
-      field: "location",
-      headerName: "LOCATION",
-      flex: 2,
+      field: "quantity",
+      headerName: "QUANTITY",
+      flex: 1,
+      valueFormatter: (params) => `${params.value} cu. mt.`,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -207,49 +163,193 @@ export default function NewFleetInformation() {
       ),
     },
 
+    {
+      field: "total",
+      headerName: "TOTAL",
+      flex: 1,
+      valueGetter: (params) => {
+        const price = params.row.price;
+        const quantity = params.row.quantity;
+        return price * quantity;
+      },
+      valueFormatter: (params) => `₱${params.value.toLocaleString()}`,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "orderDet",
+      headerName: "ORDER DETAILS",
+      flex: 2,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "lastUpdated",
+      headerName: "LAST UPDATED",
+      type: "datetime",
+      flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
     {
       field: "status",
       headerName: "STATUS",
       flex: 1.5,
-      renderCell: (params) => {
-        return params.value === "Available" ? (
-          <Chip
-            label={
-              <Typography
-                sx={{
-                  fontSize: "10px",
-                  color: "success.dark",
-                }}
-              >
-                Available
-              </Typography>
-            }
-            sx={{ bgcolor: "#8dd290" }}
-            size="small"
-          />
-        ) : (
-          <Chip
-            label={
-              <Typography
-                sx={{
-                  fontSize: "10px",
-                  color: "error.dark",
-                }}
-              >
-                Unavailable
-              </Typography>
-            }
-            sx={{ bgcolor: "#f5c9c9" }}
-            size="small"
-          />
-        );
-      },
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
         </Typography>
       ),
+      renderCell: (params) => {
+        if (params.value === "Available for Pick-up (Pandi)") {
+          return (
+            <Chip
+              label={
+                <Typography
+                  sx={{
+                    fontSize: "10px",
+                    color: "success.dark",
+                  }}
+                >
+                  Available for Pick-up (Pandi)
+                </Typography>
+              }
+              sx={{ bgcolor: "#8dd290" }}
+              size="small"
+            />
+          );
+        } else if (params.value === "Available for Pick-up (Mindanao Ave.)") {
+          return (
+            <Chip
+              label={
+                <Typography
+                  sx={{
+                    fontSize: "10px",
+                    color: "success.dark",
+                  }}
+                >
+                  Available for Pick-up (Mindanao Ave.)
+                </Typography>
+              }
+              sx={{ bgcolor: "#8dd290" }}
+              size="small"
+            />
+          );
+        } else if (params.value === "Arrived (Pandi)") {
+          return (
+            <Chip
+              label={
+                <Typography
+                  sx={{
+                    fontSize: "10px",
+                    color: "info.dark",
+                  }}
+                >
+                  Arrived (Pandi)
+                </Typography>
+              }
+              sx={{ bgcolor: "#90caf9" }}
+              size="small"
+            />
+          );
+        } else if (params.value === "Arrived (Mindanao Ave.)") {
+          return (
+            <Chip
+              label={
+                <Typography
+                  sx={{
+                    fontSize: "10px",
+                    color: "info.dark",
+                  }}
+                >
+                  Arrived (Mindanao Ave.)
+                </Typography>
+              }
+              sx={{ bgcolor: "#90caf9" }}
+              size="small"
+            />
+          );
+        } else if (params.value === "Fetch from Quarry") {
+          return (
+            <Chip
+              label={
+                <Typography
+                  sx={{
+                    fontSize: "10px",
+                    color: "info.dark",
+                  }}
+                >
+                  Fetch from Quarry
+                </Typography>
+              }
+              sx={{ bgcolor: "#90caf9" }}
+              size="small"
+            />
+          );
+        } else if (params.value === "Delayed") {
+          return (
+            <Chip
+              label={
+                <Typography
+                  sx={{
+                    fontSize: "10px",
+                    color: "warning.dark",
+                  }}
+                >
+                  Delayed
+                </Typography>
+              }
+              sx={{ bgcolor: "#ffc890" }}
+              size="small"
+            />
+          );
+        } else if (params.value === "Cancelled") {
+          return (
+            <Chip
+              label={
+                <Typography
+                  sx={{
+                    fontSize: "10px",
+                    color: "error.dark",
+                  }}
+                >
+                  Cancelled
+                </Typography>
+              }
+              sx={{ bgcolor: "#f5c9c9" }}
+              size="small"
+            />
+          );
+        } else {
+          return (
+            <Chip
+              label={
+                <Typography
+                  sx={{
+                    fontSize: "10px",
+                    color: "warning.dark",
+                  }}
+                >
+                  Pending
+                </Typography>
+              }
+              sx={{ bgcolor: "#ffc890" }}
+              size="small"
+            />
+          );
+        }
+      },
     },
+
     {
       field: "actions",
       headerName: "ACTIONS",
@@ -262,7 +362,7 @@ export default function NewFleetInformation() {
       ),
       renderCell: (params) => (
         <React.Fragment>
-          <Link to="/admineditfleet" className="unstyled-link">
+          <Link to="/admineditorder" className="unstyled-link">
             <GridActionsCellItem
               icon={<EditIcon />}
               className="textPrimary"
@@ -295,16 +395,16 @@ export default function NewFleetInformation() {
           style={{ fontWeight: "bold", fontSize: "30px" }}
           gutterBottom
         >
-          Fleet Information
+          Orders
         </Typography>
         <Button
           component={Link}
-          to={"/adminaddfleet"}
+          to={"/adminaddorder"}
           variant="contained"
           sx={{ ml: 1 }}
           startIcon={<AddIcon />}
         >
-          Add a Truck
+          Add an Order
         </Button>
       </Box>
       <Paper sx={{ mt: 3, p: 2, display: "flex", flexDirection: "column" }}>
@@ -316,8 +416,8 @@ export default function NewFleetInformation() {
               fontWeight: "bold",
             },
           }}
-          rows={rowsFleetInformation}
-          columns={columnsFleetInformation}
+          rows={rowsManageOrders}
+          columns={columnsManageOrders}
           pageSize={5}
           disableColumnFilter
           disableColumnSelector
