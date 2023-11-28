@@ -15,6 +15,10 @@ import {
   InputLabel,
   InputAdornment,
   Autocomplete,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
 } from "@mui/material";
 import Typography from "../../../components/common/Typography";
 import SearchIcon from "@mui/icons-material/Search";
@@ -24,6 +28,54 @@ export default function AddOrder() {
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [totalPrice, setTotalPrice] = useState("");
+  const [location, setLocation] = useState("");
+  const [details, setDetails] = useState("");
+  const [name, setName] = useState("");
+  const [customers, setCustomers] = useState([]);
+  const [product, setProduct] = useState([]);
+
+  useEffect(() => {
+    async function fetchCustomerName() {
+      try {
+        const response = await fetch("http://localhost:3001/get-customers");
+        if (response.ok) {
+          const data = await response.json();
+          const customerNames = data.map(
+            (customer) => `${customer._fName}_${customer._lName}`
+          );
+
+          setCustomers(customerNames);
+        } else {
+          console.error("Failed to fetch customers");
+        }
+      } catch (error) {
+        console.error("Error fetching customers:", error);
+      }
+    }
+
+    fetchCustomerName();
+  }, []);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const response = await fetch("http://localhost:3001/get-products");
+        if (response.ok) {
+          const data = await response.json();
+          const productNames = data.map(
+            (product) => `${product._itemName}_${product._location}`
+          );
+          setProduct(productNames);
+        } else {
+          console.error("Failed to fetch products");
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    }
+
+    fetchProducts();
+  }, []);
 
   const handlePriceChange = (event) => {
     const newPrice = parseFloat(event.target.value) || 0;
@@ -51,40 +103,24 @@ export default function AddOrder() {
   const handleLocChange = (event) => {
     setValue(event.target.value);
   };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    toast.error(
+      price +
+        " " +
+        quantity +
+        " " +
+        totalPrice +
+        " " +
+        location +
+        " " +
+        details +
+        " " +
+        name +
+        " "
+    );
+  };
 
-  const customerNames = [
-    "Customer 1",
-    "Customer 2",
-    "Customer 3",
-    "Customer 4",
-    "Customer 5",
-    "Customer 6",
-    "Customer 7",
-    "Customer 8",
-    "Customer 9",
-    "Customer 10",
-    "Customer 11",
-    "Customer 12",
-    "Customer 13",
-    "Customer 14",
-    "Customer 15",
-  ];
-  const productNames = [
-    "Product 1",
-    "Product 2",
-    "Product 3",
-    "Product 4",
-    "Product 5",
-  ];
-  const valueOptions = [
-    "Pending",
-    "Fetch from Quarry",
-    "Arrived (Pandi)",
-    "Available for Pick-up (Pandi)",
-    "Available for Pick-up (Mindanao Ave.)",
-    "Delayed",
-    "Cancelled",
-  ];
   return (
     <div>
       <Box sx={{ my: 14, mx: 6 }}>
@@ -106,17 +142,16 @@ export default function AddOrder() {
         >
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <Grid container spacing={3} alignItems="center">
                   <Grid item xs={6}>
                     <Autocomplete
-                      options={customerNames}
+                      options={customers}
                       filterOptions={(options, state) => {
-                        // If the input is empty, return the first 3 options
                         if (state.inputValue === "") {
                           return options.slice(0, 3);
                         }
-                        // Otherwise, use the default filter
+
                         let results = options.filter((option) =>
                           option
                             .toLowerCase()
@@ -142,18 +177,24 @@ export default function AddOrder() {
                           }}
                         />
                       )}
+                      onChange={(event, value) => {
+                        if (value) {
+                          setName(value);
+                        } else {
+                          setName("");
+                        }
+                      }}
                     />
                   </Grid>
 
                   <Grid item xs={6}>
                     <Autocomplete
-                      options={productNames}
+                      options={product}
                       filterOptions={(options, state) => {
-                        // If the input is empty, return the first 3 options
                         if (state.inputValue === "") {
                           return options.slice(0, 3);
                         }
-                        // Otherwise, use the default filter
+
                         let results = options.filter((option) =>
                           option
                             .toLowerCase()
@@ -179,6 +220,13 @@ export default function AddOrder() {
                           }}
                         />
                       )}
+                      onChange={(event, value) => {
+                        if (value) {
+                          setProduct(value);
+                        } else {
+                          setProduct("");
+                        }
+                      }}
                     />
                   </Grid>
                   <Grid item xs={6}>
@@ -229,21 +277,25 @@ export default function AddOrder() {
                     />
                   </Grid>
                   <Grid item xs={6}>
-                    <FormControl fullWidth>
-                      <InputLabel id="driver-label">Status</InputLabel>
-                      <Select
-                        labelId="driver-label"
-                        id="driver-select"
-                        value={driver}
-                        label="Driver"
-                        onChange={handleChange}
+                    <FormControl component="fieldset">
+                      <FormLabel component="legend">Location</FormLabel>
+                      <RadioGroup
+                        aria-label="options"
+                        row={true}
+                        onChange={(event) => setLocation(event.target.value)}
+                        required
                       >
-                        {valueOptions.map((option, index) => (
-                          <MenuItem key={index} value={option}>
-                            {option}
-                          </MenuItem>
-                        ))}
-                      </Select>
+                        <FormControlLabel
+                          value="Pandi"
+                          control={<Radio />}
+                          label="Pandi"
+                        />
+                        <FormControlLabel
+                          value="Mindanao Avenue"
+                          control={<Radio />}
+                          label="Mindanao Avenue"
+                        />
+                      </RadioGroup>
                     </FormControl>
                   </Grid>
                   <Grid item xs={12}>

@@ -1213,7 +1213,7 @@ router.get("/get-listing-stocks", async (req, res) => {
 
 router.get("/get-products", async (req, res) => {
   try {
-    const inventory = await Inventory.distinct("_itemName");
+    const inventory = await Inventory.find();
     res.json(inventory);
   } catch (error) {
     console.error("Error fetching data:", error);
