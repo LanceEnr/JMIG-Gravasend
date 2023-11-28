@@ -61,6 +61,14 @@ export default function AddFleet() {
     fetchDrivers();
   }, []);
 
+  const dummyDriverNames = [
+    "Driver A",
+    "Driver B",
+    "Driver C",
+    "Driver D",
+    "Driver E",
+  ];
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {

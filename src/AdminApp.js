@@ -44,6 +44,11 @@ import EditDriver from "./pages/admin/components/EditDriver";
 import NewManageOrders from "./pages/admin/components/NewManageOrders";
 import AddOrder from "./pages/admin/components/AddOrder";
 import EditOrder from "./pages/admin/components/EditOrder";
+import AddCurrent from "./pages/admin/components/AddCurrent";
+import EditCurrent from "./pages/admin/components/EditCurrent";
+import AddFaq from "./pages/admin/components/AddFaq";
+import EditFaq from "./pages/admin/components/EditFaq";
+import NewUserManagement from "./pages/admin/components/NewUserManagement";
 
 const initialState = {
   isAuthenticated: !!localStorage.getItem("admintoken"),
@@ -84,6 +89,19 @@ function AdminApp() {
               <Grid item xs={12}>
                 <Suspense fallback={<div>Loading...</div>}>
                   <Routes>
+                    <Route path="/admineditfaq" exact element={<EditFaq />} />
+
+                    <Route path="/adminaddfaq" exact element={<AddFaq />} />
+                    <Route
+                      path="/admineditcurrent"
+                      exact
+                      element={<EditCurrent />}
+                    />
+                    <Route
+                      path="/adminaddcurrent"
+                      exact
+                      element={<AddCurrent />}
+                    />
                     <Route
                       path="/admineditorder"
                       exact
@@ -188,7 +206,7 @@ function AdminApp() {
                     <Route
                       path="/adminusermanagement"
                       exact
-                      element={<UserManagement />}
+                      element={<NewUserManagement />}
                     />
                     <Route
                       path="/adminmanagecontactform"

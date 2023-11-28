@@ -12,9 +12,9 @@ import {
   FormControl,
   Select,
   InputLabel,
+  InputAdornment,
 } from "@mui/material";
-
-import Title from "./components/Title";
+import Typography from "../../components/common/Typography";
 
 export default function AddListing({ onBackClick }) {
   const [product, setProduct] = React.useState("");
@@ -107,13 +107,26 @@ export default function AddListing({ onBackClick }) {
 
   return (
     <div>
-      <Box sx={{ my: 2 }}>
-        <Title>Add New Listing</Title>
-
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <form onSubmit={handleFormSubmit}>
-              <Paper elevation={2} style={{ padding: "24px" }}>
+      <Box sx={{ my: 14, mx: 6 }}>
+        <Typography
+          variant="h3"
+          marked="left"
+          style={{ fontWeight: "bold", fontSize: "30px" }}
+          gutterBottom
+        >
+          Add New Listing
+        </Typography>
+        <Paper
+          sx={{
+            mt: 3,
+            p: 2,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <form onSubmit={handleFormSubmit}>
                 <Grid container spacing={3} alignItems="center">
                   <Grid item xs={6}>
                     <FormControl fullWidth>
@@ -144,6 +157,11 @@ export default function AddListing({ onBackClick }) {
                       name="price"
                       value={price}
                       type="number"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">₱</InputAdornment>
+                        ),
+                      }}
                       onChange={(e) => {
                         setPrice(e.target.value);
                       }}
@@ -213,10 +231,10 @@ export default function AddListing({ onBackClick }) {
                     </Button>
                   </Grid>
                 </Grid>
-              </Paper>
-            </form>
+              </form>
+            </Grid>
           </Grid>
-        </Grid>
+        </Paper>
       </Box>
     </div>
   );

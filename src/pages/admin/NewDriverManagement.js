@@ -145,7 +145,7 @@ export default function NewDriverManagement() {
     {
       field: "driverName",
       headerName: "NAME",
-      flex: 1,
+      flex: 2,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}

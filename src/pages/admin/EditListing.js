@@ -12,9 +12,14 @@ import {
   FormControl,
   Select,
   InputLabel,
+  InputAdornment,
+  Switch,
+  FormControlLabel,
+  FormLabel,
+  RadioGroup,
+  Radio,
 } from "@mui/material";
-
-import Title from "./components/Title";
+import Typography from "../../components/common/Typography";
 
 export default function EditListing({ onBackClick }) {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -124,13 +129,26 @@ export default function EditListing({ onBackClick }) {
 
   return (
     <div>
-      <Box sx={{ my: 2 }}>
-        <Title>Edit Listing</Title>
-
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <form onSubmit={handleFormSubmit}>
-              <Paper elevation={2} style={{ padding: "24px" }}>
+      <Box sx={{ my: 14, mx: 6 }}>
+        <Typography
+          variant="h3"
+          marked="left"
+          style={{ fontWeight: "bold", fontSize: "30px" }}
+          gutterBottom
+        >
+          Edit Listing
+        </Typography>
+        <Paper
+          sx={{
+            mt: 3,
+            p: 2,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <form onSubmit={handleFormSubmit}>
                 <Grid container spacing={3} alignItems="center">
                   <Grid item xs={6}>
                     <FormControl fullWidth>
@@ -163,6 +181,11 @@ export default function EditListing({ onBackClick }) {
                         name="price"
                         type="number"
                         fullWidth
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">₱</InputAdornment>
+                          ),
+                        }}
                         onChange={(e) => {
                           setPrice(e.target.value);
                         }}
@@ -176,6 +199,11 @@ export default function EditListing({ onBackClick }) {
                         label="Price"
                         name="price"
                         type="number"
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">₱</InputAdornment>
+                          ),
+                        }}
                         fullWidth
                         disabled
                       />
@@ -247,23 +275,32 @@ export default function EditListing({ onBackClick }) {
                       />
                     )}
                   </Grid>
-
                   <Grid item xs={12}>
-                    <InputLabel id="publish-label">Publish</InputLabel>
-                    <Select
-                      labelId="publish-label"
-                      id="isPublished"
-                      name="isPublished"
-                      value={isPublished}
-                      onChange={(e) => {
-                        setIsPublished(e.target.value);
-                      }}
-                      label="Publish"
-                    >
-                      <MenuItem value={false}>No</MenuItem>
-                      <MenuItem value={true}>Yes</MenuItem>
-                    </Select>
+                    <FormControl component="fieldset">
+                      <FormLabel component="legend">Publish Listing?</FormLabel>
+                      <RadioGroup
+                        aria-label="publish"
+                        name="isPublished"
+                        value={isPublished}
+                        row={true}
+                        onChange={(e) => {
+                          setIsPublished(e.target.value === "true");
+                        }}
+                      >
+                        <FormControlLabel
+                          value="false"
+                          control={<Radio />}
+                          label="No"
+                        />
+                        <FormControlLabel
+                          value="true"
+                          control={<Radio />}
+                          label="Yes"
+                        />
+                      </RadioGroup>
+                    </FormControl>
                   </Grid>
+
                   <Grid item xs={12}>
                     <Button
                       variant="outlined"
@@ -281,10 +318,10 @@ export default function EditListing({ onBackClick }) {
                     </Button>
                   </Grid>
                 </Grid>
-              </Paper>
-            </form>
+              </form>
+            </Grid>
           </Grid>
-        </Grid>
+        </Paper>
       </Box>
     </div>
   );
