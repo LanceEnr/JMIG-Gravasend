@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { DataGrid, GridActionsCellItem, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, gridClasses, GridToolbar } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
@@ -12,8 +12,44 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Box from "@mui/material/Box";
 import { Paper } from "@mui/material";
+import { alpha, styled } from "@mui/material/styles";
+import Typography from "../../components/common/Typography";
 
 import Title from "./components/Title";
+const ODD_OPACITY = 0.2;
+
+const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
+  [`& .${gridClasses.row}.even`]: {
+    backgroundColor: "#EAECEA",
+    "&:hover, &.Mui-hovered": {
+      backgroundColor: alpha(theme.palette.primary.main, ODD_OPACITY),
+      "@media (hover: none)": {
+        backgroundColor: "transparent",
+      },
+    },
+    "&.Mui-selected": {
+      backgroundColor: alpha(
+        theme.palette.primary.main,
+        ODD_OPACITY + theme.palette.action.selectedOpacity
+      ),
+      "&:hover, &.Mui-hovered": {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          ODD_OPACITY +
+            theme.palette.action.selectedOpacity +
+            theme.palette.action.hoverOpacity
+        ),
+        // Reset on touch devices, it doesn't add specificity
+        "@media (hover: none)": {
+          backgroundColor: alpha(
+            theme.palette.primary.main,
+            ODD_OPACITY + theme.palette.action.selectedOpacity
+          ),
+        },
+      },
+    },
+  },
+}));
 
 export default function ManageContactForm() {
   const [open, setOpen] = React.useState(false);
@@ -69,36 +105,64 @@ export default function ManageContactForm() {
   ];
 
   return (
-    <Paper sx={{ my: 2, p: 2, display: "flex", flexDirection: "column" }}>
-      <Box style={{ width: "100%" }}>
-        <Title>Contact Form Submissions</Title>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          pageSize={5}
-          disableColumnFilter
-          disableColumnSelector
-          density="compact"
-          getRowId={getRowId}
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-        />
-        <Dialog onClose={handleClose} open={open}>
-          <DialogTitle>User Message</DialogTitle>
-          <DialogContent>
-            <DialogContentText>{message}</DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Box>
-    </Paper>
+    <Box sx={{ my: 14, mx: 6 }}>
+      <Typography
+        variant="h3"
+        marked="left"
+        style={{ fontWeight: "bold", fontSize: "30px" }}
+        gutterBottom
+      >
+        Contact Form Submissions
+      </Typography>
+      <Paper sx={{ mt: 3, p: 2, display: "flex", flexDirection: "column" }}>
+        <Box style={{ width: "100%" }}>
+          <StripedDataGrid
+            sx={{
+              border: 1,
+              borderColor: "primary.light",
+              "& .MuiDataGrid-cell:hover": {
+                fontWeight: "bold",
+              },
+            }}
+            checkboxSelection
+            rows={rows}
+            columns={columns}
+            pageSize={5}
+            disableColumnFilter
+            disableColumnSelector
+            density="comfortable"
+            getRowId={getRowId}
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 5,
+                },
+              },
+            }}
+            pageSizeOptions={[5, 10, 25]}
+            getRowClassName={(params) =>
+              params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
+            }
+          />
+          <Dialog onClose={handleClose} open={open}>
+            <DialogTitle>User Message</DialogTitle>
+            <DialogContent>
+              <DialogContentText>{message}</DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </Box>
+      </Paper>
+    </Box>
   );
 }

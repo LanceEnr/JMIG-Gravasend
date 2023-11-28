@@ -48,6 +48,7 @@ import AddCurrent from "./pages/admin/components/AddCurrent";
 import EditCurrent from "./pages/admin/components/EditCurrent";
 import AddFaq from "./pages/admin/components/AddFaq";
 import EditFaq from "./pages/admin/components/EditFaq";
+import NewUserManagement from "./pages/admin/components/NewUserManagement";
 
 const initialState = {
   isAuthenticated: !!localStorage.getItem("admintoken"),
@@ -205,7 +206,7 @@ function AdminApp() {
                     <Route
                       path="/adminusermanagement"
                       exact
-                      element={<UserManagement />}
+                      element={<NewUserManagement />}
                     />
                     <Route
                       path="/adminmanagecontactform"
