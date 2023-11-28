@@ -649,66 +649,121 @@ export const columnsCurrentInventory = [
 ];
 
 export const columnsIncomingInventory = [
-  { field: "id", headerName: "ID", flex: 1 },
   {
-    field: "itemName",
-    headerName: "Item Name",
-    flex: 2,
-    editable: true,
+    field: "id",
+    headerName: "ID",
+    flex: 1,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
   },
   {
-    field: "quantity",
-    headerName: "Quantity (cub. mt.)",
+    field: "itemName",
+    headerName: "ITEM NAME",
     flex: 2,
-    editable: true,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
+  },
+
+  {
+    field: "quantity",
+    headerName: "QUANTITY",
+    flex: 1,
+    valueFormatter: (params) => `${params.value} cu. mt.`,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
   },
   {
     field: "name",
-    headerName: "Driver Name",
+    headerName: "DRIVER NAME",
     flex: 2,
-    editable: true,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
   },
   {
     field: "location",
-    headerName: "Location",
+    headerName: "LOCATION",
     flex: 2,
-    editable: true,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
   },
   {
     field: "date",
-    headerName: "Date Ordered",
-    type: "datetime",
+    headerName: "DATE ORDERED",
     flex: 3,
-    editable: true,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
   },
 ];
 
 export const columnsOutgoingInventory = [
-  { field: "id", headerName: "ID", flex: 1 },
+  {
+    field: "id",
+    headerName: "ID",
+    flex: 1,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
+  },
   {
     field: "itemName",
-    headerName: "Item Name",
+    headerName: "ITEM NAME",
     flex: 2,
-    editable: true,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
   },
   {
     field: "quantity",
-    headerName: "Quantity",
-    flex: 2,
-    editable: true,
+    headerName: "QUANTITY",
+    flex: 1,
+    valueFormatter: (params) => `${params.value} cu. mt.`,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
   },
   {
     field: "destinationLocation",
-    headerName: "Destination Location",
+    headerName: "DESTINATION LOCATION",
     flex: 2,
-    editable: true,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
   },
   {
     field: "dateDispatched",
-    headerName: "Date Dispatched",
-    type: "datetime",
+    headerName: "DATE DISPATCHED",
     flex: 3,
-    editable: true,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
   },
 ];
 
@@ -765,12 +820,6 @@ const transformFAQData = (data) => {
 const rowsFaqs = transformFAQData(await fetchFAQData());
 
 export { rowsFaqs };
-
-export const columnsFaqs = [
-  { field: "id", headerName: "ID", flex: 1 },
-  { field: "question", headerName: "Question", flex: 4, editable: true },
-  { field: "answer", headerName: "Answer", flex: 4, editable: true },
-];
 
 export const columnsUserManagement = [
   { field: "id", headerName: "Username", flex: 1 },

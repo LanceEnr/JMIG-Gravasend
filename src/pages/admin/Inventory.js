@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Paper, Box, Tab, Tabs } from "@mui/material";
+import { Paper, Box, Tab, Tabs, Button } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import FullFeaturedCrudGrid from "./components/CustomDataGrid";
 import IncomingDataGrid from "./components/IncomingDataGrid";
@@ -13,6 +13,14 @@ import {
   columnsOutgoingInventory,
   rowsOutgoingInventory,
 } from "./helpers/data";
+import Typography from "../../components/common/Typography";
+
+import { Link } from "react-router-dom";
+
+import AddIcon from "@mui/icons-material/Add";
+import NewCurrent from "./components/NewCurrent";
+import NewIncomingInventory from "./components/NewIncoming";
+import NewOutgoingInventory from "./components/NewOutgoing";
 
 function Inventory() {
   const [value, setValue] = useState(0);
@@ -92,40 +100,52 @@ function Inventory() {
   };
   return (
     <div>
-      <Paper sx={{ my: 2, p: 2, display: "flex", flexDirection: "column" }}>
-        <Title>Inventory</Title>
-        <Box sx={{ width: "100%" }}>
-          <Box sx={{ mb: 2, borderBottom: 1, borderColor: "divider" }}>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              aria-label="Maintenance"
-            >
-              <Tab label="Current" />
-              <Tab label="Incoming" />
-              <Tab label="History" />
-            </Tabs>
-          </Box>
+      <Box sx={{ my: 12, mx: 6 }}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          marginBottom={2}
+        >
+          <Typography
+            variant="h3"
+            marked="left"
+            style={{ fontWeight: "bold", fontSize: "30px" }}
+            gutterBottom
+          >
+            Inventory
+          </Typography>
           {value === 0 && (
-            <FullFeaturedCrudGrid
-              columns={columnsCurrentInventory}
-              rows={rowsCurrentInventory}
-            />
-          )}
-          {value === 1 && (
-            <IncomingDataGrid
-              columns={columnsIncomingInventory}
-              rows={rowsIncomingInventory}
-            />
-          )}
-          {value === 2 && (
-            <IncomingDataGrid
-              columns={columnsOutgoingInventory}
-              rows={rowsOutgoingInventory}
-            />
+            <Button
+              component={Link}
+              to={"/adminaddcurrent"}
+              variant="contained"
+              sx={{ ml: 1 }}
+              startIcon={<AddIcon />}
+            >
+              Add Inventory
+            </Button>
           )}
         </Box>
-      </Paper>
+        <Paper sx={{ mt: 3, p: 2, display: "flex", flexDirection: "column" }}>
+          <Box sx={{ width: "100%" }}>
+            <Box sx={{ mb: 2, borderBottom: 1, borderColor: "divider" }}>
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="Maintenance"
+              >
+                <Tab label="Current" />
+                <Tab label="Incoming" />
+                <Tab label="History" />
+              </Tabs>
+            </Box>
+            {value === 0 && <NewCurrent />}
+            {value === 1 && <NewIncomingInventory />}
+            {value === 2 && <NewOutgoingInventory />}
+          </Box>
+        </Paper>
+      </Box>
     </div>
   );
 }

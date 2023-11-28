@@ -558,7 +558,7 @@ export default function AdminDashboard() {
                 <WebIcon />
               </ListItemIcon>
               <ListItemText>
-                <Typography variant="caption">Main Content</Typography>
+                <Typography variant="caption">General Content</Typography>
               </ListItemText>
             </ListItemButton>
             <ListItemButton component={Link} to="/adminlistings">

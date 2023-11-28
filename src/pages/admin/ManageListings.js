@@ -1,9 +1,17 @@
 import React, { useState } from "react";
-import { DataGrid, GridActionsCellItem, GridToolbar } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridActionsCellItem,
+  GridToolbar,
+  gridClasses,
+} from "@mui/x-data-grid";
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { toast } from "react-toastify";
+import AddIcon from "@mui/icons-material/Add";
+import Typography from "../../components/common/Typography";
+import { alpha, styled } from "@mui/material/styles";
 
 import {
   Switch,
@@ -16,7 +24,43 @@ import {
   DialogContentText,
   DialogActions,
 } from "@mui/material";
-import Title from "./components/Title";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+
+const ODD_OPACITY = 0.2;
+
+const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
+  [`& .${gridClasses.row}.even`]: {
+    backgroundColor: "#EAECEA",
+    "&:hover, &.Mui-hovered": {
+      backgroundColor: alpha(theme.palette.primary.main, ODD_OPACITY),
+      "@media (hover: none)": {
+        backgroundColor: "transparent",
+      },
+    },
+    "&.Mui-selected": {
+      backgroundColor: alpha(
+        theme.palette.primary.main,
+        ODD_OPACITY + theme.palette.action.selectedOpacity
+      ),
+      "&:hover, &.Mui-hovered": {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          ODD_OPACITY +
+            theme.palette.action.selectedOpacity +
+            theme.palette.action.hoverOpacity
+        ),
+        // Reset on touch devices, it doesn't add specificity
+        "@media (hover: none)": {
+          backgroundColor: alpha(
+            theme.palette.primary.main,
+            ODD_OPACITY + theme.palette.action.selectedOpacity
+          ),
+        },
+      },
+    },
+  },
+}));
 
 const fetchListingData = async () => {
   try {
@@ -98,19 +142,65 @@ export default function ManageListings({ onAddClick, onEditClick }) {
   };
 
   const columnsListing = [
-    { field: "id", headerName: "ID", flex: 1 },
-    { field: "name", headerName: "Name", flex: 1 },
-    { field: "price", headerName: "Price", flex: 1 },
     {
-      field: "published",
-      headerName: "Published",
+      field: "id",
+      headerName: "ID",
       flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
     },
     {
+      field: "name",
+      headerName: "NAME",
+      flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "price",
+      headerName: "PRICE",
+      flex: 1,
+      valueFormatter: (params) => `₱${params.value.toLocaleString()}`,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "published",
+      headerName: "PUBLISHED",
+      flex: 1,
+      renderCell: (params) => {
+        if (params.value) {
+          return <CheckIcon sx={{ color: "success.main" }} />;
+        } else {
+          return <CloseIcon sx={{ color: "error.main" }} />;
+        }
+      },
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+
+    {
       field: "actions",
-      headerName: "Actions",
+      headerName: "ACTIONS",
       sortable: false,
       flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
       renderCell: (params) => (
         <React.Fragment>
           <GridActionsCellItem
@@ -133,49 +223,82 @@ export default function ManageListings({ onAddClick, onEditClick }) {
   ];
 
   return (
-    <Paper sx={{ m: 2, p: 2, display: "flex", flexDirection: "column" }}>
+    <Box sx={{ my: 14, mx: 6 }}>
       <Box
         display="flex"
         justifyContent="space-between"
         alignItems="center"
         marginBottom={2}
       >
-        <Title>Manage Listings</Title>
+        <Typography
+          variant="h3"
+          marked="left"
+          style={{ fontWeight: "bold", fontSize: "30px" }}
+          gutterBottom
+        >
+          Manage Listings
+        </Typography>
 
-        <Button variant="contained" sx={{ ml: 1 }} onClick={onAddClick}>
-          Add Listing
+        <Button
+          variant="contained"
+          sx={{ ml: 1 }}
+          startIcon={<AddIcon />}
+          onClick={onAddClick}
+        >
+          Add New Listing
         </Button>
       </Box>
-      <DataGrid
-        rows={rowsListing}
-        columns={columnsListing}
-        pageSize={5}
-        disableColumnFilter
-        disableColumnSelector
-        density="compact"
-        slots={{ toolbar: GridToolbar }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-      />
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Are you sure?</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {action === "save"
-              ? "Do you want to save changes?"
-              : "Do you want to delete this row?"}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleConfirm} color="primary" autoFocus>
-            Confirm
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Paper>
+      <Paper sx={{ mt: 3, p: 2, display: "flex", flexDirection: "column" }}>
+        <StripedDataGrid
+          sx={{
+            border: 1,
+            borderColor: "primary.light",
+            "& .MuiDataGrid-cell:hover": {
+              fontWeight: "bold",
+            },
+          }}
+          rows={rowsListing}
+          columns={columnsListing}
+          pageSize={5}
+          disableColumnFilter
+          disableColumnSelector
+          density="comfortable"
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 5,
+              },
+            },
+          }}
+          pageSizeOptions={[5, 10, 25]}
+          getRowClassName={(params) =>
+            params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
+          }
+        />
+
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle>Are you sure?</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {action === "save"
+                ? "Do you want to save changes?"
+                : "Do you want to delete this row?"}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button color="primary" autoFocus>
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Paper>
+    </Box>
   );
 }
