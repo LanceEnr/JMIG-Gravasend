@@ -128,7 +128,12 @@ export default function ManageContactForm() {
             rows={rows}
             columns={columns}
             pageSize={5}
-            disableColumnFilter
+            disableColumnFilterslotProps={{
+              toolbar: {
+                showQuickFilter: true,
+                printOptions: { disableToolbarButton: true },
+              },
+            }}
             disableColumnSelector
             density="comfortable"
             getRowId={getRowId}
@@ -136,6 +141,7 @@ export default function ManageContactForm() {
             slotProps={{
               toolbar: {
                 showQuickFilter: true,
+                printOptions: { disableToolbarButton: true },
               },
             }}
             initialState={{

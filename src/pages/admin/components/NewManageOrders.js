@@ -112,7 +112,7 @@ export default function NewManageOrders() {
     {
       field: "id",
       headerName: "ORDER NO.",
-      flex: 2,
+      flex: 1,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -142,7 +142,7 @@ export default function NewManageOrders() {
     {
       field: "price",
       headerName: "PRICE",
-      flex: 1,
+      flex: 2,
       valueFormatter: (params) => `₱${params.value.toLocaleString()}`,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
@@ -154,7 +154,7 @@ export default function NewManageOrders() {
     {
       field: "quantity",
       headerName: "QUANTITY",
-      flex: 1,
+      flex: 2,
       valueFormatter: (params) => `${params.value} cu. mt.`,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
@@ -166,7 +166,7 @@ export default function NewManageOrders() {
     {
       field: "total",
       headerName: "TOTAL",
-      flex: 1,
+      flex: 2,
       valueGetter: (params) => {
         const price = params.row.price;
         const quantity = params.row.quantity;
@@ -193,7 +193,7 @@ export default function NewManageOrders() {
       field: "lastUpdated",
       headerName: "LAST UPDATED",
       type: "datetime",
-      flex: 1,
+      flex: 2,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -203,7 +203,7 @@ export default function NewManageOrders() {
     {
       field: "status",
       headerName: "STATUS",
-      flex: 1.5,
+      flex: 1,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -420,12 +420,14 @@ export default function NewManageOrders() {
           columns={columnsManageOrders}
           pageSize={5}
           disableColumnFilter
+          checkboxSelection
           disableColumnSelector
           density="comfortable"
           slots={{ toolbar: GridToolbar }}
           slotProps={{
             toolbar: {
               showQuickFilter: true,
+              printOptions: { disableToolbarButton: true },
             },
           }}
           initialState={{

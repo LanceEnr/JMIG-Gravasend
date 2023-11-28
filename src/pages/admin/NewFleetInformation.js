@@ -334,11 +334,15 @@ export default function NewFleetInformation() {
           pageSize={5}
           disableColumnFilter
           disableColumnSelector
+          checkboxSelection
           density="comfortable"
-          slots={{ toolbar: GridToolbar }}
+          slots={{
+            toolbar: GridToolbar,
+          }}
           slotProps={{
             toolbar: {
               showQuickFilter: true,
+              printOptions: { disableToolbarButton: true },
             },
           }}
           initialState={{

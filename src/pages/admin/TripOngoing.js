@@ -82,7 +82,7 @@ export default function TripOngoing({ onFindClick }) {
     {
       field: "id",
       headerName: "DRIVER NAME",
-      flex: 1.5,
+      flex: 2,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -92,7 +92,7 @@ export default function TripOngoing({ onFindClick }) {
     {
       field: "datetime",
       headerName: "DATE AND TIME",
-      flex: 1.5,
+      flex: 2,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -102,7 +102,7 @@ export default function TripOngoing({ onFindClick }) {
     {
       field: "currentSpeed",
       headerName: "CURRENT SPEED",
-      flex: 1,
+      flex: 2,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -112,7 +112,7 @@ export default function TripOngoing({ onFindClick }) {
     {
       field: "averageSpeed",
       headerName: "AVG SPEED",
-      flex: 1,
+      flex: 2,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -122,7 +122,7 @@ export default function TripOngoing({ onFindClick }) {
     {
       field: "maxSpeed",
       headerName: "MAX SPEED",
-      flex: 1,
+      flex: 2,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -132,7 +132,7 @@ export default function TripOngoing({ onFindClick }) {
     {
       field: "harshBraking",
       headerName: "HARSH BRAKING",
-      flex: 1,
+      flex: 2,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -142,7 +142,7 @@ export default function TripOngoing({ onFindClick }) {
     {
       field: "suddenAcceleration",
       headerName: "SUDDEN ACCELERATION",
-      flex: 1,
+      flex: 2,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -153,7 +153,7 @@ export default function TripOngoing({ onFindClick }) {
       field: "track",
       headerName: "ACTIONS",
       sortable: false,
-      width: 100,
+      flex: 1,
       cellClassName: "actions",
 
       renderHeader: (params) => (

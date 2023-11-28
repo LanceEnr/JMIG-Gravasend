@@ -261,12 +261,14 @@ export default function ManageListings({ onAddClick, onEditClick }) {
           columns={columnsListing}
           pageSize={5}
           disableColumnFilter
+          checkboxSelection
           disableColumnSelector
           density="comfortable"
           slots={{ toolbar: GridToolbar }}
           slotProps={{
             toolbar: {
               showQuickFilter: true,
+              printOptions: { disableToolbarButton: true },
             },
           }}
           initialState={{

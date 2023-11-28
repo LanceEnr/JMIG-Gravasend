@@ -305,7 +305,7 @@ export default function TripVerification() {
     {
       field: "driver",
       headerName: "DRIVER NAME",
-      flex: 1,
+      flex: 2,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -315,7 +315,7 @@ export default function TripVerification() {
     {
       field: "datetime",
       headerName: "DATE AND TIME",
-      flex: 1,
+      flex: 2,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -325,7 +325,7 @@ export default function TripVerification() {
     {
       field: "cargoType",
       headerName: "CARGO TYPE",
-      flex: 1,
+      flex: 2,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -335,7 +335,7 @@ export default function TripVerification() {
     {
       field: "cargoWeight",
       headerName: "CARGO WEIGHT",
-      flex: 1,
+      flex: 2,
       valueFormatter: (params) => `${params.value.toLocaleString()} cu. mt.`,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
@@ -397,12 +397,14 @@ export default function TripVerification() {
         columns={columns}
         pageSize={5}
         disableColumnFilter
+        checkboxSelection
         disableColumnSelector
         density="comfortable"
         slots={{ toolbar: GridToolbar }}
         slotProps={{
           toolbar: {
             showQuickFilter: true,
+            printOptions: { disableToolbarButton: true },
           },
         }}
         initialState={{

@@ -112,7 +112,7 @@ export default function NewMaintenanceScheduling() {
     {
       field: "id",
       headerName: "ID",
-      flex: 2,
+      flex: 1,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -269,11 +269,13 @@ export default function NewMaintenanceScheduling() {
         pageSize={5}
         disableColumnFilter
         disableColumnSelector
+        checkboxSelection
         density="comfortable"
         slots={{ toolbar: GridToolbar }}
         slotProps={{
           toolbar: {
             showQuickFilter: true,
+            printOptions: { disableToolbarButton: true },
           },
         }}
         initialState={{

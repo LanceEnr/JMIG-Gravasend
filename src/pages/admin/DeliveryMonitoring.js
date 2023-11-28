@@ -396,6 +396,7 @@ function DeliveryMonitoring() {
                     slotProps={{
                       toolbar: {
                         showQuickFilter: true,
+                        printOptions: { disableToolbarButton: true },
                       },
                     }}
                     initialState={{
