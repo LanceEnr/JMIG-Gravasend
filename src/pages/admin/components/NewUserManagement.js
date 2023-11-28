@@ -136,7 +136,7 @@ export default function NewUserManagement() {
         style={{ fontWeight: "bold", fontSize: "30px" }}
         gutterBottom
       >
-        User Management
+        User
       </Typography>
 
       <Paper sx={{ mt: 3, p: 2, display: "flex", flexDirection: "column" }}>
