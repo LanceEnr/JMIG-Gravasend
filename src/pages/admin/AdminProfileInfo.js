@@ -1,82 +1,133 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Typography from "../../components/common/Typography";
 import {
-  Typography,
-  Box,
   Grid,
   Paper,
+  Box,
   useMediaQuery,
-  Avatar,
-  TextField,
-  InputAdornment,
-  IconButton,
+  List,
   Button,
+  TextField,
+  IconButton,
+  Divider,
+  Avatar,
 } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import { toast } from "react-toastify";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { toast } from "react-toastify";
-import Title from "./components/Title";
+import InputAdornment from "@mui/material/InputAdornment";
+import AdminProfileCard from "./components/AdminProfileCard";
+import PhotoCameraIcon from "@mui/icons-material/PhotoCamera"; // Import the PhotoCameraIcon
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import { fetchProfilePic } from "../../components/cms";
 
-export default function AdminProfileInfo() {
+const storedUsername = localStorage.getItem("userName");
+const valuesData = await fetchProfilePic(storedUsername);
+const imagePath = valuesData._profilePicture;
+const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+
+export default function AdminProfileInfo(props) {
   const isMobile = useMediaQuery("(max-width:600px)");
-  const userAvatarUrl = "https://example.com/avatar.jpg";
-  const userName = "John Doe";
-  const totalOrders = 10;
-  const pendingOrders = 2;
-  const [users, setUsers] = useState([]);
-  const [userData, setUserData] = useState({
-    "First Name": "",
-    "Last Name": "",
-    Email: "",
-    Phone: "",
-    Birthdate: "",
-  });
-  const [passwordData, setPasswordData] = useState({
-    CurrentPassword: "",
-    NewPassword: "",
-  });
-
   const [showPassword, setShowPassword] = useState(false);
   const [passwordInputType, setPasswordInputType] = useState("password");
-  const [newPassword, setNewPassword] = useState("");
-  const [resetInProgress, setResetInProgress] = useState(false);
+
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState(null);
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setUploadedImage(file);
+      setDialogOpen(true);
+    }
+  };
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
+  const storedUsername = localStorage.getItem("userName");
+
+  const handleConfirmChange = async (event) => {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append("_userName", storedUsername);
+    formData.append("image", uploadedImage);
+
+    try {
+      const response = await axios.put(
+        "http://localhost:3001/update-user-profilepic",
+        formData
+      );
+
+      toast.success("Profile picture changed successfully!");
+
+      console.log("Profile picture changed successfully ", response.data);
+    } catch (error) {
+      toast.error("Error submitting picture");
+      console.error("Error submitting picture:", error);
+    }
+    setDialogOpen(false);
+  };
+
   const handleShowPasswordToggle = () => {
     setShowPassword(!showPassword);
     setPasswordInputType(showPassword ? "password" : "text");
   };
 
+  const [userData, setUserData] = useState({
+    userName: "", // You should set the username here
+    Phone: "",
+    Address: "",
+    CurrentPassword: "",
+    NewPassword: "",
+  });
   useEffect(() => {
-    const storedUsername = localStorage.getItem("adminUserName");
+    const storedUsername = localStorage.getItem("userName");
     axios
-      .get(`http://localhost:3001/adminUser?userName=${storedUsername}`)
+      .get(`http://localhost:3001/setuser?userName=${storedUsername}`)
       .then((response) => {
-        setUsers(response.data);
-
         if (response.data.length > 0) {
           const user = response.data[0];
 
           setUserData({
-            "First Name": user._fName,
-            "Last Name": user._lName,
-            Email: user._email,
-            Phone: user._phone,
-            Birthdate: user._bday,
+            userName: user.Username,
+            Phone: user.Phone,
+            Address: user.Address,
+            fName: user.fName,
+            lName: user.lName,
+            address: user.address,
+            CurrentPassword: "",
+            NewPassword: "",
           });
         }
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
       });
   }, []);
 
+  const profile = {
+    name: userData.fName + " " + userData.lName,
+    city: userData.address,
+  };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setPasswordData({ ...passwordData, [name]: value });
+    setUserData({ ...userData, [name]: value });
   };
 
   const handlePasswordChange = () => {
-    const userName = localStorage.getItem("adminUserName");
-    const { CurrentPassword, NewPassword } = passwordData;
+    const userName = localStorage.getItem("userName");
+    const { CurrentPassword, NewPassword } = userData;
 
     axios
-      .post("http://localhost:3001/admin-changepassword", {
+      .post("http://localhost:3001/changepassword", {
         userName,
         currentPassword: CurrentPassword,
         newPassword: NewPassword,
@@ -120,134 +171,207 @@ export default function AdminProfileInfo() {
         } else {
           toast.error("Error updating password");
         }
-        setPasswordData({
-          ...passwordData,
-          NewPassword: "",
-          CurrentPassword: "",
-        });
+        setUserData({ ...userData, NewPassword: "", CurrentPassword: "" });
       });
   };
 
-  const adminUserName = localStorage.getItem("adminUserName");
+  const handlePhoneAddressChange = () => {
+    const userName = localStorage.getItem("userName");
+    const { Phone, Address } = userData;
+    const phoneNumberRegex = /^(09|\+639)\d{9}$/;
+    if (!phoneNumberRegex.test(Phone)) {
+      toast.error("Invalid Philippine phone number format");
+      return;
+    }
+
+    axios
+      .post("http://localhost:3001/updatephoneaddress", {
+        userName,
+        phone: Phone,
+        address: Address,
+      })
+      .then((response) => {
+        toast.success("Phone and address updated successfully");
+        console.log("Phone and address updated successfully");
+      })
+      .catch((error) => {
+        // Handle error
+        console.error("Error updating phone and address:", error);
+      });
+  };
+  const userName = localStorage.getItem("userName");
   return (
-    <div>
-      <Box>
-        <Title>Account Information</Title>
-
-        <Grid container spacing={3}>
-          <Grid item xs={4}>
-            <Paper
-              style={{
-                height: "100px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between", // Add this line
-                padding: "0 16px",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <Avatar
-                  alt={adminUserName}
-                  src={userAvatarUrl}
-                  style={{ width: "60px", height: "60px", marginLeft: "16px" }}
-                />
-                <Typography variant="h5" style={{ marginLeft: "16px" }}>
-                  {adminUserName}
+    <Box sx={{ my: 4, mx: 12 }}>
+      <Typography
+        variant="h3"
+        marked="left"
+        style={{ fontWeight: "bold", fontSize: "30px" }}
+        gutterBottom
+      >
+        Admin Profile
+      </Typography>
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={8}>
+          <Paper elevation={2} style={{ padding: "24px" }}>
+            <Grid container spacing={3} alignItems="center">
+              <Grid item xs={12}>
+                <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                  Edit Profile
                 </Typography>
-              </div>
-              <Typography
-                variant="subtitle1"
-                color="secondary"
-                style={{ marginRight: "16px" }}
-              >
-                ADMIN
-              </Typography>
-            </Paper>
-          </Grid>
-
-          <Grid item xs={8}>
-            <Paper
-              style={{
-                minHeight: "100px",
-                padding: "16px 16px 16px 32px",
-                marginBottom: "16px",
-              }}
-            >
-              <Grid container spacing={2}>
-                {Object.entries(userData).map(([key, value]) => (
-                  <Grid item xs={12} sm={6} md={4} lg={2} key={key}>
-                    <Typography variant="subtitle1" color="textSecondary">
-                      {key}
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      style={{ wordBreak: "break-word" }}
-                    >
-                      {value}
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Username"
+                  name="Username"
+                  value={userData.userName}
+                  fullWidth
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Phone"
+                  name="Phone"
+                  value={userData.Phone}
+                  fullWidth
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Address"
+                  name="Address"
+                  value={userData.Address}
+                  fullWidth
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  variant="contained"
+                  type="submit"
+                  onClick={handlePhoneAddressChange} // Call the appropriate function here
+                >
+                  Save User Details
+                </Button>
+              </Grid>
+              <Grid item xs={12}>
+                <Divider />
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                  Change Password
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={12}>
+                <TextField
+                  label="Current Password"
+                  name="CurrentPassword"
+                  type="password"
+                  value={userData.CurrentPassword}
+                  fullWidth
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              <Grid item xs={12} md={12}>
+                <TextField
+                  label="New Password"
+                  name="NewPassword"
+                  type={passwordInputType}
+                  value={userData.NewPassword}
+                  fullWidth
+                  onChange={handleChange}
+                  required
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          edge="end"
+                          onClick={handleShowPasswordToggle}
+                          aria-label="toggle password visibility"
+                        >
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  variant="contained"
+                  type="submit"
+                  onClick={handlePasswordChange} // Call the appropriate function here
+                >
+                  Save changes
+                </Button>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={4} order={{ xs: -1, md: 0 }}>
+          <Grid container spacing={3} direction="column">
+            <Grid item>
+              <AdminProfileCard profile={profile} />
+            </Grid>
+            <Grid item>
+              <Paper elevation={2} style={{ padding: "24px" }}>
+                <Grid container alignItems="center">
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                      Select Profile Photo
                     </Typography>
                   </Grid>
-                ))}
-              </Grid>
-            </Paper>
+                  <Grid container item xs={12} sx={{ mt: 2 }}>
+                    <Grid item xs={3}>
+                      <Avatar
+                        alt={profile.name}
+                        // src={require(`../images/profile/${filename}`)}
+                        //src={ProfilePic}
+                        sx={{
+                          width: 40,
+                          height: 40,
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={9}>
+                      <input
+                        type="file"
+                        id="upload-button"
+                        accept=".webp, .img, .png, .jpg"
+                        style={{ display: "none" }}
+                        onChange={handleFileUpload}
+                      />
+                      <label htmlFor="upload-button">
+                        <Button
+                          variant="contained"
+                          startIcon={<PhotoCameraIcon />}
+                          component="span"
+                        >
+                          Upload
+                        </Button>
+                      </label>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Paper>
+            </Grid>
           </Grid>
         </Grid>
-      </Box>
-      <Box>
-        <Title>Change Password</Title>
-
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Paper elevation={2} style={{ padding: "24px" }}>
-              <Grid container spacing={3} alignItems="center">
-                <Grid item xs={12}>
-                  <Box sx={{ mb: 2 }}>
-                    <TextField
-                      label="Current Password"
-                      name="CurrentPassword"
-                      type="password"
-                      value={passwordData.CurrentPassword}
-                      fullWidth
-                      onChange={handleChange}
-                      required
-                    />
-                  </Box>
-                  <TextField
-                    label="New Password"
-                    name="NewPassword"
-                    type={passwordInputType}
-                    value={passwordData.NewPassword}
-                    fullWidth
-                    onChange={handleChange}
-                    required
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            edge="end"
-                            onClick={handleShowPasswordToggle}
-                            aria-label="toggle password visibility"
-                          >
-                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Button
-                    variant="contained"
-                    type="submit"
-                    onClick={handlePasswordChange} // Call the appropriate function here
-                  >
-                    Save changes
-                  </Button>
-                </Grid>
-              </Grid>
-            </Paper>
-          </Grid>
-        </Grid>
-      </Box>
-    </div>
+      </Grid>
+      <Dialog open={isDialogOpen} onClose={handleDialogClose}>
+        <DialogTitle>Change Profile Picture</DialogTitle>
+        <DialogContent>
+          <Typography>Do you want to change your profile picture?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose}>Cancel</Button>
+          <Button onClick={handleConfirmChange} variant="contained">
+            Yes, Change
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 }

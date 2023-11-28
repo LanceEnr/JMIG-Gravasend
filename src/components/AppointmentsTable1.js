@@ -319,14 +319,15 @@ export default function AppointmentsTable1(props) {
           component="h1"
           variant="h5"
           sx={{
-            color: "#83948a",
             fontWeight: "bold",
             display: "flex",
             alignItems: "center",
             my: 2,
           }}
         >
-          <EventNoteIcon sx={{ mr: 2, verticalAlign: "middle" }} />
+          <EventNoteIcon
+            sx={{ color: "#83948a", mr: 2, verticalAlign: "middle" }}
+          />
           Appointments
         </Typography>
         {!isMobile ? (

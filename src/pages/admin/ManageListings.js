@@ -223,7 +223,7 @@ export default function ManageListings({ onAddClick, onEditClick }) {
   ];
 
   return (
-    <Box sx={{ my: 14, mx: 6 }}>
+    <Box sx={{ my: 14, mx: 12 }}>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -261,12 +261,14 @@ export default function ManageListings({ onAddClick, onEditClick }) {
           columns={columnsListing}
           pageSize={5}
           disableColumnFilter
+          checkboxSelection
           disableColumnSelector
           density="comfortable"
           slots={{ toolbar: GridToolbar }}
           slotProps={{
             toolbar: {
               showQuickFilter: true,
+              printOptions: { disableToolbarButton: true },
             },
           }}
           initialState={{

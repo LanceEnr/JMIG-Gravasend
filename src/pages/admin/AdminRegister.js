@@ -1,17 +1,15 @@
 import React, { useState } from "react";
+
 import axios from "axios";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
+import { useNavigate, Link } from "react-router-dom";
 import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
+import Typography from "../../components/common/Typography";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
-import BannerImage from "../../assets/contact.webp";
 import { toast } from "react-toastify";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -22,24 +20,20 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useNavigate, Link } from "react-router-dom";
+import BannerImage from "../../assets/choose.webp";
+import { makeStyles } from "@mui/styles"; // Import makeStyles for custom styles
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      {new Date().getFullYear()}
-      {" JMIG Gravel and Sand Supply."}
-    </Typography>
-  );
-}
+const useStyles = makeStyles((theme) => ({
+  signin: {
+    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${BannerImage})`,
+    backgroundSize: "cover",
+    minHeight: "100vh",
+  },
+}));
 
 export default function AdminRegister() {
+  const classes = useStyles(); // Add Material-UI styles
+
   const [emailUsed, setEmailUsed] = useState(false);
   const [usernameUsed, setUsernameUsed] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -167,236 +161,210 @@ export default function AdminRegister() {
   };
 
   return (
-    <div>
-      <container>
-        <Grid container component="main" sx={{ height: "100vh" }}>
-          <CssBaseline />
-          <Grid
-            item
-            xs={false}
-            sm={4}
-            md={7}
-            sx={{
-              backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${BannerImage})`,
-              backgroundRepeat: "no-repeat",
-              backgroundColor: (t) =>
-                t.palette.mode === "light"
-                  ? t.palette.grey[50]
-                  : t.palette.grey[900],
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
-          <Grid
-            item
-            xs={12}
-            sm={8}
-            md={5}
-            component={Paper}
-            elevation={6}
-            square
+    <div className={classes.signin}>
+      <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            boxShadow: 3,
+            borderRadius: 2,
+            px: 4,
+            py: 6,
+            backgroundColor: "#ffffff",
+          }}
+        >
+          <Typography
+            variant="h4"
+            sx={{ fontSize: "30px", fontWeight: "bold" }}
+            gutterBottom
+            marked="center"
+            align="center"
           >
-            <Box
-              sx={{
-                my: 4,
-                mx: 4,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Typography
-                component="h1"
-                variant="h5"
-                sx={{ color: "#83948a", fontWeight: "bold" }}
-              >
-                Admin Sign Up
-              </Typography>
-              <Typography component="h1" variant="body1" color="textSecondary">
-                Create your account by filling the form below.
-              </Typography>
-              <form onSubmit={handleSubmit}>
-                <Grid container spacing={2} sx={{ mt: 1 }}>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      name="_fName"
-                      label="First Name"
-                      onChange={handleChange}
-                      value={formData._fName}
-                      fullWidth
-                      required
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      name="_lName"
-                      label="Last Name"
-                      fullWidth
-                      onChange={handleChange}
-                      value={formData._lName}
-                      required
-                    />
-                  </Grid>
+            ADMIN SIGN UP
+          </Typography>
+          <Typography align="center">
+            {"Already have an account? "}
+            <Link to="/adminlogin" align="center" className="link">
+              Login here
+            </Link>
+          </Typography>
 
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      name="_phone"
-                      label="Phone Number"
-                      fullWidth
-                      onChange={handleChange}
-                      value={formData._phone}
-                      required
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      type="date"
-                      name="_bday"
-                      label="Birthday"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      fullWidth
-                      onChange={handleChange}
-                      value={formData._bday}
-                      required
-                      inputProps={{
-                        max: calculateEighteenYearsAgo(), // Set the max date to 18 years ago
-                      }}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <TextField
-                      type="text"
-                      name="_address"
-                      label="Address"
-                      fullWidth
-                      required
-                      onChange={handleChange}
-                      value={formData._address}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <TextField
-                      name="_userName"
-                      label="Username"
-                      fullWidth
-                      onChange={handleChange}
-                      value={formData._userName}
-                      required
-                      autoComplete="userName"
-                      error={usernameUsed}
-                      helperText={
-                        usernameUsed ? "Username is already used" : ""
-                      }
-                    />
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <TextField
-                      name="_email"
-                      label="Email Address"
-                      fullWidth
-                      onChange={handleChange}
-                      value={formData._email}
-                      required
-                      autoComplete="email"
-                      error={emailUsed}
-                      helperText={emailUsed ? "Email is already used" : ""}
-                    />
-                  </Grid>
-
-                  <Grid item xs={8}>
-                    <TextField
-                      name="_pwd"
-                      label="Password"
-                      fullWidth
-                      type={passwordInputType}
-                      onChange={handleChange}
-                      value={formData._pwd}
-                      required
-                      autoComplete="password"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton
-                              edge="end"
-                              onClick={handleShowPasswordToggle}
-                              aria-label="toggle password visibility"
-                            >
-                              {showPassword ? (
-                                <Visibility />
-                              ) : (
-                                <VisibilityOff />
-                              )}
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <TextField
-                      name="_adminCode"
-                      label="Admin Code"
-                      fullWidth
-                      required
-                      autoComplete="_adminCode"
-                      onChange={handleChange}
-                      value={formData._adminCode}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={agreeToTerms}
-                          onChange={handleAgreeToTermsChange}
-                          value="agreeToTerms"
-                          color="primary"
-                        />
-                      }
-                      label="I agree to the terms and conditions."
-                      required
-                      onClick={handleOpenTermsDialog} // Open terms dialog when clicked
-                    />
-                  </Grid>
-                </Grid>
-                <Button
-                  type="submit"
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={2} sx={{ mt: 1 }}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  name="_fName"
+                  label="First Name"
+                  onChange={handleChange}
+                  value={formData._fName}
                   fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2, backgroundColor: "#83948a" }}
-                >
-                  Sign Up
-                </Button>
-              </form>
-              <Grid container justifyContent="flex-end">
-                <Grid item>
-                  <Link to="/adminlogin" variant="body2">
-                    Already have an account? Sign in
-                  </Link>
-                </Grid>
+                  required
+                />
               </Grid>
-              <Copyright sx={{ mt: 5 }} />
-            </Box>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  name="_lName"
+                  label="Last Name"
+                  fullWidth
+                  onChange={handleChange}
+                  value={formData._lName}
+                  required
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  name="_phone"
+                  label="Phone Number"
+                  fullWidth
+                  onChange={handleChange}
+                  value={formData._phone}
+                  required
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  type="date"
+                  name="_bday"
+                  label="Birthday"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  fullWidth
+                  onChange={handleChange}
+                  value={formData._bday}
+                  required
+                  inputProps={{
+                    max: calculateEighteenYearsAgo(), // Set the max date to 18 years ago
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  type="text"
+                  name="_address"
+                  label="Address"
+                  fullWidth
+                  required
+                  onChange={handleChange}
+                  value={formData._address}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  name="_userName"
+                  label="Username"
+                  fullWidth
+                  onChange={handleChange}
+                  value={formData._userName}
+                  required
+                  autoComplete="userName"
+                  error={usernameUsed}
+                  helperText={usernameUsed ? "Username is already used" : ""}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  name="_email"
+                  label="Email Address"
+                  fullWidth
+                  onChange={handleChange}
+                  value={formData._email}
+                  required
+                  autoComplete="email"
+                  error={emailUsed}
+                  helperText={emailUsed ? "Email is already used" : ""}
+                />
+              </Grid>
+
+              <Grid item xs={8}>
+                <TextField
+                  name="_pwd"
+                  label="Password"
+                  fullWidth
+                  type={passwordInputType}
+                  onChange={handleChange}
+                  value={formData._pwd}
+                  required
+                  autoComplete="password"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          edge="end"
+                          onClick={handleShowPasswordToggle}
+                          aria-label="toggle password visibility"
+                        >
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  name="_adminCode"
+                  label="Admin Code"
+                  fullWidth
+                  required
+                  autoComplete="_adminCode"
+                  onChange={handleChange}
+                  value={formData._adminCode}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={agreeToTerms}
+                      onChange={handleAgreeToTermsChange}
+                      value="agreeToTerms"
+                      color="primary"
+                    />
+                  }
+                  label="I agree to the terms and conditions."
+                  required
+                  onClick={handleOpenTermsDialog} // Open terms dialog when clicked
+                />
+              </Grid>
+            </Grid>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2, backgroundColor: "#83948a" }}
+            >
+              Sign Up
+            </Button>
+          </form>
+          <Grid container justifyContent="flex-end">
+            <Grid item>
+              <Link to="/" variant="caption" className="link">
+                Go back to home
+              </Link>
+            </Grid>
           </Grid>
-        </Grid>
-      </container>
+        </Box>
+      </Container>
+      {/* Terms and conditions dialog */}
       <Dialog open={openTermsDialog} onClose={handleCloseTermsDialog}>
-        <DialogTitle>Terms and Conditions</DialogTitle>
+        <DialogTitle style={{ fontSize: "1.2rem" }}>
+          Terms and Conditions
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <p>
-              <strong>Terms and Conditions</strong>
-            </p>
-            <p>
+            <p style={{ fontSize: "0.9rem" }}>
               By creating an account with JMIG, you agree to the following terms
               and conditions:
             </p>
-            <ol>
+            <ol style={{ fontSize: "0.9rem" }}>
               <li>
                 <strong>Eligibility:</strong>
                 <ul>
@@ -472,11 +440,11 @@ export default function AdminRegister() {
                 </ul>
               </li>
             </ol>
-            <p>
+            <p style={{ fontSize: "0.9rem" }}>
               By clicking "I agree to the terms and conditions," you acknowledge
               that you have read and accept these terms.
             </p>
-            <p>Last Updated: [Date]</p>
+            <p style={{ fontSize: "0.9rem" }}>Last Updated: [Date]</p>
           </DialogContentText>
         </DialogContent>
         <DialogActions>

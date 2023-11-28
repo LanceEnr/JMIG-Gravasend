@@ -704,7 +704,7 @@ export const columnsIncomingInventory = [
   {
     field: "date",
     headerName: "DATE ORDERED",
-    flex: 3,
+    flex: 2,
     renderHeader: (params) => (
       <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
         {params.colDef.headerName}
@@ -758,7 +758,7 @@ export const columnsOutgoingInventory = [
   {
     field: "dateDispatched",
     headerName: "DATE DISPATCHED",
-    flex: 3,
+    flex: 2,
     renderHeader: (params) => (
       <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
         {params.colDef.headerName}

@@ -129,7 +129,7 @@ export default function NewUserManagement() {
   ];
 
   return (
-    <Box sx={{ my: 14, mx: 6 }}>
+    <Box sx={{ my: 14, mx: 12 }}>
       <Typography
         variant="h3"
         marked="left"
@@ -152,12 +152,14 @@ export default function NewUserManagement() {
           columns={columnsUserManagement}
           pageSize={5}
           disableColumnFilter
+          checkboxSelection
           disableColumnSelector
           density="comfortable"
           slots={{ toolbar: GridToolbar }}
           slotProps={{
             toolbar: {
               showQuickFilter: true,
+              printOptions: { disableToolbarButton: true },
             },
           }}
           initialState={{

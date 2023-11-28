@@ -68,21 +68,7 @@ import Content from "./Content";
 import ManageListings from "./ManageListings";
 import EditListing from "./EditListing";
 import SideNavImage from "../../assets/asd.webp";
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      {new Date().getFullYear()}
-      {" JMIG Gravel and Sand Supply."}
-    </Typography>
-  );
-}
+import LogoGravasend from "../../assets/LogoGravasend.webp";
 
 const drawerWidth = 250;
 
@@ -117,7 +103,7 @@ const Drawer = styled(MuiDrawer, {
     }),
     boxSizing: "border-box",
     overflowY: "auto", // Add this line
-    backgroundImage: `linear-gradient(to bottom, rgba(0, 74, 173, 0.5), rgba(0, 74, 173, 0.5)), url(${SideNavImage})`,
+    backgroundImage: `linear-gradient(to bottom, rgba(189, 133, 18, 0.5), rgba(189, 133, 18, 0.5)), url(${SideNavImage})`,
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
     ...(!open && {
@@ -208,8 +194,6 @@ const transformNotification = (data) => {
 
 const notifications = transformNotification(await fetchNotifications());
 
-const settings = ["Settings", "Logout"];
-
 export default function AdminDashboard() {
   const [anchorElSettings, setAnchorElSettings] = React.useState(null);
 
@@ -265,7 +249,9 @@ export default function AdminDashboard() {
       <AppBar position="absolute" open={open}>
         <Toolbar
           sx={{
-            pr: "24px", // keep right padding when drawer closed
+            pr: "24px",
+            display: "flex",
+            justifyContent: "space-between",
           }}
         >
           <IconButton
@@ -280,73 +266,54 @@ export default function AdminDashboard() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography
-            component="h1"
-            variant="h6"
-            color="inherit"
-            noWrap
-            sx={{ flexGrow: 1 }}
-          >
-            JMIG Admin Panel
-          </Typography>
-          <Tooltip title="Notifications">
-            <IconButton color="inherit" onClick={handleOpenNotificationsMenu}>
-              <Badge
-                color="secondary"
-                badgeContent={notifications ? notifications.length : 0}
+          <Link to="/" className="unstyled-link">
+            <Box
+              sx={{
+                display: "flex",
+                ml: 2,
+                mt: 1,
+                position: "relative", // Add this
+              }}
+            >
+              <Box
+                component="img"
+                src={LogoGravasend}
+                alt="Logo"
+                sx={{
+                  width: "35px",
+                  height: "auto",
+                  position: "absolute", // Add this
+                  top: -10, // Adjust this value as needed
+                  left: -20, // Adjust this value as needed
+                }}
+              />
+
+              <Typography
+                component="h1"
+                variant="h6"
+                color="inherit"
+                noWrap
+                sx={{ flexGrow: 1, fontWeight: "bold" }}
               >
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-          </Tooltip>
-          <Menu
-            sx={{ mt: "45px" }}
-            id="notification-appbar"
-            anchorEl={anchorElNotifications}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            open={Boolean(anchorElNotifications)}
-            onClose={handleCloseNotificationsMenu}
-          >
-            {notifications.map((notification) => (
-              <MenuItem
-                key={notification.heading}
-                onClick={handleCloseNotificationsMenu}
-              >
-                <ListItemIcon>
-                  <notification.icon fontSize="small" />
-                </ListItemIcon>
-                <div>
-                  <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
-                    {notification.heading}
-                  </Typography>
-                  <Typography variant="body2">{notification.text}</Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{ fontSize: 10, color: "blue" }}
-                  >
-                    {timeAgo(notification.date)}
-                  </Typography>
-                </div>
-              </MenuItem>
-            ))}
-          </Menu>
-          <Box sx={{ ml: 2 }}>
-            <Tooltip title="Settings">
-              <IconButton onClick={handleOpenSettingsMenu} sx={{ p: 0 }}>
-                <Avatar />
+                Admin Dashboard
+              </Typography>
+            </Box>
+          </Link>
+          <Box sx={{ ml: "auto", display: "flex" }}>
+            <Tooltip title="Notifications">
+              <IconButton color="inherit" onClick={handleOpenNotificationsMenu}>
+                <Badge
+                  color="secondary"
+                  badgeContent={notifications ? notifications.length : 0}
+                >
+                  <NotificationsIcon />
+                </Badge>
               </IconButton>
             </Tooltip>
             <Menu
               sx={{ mt: "45px" }}
-              anchorEl={anchorElSettings}
+              id="notification-appbar"
+              anchorEl={anchorElNotifications}
               anchorOrigin={{
                 vertical: "top",
                 horizontal: "right",
@@ -356,34 +323,73 @@ export default function AdminDashboard() {
                 vertical: "top",
                 horizontal: "right",
               }}
-              open={Boolean(anchorElSettings)}
-              onClose={handleCloseSettingsMenu}
+              open={Boolean(anchorElNotifications)}
+              onClose={handleCloseNotificationsMenu}
             >
-              {settings.map((setting) => (
+              {notifications.map((notification) => (
                 <MenuItem
-                  key={setting}
-                  onClick={() => {
-                    if (setting === "Logout") {
-                      localStorage.removeItem("adminToken");
-                      dispatch({ type: "LOGOUT" });
-                      toast.success("Logout successfully", {
-                        autoClose: 50,
-                        onClose: () => {
-                          navigate("/adminLogin");
-                          window.location.reload();
-                        },
-                      });
-                    } else if (setting === "Settings") {
-                      window.location.href = "/settings";
-                    } else {
-                      window.location.href = `/${setting}`;
-                    }
-                  }}
+                  key={notification.heading}
+                  onClick={handleCloseNotificationsMenu}
                 >
-                  <Typography textAlign="center">{setting}</Typography>
+                  <ListItemIcon>
+                    <notification.icon fontSize="small" />
+                  </ListItemIcon>
+                  <div>
+                    <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+                      {notification.heading}
+                    </Typography>
+                    <Typography variant="body2">{notification.text}</Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{ fontSize: 10, color: "blue" }}
+                    >
+                      {timeAgo(notification.date)}
+                    </Typography>
+                  </div>
                 </MenuItem>
               ))}
             </Menu>
+            <Box sx={{ ml: 2 }}>
+              <Tooltip title="Settings">
+                <IconButton onClick={handleOpenSettingsMenu} sx={{ p: 0 }}>
+                  <Avatar />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: "45px" }}
+                anchorEl={anchorElSettings}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElSettings)}
+                onClose={handleCloseSettingsMenu}
+              >
+                <MenuItem component={Link} to="/adminprofileinfo">
+                  <Typography textAlign="center">Settings</Typography>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    localStorage.removeItem("adminToken");
+                    dispatch({ type: "LOGOUT" });
+                    toast.success("Logout successfully", {
+                      autoClose: 50,
+                      onClose: () => {
+                        navigate("/adminLogin");
+                        window.location.reload();
+                      },
+                    });
+                  }}
+                >
+                  <Typography textAlign="center">Logout</Typography>
+                </MenuItem>
+              </Menu>
+            </Box>
           </Box>
         </Toolbar>
       </AppBar>

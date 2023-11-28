@@ -7,6 +7,7 @@ import {
 } from "@react-google-maps/api";
 import Typography from "../../components/common/Typography";
 import { DataGrid, GridToolbar, gridClasses } from "@mui/x-data-grid";
+import AdjustIcon from "@mui/icons-material/Adjust";
 
 import axios from "axios";
 import { Grid, Paper, Avatar, Box, Button, Tab, Tabs } from "@mui/material";
@@ -291,17 +292,32 @@ function DeliveryMonitoring() {
 
   return (
     <div>
-      <Box sx={{ my: 4, mx: 6 }}>
+      <Box sx={{ my: 4, mx: 12 }}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <Typography
-              variant="h3"
-              marked="left"
-              style={{ fontWeight: "bold", fontSize: "30px" }}
-              gutterBottom
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              marginBottom={2}
             >
-              Delivery Monitoring
-            </Typography>
+              <Typography
+                variant="h3"
+                marked="left"
+                style={{ fontWeight: "bold", fontSize: "30px" }}
+                gutterBottom
+              >
+                Delivery Monitoring
+              </Typography>
+              <Button
+                variant="contained"
+                sx={{ ml: 1 }}
+                startIcon={<AdjustIcon />}
+                onClick={handleCenterMap}
+              >
+                Center Map
+              </Button>
+            </Box>
             <Paper
               sx={{ mt: 3, p: 2, display: "flex", flexDirection: "column" }}
             >
@@ -344,7 +360,6 @@ function DeliveryMonitoring() {
                   </GoogleMap>
                 )}
               </LoadScript>
-              <Button onClick={handleCenterMap}>Center Map</Button>
             </Paper>
           </Grid>
 
@@ -381,6 +396,7 @@ function DeliveryMonitoring() {
                     slotProps={{
                       toolbar: {
                         showQuickFilter: true,
+                        printOptions: { disableToolbarButton: true },
                       },
                     }}
                     initialState={{

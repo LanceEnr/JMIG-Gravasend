@@ -155,7 +155,7 @@ export default function NewDriverManagement() {
     {
       field: "contact",
       headerName: "CONTACT",
-      flex: 1,
+      flex: 2,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -165,7 +165,7 @@ export default function NewDriverManagement() {
     {
       field: "date",
       headerName: "HIRE DATE",
-      flex: 1,
+      flex: 2,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -175,7 +175,7 @@ export default function NewDriverManagement() {
     {
       field: "email",
       headerName: "EMAIL",
-      flex: 1,
+      flex: 2,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -190,13 +190,13 @@ export default function NewDriverManagement() {
           {params.colDef.headerName}
         </Typography>
       ),
-      flex: 1,
+      flex: 2,
     },
 
     {
       field: "status",
       headerName: "STATUS",
-      flex: 1.5,
+      flex: 1,
       renderCell: (params) => {
         return params.value === "assigned" ? (
           <Chip
@@ -240,7 +240,7 @@ export default function NewDriverManagement() {
       field: "actions",
       headerName: "ACTIONS",
       sortable: false,
-      flex: 1.5,
+      flex: 1,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -268,7 +268,7 @@ export default function NewDriverManagement() {
   ];
 
   return (
-    <Box sx={{ my: 14, mx: 6 }}>
+    <Box sx={{ my: 14, mx: 12 }}>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -306,12 +306,14 @@ export default function NewDriverManagement() {
           columns={columnsDriverManagement}
           pageSize={5}
           disableColumnFilter
+          checkboxSelection
           disableColumnSelector
           density="comfortable"
           slots={{ toolbar: GridToolbar }}
           slotProps={{
             toolbar: {
               showQuickFilter: true,
+              printOptions: { disableToolbarButton: true },
             },
           }}
           initialState={{

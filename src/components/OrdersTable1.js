@@ -36,6 +36,7 @@ import Inventory2Icon from "@mui/icons-material/Inventory2";
 import InfoIcon from "@mui/icons-material/Info";
 import IconButton from "@mui/material/IconButton";
 import PrintIcon from "@mui/icons-material/Print";
+import ReactToPrint from "react-to-print";
 
 const getColor = (status) => {
   switch (status) {
@@ -64,7 +65,7 @@ export default function OrdersTable1(props) {
   const theme = useTheme();
 
   const [anchorEl, setAnchorEl] = useState(null);
-  const itemsPerPage = 10;
+  const itemsPerPage = 6;
   const [page, setPage] = useState(1);
   const isMobile = useMediaQuery("(max-width:600px)");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -76,6 +77,7 @@ export default function OrdersTable1(props) {
   const [amount, setAmount] = useState(null);
   const [status, setStatus] = useState(null);
   const [orderDet, setOrderDet] = useState(null);
+  const componentRef = React.useRef();
 
   const steps = ["Processing", "In Transit", "Completed"];
   const handleCloseModal = () => {
@@ -103,27 +105,27 @@ export default function OrdersTable1(props) {
   const getStepperColor = (status, index) => {
     switch (status) {
       case "Pending":
-        return index === 0 ? "#4caf50" : "";
+        return index === 0 ? "warning.main" : "";
       case "Fetch from quarry":
-        return index === 0 || index === 1 ? "#4caf50" : "#f44336";
+        return index === 0 || index === 1 ? "warning.main" : "error.main";
       case "Arrived at Pandi":
-        return index === 0 || index === 1 ? "#4caf50" : "#f44336";
+        return index === 0 || index === 1 ? "info.main" : "error.main";
       case "Arrived at MindanaoAve.":
-        return index === 0 || index === 1 ? "#4caf50" : "#f44336";
+        return index === 0 || index === 1 ? "info.main" : "error.main";
       case "Delayed":
-        return index === 0 || index === 1 ? "#4caf50" : "#f44336";
+        return index === 0 || index === 1 ? "warning.main" : "error.main";
       case "In Transit":
-        return index === 0 || index === 1 ? "#4caf50" : "#f44336";
+        return index === 0 || index === 1 ? "info.main" : "error.main";
       case "Available for pickup-MindanaoAve.":
-        return index === 0 || index === 1 ? "#4caf50" : "#f44336";
+        return index === 0 || index === 1 ? "success.main" : "error.main";
       case "Available for pickup-PANDI":
-        return index === 0 || index === 1 ? "#4caf50" : "#f44336";
+        return index === 0 || index === 1 ? "success.main" : "error.main";
       case "Completed":
-        return "#4caf50";
+        return "success.main";
       case "Cancelled":
-        return "#f44336";
+        return "error.main";
       default:
-        return "#f44336";
+        return "error.main";
     }
   };
 
@@ -132,6 +134,8 @@ export default function OrdersTable1(props) {
 
   const modalBody = (
     <Grid
+      id="modal-body"
+      ref={componentRef}
       container
       justifyContent="center"
       alignItems="center"
@@ -192,15 +196,14 @@ export default function OrdersTable1(props) {
               display: "flex",
             }}
           >
-            <IconButton
-              edge="end"
-              color="inherit"
-              onClick={() => window.print()} // Add this line
-              aria-label="print"
-              sx={{ mr: 1 }}
-            >
-              <PrintIcon />
-            </IconButton>
+            <ReactToPrint
+              trigger={() => (
+                <IconButton edge="end" color="inherit" aria-label="print">
+                  <PrintIcon />
+                </IconButton>
+              )}
+              content={() => componentRef.current}
+            />
 
             <IconButton
               edge="end"
@@ -313,9 +316,11 @@ export default function OrdersTable1(props) {
           <Typography
             component="h1"
             variant="h5"
-            sx={{ color: "#83948a", fontWeight: "bold", my: 1 }}
+            sx={{ fontWeight: "bold", my: 1 }}
           >
-            <ShoppingCartIcon sx={{ mr: 2, verticalAlign: "middle" }} />
+            <ShoppingCartIcon
+              sx={{ color: "#83948a", mr: 2, verticalAlign: "middle" }}
+            />
             Orders
           </Typography>
           {isMobile && (

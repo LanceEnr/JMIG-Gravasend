@@ -1,17 +1,28 @@
 import React, { useState } from "react";
 import axios from "axios";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import { Link } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+import Typography from "../../components/common/Typography";
 import Container from "@mui/material/Container";
-import { useTheme } from "@mui/material/styles";
 import { toast } from "react-toastify";
+import { useTheme } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles"; // Import makeStyles for custom styles
+import BannerImage from "../../assets/choose.webp";
 import EnterOTP from "../../components/EnterOtp";
-import { useNavigate, Link } from "react-router-dom";
+
+const useStyles = makeStyles((theme) => ({
+  signin: {
+    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${BannerImage})`,
+    backgroundSize: "cover",
+    minHeight: "100vh",
+  },
+}));
 
 export default function ForgotPassword() {
+  const classes = useStyles(); // Add Material-UI styles
   const [_email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [otp, setOtp] = useState("");
@@ -54,7 +65,7 @@ export default function ForgotPassword() {
   const theme = useTheme();
 
   return (
-    <div className="forgot-password">
+    <div className={classes.signin}>
       <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
         <Box
           sx={{
@@ -70,11 +81,13 @@ export default function ForgotPassword() {
           }}
         >
           <Typography
-            component="h1"
-            variant="h5"
-            sx={{ color: "#83948a", fontWeight: "bold" }}
+            variant="h4"
+            sx={{ fontSize: "30px", fontWeight: "bold" }}
+            gutterBottom
+            marked="center"
+            align="center"
           >
-            Forgot Password
+            RESET PASSWORD
           </Typography>
           {message && (
             <Typography variant="body1" color="textSecondary">
@@ -83,9 +96,13 @@ export default function ForgotPassword() {
           )}
           {!otpSent ? (
             <>
-              <Typography variant="body1" color="textSecondary">
-                Provide your email below.
+              <Typography align="center">
+                {"Changed your mind? "}
+                <Link to="/adminlogin" align="center" className="link">
+                  Login here
+                </Link>
               </Typography>
+
               <Box
                 component="form"
                 noValidate
@@ -121,8 +138,8 @@ export default function ForgotPassword() {
           )}
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link to="/adminLogin" variant="body2">
-                Return to login
+              <Link to="/" variant="caption" className="link">
+                Go back to home
               </Link>
             </Grid>
           </Grid>

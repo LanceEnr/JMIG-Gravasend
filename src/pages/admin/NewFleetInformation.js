@@ -295,7 +295,7 @@ export default function NewFleetInformation() {
   ];
 
   return (
-    <Box sx={{ my: 14, mx: 6 }}>
+    <Box sx={{ my: 14, mx: 12 }}>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -334,11 +334,15 @@ export default function NewFleetInformation() {
           pageSize={5}
           disableColumnFilter
           disableColumnSelector
+          checkboxSelection
           density="comfortable"
-          slots={{ toolbar: GridToolbar }}
+          slots={{
+            toolbar: GridToolbar,
+          }}
           slotProps={{
             toolbar: {
               showQuickFilter: true,
+              printOptions: { disableToolbarButton: true },
             },
           }}
           initialState={{

@@ -298,12 +298,14 @@ export default function NewInspectionScheduling() {
         columns={columnsInspectionScheduling}
         pageSize={5}
         disableColumnFilter
+        checkboxSelection
         disableColumnSelector
         density="comfortable"
         slots={{ toolbar: GridToolbar }}
         slotProps={{
           toolbar: {
             showQuickFilter: true,
+            printOptions: { disableToolbarButton: true },
           },
         }}
         initialState={{

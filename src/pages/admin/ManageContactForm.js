@@ -84,15 +84,56 @@ export default function ManageContactForm() {
   }, []);
   const getRowId = (row) => row._inquiryID;
   const columns = [
-    { field: "_inquiryID", headerName: "ID", flex: 1 },
-    { field: "_name", headerName: "Name", flex: 2 },
-    { field: "_email", headerName: "Email", flex: 2 },
-    { field: "_date", headerName: "Date and Time", flex: 2 },
+    {
+      field: "_inquiryID",
+      headerName: "ID",
+      flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "_name",
+      headerName: "NAME",
+      flex: 2,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "_email",
+      headerName: "EMAIL",
+      flex: 2,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "_date",
+      headerName: "DATE AND TIME",
+      flex: 2,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
     {
       field: "_message",
-      headerName: "Message",
+      headerName: "MESSAGE",
       sortable: false,
       flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
       renderCell: (params) => (
         <IconButton
           color="primary"
@@ -105,7 +146,7 @@ export default function ManageContactForm() {
   ];
 
   return (
-    <Box sx={{ my: 14, mx: 6 }}>
+    <Box sx={{ my: 14, mx: 12 }}>
       <Typography
         variant="h3"
         marked="left"
@@ -129,15 +170,16 @@ export default function ManageContactForm() {
             columns={columns}
             pageSize={5}
             disableColumnFilter
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+                printOptions: { disableToolbarButton: true },
+              },
+            }}
             disableColumnSelector
             density="comfortable"
             getRowId={getRowId}
             slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
             initialState={{
               pagination: {
                 paginationModel: {

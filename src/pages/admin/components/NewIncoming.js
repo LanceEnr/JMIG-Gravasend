@@ -109,6 +109,7 @@ export default function NewIncomingInventory() {
         slotProps={{
           toolbar: {
             showQuickFilter: true,
+            printOptions: { disableToolbarButton: true },
           },
         }}
         initialState={{

@@ -89,6 +89,25 @@ function AdminApp() {
               <Grid item xs={12}>
                 <Suspense fallback={<div>Loading...</div>}>
                   <Routes>
+                    <Route
+                      path="/adminprofileinfo"
+                      exact
+                      element={<AdminProfileInfo />}
+                    />
+                    <Route
+                      path="/adminforgotpassword"
+                      exact
+                      element={<AdminForgotPassword />}
+                    />
+
+                    <Route
+                      path="/adminregister"
+                      exact
+                      element={<AdminRegister />}
+                    />
+
+                    <Route path="/adminlogin" exact element={<AdminLogin />} />
+
                     <Route path="/admineditfaq" exact element={<EditFaq />} />
 
                     <Route path="/adminaddfaq" exact element={<AddFaq />} />

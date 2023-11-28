@@ -173,7 +173,7 @@ export default function NewCurrent() {
     {
       field: "itemName",
       headerName: "ITEM NAME",
-      flex: 2,
+      flex: 1.5,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -199,7 +199,7 @@ export default function NewCurrent() {
     {
       field: "location",
       headerName: "LOCATION",
-      flex: 2,
+      flex: 1.5,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -209,7 +209,7 @@ export default function NewCurrent() {
     {
       field: "lastUpdated",
       headerName: "LAST UPDATED",
-      flex: 3,
+      flex: 2,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -220,7 +220,7 @@ export default function NewCurrent() {
       field: "actions",
       headerName: "ACTIONS",
       sortable: false,
-      flex: 1.5,
+      flex: 1,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -260,6 +260,7 @@ export default function NewCurrent() {
         rows={rowsCurrentInventory}
         columns={columnsCurrentInventory}
         pageSize={5}
+        checkboxSelection
         disableColumnFilter
         disableColumnSelector
         density="comfortable"
@@ -267,6 +268,7 @@ export default function NewCurrent() {
         slotProps={{
           toolbar: {
             showQuickFilter: true,
+            printOptions: { disableToolbarButton: true },
           },
         }}
         initialState={{

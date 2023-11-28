@@ -28,6 +28,24 @@ const theme = createTheme({
           "&:active": {
             backgroundColor: "#5b6a58",
           },
+          "&.MuiButton-warning": {
+            backgroundColor: "#ff9800", // warning color
+            "&:hover": {
+              backgroundColor: "#f57c00", // darker warning color
+            },
+          },
+          "&.MuiButton-error": {
+            backgroundColor: "#f44336", // error color
+            "&:hover": {
+              backgroundColor: "#d32f2f", // darker error color
+            },
+          },
+          "&.MuiButton-success": {
+            backgroundColor: "#4caf50", // success color
+            "&:hover": {
+              backgroundColor: "#388e3c", // darker success color
+            },
+          },
         },
         outlined: {
           borderColor: "#83948a",
@@ -37,9 +55,28 @@ const theme = createTheme({
           "&:active": {
             borderColor: "#aebcbf",
           },
+          "&.MuiButton-warning": {
+            borderColor: "#ff9800", // warning color
+            "&:hover": {
+              borderColor: "#f57c00", // darker warning color
+            },
+          },
+          "&.MuiButton-error": {
+            borderColor: "#f44336", // error color
+            "&:hover": {
+              borderColor: "#d32f2f", // darker error color
+            },
+          },
+          "&.MuiButton-success": {
+            borderColor: "#4caf50", // success color
+            "&:hover": {
+              borderColor: "#388e3c", // darker success color
+            },
+          },
         },
       },
     },
+
     MuiOutlinedInput: {
       styleOverrides: {
         root: {

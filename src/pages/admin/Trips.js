@@ -12,7 +12,7 @@ function Trips() {
   };
   return (
     <div>
-      <Box sx={{ my: 12, mx: 6 }}>
+      <Box sx={{ my: 12, mx: 12 }}>
         <Typography
           variant="h3"
           marked="left"
