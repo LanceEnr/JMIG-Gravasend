@@ -4,6 +4,10 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import axios from "axios";
 import Typography from "../../components/common/Typography";
+import AddIcon from "@mui/icons-material/Add";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CloseIcon from "@mui/icons-material/Close";
 
 import {
   Button,
@@ -13,6 +17,7 @@ import {
   DialogActions,
   TextField,
   Paper,
+  IconButton,
   DialogContentText,
   Box,
   Select,
@@ -20,6 +25,8 @@ import {
   InputLabel,
   FormControl,
   InputAdornment,
+  Modal,
+  Divider,
 } from "@mui/material";
 import Title from "./components/Title";
 import { toast } from "react-toastify";
@@ -131,13 +138,46 @@ const JobOrderModal = ({
     setDateTime(minDateFormatted);
   }, []);
   return (
-    <Dialog open={isOpen} onClose={onClose}>
-      <DialogTitle>
-        {jobOrder ? "Edit Job Order" : "Create Job Order"}
-      </DialogTitle>
-      <DialogContent>
+    <Modal open={isOpen} onClose={onClose}>
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 400,
+          bgcolor: "background.paper",
+          boxShadow: 24,
+          borderRadius: "8px",
+
+          p: 4,
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            pb: 2,
+          }}
+        >
+          <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+            {jobOrder ? "Edit Job Order" : "Create Job Order"}
+          </Typography>
+          <IconButton
+            edge="end"
+            color="inherit"
+            onClick={onClose}
+            aria-label="close"
+          >
+            <CloseIcon />
+          </IconButton>
+        </Box>
+
+        <Divider style={{ borderStyle: "dashed", borderColor: "#bd8512" }} />
+
         <Box sx={{ my: 2 }}>
-          <FormControl fullWidth>
+          <FormControl sx={{ mb: 2 }} fullWidth>
             <InputLabel id="driver-label">Driver Name:</InputLabel>
             <Select
               labelId="driver-label"
@@ -156,102 +196,102 @@ const JobOrderModal = ({
               ))}
             </Select>
           </FormControl>
-        </Box>
-        <FormControl fullWidth sx={{ mb: 2 }}>
-          <InputLabel id="origin-label">Origin</InputLabel>
-          <Select
-            labelId="origin-label"
-            value={origin}
-            onChange={(e) => handleFieldChange("origin", e.target.value)}
-            label="Origin"
-            required
-          >
-            <MenuItem value="DFS Pampanga">DFS Pampanga</MenuItem>
-            <MenuItem value="Gainersand Corporation">
-              Gainersand Corporation
-            </MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl fullWidth sx={{ mb: 2 }}>
-          <InputLabel id="destination-label">Destination</InputLabel>
-          <Select
-            labelId="destination-label"
-            value={destination}
-            onChange={(e) => handleFieldChange("destination", e.target.value)}
-            label="Destination"
-            required
-          >
-            <MenuItem value="Pandi">Pandi</MenuItem>
-            <MenuItem value="Mindanao">Mindanao Ave.</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl fullWidth sx={{ mb: 2 }}>
-          <InputLabel id="product-label">Product</InputLabel>
-          <Select
-            labelId="product-label"
-            id="productName"
-            name="productName"
-            value={productName}
-            onChange={(e) => handleFieldChange("cargo", e.target.value)}
-            label="Product"
-          >
-            {products.map((product, index) => (
-              <MenuItem key={index} value={product}>
-                {product}
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel id="origin-label">Origin</InputLabel>
+            <Select
+              labelId="origin-label"
+              value={origin}
+              onChange={(e) => handleFieldChange("origin", e.target.value)}
+              label="Origin"
+              required
+            >
+              <MenuItem value="DFS Pampanga">DFS Pampanga</MenuItem>
+              <MenuItem value="Gainersand Corporation">
+                Gainersand Corporation
               </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <Box sx={{ mb: 2 }}>
-          <TextField
-            label="Weight"
-            type="number"
-            onChange={(e) => handleFieldChange("weight", e.target.value)}
-            fullWidth
-            required
-          />
+            </Select>
+          </FormControl>
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel id="destination-label">Destination</InputLabel>
+            <Select
+              labelId="destination-label"
+              value={destination}
+              onChange={(e) => handleFieldChange("destination", e.target.value)}
+              label="Destination"
+              required
+            >
+              <MenuItem value="Pandi">Pandi</MenuItem>
+              <MenuItem value="Mindanao">Mindanao Ave.</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel id="product-label">Product</InputLabel>
+            <Select
+              labelId="product-label"
+              id="productName"
+              name="productName"
+              value={productName}
+              onChange={(e) => handleFieldChange("productName", e.target.value)}
+              label="Product"
+            >
+              {products.map((product, index) => (
+                <MenuItem key={index} value={product}>
+                  {product}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <Box sx={{ mb: 2 }}>
+            <TextField
+              label="Weight"
+              type="number"
+              onChange={(e) => handleFieldChange("weight", e.target.value)}
+              fullWidth
+              required
+            />
+          </Box>
+          <Box sx={{ mb: 2 }}>
+            <TextField
+              label="Instructions"
+              onChange={(e) =>
+                handleFieldChange("instructions", e.target.value)
+              }
+              fullWidth
+              required
+            />
+          </Box>
+          <Box sx={{ mb: 2 }}>
+            <TextField
+              label="Date Time"
+              type="datetime-local"
+              value={dateTime}
+              onChange={(e) => handleFieldChange("dateTime", e.target.value)}
+              fullWidth
+              InputProps={{
+                startAdornment: <InputAdornment position="start" />,
+                required: true,
+                inputProps: { min: dateTime },
+              }}
+            />
+          </Box>
         </Box>
-        <Box sx={{ mb: 2 }}>
-          <TextField
-            label="Instructions"
-            onChange={(e) => handleFieldChange("instructions", e.target.value)}
-            fullWidth
-            required
-          />
-        </Box>
-        <Box sx={{ mb: 2 }}>
-          <TextField
-            label="Date Time"
-            type="datetime-local"
-            value={dateTime}
-            onChange={(e) => handleFieldChange("dateTime", e.target.value)}
-            fullWidth
-            InputProps={{
-              startAdornment: <InputAdornment position="start" />,
-              required: true,
-              inputProps: { min: dateTime },
-            }}
-          />
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={handleSubmit}
-          color="primary"
-          disabled={!isFormComplete}
-        >
-          Submit
-        </Button>
-        {jobOrder && (
-          <Button onClick={() => onDelete(jobOrder)} color="secondary">
-            Delete
+        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+          <Button
+            onClick={handleSubmit}
+            variant="contained"
+            color="primary"
+            disabled={!isFormComplete}
+          >
+            Submit
           </Button>
-        )}
-        <Button onClick={onClose} color="secondary">
-          Close
-        </Button>
-      </DialogActions>
-    </Dialog>
+          {jobOrder && (
+            <Button onClick={() => onDelete(jobOrder)} color="secondary">
+              Delete
+            </Button>
+          )}
+        </Box>
+      </Box>
+    </Modal>
   );
 };
 
@@ -345,7 +385,7 @@ const JobOrderSystem = () => {
                 uniqueDateTimes.add(dateTime);
 
                 return {
-                  title: `${driverName} - ${cargo} - ${weight}`,
+                  title: `${driverName} - ${cargo} - ${weight} cu. mt.`,
                   start: dateTime,
                   status: "order",
                 };
@@ -366,7 +406,7 @@ const JobOrderSystem = () => {
                   uniqueDateTimes.add(dateTime);
 
                   return {
-                    title: `${driverName} - ${cargo} - ${weight}`,
+                    title: `${driverName} - ${cargo} - ${weight} cu. mt.`,
                     start: dateTime,
                     status: "records",
                   };
@@ -451,49 +491,71 @@ const JobOrderSystem = () => {
 
   function renderEventContent(eventInfo) {
     const backgroundColor =
-      eventInfo.event.extendedProps.status === "order" ? "green" : "#87CEEB ";
+      eventInfo.event.extendedProps.status === "order"
+        ? "success.light"
+        : "info.light";
+    const icon =
+      eventInfo.event.extendedProps.status === "order" ? (
+        <CheckCircleIcon fontSize="small" sx={{ fontSize: "16px" }} />
+      ) : (
+        <LocalShippingIcon fontSize="small" sx={{ fontSize: "16px" }} />
+      );
     return (
       <Box
         sx={{
           color: "white",
           backgroundColor: backgroundColor,
           p: 1,
+          m: 1,
           overflow: "hidden",
           wordWrap: "break-word",
           whiteSpace: "normal",
+          borderRadius: 1,
+          cursor: "pointer",
         }}
       >
-        <Typography variant="h6">{eventInfo.timeText}m</Typography>
+        <Typography variant="h6">
+          {eventInfo.timeText}m {icon}
+        </Typography>
         <br />
         <Typography variant="caption">{eventInfo.event.title}</Typography>
       </Box>
     );
   }
-
   return (
-    <Box sx={{ my: 3, mx: 6 }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
-          <Typography
-            variant="h3"
-            marked="left"
-            style={{ fontWeight: "bold", fontSize: "30px" }}
-          >
-            Job Orders
-          </Typography>
-        </Box>
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleCreateClick}
-          >
-            Create Job Order
-          </Button>
-        </Box>
+    <Box sx={{ my: 4, mx: 12 }}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        marginBottom={2}
+      >
+        <Typography
+          variant="h3"
+          marked="left"
+          style={{ fontWeight: "bold", fontSize: "30px" }}
+          gutterBottom
+        >
+          Job Orders
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleCreateClick}
+          startIcon={<AddIcon />}
+          sx={{ ml: 1 }}
+        >
+          Create Job Order
+        </Button>
       </Box>
-
-      <Paper sx={{ mt: 3, p: 2, display: "flex", flexDirection: "column" }}>
+      <Paper
+        sx={{
+          mt: 3,
+          p: 2,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <JobOrderModal
           isOpen={modalOpen}
           onClose={() => setModalOpen(false)}

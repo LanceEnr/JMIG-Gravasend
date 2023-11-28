@@ -382,7 +382,7 @@ export default function NewManageOrders() {
   ];
 
   return (
-    <Box sx={{ my: 14, mx: 6 }}>
+    <Box sx={{ my: 14, mx: 12 }}>
       <Box
         display="flex"
         justifyContent="space-between"
