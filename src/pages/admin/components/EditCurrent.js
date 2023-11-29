@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
   Grid,
@@ -24,12 +24,70 @@ import Typography from "../../../components/common/Typography";
 
 export default function EditCurrent() {
   const [value, setValue] = React.useState("Pandi");
+  const currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  const id = url.searchParams.get("id");
+  const navigate = useNavigate();
+  const [item, setItem] = useState("");
+  const [quantity, setQuantity] = useState(0);
+  const [location, setLocation] = useState("");
+
+  const currentDate = new Date();
+  const options = {
+    weekday: "short",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short",
+  };
+  const formattedDate = currentDate.toLocaleString("en-US", options);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3001/fetch-inventory/${id}`
+        );
+        setItem(response.data._itemName);
+        setLocation(response.data._location);
+        setQuantity(response.data._quantity);
+        setValue(response.data._location);
+        setLocation(response.data._location);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleLocChange = (event) => {
     setValue(event.target.value);
+    setLocation(event.target.value);
   };
 
-  // Assuming valueOptions is an array of driver names
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.put("http://localhost:3001/update-current", {
+        _inventoryID: id,
+        itemName: item,
+        quantity: quantity,
+        location: location,
+        lastUpdated: formattedDate,
+      });
+
+      console.log("Inventory edited successfully", response.data);
+      toast.success("Inventory edited successfully");
+      navigate("/admininventory");
+    } catch (error) {
+      console.error("Inventory edit failed", error);
+      toast.error("Inventory not yet registered!");
+    }
+  };
+
   return (
     <div>
       <Box sx={{ my: 14, mx: 12 }}>
@@ -51,13 +109,15 @@ export default function EditCurrent() {
         >
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <Grid container spacing={3} alignItems="center">
                   <Grid item xs={6}>
                     <TextField
                       label="Item Name"
                       name="itemname"
                       type="text"
+                      value={item}
+                      onChange={(event) => setItem(event.target.value)}
                       fullWidth
                     />
                   </Grid>
@@ -66,7 +126,9 @@ export default function EditCurrent() {
                       label="Quantity"
                       name="qty"
                       type="number"
+                      value={quantity}
                       fullWidth
+                      onChange={(event) => setQuantity(event.target.value)}
                       InputProps={{
                         endAdornment: (
                           <InputAdornment position="end">

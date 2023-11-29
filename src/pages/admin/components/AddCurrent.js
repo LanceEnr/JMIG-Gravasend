@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
   Grid,
@@ -24,12 +24,46 @@ import Typography from "../../../components/common/Typography";
 
 export default function AddCurrent() {
   const [value, setValue] = React.useState("Pandi");
+  const navigate = useNavigate();
+  const [item, setItem] = useState("");
+  const [quantity, setQuantity] = useState(0);
+  const [location, setLocation] = useState("");
 
+  const currentDate = new Date();
+  const options = {
+    weekday: "short",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short",
+  };
+  const formattedDate = currentDate.toLocaleString("en-US", options);
   const handleLocChange = (event) => {
     setValue(event.target.value);
+    setLocation(event.target.value);
   };
 
-  // Assuming valueOptions is an array of driver names
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:3001/addInventory", {
+        itemName: item,
+        quantity: quantity,
+        location: location,
+        lastUpdated: formattedDate,
+      });
+
+      console.log("Order added successfully", response.data);
+      toast.success(response.data.message);
+      navigate("/admininventory");
+    } catch (error) {
+      console.error("Order add failed", error);
+      toast.error("Order  already exists!");
+    }
+  };
   return (
     <div>
       <Box sx={{ my: 14, mx: 12 }}>
@@ -51,13 +85,15 @@ export default function AddCurrent() {
         >
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <Grid container spacing={3} alignItems="center">
                   <Grid item xs={6}>
                     <TextField
                       label="Item Name"
                       name="itemname"
                       type="text"
+                      onChange={(event) => setItem(event.target.value)}
+                      required
                       fullWidth
                     />
                   </Grid>
@@ -67,6 +103,8 @@ export default function AddCurrent() {
                       name="qty"
                       type="number"
                       fullWidth
+                      onChange={(event) => setQuantity(event.target.value)}
+                      required
                       InputProps={{
                         endAdornment: (
                           <InputAdornment position="end">
@@ -84,6 +122,7 @@ export default function AddCurrent() {
                         aria-label="options"
                         value={value}
                         onChange={handleLocChange}
+                        required
                         row={true}
                       >
                         <FormControlLabel

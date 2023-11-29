@@ -95,6 +95,23 @@ function Inventory() {
     UpdateStatus();
   }, []);
 
+  useEffect(() => {
+    async function fetchTripHistory() {
+      try {
+        const response = await fetch("http://localhost:3001/fetch-tripHistory");
+        if (response.ok) {
+          const data = await response.json();
+        } else {
+          console.error("Failed to fetch products");
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    }
+
+    fetchTripHistory();
+  }, []);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };

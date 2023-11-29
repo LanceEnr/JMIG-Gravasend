@@ -361,16 +361,15 @@ router.post("/generateCode", async (req, res) => {
 });
 
 router.post("/addInventory", async (req, res) => {
-  const { actionId, itemName, quantity, location, lastUpdated } = req.body;
+  const { itemName, quantity, location, lastUpdated } = req.body;
+  const actionId = await getNextInventoryNum();
 
-  // Check if an inventory item with the same inventoryID exists
   const existingInventory = await Inventory.findOne({
     _inventoryID: actionId,
     _status: "current",
   });
 
   if (existingInventory) {
-    // Update the existing inventory item
     existingInventory._itemName = itemName;
     existingInventory._quantity = quantity;
     existingInventory._location = location;
@@ -892,6 +891,18 @@ router.get("/fetch-order/:id", async (req, res) => {
   }
 });
 
+router.get("/fetch-inventory/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const inventory = await Inventory.findOne({ _inventoryID: id });
+    res.json(inventory);
+  } catch (error) {
+    console.error("Error retrieving banner:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.put("/update-testimonials", async (req, res) => {
   const updatedTestimonialData = req.body;
 
@@ -915,19 +926,48 @@ router.put("/update-testimonials", async (req, res) => {
 
 router.put("/update-order", async (req, res) => {
   const orderData = req.body;
-  const id = orderData.id;
-  const parsedId = parseInt(id, 10);
+  const _orderNum = orderData._orderNum;
+  const parsedId = parseInt(_orderNum, 10);
 
   try {
-    const order = await Order.findOne({ _orderNum: parsedId });
+    const order = await Order.findOne({ _orderNum: _orderNum });
 
     if (!order) {
       return res.status(404).json({ error: "Order not found" });
     }
 
-    order.set(orderData);
+    order._orderDet = orderData.details;
+    order._status = orderData.status;
+    order._quantity = orderData.quantity;
 
+    console.log(order);
     await order.save();
+
+    res.json({ message: "Order updated successfully" });
+  } catch (error) {
+    console.error("Error updating order:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.put("/update-current", async (req, res) => {
+  const inventoryData = req.body;
+  const _inventoryID = inventoryData._inventoryID;
+
+  try {
+    const inventory = await Inventory.findOne({ _inventoryID: _inventoryID });
+
+    if (!inventory) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    inventory._itemName = inventoryData.itemName;
+    inventory._quantity = inventoryData.quantity;
+    inventory._location = inventoryData.location;
+    inventory._lastUpdated = inventoryData.lastUpdated;
+
+    console.log(inventory);
+    await inventory.save();
 
     res.json({ message: "Order updated successfully" });
   } catch (error) {
@@ -1200,6 +1240,16 @@ router.post("/deleteFAQ/:_faqNum", async (req, res) => {
   }
 });
 
+router.get("/get-listing2", async (req, res) => {
+  try {
+    const listings = await Listing.find();
+    res.json(listings);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Failed to fetch listing data" });
+  }
+});
+
 router.get("/get-listing", async (req, res) => {
   try {
     const listings = await Listing.find({ _isPublished: true });
@@ -1417,6 +1467,7 @@ const getNextNotifId = async () => {
     throw err;
   }
 };
+
 router.post("/addOrder", async (req, res) => {
   const { _name, _materialType, _date, _status, _price, _quantity, _orderDet } =
     req.body;
@@ -1537,6 +1588,25 @@ router.post("/deleteOrder/:_orderNum", async (req, res) => {
     const id = req.params._orderNum;
     const removedRecord = await Order.findOneAndRemove({
       _orderNum: id,
+    });
+
+    if (removedRecord) {
+      res.json({ message: "Record deleted successfully" });
+    } else {
+      res.status(404).json({ message: "Record not found" });
+    }
+  } catch (error) {
+    console.error("Error deleting record", error);
+    res
+      .status(500)
+      .json({ message: "Failed to delete the record", error: error.message });
+  }
+});
+router.post("/deleteInventory/:_inventoryID", async (req, res) => {
+  try {
+    const id = req.params._inventoryID;
+    const removedRecord = await Inventory.findOneAndRemove({
+      _inventoryID: id,
     });
 
     if (removedRecord) {

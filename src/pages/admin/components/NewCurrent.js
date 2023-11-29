@@ -10,7 +10,7 @@ import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { rowsCurrentInventory } from "../helpers/data";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { alpha, styled } from "@mui/material/styles";
 import Typography from "../../../components/common/Typography";
 import { toast } from "react-toastify";
@@ -127,31 +127,39 @@ export default function NewCurrent() {
   const [open, setOpen] = React.useState(false);
   const [action, setAction] = React.useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [id, setId] = useState(null);
+  const navigate = useNavigate();
 
   const handleClickOpen = (action, row) => {
     setAction(action);
     setOpen(true);
     setSelectedRow(row);
+    setId(row.id);
   };
 
   const handleClose = () => {
     setOpen(false);
   };
+  const handleDialogConfirm = () => {
+    deleteRecord();
+    setOpen(false);
+  };
 
-  const deleteRecord = async (id) => {
+  const deleteRecord = async () => {
     try {
-      const _listingId = parseInt(id, 10);
+      const _inventoryID = id;
       const response = await axios.post(
-        "http://localhost:3001/delete-listing",
-        { _listingId }
+        `http://localhost:3001/deleteInventory/${_inventoryID}`
       );
 
       if (response.status === 200) {
-        toast.success("Listing deleted successfully");
+        setOpen(false);
+        toast.success("Record deleted successfully");
+        navigate("/admininventory");
       } else if (response.status === 404) {
         toast.error("Record not found");
       } else {
-        toast.error("Failed to delete the listing");
+        toast.error("Failed to delete the record");
       }
     } catch (error) {
       console.error("Error deleting record", error);
@@ -228,7 +236,10 @@ export default function NewCurrent() {
       ),
       renderCell: (params) => (
         <React.Fragment>
-          <Link to="/admineditcurrent" className="unstyled-link">
+          <Link
+            to={`/admineditcurrent?id=${params.row.id}`}
+            className="unstyled-link"
+          >
             <GridActionsCellItem
               icon={<EditIcon />}
               className="textPrimary"
@@ -295,7 +306,7 @@ export default function NewCurrent() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button color="primary" autoFocus>
+          <Button color="primary" onClick={handleDialogConfirm} autoFocus>
             Confirm
           </Button>
         </DialogActions>

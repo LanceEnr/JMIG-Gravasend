@@ -64,7 +64,7 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
 
 const fetchListingData = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/get-listing");
+    const response = await axios.get("http://localhost:3001/get-listing2");
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -87,6 +87,7 @@ export default function ManageListings({ onAddClick, onEditClick }) {
   const [action, setAction] = React.useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
   const [rowsListing, setRowsListing] = useState([]);
+  const [id, setId] = useState(null);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -102,12 +103,18 @@ export default function ManageListings({ onAddClick, onEditClick }) {
     setAction(action);
     setOpen(true);
     setSelectedRow(row);
+    setId(row.id);
   };
 
   const handleClose = () => {
     setOpen(false);
   };
-  const deleteRecord = async (id) => {
+  const handleDialogConfirm = () => {
+    deleteRecord();
+    setOpen(false);
+  };
+
+  const deleteRecord = async () => {
     try {
       const _listingId = parseInt(id, 10);
       const response = await axios.post(
@@ -295,7 +302,7 @@ export default function ManageListings({ onAddClick, onEditClick }) {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button color="primary" autoFocus>
+            <Button color="primary" onClick={handleDialogConfirm} autoFocus>
               Confirm
             </Button>
           </DialogActions>

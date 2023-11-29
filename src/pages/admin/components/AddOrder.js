@@ -133,7 +133,7 @@ export default function AddOrder() {
 
       console.log("Order added successfully", response.data);
       toast.success(response.data.message);
-      navigate("/adminmanageorders");
+      navigate("/admininventory");
     } catch (error) {
       console.error("Order add failed", error);
       toast.error("Order  already exists!");
