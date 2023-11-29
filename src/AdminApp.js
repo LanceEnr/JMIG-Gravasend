@@ -66,179 +66,257 @@ function AdminApp() {
   return (
     <div>
       <Router>
-        <Box
-          style={{
-            display: "flex",
-          }}
-        >
-          <AdminDashboard />
-          <Box
-            component="main"
-            sx={{
-              backgroundColor: (theme) =>
-                theme.palette.mode === "light"
-                  ? theme.palette.grey[100]
-                  : theme.palette.grey[900],
-              flexGrow: 1,
-              height: "100vh",
-              overflow: "auto",
-            }}
-          >
-            <Toolbar />
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Suspense fallback={<div>Loading...</div>}>
-                  <Routes>
-                    <Route
-                      path="/adminprofileinfo"
-                      exact
-                      element={<AdminProfileInfo />}
-                    />
-                    <Route
-                      path="/adminforgotpassword"
-                      exact
-                      element={<AdminForgotPassword />}
-                    />
+        <Routes>
+          <Route
+            path="/adminlogin"
+            element={
+              <React.Fragment>
+                <AdminLogin />
+              </React.Fragment>
+            }
+          />
+          <Route
+            path="/adminregister"
+            element={
+              <React.Fragment>
+                <AdminRegister />
+              </React.Fragment>
+            }
+          />
+          <Route
+            path="/adminForgotPassword"
+            element={
+              <React.Fragment>
+                <AdminForgotPassword />
+              </React.Fragment>
+            }
+          />
+          <Route
+            path="/*"
+            element={
+              isAuthenticated ? (
+                <React.Fragment>
+                  {window.location.pathname !== "/adminlogin" &&
+                    window.location.pathname !== "/adminregister" &&
+                    window.location.pathname !== "/adminForgotPassword" && (
+                      <Box
+                        style={{
+                          display: "flex",
+                        }}
+                      >
+                        <AdminDashboard />
+                        <Box
+                          component="main"
+                          sx={{
+                            backgroundColor: (theme) =>
+                              theme.palette.mode === "light"
+                                ? theme.palette.grey[100]
+                                : theme.palette.grey[900],
+                            flexGrow: 1,
+                            height: "100vh",
+                            overflow: "auto",
+                          }}
+                        >
+                          <Toolbar />
+                          <Toolbar />
+                          <Grid container spacing={3}>
+                            <Grid item xs={12}>
+                              <Suspense fallback={<div>Loading...</div>}>
+                                <Routes>
+                                  <Route
+                                    path="/adminprofileinfo"
+                                    exact
+                                    element={<AdminProfileInfo />}
+                                  />
+                                  <Route
+                                    path="/adminforgotpassword"
+                                    exact
+                                    element={<AdminForgotPassword />}
+                                  />
 
-                    <Route
-                      path="/adminregister"
-                      exact
-                      element={<AdminRegister />}
-                    />
+                                  <Route
+                                    path="/adminregister"
+                                    exact
+                                    element={<AdminRegister />}
+                                  />
 
-                    <Route path="/adminlogin" exact element={<AdminLogin />} />
+                                  <Route
+                                    path="/adminlogin"
+                                    exact
+                                    element={<AdminLogin />}
+                                  />
 
-                    <Route path="/admineditfaq" exact element={<EditFaq />} />
+                                  <Route
+                                    path="/admineditfaq"
+                                    exact
+                                    element={<EditFaq />}
+                                  />
 
-                    <Route path="/adminaddfaq" exact element={<AddFaq />} />
-                    <Route
-                      path="/admineditcurrent"
-                      exact
-                      element={<EditCurrent />}
-                    />
-                    <Route
-                      path="/adminaddcurrent"
-                      exact
-                      element={<AddCurrent />}
-                    />
-                    <Route
-                      path="/admineditorder"
-                      exact
-                      element={<EditOrder />}
-                    />
+                                  <Route
+                                    path="/adminaddfaq"
+                                    exact
+                                    element={<AddFaq />}
+                                  />
+                                  <Route
+                                    path="/admineditcurrent"
+                                    exact
+                                    element={<EditCurrent />}
+                                  />
+                                  <Route
+                                    path="/adminaddcurrent"
+                                    exact
+                                    element={<AddCurrent />}
+                                  />
+                                  <Route
+                                    path="/admineditorder"
+                                    exact
+                                    element={<EditOrder />}
+                                  />
 
-                    <Route path="/adminaddorder" exact element={<AddOrder />} />
-                    <Route
-                      path="/admineditdriver"
-                      exact
-                      element={<EditDriver />}
-                    />
-                    <Route
-                      path="/adminadddriver"
-                      exact
-                      element={<AddDriver />}
-                    />
-                    <Route
-                      path="/adminaddinspection"
-                      exact
-                      element={<AddInspection />}
-                    />
-                    <Route
-                      path="/admineditinspection"
-                      exact
-                      element={<EditInspection />}
-                    />
-                    <Route
-                      path="/adminaddmaintenancescheduling"
-                      exact
-                      element={<AddMaintenanceScheduling />}
-                    />
-                    <Route
-                      path="/admineditmaintenancescheduling"
-                      exact
-                      element={<EditMaintenanceScheduling />}
-                    />
-                    <Route
-                      path="/admineditmaintenancerecord"
-                      exact
-                      element={<EditMaintenanceRecord />}
-                    />
-                    <Route path="/adminaddfleet" exact element={<AddFleet />} />
-                    <Route
-                      path="/admineditfleet"
-                      exact
-                      element={<EditFleet />}
-                    />
-                    <Route
-                      path="/adminprofileinfo"
-                      exact
-                      element={<AdminProfileInfo />}
-                    />
-                    <Route
-                      path="/adminfleetinformation"
-                      exact
-                      element={<NewFleetInformation />}
-                    />
-                    <Route
-                      path="/adminmaintenance"
-                      exact
-                      element={<Maintenance />}
-                    />
-                    <Route
-                      path="/admininspection"
-                      exact
-                      element={<Inspection />}
-                    />
-                    <Route path="/admintrips" exact element={<Trips />} />
-                    <Route
-                      path="/adminjoborders"
-                      exact
-                      element={<JobOrderSystem />}
-                    />
-                    <Route
-                      path="/admindeliverymonitoring"
-                      exact
-                      element={<DeliveryMonitoring />}
-                    />
-                    <Route path="/adminreports" exact element={<Reports />} />
-                    <Route
-                      path="/admindrivermanagement"
-                      exact
-                      element={<NewDriverManagement />}
-                    />
-                    <Route
-                      path="/adminmanageappointments"
-                      exact
-                      element={<ManageAppointments />}
-                    />
-                    <Route
-                      path="/adminmanageorders"
-                      exact
-                      element={<NewManageOrders />}
-                    />
-                    <Route
-                      path="/admininventory"
-                      exact
-                      element={<Inventory />}
-                    />
-                    <Route path="/admincontent" exact element={<Content />} />
-                    <Route
-                      path="/adminusermanagement"
-                      exact
-                      element={<NewUserManagement />}
-                    />
-                    <Route
-                      path="/adminmanagecontactform"
-                      exact
-                      element={<ManageContactForm />}
-                    />
-                    <Route path="/adminlistings" exact element={<Listings />} />
-                  </Routes>
-                </Suspense>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
+                                  <Route
+                                    path="/adminaddorder"
+                                    exact
+                                    element={<AddOrder />}
+                                  />
+                                  <Route
+                                    path="/admineditdriver"
+                                    exact
+                                    element={<EditDriver />}
+                                  />
+                                  <Route
+                                    path="/adminadddriver"
+                                    exact
+                                    element={<AddDriver />}
+                                  />
+                                  <Route
+                                    path="/adminaddinspection"
+                                    exact
+                                    element={<AddInspection />}
+                                  />
+                                  <Route
+                                    path="/admineditinspection"
+                                    exact
+                                    element={<EditInspection />}
+                                  />
+                                  <Route
+                                    path="/adminaddmaintenancescheduling"
+                                    exact
+                                    element={<AddMaintenanceScheduling />}
+                                  />
+                                  <Route
+                                    path="/admineditmaintenancescheduling"
+                                    exact
+                                    element={<EditMaintenanceScheduling />}
+                                  />
+                                  <Route
+                                    path="/admineditmaintenancerecord"
+                                    exact
+                                    element={<EditMaintenanceRecord />}
+                                  />
+                                  <Route
+                                    path="/adminaddfleet"
+                                    exact
+                                    element={<AddFleet />}
+                                  />
+                                  <Route
+                                    path="/admineditfleet"
+                                    exact
+                                    element={<EditFleet />}
+                                  />
+                                  <Route
+                                    path="/adminprofileinfo"
+                                    exact
+                                    element={<AdminProfileInfo />}
+                                  />
+                                  <Route
+                                    path="/adminfleetinformation"
+                                    exact
+                                    element={<NewFleetInformation />}
+                                  />
+                                  <Route
+                                    path="/adminmaintenance"
+                                    exact
+                                    element={<Maintenance />}
+                                  />
+                                  <Route
+                                    path="/admininspection"
+                                    exact
+                                    element={<Inspection />}
+                                  />
+                                  <Route
+                                    path="/admintrips"
+                                    exact
+                                    element={<Trips />}
+                                  />
+                                  <Route
+                                    path="/adminjoborders"
+                                    exact
+                                    element={<JobOrderSystem />}
+                                  />
+                                  <Route
+                                    path="/admindeliverymonitoring"
+                                    exact
+                                    element={<DeliveryMonitoring />}
+                                  />
+                                  <Route
+                                    path="/adminreports"
+                                    exact
+                                    element={<Reports />}
+                                  />
+                                  <Route
+                                    path="/admindrivermanagement"
+                                    exact
+                                    element={<NewDriverManagement />}
+                                  />
+                                  <Route
+                                    path="/adminmanageappointments"
+                                    exact
+                                    element={<ManageAppointments />}
+                                  />
+                                  <Route
+                                    path="/adminmanageorders"
+                                    exact
+                                    element={<NewManageOrders />}
+                                  />
+                                  <Route
+                                    path="/admininventory"
+                                    exact
+                                    element={<Inventory />}
+                                  />
+                                  <Route
+                                    path="/admincontent"
+                                    exact
+                                    element={<Content />}
+                                  />
+                                  <Route
+                                    path="/adminusermanagement"
+                                    exact
+                                    element={<NewUserManagement />}
+                                  />
+                                  <Route
+                                    path="/adminmanagecontactform"
+                                    exact
+                                    element={<ManageContactForm />}
+                                  />
+                                  <Route
+                                    path="/adminlistings"
+                                    exact
+                                    element={<Listings />}
+                                  />
+                                </Routes>
+                              </Suspense>
+                            </Grid>
+                          </Grid>
+                        </Box>
+                      </Box>
+                    )}
+                </React.Fragment>
+              ) : (
+                <Navigate to="/adminlogin" />
+              )
+            }
+          />
+        </Routes>
         <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
       </Router>
     </div>

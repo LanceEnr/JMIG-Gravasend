@@ -30,6 +30,9 @@ const encryptionKey = crypto.randomBytes(32).toString("hex");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const accountSid = "AC884cb7a63fb7e7784143f86c75d68c71";
+const authToken = "f39a7d524b2617a4fd074986cfd2b53f";
+const client = require("twilio")(accountSid, authToken);
 
 const transporter = nodemailer.createTransport({
   service: "Gmail", // Use a valid email service (e.g., Gmail, Outlook, etc.)
@@ -500,9 +503,21 @@ router.post("/update-appointment-admin", async (req, res) => {
     _dateTime,
     _reasonResched,
     _cancelReason,
-    name,
     date,
   } = req.body;
+  const name = req.body.name;
+  const nameParts = name.split("_");
+  const [firstName, lastName] = nameParts;
+
+  const user = await CustomerUser.findOne({
+    _fName: firstName,
+    _lName: lastName,
+  });
+  const decryptedEmail = decryptEmail(
+    user._email,
+    user._iv,
+    user._encryptionKey
+  );
 
   try {
     const existingAppointment = await Appointment.findOne({
@@ -524,6 +539,36 @@ router.post("/update-appointment-admin", async (req, res) => {
         "Your appointment was rescheduled" + " on " + _date + " at " + _time,
     });
     await customerNotification.save();
+
+    const mailOptions = {
+      to: decryptedEmail,
+      subject: "Appointment Reschedule Notification",
+      text: `Dear ${firstName} ${lastName},
+      
+      Appointment Number: ${appointmentNum}
+
+      We hope this email finds you well. We appreciate your scheduled appointment with JMIG Gravel and Sand, and we apologize for any 
+      inconvenience this may cause. Due to unforeseen circumstances, we find it necessary to reschedule your appointment.
+
+      Rescheduled Appointment Details:
+
+      Date: ${_date}
+      Time: ${_time}
+
+      We understand that your time is valuable, and we sincerely apologize for any disruption. If you have any questions or concerns, 
+      or if you need assistance with the rescheduling process, please do not hesitate to contact our customer service team at 025175562
+  
+       Sincerely,
+       JMIG Gravel and Sand Supply`,
+    };
+
+    transporter.sendMail(mailOptions, (error) => {
+      if (error) {
+        console.error("Error sending email:", error);
+      } else {
+        console.log("Email sent successfully.");
+      }
+    });
 
     const updatedAppointment = await Appointment.findOneAndUpdate(
       { _appointmentNum: appointmentNum },
@@ -592,9 +637,20 @@ router.post("/complete-appointment-admin", async (req, res) => {
 });
 
 router.post("/cancel-appointment-admin", async (req, res) => {
-  const { appointmentNum, _status, _cancelReason, date, dateTime, name } =
-    req.body;
+  const { appointmentNum, _status, _cancelReason, date, dateTime } = req.body;
+  const name = req.body.name;
+  const nameParts = name.split("_");
+  const [firstName, lastName] = nameParts;
 
+  const user = await CustomerUser.findOne({
+    _fName: firstName,
+    _lName: lastName,
+  });
+  const decryptedEmail = decryptEmail(
+    user._email,
+    user._iv,
+    user._encryptionKey
+  );
   try {
     const id = await getNextNotifId();
     let customerNotification = new Notification({
@@ -605,6 +661,32 @@ router.post("/cancel-appointment-admin", async (req, res) => {
       _description: "Your appointment was cancelled due to " + _cancelReason,
     });
     await customerNotification.save();
+    const mailOptions = {
+      to: decryptedEmail,
+      subject: "Appointment Cancellation Notification",
+      text: `Dear ${firstName} ${lastName},
+      
+      Appointment Number: ${appointmentNum}
+
+      We hope this message finds you in good health. We regret to inform you that the scheduled appointment with JMIG Gravel and Sand, 
+      originally set for ${dateTime}, has been cancelled due to ${_cancelReason}.
+
+      We understand that this may cause inconvenience, and we sincerely apologize for any disruption to your plans.
+      Our team is actively working to reschedule the appointment at your earliest convenience.
+
+      We appreciate your understanding and cooperation.
+  
+       Sincerely,
+       JMIG Gravel and Sand Supply`,
+    };
+
+    transporter.sendMail(mailOptions, (error) => {
+      if (error) {
+        console.error("Error sending email:", error);
+      } else {
+        console.log("Email sent successfully.");
+      }
+    });
     const cancelAppointment = await Appointment.findOneAndUpdate(
       { _appointmentNum: appointmentNum },
       {
@@ -926,8 +1008,25 @@ router.put("/update-testimonials", async (req, res) => {
 
 router.put("/update-order", async (req, res) => {
   const orderData = req.body;
+  const product = req.body.product;
   const _orderNum = orderData._orderNum;
   const parsedId = parseInt(_orderNum, 10);
+
+  const name = req.body.name;
+  const nameParts = name.split("_");
+  const [firstName, lastName] = nameParts;
+  const materialTypeParts = product.split("_");
+  const extractedType = materialTypeParts[0];
+
+  const user = await CustomerUser.findOne({
+    _fName: firstName,
+    _lName: lastName,
+  });
+  const decryptedEmail = decryptEmail(
+    user._email,
+    user._iv,
+    user._encryptionKey
+  );
 
   try {
     const order = await Order.findOne({ _orderNum: _orderNum });
@@ -940,8 +1039,32 @@ router.put("/update-order", async (req, res) => {
     order._status = orderData.status;
     order._quantity = orderData.quantity;
 
-    console.log(order);
     await order.save();
+
+    const mailOptions = {
+      to: decryptedEmail,
+      subject: "Your Order Update from JMIG Gravel and Sand",
+      text: `Dear ${firstName} ${lastName},
+      
+      Order Number: ${_orderNum}
+
+
+      We hope this message finds you well. We wanted to inform you that there has been an update to the status of your recent order of ${extractedType}.
+       We are pleased to let you know that your order is now ${orderData.status}.
+  
+       Thank you for choosing JMIG Gravel and Sand. We appreciate your business and look forward to serving you again in the future.
+  
+       Sincerely,
+       JMIG Gravel and Sand Supply`,
+    };
+
+    transporter.sendMail(mailOptions, (error) => {
+      if (error) {
+        console.error("Error sending email:", error);
+      } else {
+        console.log("Email sent successfully.");
+      }
+    });
 
     res.json({ message: "Order updated successfully" });
   } catch (error) {
@@ -1472,6 +1595,22 @@ router.post("/addOrder", async (req, res) => {
   const { _name, _materialType, _date, _status, _price, _quantity, _orderDet } =
     req.body;
   const _orderNum = await getNextOrderNum();
+  const name = req.body._name;
+  const nameParts = name.split("_");
+  const [firstName, lastName] = nameParts;
+  const materialTypeParts = _materialType.split("_");
+  const extractedType = materialTypeParts[0];
+
+  const user = await CustomerUser.findOne({
+    _fName: firstName,
+    _lName: lastName,
+  });
+
+  const decryptedEmail = decryptEmail(
+    user._email,
+    user._iv,
+    user._encryptionKey
+  );
 
   try {
     let order = await Order.findOne({ _orderNum: _orderNum });
@@ -1482,10 +1621,37 @@ router.post("/addOrder", async (req, res) => {
         _date: _date,
         _name: _name,
         _title:
-          "Your order with receipt number of " + _orderNum + " has been placed",
+          "Your order with order number of " + _orderNum + " has been placed",
         _description: _materialType + " - " + _quantity + " cub. mt.",
       });
       await customerNotification.save();
+      const mailOptions = {
+        to: decryptedEmail,
+        subject: "Your Order Update from JMIG Gravel and Sand",
+        text: `Dear ${firstName} ${lastName},
+        
+        Order Number: ${id}
+        Material Type: ${extractedType}
+        Quantity: ${_quantity}
+        Price: ${_price}
+
+         We hope this email finds you well. We wanted to inform you that your recent order with JMIG Gravel and Sand is now available
+         for viewing on our website. We understand the importance of staying informed about your order status, 
+         and we're excited to provide you with a convenient way to track its progress.
+    
+         Thank you for choosing JMIG Gravel and Sand. We appreciate your business and look forward to serving you again in the future.
+    
+         Sincerely,
+         JMIG Gravel and Sand Supply`,
+      };
+
+      transporter.sendMail(mailOptions, (error) => {
+        if (error) {
+          console.error("Error sending email:", error);
+        } else {
+          console.log("Email sent successfully.");
+        }
+      });
     } else if (
       _status == "Available for pickup-PANDI" ||
       _status == "Available for pickup-MindanaoAve."

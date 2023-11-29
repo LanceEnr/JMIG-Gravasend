@@ -67,6 +67,7 @@ export default function EditOrder() {
         name: name,
         quantity: quantity,
         _orderNum: id,
+        product: selectedProduct,
       });
 
       console.log("Order edited successfully", response.data);
