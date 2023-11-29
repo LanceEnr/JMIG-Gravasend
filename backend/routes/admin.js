@@ -241,12 +241,10 @@ router.post("/adminLogin", async (req, res) => {
       const adminToken = jwt.sign({ userId: user._id }, "JMIGGravelandSand", {
         expiresIn: "7d",
       });
-      console.log(adminToken);
 
       return res.status(200).json({
         message: "Authentication successful",
         adminToken,
-        userName: user._userName,
       });
     } else {
       return res.status(401).json({ message: "Authentication failed" });

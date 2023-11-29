@@ -74,9 +74,8 @@ export default function AdminLogin({ dispatch }) {
 
       if (response.status === 200) {
         console.log("Login successful", response.data);
-        const { token, userName } = response.data;
-        localStorage.setItem("adminToken", token);
-        localStorage.setItem("adminUserName", userName);
+        const { adminToken, userName } = response.data;
+        localStorage.setItem("adminToken", adminToken);
 
         if (loginData.rememberMe) {
           localStorage.setItem("rememberMeData", JSON.stringify(loginData));
@@ -87,7 +86,7 @@ export default function AdminLogin({ dispatch }) {
         toast.success("Login successful", {
           autoClose: 50,
           onClose: () => {
-            navigate("/adminDashboard");
+            navigate("/admincontent");
           },
         });
       } else {

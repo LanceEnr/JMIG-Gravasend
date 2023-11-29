@@ -6,6 +6,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+import ResponsiveAppBar from "./components/ResponsiveAppBar";
 import { Box, Toolbar, Container, Grid, Paper } from "@mui/material";
 import authReducer from "./store/reducers/authReducer";
 import { ToastContainer } from "react-toastify";
@@ -51,7 +52,7 @@ import EditFaq from "./pages/admin/components/EditFaq";
 import NewUserManagement from "./pages/admin/components/NewUserManagement";
 
 const initialState = {
-  isAuthenticated: !!localStorage.getItem("admintoken"),
+  isAuthenticated: !!localStorage.getItem("adminToken"),
 };
 
 function AdminApp() {
@@ -117,7 +118,6 @@ function AdminApp() {
                             overflow: "auto",
                           }}
                         >
-                          <Toolbar />
                           <Toolbar />
                           <Grid container spacing={3}>
                             <Grid item xs={12}>
