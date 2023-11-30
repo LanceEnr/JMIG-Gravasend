@@ -8,7 +8,7 @@ import productImage from "../assets/excavator.webp";
 
 const valuesData = await fetchBannerDataProduct();
 const imagePath = valuesData._image;
-const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+//const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 
 export default function ProductBanner() {
   const productListSectionRef = useRef(null);
@@ -82,7 +82,7 @@ export default function ProductBanner() {
           <Hidden mdDown>
             <Box>
               <img
-                src={require(`../images/banner/uploads/${filename}`)}
+                //src={require(`../images/banner/uploads/${filename}`)}
                 alt="Product"
                 style={{
                   maxWidth: 500,

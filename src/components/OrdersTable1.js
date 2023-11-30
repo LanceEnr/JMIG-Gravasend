@@ -198,7 +198,14 @@ export default function OrdersTable1(props) {
           >
             <ReactToPrint
               trigger={() => (
-                <IconButton edge="end" color="inherit" aria-label="print">
+                <IconButton
+                  edge="end"
+                  color="inherit"
+                  aria-label="print"
+                  sx={{
+                    mr: 1,
+                  }}
+                >
                   <PrintIcon />
                 </IconButton>
               )}

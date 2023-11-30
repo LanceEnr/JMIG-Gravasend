@@ -30,7 +30,7 @@ import { fetchProfilePic } from "../../components/cms";
 const storedUsername = localStorage.getItem("userName");
 const valuesData = await fetchProfilePic(storedUsername);
 const imagePath = valuesData._profilePicture;
-const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+//const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 
 export default function AdminProfileInfo(props) {
   const isMobile = useMediaQuery("(max-width:600px)");
