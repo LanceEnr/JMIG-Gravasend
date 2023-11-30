@@ -15,12 +15,26 @@ import { styled } from "@mui/system";
 import Divider from "@mui/material/Divider";
 import CoverPhoto from "../../../assets/coverphoto.webp";
 
-import { fetchProfilePic } from "../../../components/cms";
+import { fetchProfilePic2 } from "../../../components/cms";
 
-const storedUsername = localStorage.getItem("userName");
-const valuesData = await fetchProfilePic(storedUsername);
+const storedUsername = localStorage.getItem("adminUsername");
+const valuesData = await fetchProfilePic2(storedUsername);
 const imagePath = valuesData._profilePicture;
 const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+try {
+  const valuesData = await fetchProfilePic2(storedUsername);
+  toast.error(valuesData);
+
+  if (valuesData) {
+    const imagePath = valuesData._profilePicture;
+    filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+    console.log(valuesData._profilePicture);
+  } else {
+    console.error("Error: Unable to fetch profile picture data");
+  }
+} catch (error) {
+  console.error("Error during fetchProfilePic:", error);
+}
 
 const Img = styled("img")({
   height: "140px",
@@ -29,7 +43,7 @@ const Img = styled("img")({
 });
 
 export default function AdminProfileCard({ profile }) {
-  const userName = localStorage.getItem("userName");
+  const userName = localStorage.getItem("adminUsername");
   const [count, setCounts] = useState({
     totalOrders: "",
     totalAppointments: "",
@@ -41,12 +55,12 @@ export default function AdminProfileCard({ profile }) {
   const handleConfirmChange = async (event) => {
     event.preventDefault();
     const formData = new FormData();
-    formData.append("_userName", storedUsername);
+    formData.append("_userName", userName);
     formData.append("image", uploadedImage);
 
     try {
       const response = await axios.put(
-        "http://localhost:3001/update-user-profilepic",
+        "http://localhost:3001/update-user-profilepic2",
         formData
       );
 
@@ -72,7 +86,7 @@ export default function AdminProfileCard({ profile }) {
   };
 
   useEffect(() => {
-    const storedUsername = localStorage.getItem("userName");
+    const storedUsername = localStorage.getItem("adminUsername");
     axios
       .get(`http://localhost:3001/get-counts?userName=${storedUsername}`)
       .then((response) => {
@@ -102,7 +116,7 @@ export default function AdminProfileCard({ profile }) {
       >
         <Avatar
           alt={profile.name}
-          // src={require(`../../images/profile/${filename}`)}
+          //src={require(`../../images/profile/${filename}`)}
           sx={{
             width: 100,
             height: 100,

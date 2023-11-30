@@ -38,10 +38,6 @@ const initialState = {
   isAuthenticated: !!localStorage.getItem("token"),
 };
 
-function PrivateRoute({ element, isAuthenticated }) {
-  return isAuthenticated ? element : <Navigate to="/login" />;
-}
-
 function App() {
   document.title = "GravaSend";
   const [authState, authDispatch] = useReducer(authReducer, initialState);

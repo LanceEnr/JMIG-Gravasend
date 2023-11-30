@@ -783,7 +783,7 @@ router.post("/addDriver", async (req, res) => {
       res.status(200).json({ message: "Driver added successfully" });
     } else {
       console.log("User does not exist");
-      res.status(404).json({ message: "User does not exist" });
+      //res.status(404).json({ message: "User does not exist" });
     }
   } catch (error) {
     console.error("Firebase Authentication error:", error);
@@ -808,6 +808,7 @@ router.post("/deleteDriverRecord", async (req, res) => {
 
 router.post("/addTruck", async (req, res) => {
   const truckData = req.body;
+  console.log(truckData);
   const driverName = truckData.driverName;
   try {
     const db = admin.database();
@@ -1372,7 +1373,7 @@ router.post("/deleteMaintenanceRecord", async (req, res) => {
     const maintenanceRef = db.ref(
       `maintenanceReminders/${uid}/${_maintenanceId}`
     );
-    console.lo;
+
     await maintenanceRef.remove();
 
     res
@@ -1542,6 +1543,23 @@ router.post("/deleteInspection", async (req, res) => {
     const maintenanceRef = db.ref(
       `upcomingInspections/${uid}/${_inspectionId}`
     );
+
+    await maintenanceRef.remove();
+
+    res
+      .status(200)
+      .json({ message: "Maintenance record deleted successfully" });
+  } catch (error) {
+    console.error("Firebase delete error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+router.post("/deleteJob", async (req, res) => {
+  const jobData = req.body;
+  const uid = req.body.UID;
+  try {
+    const db = admin.database();
+    const maintenanceRef = db.ref(`Trip Dashboard/${uid}`);
 
     await maintenanceRef.remove();
 

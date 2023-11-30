@@ -61,17 +61,66 @@ const JobOrderModal = ({
     setOrigin(formData.origin);
     setDestination(formData.destination);
     setDriverName(formData.driverName);
-    setCargo(formData.cargo);
+    setCargo(formData.productName);
     setWeight(formData.weight);
-    setProductName(formData.cargo);
+    setProductName(formData.productName);
     setDateTime(formData.dateTime);
     setInstructions(formData.instructions);
   };
+  useEffect(() => {
+    if (jobOrder) {
+      const source = jobOrder;
+      console.log(source.extendedProps);
+
+      const extendedProps = source.extendedProps || {};
+
+      setFormData({
+        origin: extendedProps.origin || "",
+        destination: extendedProps.destination || "",
+        driverName: extendedProps.driverName || "",
+        cargo: extendedProps.cargo || "",
+        weight: extendedProps.weight || 0,
+        dateTime: source.start || "",
+        instructions: extendedProps.instructions || "",
+        UID: extendedProps.uid || "",
+      });
+
+      // Set state values for fields
+      setOrigin(extendedProps.origin || "");
+      setDestination(extendedProps.destination || "");
+      setDriverName(extendedProps.driverName || "");
+      setCargo(extendedProps.cargo || "");
+      setWeight(extendedProps.weight || 0);
+      setDateTime(extendedProps.dateTime || "");
+      setInstructions(extendedProps.instructions || "");
+      setUID(extendedProps.uid || "");
+    } else {
+      // Reset form data if jobOrder is null
+      setFormData({
+        origin: "",
+        destination: "",
+        driverName: "",
+        cargo: "",
+        weight: "",
+        dateTime: "",
+        instructions: "",
+      });
+
+      // Reset state values for fields
+      setOrigin("");
+      setDestination("");
+      setDriverName("");
+      setCargo("");
+      setWeight("");
+      setDateTime("");
+      setInstructions("");
+    }
+  }, [jobOrder, setFormData]);
 
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const response = await fetch("http://localhost:3001/get-products");
+        const response = await fetch("http://localhost:3001/get-products3");
         if (response.ok) {
           const data = await response.json();
           setProducts(data);
@@ -125,6 +174,11 @@ const JobOrderModal = ({
       instructions !== ""
     );
   };
+  const isSubmitDisabled =
+    jobOrder && jobOrder.extendedProps.status !== "order";
+
+  const isDeleteDisabled =
+    jobOrder && jobOrder.extendedProps.status !== "order";
 
   useEffect(() => {
     const currentDate = new Date();
@@ -183,8 +237,12 @@ const JobOrderModal = ({
               labelId="driver-label"
               id="driverName"
               name="driverName"
+              disabled={isDeleteDisabled}
               value={driverName}
-              onChange={(e) => handleFieldChange("driverName", e.target.value)}
+              onChange={(event) => {
+                setDriverName(event.target.value);
+                handleFieldChange("driverName", event.target.value);
+              }}
               fullWidth
               required
               label="Driver Name"
@@ -201,7 +259,11 @@ const JobOrderModal = ({
             <Select
               labelId="origin-label"
               value={origin}
-              onChange={(e) => handleFieldChange("origin", e.target.value)}
+              disabled={isDeleteDisabled}
+              onChange={(event) => {
+                setOrigin(event.target.value);
+                handleFieldChange("origin", event.target.value);
+              }}
               label="Origin"
               required
             >
@@ -216,7 +278,11 @@ const JobOrderModal = ({
             <Select
               labelId="destination-label"
               value={destination}
-              onChange={(e) => handleFieldChange("destination", e.target.value)}
+              disabled={isDeleteDisabled}
+              onChange={(event) => {
+                setDestination(event.target.value);
+                handleFieldChange("destination", event.target.value);
+              }}
               label="Destination"
               required
             >
@@ -229,9 +295,14 @@ const JobOrderModal = ({
             <Select
               labelId="product-label"
               id="productName"
-              name="productName"
-              value={productName}
-              onChange={(e) => handleFieldChange("productName", e.target.value)}
+              name="cargo"
+              value={cargo}
+              disabled={isDeleteDisabled}
+              required
+              onChange={(event) => {
+                setCargo(event.target.value);
+                handleFieldChange("cargo", event.target.value);
+              }}
               label="Product"
             >
               {products.map((product, index) => (
@@ -245,7 +316,12 @@ const JobOrderModal = ({
             <TextField
               label="Weight"
               type="number"
-              onChange={(e) => handleFieldChange("weight", e.target.value)}
+              value={weight}
+              onChange={(event) => {
+                setWeight(event.target.value);
+                handleFieldChange("weight", event.target.value);
+              }}
+              disabled={isDeleteDisabled}
               fullWidth
               required
             />
@@ -253,10 +329,13 @@ const JobOrderModal = ({
           <Box sx={{ mb: 2 }}>
             <TextField
               label="Instructions"
-              onChange={(e) =>
-                handleFieldChange("instructions", e.target.value)
-              }
+              onChange={(event) => {
+                setInstructions(event.target.value);
+                handleFieldChange("instructions", event.target.value);
+              }}
               fullWidth
+              value={instructions}
+              disabled={isDeleteDisabled}
               required
             />
           </Box>
@@ -265,7 +344,11 @@ const JobOrderModal = ({
               label="Date Time"
               type="datetime-local"
               value={dateTime}
-              onChange={(e) => handleFieldChange("dateTime", e.target.value)}
+              disabled={isDeleteDisabled}
+              onChange={(event) => {
+                setDateTime(event.target.value);
+                handleFieldChange("dateTime", event.target.value);
+              }}
               fullWidth
               InputProps={{
                 startAdornment: <InputAdornment position="start" />,
@@ -280,12 +363,16 @@ const JobOrderModal = ({
             onClick={handleSubmit}
             variant="contained"
             color="primary"
-            disabled={!isFormComplete}
+            disabled={!isFormComplete || isSubmitDisabled}
           >
             Submit
           </Button>
           {jobOrder && (
-            <Button onClick={() => onDelete(jobOrder)} color="secondary">
+            <Button
+              onClick={() => onDelete(jobOrder)}
+              color="secondary"
+              disabled={isDeleteDisabled}
+            >
               Delete
             </Button>
           )}
@@ -295,7 +382,13 @@ const JobOrderModal = ({
   );
 };
 
-const ValidationDialog = ({ isOpen, onConfirm, onCancel, formData }) => {
+const ValidationDialog = ({
+  isOpen,
+  onConfirm,
+  onCancel,
+  onCancel2,
+  formData,
+}) => {
   const handleConfirm = async () => {
     try {
       const response = await axios.post(
@@ -304,7 +397,7 @@ const ValidationDialog = ({ isOpen, onConfirm, onCancel, formData }) => {
       );
       if (response.status === 200) {
         console.log("Data submitted successfully!");
-        toast.success("Job added successfull!");
+        toast.success("Job added/edited successfully!");
       } else {
         console.error("Failed to submit data");
         toast.error("Please try again!");
@@ -329,6 +422,51 @@ const ValidationDialog = ({ isOpen, onConfirm, onCancel, formData }) => {
           Submit
         </Button>
         <Button onClick={onCancel} color="secondary">
+          Cancel
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+const DeleteValidationDialog = ({
+  isOpen,
+  onConfirm2,
+  onCancel,
+  onCancel2,
+  formData,
+}) => {
+  const handleConfirm2 = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/deleteJob",
+        formData
+      );
+      if (response.status === 200) {
+        console.log("Data submitted successfully!");
+        toast.success("Job deleted successfully!");
+      } else {
+        console.error("Failed to submit data");
+        toast.error("Please try again!");
+      }
+    } catch (error) {
+      console.error("Error submitting data:", error);
+    }
+    onConfirm2();
+  };
+
+  return (
+    <Dialog open={isOpen} onClose={onCancel2}>
+      <DialogTitle>Are you sure?</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Please note, once you proceed, the trip will be deleted.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleConfirm2} color="primary">
+          Submit
+        </Button>
+        <Button onClick={onCancel2} color="secondary">
           Cancel
         </Button>
       </DialogActions>
@@ -380,14 +518,26 @@ const JobOrderSystem = () => {
               const cargo = jobOrderData.cargo;
               const weight = jobOrderData.weight;
               const dateTime = jobOrderData.dateTime;
+              const origin = jobOrderData.origin;
+              const destination = jobOrderData.destination;
+              const instructions = jobOrderData.instructions;
+              const uid = jobOrderData.UID;
 
               if (!uniqueDateTimes.has(dateTime)) {
                 uniqueDateTimes.add(dateTime);
 
                 return {
-                  title: `${driverName} - ${cargo} - ${weight} cu. mt.`,
+                  title: `${driverName} - ${cargo} - ${weight} cu. mt.- (${origin}- ${destination})   `,
                   start: dateTime,
                   status: "order",
+                  driverName,
+                  cargo,
+                  weight,
+                  dateTime,
+                  origin,
+                  destination,
+                  instructions,
+                  uid,
                 };
               }
 
@@ -402,13 +552,23 @@ const JobOrderSystem = () => {
                 const cargo = idData.cargo;
                 const weight = idData.weight;
                 const dateTime = idData.dateTime;
+                const origin = idData.origin;
+                const destination = idData.destination;
+                const instructions = idData.instructions;
                 if (!uniqueDateTimes.has(dateTime)) {
                   uniqueDateTimes.add(dateTime);
 
                   return {
-                    title: `${driverName} - ${cargo} - ${weight} cu. mt.`,
+                    title: `${driverName} - ${cargo} - ${weight} cu. mt.- (${origin}- ${destination}) - ${instructions}   `,
                     start: dateTime,
                     status: "records",
+                    driverName,
+                    cargo,
+                    weight,
+                    dateTime,
+                    origin,
+                    destination,
+                    instructions,
                   };
                 }
 
@@ -441,10 +601,11 @@ const JobOrderSystem = () => {
       setEvents(events.filter((e) => e.id !== event.id)); // Compare ids here
       setModalOpen(false);
     });
-    setValidationDialogOpen(true);
+    setDeteleteDiaglogOpen(true);
   };
 
   const [validationDialogOpen, setValidationDialogOpen] = useState(false);
+  const [deteleteDiaglogOpen, setDeteleteDiaglogOpen] = useState(false);
 
   const handleSubmit = (jobOrderData, event) => {
     setAction(() => () => {
@@ -478,27 +639,27 @@ const JobOrderSystem = () => {
           },
         ]);
       }
+
       setModalOpen(false);
     });
     setValidationDialogOpen(true);
   };
 
-  const handleEventClick = ({ info }) => {
-    setSelectedEvent(info);
-
+  const handleEventClick = ({ event }) => {
+    setSelectedEvent(event);
     setModalOpen(true);
   };
 
   function renderEventContent(eventInfo) {
     const backgroundColor =
       eventInfo.event.extendedProps.status === "order"
-        ? "success.light"
-        : "info.light";
+        ? "info.light"
+        : "success.light";
     const icon =
       eventInfo.event.extendedProps.status === "order" ? (
-        <CheckCircleIcon fontSize="small" sx={{ fontSize: "16px" }} />
-      ) : (
         <LocalShippingIcon fontSize="small" sx={{ fontSize: "16px" }} />
+      ) : (
+        <CheckCircleIcon fontSize="small" sx={{ fontSize: "16px" }} />
       );
     return (
       <Box
@@ -581,6 +742,15 @@ const JobOrderSystem = () => {
             setValidationDialogOpen(false);
           }}
           onCancel={() => setValidationDialogOpen(false)}
+          formData={formData} // Pass formData as a prop
+        />
+        <DeleteValidationDialog
+          isOpen={deteleteDiaglogOpen}
+          onConfirm2={() => {
+            action(formData);
+            setDeteleteDiaglogOpen(false);
+          }}
+          onCancel2={() => setDeteleteDiaglogOpen(false)}
           formData={formData} // Pass formData as a prop
         />
       </Paper>

@@ -25,18 +25,28 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
-import { fetchProfilePic } from "../../components/cms";
+import { fetchProfilePic2 } from "../../components/cms";
 
-const storedUsername = localStorage.getItem("userName");
-const valuesData = await fetchProfilePic(storedUsername);
-const imagePath = valuesData._profilePicture;
-const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+const filename = "";
+try {
+  const storedUsername = localStorage.getItem("adminUsername");
+  const valuesData = await fetchProfilePic2(storedUsername);
+
+  if (valuesData) {
+    const imagePath = valuesData._profilePicture;
+    filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+  } else {
+    console.error("Error: Unable to fetch profile picture data");
+  }
+} catch (error) {
+  console.error("Error during fetchProfilePic:", error);
+}
 
 export default function AdminProfileInfo(props) {
   const isMobile = useMediaQuery("(max-width:600px)");
   const [showPassword, setShowPassword] = useState(false);
   const [passwordInputType, setPasswordInputType] = useState("password");
-
+  const uname = localStorage.getItem("adminUsername");
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [uploadedImage, setUploadedImage] = useState(null);
 
@@ -51,17 +61,16 @@ export default function AdminProfileInfo(props) {
     setDialogOpen(false);
   };
 
-  const storedUsername = localStorage.getItem("userName");
-
   const handleConfirmChange = async (event) => {
-    event.preventDefault();
+    //event.preventDefault();
+    console.log(userName);
     const formData = new FormData();
-    formData.append("_userName", storedUsername);
+    formData.append("_userName", uname);
     formData.append("image", uploadedImage);
 
     try {
       const response = await axios.put(
-        "http://localhost:3001/update-user-profilepic",
+        "http://localhost:3001/update-user-profilepic2",
         formData
       );
 
@@ -88,9 +97,9 @@ export default function AdminProfileInfo(props) {
     NewPassword: "",
   });
   useEffect(() => {
-    const storedUsername = localStorage.getItem("userName");
+    const storedUsername = localStorage.getItem("adminUsername");
     axios
-      .get(`http://localhost:3001/setuser?userName=${storedUsername}`)
+      .get(`http://localhost:3001/setuser2?userName=${storedUsername}`)
       .then((response) => {
         if (response.data.length > 0) {
           const user = response.data[0];
@@ -123,11 +132,11 @@ export default function AdminProfileInfo(props) {
   };
 
   const handlePasswordChange = () => {
-    const userName = localStorage.getItem("userName");
+    const userName = localStorage.getItem("adminUsername");
     const { CurrentPassword, NewPassword } = userData;
 
     axios
-      .post("http://localhost:3001/changepassword", {
+      .post("http://localhost:3001/changepassword2", {
         userName,
         currentPassword: CurrentPassword,
         newPassword: NewPassword,
@@ -158,12 +167,8 @@ export default function AdminProfileInfo(props) {
           toast.error("New Password must contain a special character");
           return;
         }
-        toast.success("New Password updated successfully", {
-          autoClose: 50,
-          onClose: () => {
-            window.location.reload();
-          },
-        });
+        toast.success("New Password updated successfully");
+        setUserData({ ...userData, NewPassword: "", CurrentPassword: "" });
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
@@ -176,7 +181,7 @@ export default function AdminProfileInfo(props) {
   };
 
   const handlePhoneAddressChange = () => {
-    const userName = localStorage.getItem("userName");
+    const userName = localStorage.getItem("adminUsername");
     const { Phone, Address } = userData;
     const phoneNumberRegex = /^(09|\+639)\d{9}$/;
     if (!phoneNumberRegex.test(Phone)) {
@@ -185,7 +190,7 @@ export default function AdminProfileInfo(props) {
     }
 
     axios
-      .post("http://localhost:3001/updatephoneaddress", {
+      .post("http://localhost:3001/updatephoneaddress2", {
         userName,
         phone: Phone,
         address: Address,
@@ -199,7 +204,7 @@ export default function AdminProfileInfo(props) {
         console.error("Error updating phone and address:", error);
       });
   };
-  const userName = localStorage.getItem("userName");
+  const userName = localStorage.getItem("adminUsername");
   return (
     <Box sx={{ my: 8, mx: 6 }}>
       <Typography

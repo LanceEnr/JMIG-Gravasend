@@ -202,9 +202,6 @@ export default function AddFleet() {
                           name="drivername"
                           type="text"
                           fullWidth
-                          onChange={(event) =>
-                            setdriverName(event.target.value)
-                          }
                           required
                           placeholder="Search drivers..."
                           InputProps={{
@@ -217,6 +214,14 @@ export default function AddFleet() {
                           }}
                         />
                       )}
+                      onChange={(event, value) => {
+                        if (value) {
+                          setdriverName(value);
+                        } else {
+                          // Handle the case when the user clears the selection
+                          setdriverName("");
+                        }
+                      }}
                     />
                   </Grid>
                   <Grid item xs={6}>

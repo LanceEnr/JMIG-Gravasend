@@ -49,6 +49,7 @@ export default function AdminLogin({ dispatch }) {
   });
   useEffect(() => {
     const rememberMeData = localStorage.getItem("rememberMeData");
+    console.log("Remember Me Data from localStorage:", rememberMeData);
     if (rememberMeData) {
       setLoginData(JSON.parse(rememberMeData));
     }
@@ -62,10 +63,14 @@ export default function AdminLogin({ dispatch }) {
   };
   const handleRememberChange = () => {
     setRememberMe(!rememberMe);
+    console.log("Remember Me State:", rememberMe);
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    if (!recaptchaValue) {
+      toast.error("Please complete the reCAPTCHA challenge.");
+      return;
+    }
     try {
       const response = await axios.post(
         "http://localhost:3001/adminLogin",
@@ -74,8 +79,9 @@ export default function AdminLogin({ dispatch }) {
 
       if (response.status === 200) {
         console.log("Login successful", response.data);
-        const { adminToken, userName } = response.data;
+        const { adminToken, adminUsername } = response.data;
         localStorage.setItem("adminToken", adminToken);
+        localStorage.setItem("adminUsername", adminUsername);
 
         if (loginData.rememberMe) {
           localStorage.setItem("rememberMeData", JSON.stringify(loginData));
@@ -84,12 +90,12 @@ export default function AdminLogin({ dispatch }) {
         }
 
         toast.success("Login successful", {
-          autoClose: 500,
+          autoClose: 50,
           onClose: () => {
-            navigate("/adminfleetinformation");
+            navigate("/admincontent");
           },
         });
-        navigate("/adminmanageorders");
+        dispatch({ type: "LOGIN" });
       } else {
         console.error("Login failed", response.data);
       }

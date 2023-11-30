@@ -22,7 +22,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import Box from "@mui/material/Box";
 import { Typography } from "@mui/material";
 import { green, red } from "@mui/material/colors";
-import Signature from "../../assets/e-signature.webp";
+import Signature from "../../assets/white.jpg";
 import { alpha, styled } from "@mui/material/styles";
 import axios from "axios";
 

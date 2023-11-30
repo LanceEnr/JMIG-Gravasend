@@ -34,6 +34,17 @@ export async function fetchProfilePic(_userName) {
     throw error;
   }
 }
+export async function fetchProfilePic2(_userName) {
+  try {
+    const response = await axios.get(
+      `http://localhost:3001/fetch-profile-pic2/${_userName}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching banner:", error);
+    throw error;
+  }
+}
 
 export async function fetchTestimonialData() {
   try {

@@ -124,6 +124,22 @@ const uploadMission = multer({
     fileSize: 100000000,
   },
 });
+const storageProfile = multer.diskStorage({
+  destination: "../src/images/profile/",
+  filename: function (req, file, cb) {
+    const username = req.body._userName;
+    const extname = path.extname(file.originalname);
+    const filename = username + extname;
+    cb(null, filename);
+  },
+});
+
+const uploadProfile = multer({
+  storage: storageProfile,
+  limits: {
+    fileSize: 10000000,
+  },
+});
 
 router.post("/adminRegister", async (req, res) => {
   const {
@@ -204,6 +220,7 @@ router.post("/adminRegister", async (req, res) => {
       _address,
       _iv: iv,
       _encryptionKey: encryptionKey,
+      _profilePicture: "",
     });
 
     if (!adminCodeDoc) {
@@ -222,6 +239,125 @@ router.post("/adminRegister", async (req, res) => {
     res.status(200).json({ message: "User registered successfully" });
   } catch (error) {
     console.error("Registration error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+router.get("/setuser2", async (req, res) => {
+  try {
+    const storedUsername = req.query.userName;
+    const users = await User.find({ _userName: storedUsername });
+
+    const selectedFields = users.map((user) => {
+      return {
+        Phone: user._phone,
+        Address: user._address,
+        Username: user._userName,
+        fName: user._fName,
+        lName: user._lName,
+        address: user._address,
+        pic: user._profilePicture,
+      };
+    });
+
+    res.json(selectedFields);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+router.post("/changepassword2", async (req, res) => {
+  try {
+    const { userName, currentPassword, newPassword } = req.body;
+
+    const user = await User.findOne({ _userName: userName });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const passwordMatch = await bcrypt.compare(currentPassword, user._pwd);
+    if (!passwordMatch) {
+      return res.status(401).json({ message: "Incorrect current password" });
+    }
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+    user._pwd = hashedPassword;
+
+    // Save the updated user object
+    await user.save();
+
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error updating password:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+router.post("/updatephoneaddress2", async (req, res) => {
+  try {
+    const { userName, phone, address } = req.body;
+    const user = await User.findOne({ _userName: userName });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user._phone = phone;
+    user._address = address;
+
+    await user.save();
+
+    res.status(200).json({ message: "Phone and address updated successfully" });
+  } catch (error) {
+    console.error("Error updating phone and address:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+router.put(
+  "/update-user-profilepic2",
+  uploadProfile.single("image"),
+  async (req, res) => {
+    const uname = req.body._userName;
+    try {
+      let image = req.body.image;
+
+      if (req.file) {
+        image = req.file.path;
+
+        const extname = path.extname(image);
+
+        const oldImagePath = "images/profile/" + uname + extname;
+
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      }
+
+      const existingUser = await User.findOne({ _userName: uname });
+      if (!existingUser) {
+        return res.status(404).json({ error: "Banner not found" });
+      }
+
+      existingUser._profilePicture = image;
+
+      await existingUser.save();
+
+      res.status(200).json({ message: "Banner updated successfully" });
+    } catch (error) {
+      console.error("Error updating banner:", error);
+      res.status(500).json({ error: "Banner update failed" });
+    }
+  }
+);
+
+router.get("/fetch-profile-pic2/:_userName", async (req, res) => {
+  const { _userName } = req.params;
+
+  try {
+    const user = await User.findOne({ _userName: _userName });
+    res.json(user);
+  } catch (error) {
+    console.error("Error retrieving banner:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -245,6 +381,7 @@ router.post("/adminLogin", async (req, res) => {
       return res.status(200).json({
         message: "Authentication successful",
         adminToken,
+        adminUsername: _userName,
       });
     } else {
       return res.status(401).json({ message: "Authentication failed" });
@@ -1064,6 +1201,20 @@ router.put("/update-order", async (req, res) => {
       }
     });
 
+    const phoneNumber = "+639762668380"; // Replace with the recipient's phone number
+    const message = "hello!";
+
+    client.messages
+      .create({
+        body: message,
+        from: "+16628454039",
+        to: phoneNumber,
+      })
+      .then((message) => console.log(`Message sent: ${message.sid}`))
+      .catch((error) =>
+        console.error(`Error sending message: ${error.message}`)
+      );
+
     res.json({ message: "Order updated successfully" });
   } catch (error) {
     console.error("Error updating order:", error);
@@ -1446,7 +1597,15 @@ router.get("/get-products2", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch product data" });
   }
 });
-
+router.get("/get-products3", async (req, res) => {
+  try {
+    const distinctItemNames = await Inventory.distinct("_itemName");
+    res.json(distinctItemNames);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Failed to fetch order data" });
+  }
+});
 const getNextListingNum = async () => {
   try {
     const counter = await Counter.findOneAndUpdate(
