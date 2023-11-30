@@ -14,10 +14,13 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import Badge from "@mui/material/Badge";
+import { styled } from "@mui/system";
+
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import EventIcon from "@mui/icons-material/Event";
 import OrderIcon from "@mui/icons-material/LocalShipping";
+import Divider from "@mui/material/Divider";
 import { Link, NavLink } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { logout } from "../store/reducers/authReducer";
@@ -27,7 +30,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import Divider from "@mui/material/Divider";
 import DonutSmallSharpIcon from "@mui/icons-material/DonutSmallSharp";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -40,11 +42,25 @@ import MailIcon from "@mui/icons-material/Mail";
 import ProfilePic from "../assets/formal1x1.webp";
 import { fetchProfilePic } from "../components/cms";
 import LogoGravasend from "../assets/LogoGravasend.webp";
+import Logout from "@mui/icons-material/Logout";
 
 const storedUsername = localStorage.getItem("userName");
 const valuesData = await fetchProfilePic(storedUsername);
 const imagePath = valuesData._profilePicture;
-const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+//const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+const StyledBox = styled(Box)(({ theme }) => ({
+  "&::-webkit-scrollbar": {
+    width: "0.2em",
+  },
+  "&::-webkit-scrollbar-track": {
+    boxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+    webkitBoxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    backgroundColor: "rgba(169,169,169,1)", // Default grey color
+    borderRadius: "10px", // Slightly rounded corners
+  },
+}));
 
 const ColoredBadge = withStyles({
   badge: {
@@ -296,75 +312,132 @@ function ResponsiveAppBar() {
                 </IconButton>
               </Tooltip>
               <Menu
-                sx={{
-                  mt: "45px",
-                }}
-                id="notification-appbar"
                 anchorEl={anchorElNotifications}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
+                id="account-menu"
                 open={Boolean(anchorElNotifications)}
                 onClose={handleCloseNotificationsMenu}
+                onClick={handleCloseNotificationsMenu}
+                PaperProps={{
+                  elevation: 0,
+                  sx: {
+                    overflow: "visible",
+                    filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                    mt: 1.5,
+                    "& .MuiAvatar-root": {
+                      width: 32,
+                      height: 32,
+                      ml: -0.5,
+                      mr: 1,
+                    },
+                    "&:before": {
+                      content: '""',
+                      display: "block",
+                      position: "absolute",
+                      top: 0,
+                      right: 14,
+                      width: 10,
+                      height: 10,
+                      bgcolor: "background.paper",
+                      transform: "translateY(-50%) rotate(45deg)",
+                      zIndex: 0,
+                    },
+                  },
+                }}
+                transformOrigin={{ horizontal: "right", vertical: "top" }}
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
               >
-                {notifications.map((notification) => (
-                  <MenuItem
-                    key={notification.heading}
-                    onClick={handleCloseNotificationsMenu}
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  padding={2}
+                  sx={{ minWidth: "300px" }}
+                >
+                  <Typography
+                    variant="subtitle2"
+                    color="textSecondary"
+                    sx={{
+                      fontWeight: "bold",
+                    }}
                   >
-                    <ListItemIcon>
-                      <notification.icon fontSize="small" />
-                    </ListItemIcon>
-                    <Box
-                      sx={{
-                        width: "200px",
-                        display: "flex",
-                        flexDirection: "column",
-                      }}
-                    >
-                      <Typography
-                        variant="subtitle2"
-                        sx={{
-                          fontWeight: "bold",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {notification.heading}
-                      </Typography>
+                    NOTIFICATIONS
+                  </Typography>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      color: "#83948a",
+                      cursor: "pointer",
+                    }}
+                  >
+                    CLEAR ALL
+                  </Typography>
+                </Box>
 
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {notification.text}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          fontSize: 10,
-                          color: "#83948a",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {timeAgo(notification.date)}
-                      </Typography>
-                    </Box>
-                  </MenuItem>
-                ))}
+                <Divider />
+                <StyledBox sx={{ overflow: "auto", maxHeight: "600px" }}>
+                  {notifications.length === 0 ? (
+                    <Typography
+                      variant="subtitle2"
+                      color="textSecondary"
+                      align="center"
+                      sx={{ p: 2 }}
+                    >
+                      No notifications
+                    </Typography>
+                  ) : (
+                    notifications.map((notification) => (
+                      <div key={notification.heading}>
+                        <MenuItem onClick={handleCloseNotificationsMenu}>
+                          <ListItemIcon style={{ color: "#bd8512" }}>
+                            <notification.icon fontSize="small" />
+                          </ListItemIcon>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexDirection: "column",
+                            }}
+                          >
+                            <Typography
+                              variant="subtitle2"
+                              sx={{
+                                fontWeight: "bold",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                              }}
+                            >
+                              {notification.heading}
+                            </Typography>
+
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                              }}
+                            >
+                              {notification.text}
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                fontSize: 10,
+                                color: "#83948a",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                              }}
+                            >
+                              {timeAgo(notification.date)}
+                            </Typography>
+                          </Box>
+                        </MenuItem>
+                        <Divider />
+                      </div>
+                    ))
+                  )}
+                </StyledBox>
               </Menu>
             </Box>
           )}
@@ -374,58 +447,82 @@ function ResponsiveAppBar() {
                 <IconButton onClick={handleOpenSettingsMenu} sx={{ p: 0 }}>
                   <Avatar
                     alt={userName}
-                    src={require(`../images/profile/${filename}`)}
+                    // src={require(`../images/profile/${filename}`)}
                   />
                 </IconButton>
               </Tooltip>
 
               <Menu
-                sx={{ mt: "45px" }}
-                id="menu-appbar"
                 anchorEl={anchorElSettings}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
+                id="account-menu"
                 open={Boolean(anchorElSettings)}
                 onClose={handleCloseSettingsMenu}
+                onClick={handleCloseSettingsMenu}
+                PaperProps={{
+                  elevation: 0,
+                  sx: {
+                    width: "175px",
+                    overflow: "visible",
+                    filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                    mt: 1.5,
+                    "& .MuiAvatar-root": {
+                      width: 32,
+                      height: 32,
+                      ml: -0.5,
+                      mr: 1,
+                    },
+                    "&:before": {
+                      content: '""',
+                      display: "block",
+                      position: "absolute",
+                      top: 0,
+                      right: 14,
+                      width: 10,
+                      height: 10,
+                      bgcolor: "background.paper",
+                      transform: "translateY(-50%) rotate(45deg)",
+                      zIndex: 0,
+                    },
+                  },
+                }}
+                transformOrigin={{ horizontal: "right", vertical: "top" }}
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
               >
-                {settings.map((setting) => (
-                  <MenuItem
-                    key={setting}
-                    onClick={() => {
-                      if (setting === "Logout") {
-                        localStorage.removeItem("token");
-                        dispatch({ type: "LOGOUT" });
-                        toast.success("Logout successfully", {
-                          autoClose: 50,
-                          onClose: () => {
-                            navigate("/login");
-                            window.location.reload();
-                          },
-                        });
-                      } else {
-                        setAnchorElSettings(null);
-                      }
-                    }}
-                  >
-                    <Link
-                      to={
-                        setting === "Account" ? "/ProfileInfo" : `/${setting}`
-                      }
-                      style={{ textDecoration: "none", color: "inherit" }}
-                    >
-                      <Typography variant="inherit" textAlign="center">
-                        {setting}
-                      </Typography>
-                    </Link>
-                  </MenuItem>
-                ))}
+                <MenuItem
+                  onClick={() => {
+                    setAnchorElSettings(null);
+                  }}
+                  component={Link}
+                  to="/dashboard"
+                >
+                  <ListItemIcon>
+                    <Avatar
+                      alt={userName}
+                      // src={require(`../images/profile/${filename}`)}
+                    />
+                  </ListItemIcon>
+                  {userName}
+                </MenuItem>
+                <Divider />
+
+                <MenuItem
+                  onClick={() => {
+                    localStorage.removeItem("token");
+                    dispatch({ type: "LOGOUT" });
+                    toast.success("Logout successfully", {
+                      autoClose: 50,
+                      onClose: () => {
+                        navigate("/login");
+                        window.location.reload();
+                      },
+                    });
+                  }}
+                >
+                  <ListItemIcon>
+                    <Logout fontSize="small" />
+                  </ListItemIcon>
+                  Logout
+                </MenuItem>
               </Menu>
             </Box>
           )}

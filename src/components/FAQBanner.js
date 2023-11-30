@@ -7,7 +7,7 @@ import image from "../images/banner/uploads/FAQS Page.png";
 
 const valuesData = await fetchBannerDataFAQ();
 const imagePath = valuesData._image;
-const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+//const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 const path = `../images/banner/uploads/${filename}`;
 const Banner = () => {
   return (

@@ -22,7 +22,7 @@ import { fetchBannerDataContact } from "./cmshelper/cms";
 
 const valuesData = await fetchBannerDataContact();
 const imagePath = valuesData._image;
-const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+//const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 
 function Contact() {
   window.scrollTo({ top: 0 });
@@ -98,7 +98,7 @@ function Contact() {
   return (
     <div>
       <Banner
-        bannerImage={filename}
+        //bannerImage={filename}
         title={valuesData._heading}
         text="Talk to us!"
       />

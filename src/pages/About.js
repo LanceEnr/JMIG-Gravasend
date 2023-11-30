@@ -16,7 +16,7 @@ import { fetchBannerDataAbout } from "./cmshelper/cms";
 
 const valuesData = await fetchBannerDataAbout();
 const imagePath = valuesData._image;
-const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+//const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 
 function About() {
   window.scrollTo({ top: 0 });
@@ -40,7 +40,10 @@ function About() {
   }, []);
   return (
     <div>
-      <Banner bannerImage={filename} title={valuesData._heading} />
+      <Banner
+        // bannerImage={filename}
+        title={valuesData._heading}
+      />
       <Mission />
       <Vision />
     </div>
