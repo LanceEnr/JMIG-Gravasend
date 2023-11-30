@@ -2,13 +2,16 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin from "@fullcalendar/interaction";
 import Typography from "../../components/common/Typography";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ScheduleIcon from "@mui/icons-material/Schedule";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import listPlugin from "@fullcalendar/list";
+import interactionPlugin from "@fullcalendar/interaction";
+import { List, ListItem, ListItemText } from "@mui/material";
 
 import {
   Dialog,
@@ -74,18 +77,32 @@ const ManageAppointments = () => {
   };
   const formattedDate = currentDate.toLocaleString("en-US", options);
   const [formattedEvents, setFormattedEvents] = useState([]);
+  const [currentCalendarView, setCurrentCalendarView] =
+    useState("dayGridMonth");
+
   useEffect(() => {
     axios
       .get("http://localhost:3001/get-events")
       .then((response) => {
-        setEvents(response.data);
-
-        const initialFormattedEvents = response.data.map((event) => ({
+        const allEvents = response.data.map((event) => ({
           ...event,
           start: event._dateTime,
           title: `${event._fName} ${event._lName} - ${event._note}`,
+          editable:
+            new Date(event._dateTime) > new Date() &&
+            event._status !== "Cancelled" &&
+            event._status !== "Completed",
         }));
-        setFormattedEvents(initialFormattedEvents);
+        setEvents(allEvents);
+
+        // Filter for upcoming and active events
+        const upcomingEvents = allEvents.filter(
+          (event) =>
+            new Date(event.start) > new Date() &&
+            event._status !== "Cancelled" &&
+            event._status !== "Completed"
+        );
+        setFormattedEvents(upcomingEvents);
       })
       .catch((error) => {
         console.error("Error fetching orders:", error);
@@ -158,13 +175,6 @@ const ManageAppointments = () => {
   const renderEventContent = (eventInfo) => {
     const isCancelled = eventInfo.event.extendedProps._status === "Cancelled";
     const isCompleted = eventInfo.event.extendedProps._status === "Completed";
-    const icon = isCancelled ? (
-      <CancelIcon sx={{ fontSize: "16px" }} />
-    ) : isCompleted ? (
-      <CheckCircleIcon sx={{ fontSize: "16px" }} />
-    ) : (
-      <AccessTimeFilledIcon sx={{ fontSize: "16px" }} />
-    );
 
     return (
       <Box
@@ -185,11 +195,10 @@ const ManageAppointments = () => {
           whiteSpace: "normal",
         }}
       >
-        <Typography variant="h6">
-          {eventInfo.timeText}m {icon}
+        <Typography variant="overline" sx={{ fontWeight: "bold" }}>
+          {eventInfo.timeText}
         </Typography>
-        <br />
-        <Typography variant="caption">{eventInfo.event.title}</Typography>
+        <Typography variant="caption"> - {eventInfo.event.title}</Typography>
       </Box>
     );
   };
@@ -286,365 +295,435 @@ const ManageAppointments = () => {
       >
         Manage Appointments
       </Typography>
-      <Paper
-        sx={{
-          mt: 3,
-          p: 2,
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <FullCalendar
-          plugins={[dayGridPlugin, interactionPlugin]}
-          initialView="dayGridMonth"
-          events={formattedEvents}
-          eventClick={handleEventClick}
-          eventContent={renderEventContent}
-          height={"auto"}
-        />
-        <Modal open={open} onClose={() => setOpen(false)}>
-          <Box
+      <Grid container spacing={3}>
+        <Grid item xs={2}>
+          <Paper
             sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: 450,
-              bgcolor: "background.paper",
-              boxShadow: 24,
-              borderRadius: "8px",
-
-              p: 4,
+              mt: 3,
+              p: 2,
+              display: "flex",
+              flexDirection: "column",
+              height: "75vh",
             }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                pb: 2,
-              }}
+            <Typography
+              variant="caption"
+              sx={{ fontWeight: "bold", py: 1 }}
+              gutterBottom
             >
-              {" "}
-              <Typography
-                variant="h6"
-                component="div"
-                sx={{ fontWeight: "bold" }}
-              >
-                {`Appointment #${selectedEvent?.extendedProps._appointmentNum}`}
-              </Typography>
-              <IconButton
-                edge="end"
-                color="inherit"
-                onClick={handleClose}
-                aria-label="close"
-              >
-                <CloseIcon />
-              </IconButton>
-            </Box>
-            <Divider
-              style={{ borderStyle: "dashed", borderColor: "#bd8512" }}
+              UPCOMING APPOINTMENTS
+            </Typography>
+            <Divider />
+            <List dense={true}>
+              {formattedEvents.map((event, index) => (
+                <ListItem
+                  sx={{
+                    color: "white",
+                    backgroundColor: "info.light",
+                    p: 1,
+                    overflow: "hidden",
+                    borderRadius: 1,
+                  }}
+                  key={index}
+                >
+                  <ListItemText
+                    primary={event.title}
+                    secondary={new Date(event.start).toLocaleString()}
+                    secondaryTypographyProps={{
+                      color: "white",
+                      fontweight: "bold",
+                    }} // Add this line
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </Paper>
+        </Grid>
+        <Grid item xs={10}>
+          <Paper
+            sx={{
+              mt: 3,
+              p: 2,
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <FullCalendar
+              plugins={[
+                dayGridPlugin,
+                timeGridPlugin,
+                listPlugin,
+                interactionPlugin,
+              ]}
+              headerToolbar={{
+                left: "prev,next today",
+                center: "title",
+                right: "dayGridMonth,timeGridWeek,dayGridDay,listWeek",
+              }}
+              initialView={currentCalendarView}
+              events={events}
+              eventClick={handleEventClick}
+              eventContent={renderEventContent}
+              height={"75vh"}
+              eventTimeFormat={{
+                hour: "2-digit",
+                minute: "2-digit",
+                meridiem: "short",
+              }}
             />
 
-            <Box sx={{ my: 2 }}>
-              {view === "details" && (
-                <>
-                  <Box sx={{ my: 2 }}>
-                    <TextField
-                      label="Name"
-                      value={
-                        selectedEvent?.extendedProps._fName +
-                        " " +
-                        selectedEvent?.extendedProps._lName
-                      }
-                      InputProps={{ readOnly: true }}
-                      fullWidth
-                    />
-                  </Box>
-                  <Box sx={{ mb: 2 }}>
-                    <TextField
-                      label="Contact Number"
-                      value={selectedEvent?.extendedProps._phone}
-                      InputProps={{ readOnly: true }}
-                      fullWidth
-                    />
-                  </Box>
-                  <Box sx={{ mb: 2 }}>
-                    <TextField
-                      label="Appointment Type"
-                      value={selectedEvent?.extendedProps._note}
-                      InputProps={{ readOnly: true }}
-                      fullWidth
-                    />
-                  </Box>
-                  <Box sx={{ mb: 2 }}>
-                    <TextField
-                      label="Date and Time"
-                      value={selectedEvent?.extendedProps._dateTime}
-                      InputProps={{ readOnly: true }}
-                      fullWidth
-                    />
-                  </Box>
+            <Modal open={open} onClose={() => setOpen(false)}>
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  width: 450,
+                  bgcolor: "background.paper",
+                  boxShadow: 24,
+                  borderRadius: "8px",
 
-                  {selectedEvent?.extendedProps._status !== "Cancelled" &&
-                    selectedEvent?.extendedProps._status !== "Completed" && (
+                  p: 4,
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    pb: 2,
+                  }}
+                >
+                  {" "}
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ fontWeight: "bold" }}
+                  >
+                    {`Appointment #${selectedEvent?.extendedProps._appointmentNum}`}
+                  </Typography>
+                  <IconButton
+                    edge="end"
+                    color="inherit"
+                    onClick={handleClose}
+                    aria-label="close"
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                </Box>
+                <Divider
+                  style={{ borderStyle: "dashed", borderColor: "#bd8512" }}
+                />
+
+                <Box sx={{ my: 2 }}>
+                  {view === "details" && (
+                    <>
+                      <Box sx={{ my: 2 }}>
+                        <TextField
+                          label="Name"
+                          value={
+                            selectedEvent?.extendedProps._fName +
+                            " " +
+                            selectedEvent?.extendedProps._lName
+                          }
+                          InputProps={{ readOnly: true }}
+                          fullWidth
+                        />
+                      </Box>
+                      <Box sx={{ mb: 2 }}>
+                        <TextField
+                          label="Contact Number"
+                          value={selectedEvent?.extendedProps._phone}
+                          InputProps={{ readOnly: true }}
+                          fullWidth
+                        />
+                      </Box>
+                      <Box sx={{ mb: 2 }}>
+                        <TextField
+                          label="Appointment Type"
+                          value={selectedEvent?.extendedProps._note}
+                          InputProps={{ readOnly: true }}
+                          fullWidth
+                        />
+                      </Box>
+                      <Box sx={{ mb: 2 }}>
+                        <TextField
+                          label="Date and Time"
+                          value={selectedEvent?.extendedProps._dateTime}
+                          InputProps={{ readOnly: true }}
+                          fullWidth
+                        />
+                      </Box>
+
+                      {selectedEvent?.extendedProps._status !== "Cancelled" &&
+                        selectedEvent?.extendedProps._status !==
+                          "Completed" && (
+                          <Box sx={{ mb: 2 }}>
+                            <Button
+                              onClick={() =>
+                                handleComplete(
+                                  selectedEvent?.extendedProps._appointmentNum,
+                                  selectedEvent?.extendedProps._dateTime,
+                                  selectedEvent?.extendedProps._fName,
+                                  selectedEvent?.extendedProps._lName
+                                )
+                              }
+                              sx={{ mr: 1 }}
+                              variant="contained"
+                              className="MuiButton-success"
+                              startIcon={<CheckCircleIcon />}
+                            >
+                              Complete
+                            </Button>
+                            <Button
+                              variant="contained"
+                              className="MuiButton-warning"
+                              sx={{ mr: 1 }}
+                              onClick={handleReschedule}
+                              startIcon={<ScheduleIcon />}
+                            >
+                              Reschedule
+                            </Button>
+                            <Button
+                              variant="contained"
+                              className="MuiButton-error"
+                              onClick={handleCancel}
+                              startIcon={<CancelIcon />}
+                            >
+                              Cancel
+                            </Button>
+                          </Box>
+                        )}
+                    </>
+                  )}
+
+                  {view === "reschedule" && (
+                    <>
+                      <DialogContentText sx={{ mb: 1 }}>
+                        Reschedule Appointment
+                      </DialogContentText>
+                      <Grid container spacing={2}>
+                        <Grid item xs={6}>
+                          <Box>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                              <DatePicker
+                                label="Date"
+                                name="Schedule"
+                                required
+                                fullWidth
+                                value={userData.Schedule}
+                                InputLabelProps={{ shrink: true }}
+                                shouldDisableDate={(day) => {
+                                  const currentDate = moment();
+                                  return (
+                                    day.day() === 0 ||
+                                    day.day() === 6 ||
+                                    day.isBefore(currentDate, "day")
+                                  );
+                                }}
+                                minDate={moment().add(1, "day")}
+                                onChange={(date) => {
+                                  setUserData({
+                                    ...userData,
+                                    Schedule: date.toDate(),
+                                  });
+                                }}
+                              />
+                            </LocalizationProvider>
+                          </Box>
+                        </Grid>
+
+                        <Grid item xs={6}>
+                          <Box>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                              <TimePicker
+                                label="Time"
+                                minutesStep={60}
+                                required
+                                ampm={false}
+                                minTime={
+                                  userData.IsAM
+                                    ? moment("08:00", "HH:mm")
+                                    : moment("13:00", "HH:mm")
+                                }
+                                maxTime={
+                                  userData.IsAM
+                                    ? moment("11:00", "HH:mm")
+                                    : moment("16:00", "HH:mm")
+                                }
+                                fullWidth
+                                InputLabelProps={{ shrink: true }}
+                                onChange={(date) => {
+                                  setUserData({
+                                    ...userData,
+                                    time: date.format("HH:mm"),
+                                  });
+                                }}
+                              />
+                            </LocalizationProvider>
+                          </Box>
+                        </Grid>
+                      </Grid>
+                      <Box sx={{ my: 2 }}>
+                        <FormControl component="fieldset">
+                          <FormLabel component="legend">Select Time</FormLabel>
+                          <RadioGroup
+                            aria-label="Time"
+                            name="time"
+                            value={userData.IsAM ? "AM" : "PM"}
+                            onChange={(e) => {
+                              setUserData({
+                                ...userData,
+                                IsAM: e.target.value === "AM",
+                              });
+                            }}
+                            row={true}
+                          >
+                            <FormControlLabel
+                              value="AM"
+                              control={<Radio />}
+                              label="AM"
+                            />
+                            <FormControlLabel
+                              value="PM"
+                              control={<Radio />}
+                              label="PM"
+                            />
+                          </RadioGroup>
+                        </FormControl>
+                      </Box>
+
+                      <FormControl fullWidth sx={{ mb: 2 }}>
+                        <InputLabel id="reschedule-reason-label">
+                          Reason for rescheduling
+                        </InputLabel>
+                        <Select
+                          labelId="reschedule-reason-label"
+                          value={rescheduleReason}
+                          onChange={(e) => setRescheduleReason(e.target.value)}
+                          label="Reason for rescheduling"
+                        >
+                          <MenuItem value="Conflict in Schedule">
+                            Conflict in Schedule
+                          </MenuItem>
+                          <MenuItem value="Change in Availability">
+                            Change in Availability
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
                       <Box sx={{ mb: 2 }}>
                         <Button
+                          variant="outlined"
+                          sx={{ mr: 2 }}
+                          onClick={() => setView("details")}
+                        >
+                          Go Back
+                        </Button>
+
+                        <Button
+                          variant="contained"
                           onClick={() =>
-                            handleComplete(
+                            handleRescheduleSubmit(
                               selectedEvent?.extendedProps._appointmentNum,
                               selectedEvent?.extendedProps._dateTime,
                               selectedEvent?.extendedProps._fName,
                               selectedEvent?.extendedProps._lName
                             )
                           }
-                          sx={{ mr: 1 }}
-                          variant="contained"
-                          className="MuiButton-success"
-                          startIcon={<CheckCircleIcon />}
+                          disabled={
+                            !userData.time ||
+                            !userData.Schedule ||
+                            !rescheduleReason
+                          }
                         >
-                          Complete
+                          Submit
+                        </Button>
+                      </Box>
+                    </>
+                  )}
+
+                  {view === "cancel" && (
+                    <>
+                      <DialogContentText>Cancel Appointment</DialogContentText>
+
+                      <FormControl fullWidth sx={{ my: 2 }}>
+                        <InputLabel id="cancel-reason-label">
+                          Reason for cancellation
+                        </InputLabel>
+                        <Select
+                          labelId="cancel-reason-label"
+                          value={cancelReason}
+                          onChange={(e) => setCancelReason(e.target.value)}
+                          label="Reason for cancellation"
+                          required
+                        >
+                          <MenuItem value="Conflict in Schedule">
+                            Conflict in Schedule
+                          </MenuItem>
+                          <MenuItem value="Change in Availability">
+                            Change in Availability
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                      <Box sx={{ mb: 2 }}>
+                        <Button
+                          variant="outlined"
+                          onClick={() => setView("details")}
+                          sx={{ mr: 2 }}
+                        >
+                          Go Back
                         </Button>
                         <Button
                           variant="contained"
-                          className="MuiButton-warning"
-                          sx={{ mr: 1 }}
-                          onClick={handleReschedule}
-                          startIcon={<ScheduleIcon />}
+                          onClick={() =>
+                            handleCancelSubmit(
+                              selectedEvent?.extendedProps._appointmentNum,
+                              selectedEvent?.extendedProps._dateTime,
+                              selectedEvent?.extendedProps._fName,
+                              selectedEvent?.extendedProps._lName
+                            )
+                          }
+                          disabled={!cancelReason}
                         >
-                          Reschedule
-                        </Button>
-                        <Button
-                          variant="contained"
-                          className="MuiButton-error"
-                          onClick={handleCancel}
-                          startIcon={<CancelIcon />}
-                        >
-                          Cancel
+                          Submit
                         </Button>
                       </Box>
-                    )}
-                </>
-              )}
-
-              {view === "reschedule" && (
-                <>
-                  <DialogContentText sx={{ mb: 1 }}>
-                    Reschedule Appointment
-                  </DialogContentText>
-                  <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <Box>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DatePicker
-                            label="Date"
-                            name="Schedule"
-                            required
-                            fullWidth
-                            value={userData.Schedule}
-                            InputLabelProps={{ shrink: true }}
-                            shouldDisableDate={(day) => {
-                              const currentDate = moment();
-                              return (
-                                day.day() === 0 ||
-                                day.day() === 6 ||
-                                day.isBefore(currentDate, "day")
-                              );
-                            }}
-                            minDate={moment().add(1, "day")}
-                            onChange={(date) => {
-                              setUserData({
-                                ...userData,
-                                Schedule: date.toDate(),
-                              });
-                            }}
-                          />
-                        </LocalizationProvider>
-                      </Box>
-                    </Grid>
-
-                    <Grid item xs={6}>
-                      <Box>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <TimePicker
-                            label="Time"
-                            minutesStep={60}
-                            required
-                            ampm={false}
-                            minTime={
-                              userData.IsAM
-                                ? moment("08:00", "HH:mm")
-                                : moment("13:00", "HH:mm")
-                            }
-                            maxTime={
-                              userData.IsAM
-                                ? moment("11:00", "HH:mm")
-                                : moment("16:00", "HH:mm")
-                            }
-                            fullWidth
-                            InputLabelProps={{ shrink: true }}
-                            onChange={(date) => {
-                              setUserData({
-                                ...userData,
-                                time: date.format("HH:mm"),
-                              });
-                            }}
-                          />
-                        </LocalizationProvider>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                  <Box sx={{ my: 2 }}>
-                    <FormControl component="fieldset">
-                      <FormLabel component="legend">Select Time</FormLabel>
-                      <RadioGroup
-                        aria-label="Time"
-                        name="time"
-                        value={userData.IsAM ? "AM" : "PM"}
-                        onChange={(e) => {
-                          setUserData({
-                            ...userData,
-                            IsAM: e.target.value === "AM",
-                          });
-                        }}
-                        row={true}
-                      >
-                        <FormControlLabel
-                          value="AM"
-                          control={<Radio />}
-                          label="AM"
-                        />
-                        <FormControlLabel
-                          value="PM"
-                          control={<Radio />}
-                          label="PM"
-                        />
-                      </RadioGroup>
-                    </FormControl>
-                  </Box>
-
-                  <FormControl fullWidth sx={{ mb: 2 }}>
-                    <InputLabel id="reschedule-reason-label">
-                      Reason for rescheduling
-                    </InputLabel>
-                    <Select
-                      labelId="reschedule-reason-label"
-                      value={rescheduleReason}
-                      onChange={(e) => setRescheduleReason(e.target.value)}
-                      label="Reason for rescheduling"
-                    >
-                      <MenuItem value="Conflict in Schedule">
-                        Conflict in Schedule
-                      </MenuItem>
-                      <MenuItem value="Change in Availability">
-                        Change in Availability
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
-                  <Box sx={{ mb: 2 }}>
-                    <Button
-                      variant="outlined"
-                      sx={{ mr: 2 }}
-                      onClick={() => setView("details")}
-                    >
-                      Go Back
-                    </Button>
-
-                    <Button
-                      variant="contained"
-                      onClick={() =>
-                        handleRescheduleSubmit(
-                          selectedEvent?.extendedProps._appointmentNum,
-                          selectedEvent?.extendedProps._dateTime,
-                          selectedEvent?.extendedProps._fName,
-                          selectedEvent?.extendedProps._lName
-                        )
-                      }
-                      disabled={
-                        !userData.time ||
-                        !userData.Schedule ||
-                        !rescheduleReason
-                      }
-                    >
-                      Submit
-                    </Button>
-                  </Box>
-                </>
-              )}
-
-              {view === "cancel" && (
-                <>
-                  <DialogContentText>Cancel Appointment</DialogContentText>
-
-                  <FormControl fullWidth sx={{ my: 2 }}>
-                    <InputLabel id="cancel-reason-label">
-                      Reason for cancellation
-                    </InputLabel>
-                    <Select
-                      labelId="cancel-reason-label"
-                      value={cancelReason}
-                      onChange={(e) => setCancelReason(e.target.value)}
-                      label="Reason for cancellation"
-                      required
-                    >
-                      <MenuItem value="Conflict in Schedule">
-                        Conflict in Schedule
-                      </MenuItem>
-                      <MenuItem value="Change in Availability">
-                        Change in Availability
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
-                  <Box sx={{ mb: 2 }}>
-                    <Button
-                      variant="outlined"
-                      onClick={() => setView("details")}
-                      sx={{ mr: 2 }}
-                    >
-                      Go Back
-                    </Button>
-                    <Button
-                      variant="contained"
-                      onClick={() =>
-                        handleCancelSubmit(
-                          selectedEvent?.extendedProps._appointmentNum,
-                          selectedEvent?.extendedProps._dateTime,
-                          selectedEvent?.extendedProps._fName,
-                          selectedEvent?.extendedProps._lName
-                        )
-                      }
-                      disabled={!cancelReason}
-                    >
-                      Submit
-                    </Button>
-                  </Box>
-                </>
-              )}
-            </Box>
-          </Box>
-        </Modal>
-        <Dialog
-          open={confirmOpen}
-          onClose={() => setConfirmOpen(false)}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{"Are you sure?"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Please note, once you proceed, the changes will be saved.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setConfirmOpen(false)} color="primary">
-              Submit
-            </Button>
-            <Button onClick={handleConfirmCancel} color="secondary" autoFocus>
-              Cancel
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Paper>
+                    </>
+                  )}
+                </Box>
+              </Box>
+            </Modal>
+            <Dialog
+              open={confirmOpen}
+              onClose={() => setConfirmOpen(false)}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">
+                {"Are you sure?"}
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  Please note, once you proceed, the changes will be saved.
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setConfirmOpen(false)} color="primary">
+                  Submit
+                </Button>
+                <Button
+                  onClick={handleConfirmCancel}
+                  color="secondary"
+                  autoFocus
+                >
+                  Cancel
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </Paper>
+        </Grid>
+      </Grid>
     </Box>
   );
 };

@@ -10,6 +10,7 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
+import Logout from "@mui/icons-material/Logout";
 
 import { Avatar } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -51,6 +52,20 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SellIcon from "@mui/icons-material/Sell";
 import NoteAltIcon from "@mui/icons-material/NoteAlt";
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  "&::-webkit-scrollbar": {
+    width: "0.4em",
+  },
+  "&::-webkit-scrollbar-track": {
+    boxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+    webkitBoxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    backgroundColor: "rgba(169,169,169,1)", // Default grey color
+    borderRadius: "10px", // Slightly rounded corners
+  },
+}));
 const drawerWidth = 250;
 
 const AppBar = styled(MuiAppBar, {
@@ -292,43 +307,132 @@ export default function AdminDashboard() {
               </IconButton>
             </Tooltip>
             <Menu
-              sx={{ mt: "45px" }}
-              id="notification-appbar"
               anchorEl={anchorElNotifications}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
+              id="account-menu"
               open={Boolean(anchorElNotifications)}
               onClose={handleCloseNotificationsMenu}
+              onClick={handleCloseNotificationsMenu}
+              PaperProps={{
+                elevation: 0,
+                sx: {
+                  overflow: "visible",
+                  filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                  mt: 1.5,
+                  "& .MuiAvatar-root": {
+                    width: 32,
+                    height: 32,
+                    ml: -0.5,
+                    mr: 1,
+                  },
+                  "&:before": {
+                    content: '""',
+                    display: "block",
+                    position: "absolute",
+                    top: 0,
+                    right: 14,
+                    width: 10,
+                    height: 10,
+                    bgcolor: "background.paper",
+                    transform: "translateY(-50%) rotate(45deg)",
+                    zIndex: 0,
+                  },
+                },
+              }}
+              transformOrigin={{ horizontal: "right", vertical: "top" }}
+              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
-              {notifications.map((notification) => (
-                <MenuItem
-                  key={notification.heading}
-                  onClick={handleCloseNotificationsMenu}
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                padding={2}
+                sx={{ minWidth: "300px" }}
+              >
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{
+                    fontWeight: "bold",
+                  }}
                 >
-                  <ListItemIcon>
-                    <notification.icon fontSize="small" />
-                  </ListItemIcon>
-                  <div>
-                    <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
-                      {notification.heading}
-                    </Typography>
-                    <Typography variant="body2">{notification.text}</Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{ fontSize: 10, color: "blue" }}
-                    >
-                      {timeAgo(notification.date)}
-                    </Typography>
-                  </div>
-                </MenuItem>
-              ))}
+                  NOTIFICATIONS
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    color: "#83948a",
+                    cursor: "pointer",
+                  }}
+                >
+                  CLEAR ALL
+                </Typography>
+              </Box>
+
+              <Divider />
+              <StyledBox sx={{ overflow: "auto", maxHeight: "600px" }}>
+                {notifications.length === 0 ? (
+                  <Typography
+                    variant="subtitle2"
+                    color="textSecondary"
+                    align="center"
+                    sx={{ p: 2 }}
+                  >
+                    No notifications
+                  </Typography>
+                ) : (
+                  notifications.map((notification) => (
+                    <div key={notification.heading}>
+                      <MenuItem onClick={handleCloseNotificationsMenu}>
+                        <ListItemIcon style={{ color: "#bd8512" }}>
+                          <notification.icon fontSize="small" />
+                        </ListItemIcon>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                          }}
+                        >
+                          <Typography
+                            variant="subtitle2"
+                            sx={{
+                              fontWeight: "bold",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                            }}
+                          >
+                            {notification.heading}
+                          </Typography>
+
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                            }}
+                          >
+                            {notification.text}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontSize: 10,
+                              color: "#83948a",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                            }}
+                          >
+                            {timeAgo(notification.date)}
+                          </Typography>
+                        </Box>
+                      </MenuItem>
+                      <Divider />
+                    </div>
+                  ))
+                )}
+              </StyledBox>
             </Menu>
             <Box sx={{ ml: 2 }}>
               <Tooltip title="Settings">
@@ -337,23 +441,58 @@ export default function AdminDashboard() {
                 </IconButton>
               </Tooltip>
               <Menu
-                sx={{ mt: "45px" }}
                 anchorEl={anchorElSettings}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
+                id="account-menu"
                 open={Boolean(anchorElSettings)}
                 onClose={handleCloseSettingsMenu}
+                onClick={handleCloseSettingsMenu}
+                PaperProps={{
+                  elevation: 0,
+                  sx: {
+                    width: "175px",
+                    overflow: "visible",
+                    filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                    mt: 1.5,
+                    "& .MuiAvatar-root": {
+                      width: 32,
+                      height: 32,
+                      ml: -0.5,
+                      mr: 1,
+                    },
+                    "&:before": {
+                      content: '""',
+                      display: "block",
+                      position: "absolute",
+                      top: 0,
+                      right: 14,
+                      width: 10,
+                      height: 10,
+                      bgcolor: "background.paper",
+                      transform: "translateY(-50%) rotate(45deg)",
+                      zIndex: 0,
+                    },
+                  },
+                }}
+                transformOrigin={{ horizontal: "right", vertical: "top" }}
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
               >
-                <MenuItem component={Link} to="/adminprofileinfo">
-                  <Typography textAlign="center">Settings</Typography>
+                <MenuItem
+                  onClick={() => {
+                    setAnchorElSettings(null);
+                  }}
+                  component={Link}
+                  to="/adminprofileinfo"
+                >
+                  <ListItemIcon>
+                    <Avatar
+                    // alt={userName}
+                    // src={require(`../images/profile/${filename}`)}
+                    />
+                  </ListItemIcon>
+                  Username
                 </MenuItem>
+                <Divider />
+
                 <MenuItem
                   onClick={() => {
                     localStorage.removeItem("adminToken");
@@ -367,7 +506,10 @@ export default function AdminDashboard() {
                     });
                   }}
                 >
-                  <Typography textAlign="center">Logout</Typography>
+                  <ListItemIcon>
+                    <Logout fontSize="small" />
+                  </ListItemIcon>
+                  Logout
                 </MenuItem>
               </Menu>
             </Box>
@@ -384,7 +526,7 @@ export default function AdminDashboard() {
           }}
         >
           <IconButton onClick={toggleDrawer}>
-            <ChevronLeftIcon />
+            <ChevronLeftIcon color="inherit" />
           </IconButton>
         </Toolbar>
         <Divider />

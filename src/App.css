@@ -27,3 +27,17 @@ body {
   color: inherit;
   text-decoration: none;
 }
+
+.fc-scroller::-webkit-scrollbar {
+  width: 0.5em;
+}
+
+.fc-scroller::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+}
+
+.fc-scroller::-webkit-scrollbar-thumb {
+  background-color: rgba(169, 169, 169, 1); /* Default grey color */
+  border-radius: 10px; /* Slightly rounded corners */
+}
