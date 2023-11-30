@@ -160,7 +160,7 @@ export default function RandomStringGenerator() {
     },
     {
       field: "_adminCode",
-      headerName: "Access Code",
+      headerName: "ACCESS CODE",
       flex: 1,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
@@ -170,7 +170,7 @@ export default function RandomStringGenerator() {
     },
     {
       field: "_isRedeem",
-      headerName: "Redemption Status",
+      headerName: "REDEMPTION STATUS",
       flex: 1,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
@@ -180,7 +180,7 @@ export default function RandomStringGenerator() {
     },
     {
       field: "_dateTime",
-      headerName: "Date and Time Generated",
+      headerName: "DATE AND TIME GENERATED",
       flex: 1,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
@@ -190,7 +190,7 @@ export default function RandomStringGenerator() {
     },
     {
       field: "actions",
-      headerName: "Actions",
+      headerName: "ACTIONS",
       sortable: false,
       flex: 1,
       renderHeader: (params) => (
@@ -203,16 +203,14 @@ export default function RandomStringGenerator() {
           <GridActionsCellItem
             icon={<ContentCopyIcon />}
             label="Copy"
-            sx={{
-              color: "primary.main",
-            }}
+            color="info"
             onClick={() => handleCopyAccessCode(params.row._adminCode)}
           />
           <GridActionsCellItem
             icon={<DeleteOutlineIcon />}
             label="Remove"
             className="textPrimary"
-            color="inherit"
+            color="error"
             onClick={() => handleDeleteRow(params.row._adminCode)}
           />
         </React.Fragment>

@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useReducer, useEffect } from "react";
+import React, { useReducer, useEffect, Suspense } from "react";
 import {
   BrowserRouter as Router,
   Route,

@@ -252,14 +252,14 @@ export default function NewDriverManagement() {
             <GridActionsCellItem
               icon={<EditIcon />}
               className="textPrimary"
-              color="inherit"
+              color="info"
             />
           </Link>
 
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
-            color="inherit"
+            color="error"
             onClick={() => handleClickOpen("delete", params.row)}
           />
         </React.Fragment>

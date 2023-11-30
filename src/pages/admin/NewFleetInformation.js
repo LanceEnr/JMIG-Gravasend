@@ -320,7 +320,7 @@ export default function NewFleetInformation() {
       field: "actions",
       headerName: "ACTIONS",
       sortable: false,
-      flex: 1,
+      flex: 1.5,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -335,14 +335,14 @@ export default function NewFleetInformation() {
             <GridActionsCellItem
               icon={<EditIcon />}
               className="textPrimary"
-              color="inherit"
+              color="info"
             />
           </Link>
 
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
-            color="inherit"
+            color="error"
             onClick={() => handleClickOpen("delete", params.row)}
           />
         </React.Fragment>
