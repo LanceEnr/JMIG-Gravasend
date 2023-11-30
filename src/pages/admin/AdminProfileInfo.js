@@ -201,7 +201,7 @@ export default function AdminProfileInfo(props) {
   };
   const userName = localStorage.getItem("userName");
   return (
-    <Box sx={{ my: 4, mx: 12 }}>
+    <Box sx={{ my: 8, mx: 6 }}>
       <Typography
         variant="h3"
         marked="left"
@@ -210,9 +210,9 @@ export default function AdminProfileInfo(props) {
       >
         Admin Profile
       </Typography>
-      <Grid container spacing={3}>
+      <Grid container spacing={3} sx={{ mt: 3 }}>
         <Grid item xs={12} md={8}>
-          <Paper elevation={2} style={{ padding: "24px" }}>
+          <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
             <Grid container spacing={3} alignItems="center">
               <Grid item xs={12}>
                 <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
@@ -233,15 +233,6 @@ export default function AdminProfileInfo(props) {
                   label="Phone"
                   name="Phone"
                   value={userData.Phone}
-                  fullWidth
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Address"
-                  name="Address"
-                  value={userData.Address}
                   fullWidth
                   onChange={handleChange}
                 />
@@ -314,48 +305,6 @@ export default function AdminProfileInfo(props) {
           <Grid container spacing={3} direction="column">
             <Grid item>
               <AdminProfileCard profile={profile} />
-            </Grid>
-            <Grid item>
-              <Paper elevation={2} style={{ padding: "24px" }}>
-                <Grid container alignItems="center">
-                  <Grid item xs={12}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
-                      Select Profile Photo
-                    </Typography>
-                  </Grid>
-                  <Grid container item xs={12} sx={{ mt: 2 }}>
-                    <Grid item xs={3}>
-                      <Avatar
-                        alt={profile.name}
-                        // src={require(`../images/profile/${filename}`)}
-                        //src={ProfilePic}
-                        sx={{
-                          width: 40,
-                          height: 40,
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={9}>
-                      <input
-                        type="file"
-                        id="upload-button"
-                        accept=".webp, .img, .png, .jpg"
-                        style={{ display: "none" }}
-                        onChange={handleFileUpload}
-                      />
-                      <label htmlFor="upload-button">
-                        <Button
-                          variant="contained"
-                          startIcon={<PhotoCameraIcon />}
-                          component="span"
-                        >
-                          Upload
-                        </Button>
-                      </label>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Paper>
             </Grid>
           </Grid>
         </Grid>

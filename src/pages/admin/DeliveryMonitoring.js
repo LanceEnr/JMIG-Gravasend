@@ -292,7 +292,7 @@ function DeliveryMonitoring() {
 
   return (
     <div>
-      <Box sx={{ my: 4, mx: 12 }}>
+      <Box sx={{ my: 4 }}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Box

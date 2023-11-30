@@ -117,7 +117,7 @@ function Inventory() {
   };
   return (
     <div>
-      <Box sx={{ my: 12, mx: 12 }}>
+      <Box sx={{ my: 12 }}>
         <Box
           display="flex"
           justifyContent="space-between"

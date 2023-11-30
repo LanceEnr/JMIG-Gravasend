@@ -124,7 +124,7 @@ export default function NewFaqTable() {
       field: "actions",
       headerName: "ACTIONS",
       sortable: false,
-      flex: 1.5,
+      flex: 1,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}

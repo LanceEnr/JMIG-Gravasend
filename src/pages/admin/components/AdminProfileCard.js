@@ -3,6 +3,12 @@ import axios from "axios";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
+import Button from "@mui/material/Button";
+import { toast } from "react-toastify";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/system";
@@ -28,6 +34,42 @@ export default function AdminProfileCard({ profile }) {
     totalOrders: "",
     totalAppointments: "",
   });
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState(null);
+  const inputRef = React.useRef();
+
+  const handleConfirmChange = async (event) => {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append("_userName", storedUsername);
+    formData.append("image", uploadedImage);
+
+    try {
+      const response = await axios.put(
+        "http://localhost:3001/update-user-profilepic",
+        formData
+      );
+
+      toast.success("Profile picture changed successfully!");
+
+      console.log("Profile picture changed successfully ", response.data);
+    } catch (error) {
+      toast.error("Error submitting picture");
+      console.error("Error submitting picture:", error);
+    }
+    setDialogOpen(false);
+  };
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setUploadedImage(file);
+      setDialogOpen(true);
+    }
+  };
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("userName");
@@ -92,7 +134,7 @@ export default function AdminProfileCard({ profile }) {
             <Typography
               variant="body2"
               gutterBottom
-              sx={{ color: "#83948a", fontWeight: "bold", textAlign: "center" }}
+              sx={{ color: "#bd8512", fontWeight: "bold", textAlign: "center" }}
             >
               ADMIN
             </Typography>
@@ -108,42 +150,44 @@ export default function AdminProfileCard({ profile }) {
         <Divider
           sx={{
             position: "absolute", // Set position to absolute
-            bottom: 80, // Position it at the bottom
+            bottom: 65, // Position it at the bottom
             width: "100%", // Make it full width
           }}
         />
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between",
             pt: 1,
           }}
         >
-          <div style={{ textAlign: "center", margin: "0 10px" }}>
-            <Typography
-              variant="h6"
-              style={{ fontWeight: "bold", color: "#bd8512" }}
-            >
-              {count.totalOrders}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              Total Orders
-            </Typography>
-          </div>
-
-          <div style={{ textAlign: "center", margin: "0 10px" }}>
-            <Typography
-              variant="h6"
-              style={{ fontWeight: "bold", color: "#bd8512" }}
-            >
-              {count.totalAppointments}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              Appointments
-            </Typography>
-          </div>
+          <input
+            type="file"
+            id="upload-button"
+            accept=".webp, .img, .png, .jpg"
+            style={{ display: "none" }}
+            onChange={handleFileUpload}
+            ref={inputRef} // Add this line
+          />
+          <Button
+            sx={{ fontWeight: "bold", width: "100%" }}
+            onClick={() => inputRef.current.click()} // Add this line
+          >
+            Upload Picture
+          </Button>
         </Box>
       </Box>
+      <Dialog open={isDialogOpen} onClose={handleDialogClose}>
+        <DialogTitle>Change Profile Picture</DialogTitle>
+        <DialogContent>
+          <Typography>Do you want to change your profile picture?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose}>Cancel</Button>
+          <Button onClick={handleConfirmChange} variant="contained">
+            Yes, Change
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   );
 }

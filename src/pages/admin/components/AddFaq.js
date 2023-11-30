@@ -15,7 +15,7 @@ export default function AddFaq() {
   // Assuming valueOptions is an array of driver names
   return (
     <div>
-      <Box sx={{ my: 14, mx: 12 }}>
+      <Box sx={{ my: 14 }}>
         <Typography
           variant="h3"
           marked="left"

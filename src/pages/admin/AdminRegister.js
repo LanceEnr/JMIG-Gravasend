@@ -162,10 +162,9 @@ export default function AdminRegister() {
 
   return (
     <div className={classes.signin}>
-      <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
+      <Container maxWidth="sm" sx={{ pt: 8 }}>
         <Box
           sx={{
-            marginTop: 8,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",

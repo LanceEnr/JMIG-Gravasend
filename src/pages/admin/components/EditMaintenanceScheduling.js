@@ -113,7 +113,7 @@ export default function EditMaintenanceScheduling() {
   const isOverdue = status === "overdue";
   return (
     <div>
-      <Box sx={{ my: 14, mx: 12 }}>
+      <Box sx={{ my: 14 }}>
         <Typography
           variant="h3"
           marked="left"

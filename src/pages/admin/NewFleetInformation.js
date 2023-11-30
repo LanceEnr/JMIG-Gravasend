@@ -295,7 +295,7 @@ export default function NewFleetInformation() {
   ];
 
   return (
-    <Box sx={{ my: 14, mx: 12 }}>
+    <Box sx={{ my: 14 }}>
       <Box
         display="flex"
         justifyContent="space-between"
