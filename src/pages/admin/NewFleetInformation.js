@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Typography from "../../components/common/Typography";
 import Chip from "@mui/material/Chip";
 import {
@@ -10,7 +10,7 @@ import {
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import { rowsFleetInformation } from "./helpers/data";
+//import { rowsFleetInformation } from "./helpers/data";
 import { Link, useNavigate } from "react-router-dom";
 import { alpha, styled } from "@mui/material/styles";
 import AddIcon from "@mui/icons-material/Add";
@@ -86,6 +86,62 @@ export default function NewFleetInformation() {
     deleteRecord();
     setOpen(false);
   };
+  const transformFleetData = (data) => {
+    const transformedData = [];
+
+    if (data) {
+      for (const uid in data) {
+        if (data.hasOwnProperty(uid)) {
+          const userData = data[uid];
+
+          const mappedData = {
+            id: uid,
+            driverName: userData.driverName,
+            bodyNo: userData.bodyNo,
+            plateNo: userData.plateNo,
+            plateNo2: userData.plateNo2,
+            chassisNo: userData.chassisNo,
+            engineNo: userData.engineNo,
+            model: userData.model,
+            mileage: userData.mileage,
+            status: userData.status,
+            location: userData.location,
+          };
+
+          transformedData.push(mappedData);
+        }
+      }
+    }
+
+    return transformedData;
+  };
+
+  const fetchFleetInformation = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/fetch-trucks");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return [];
+    }
+  };
+
+  const [rowsFleetInformation, setRowsFleetInformation] = useState([]);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/fetch-trucks");
+      const transformedData = transformFleetData(response.data);
+      setRowsFleetInformation(transformedData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setRowsFleetInformation([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const deleteRecord = async () => {
     try {

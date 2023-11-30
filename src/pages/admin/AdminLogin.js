@@ -84,11 +84,12 @@ export default function AdminLogin({ dispatch }) {
         }
 
         toast.success("Login successful", {
-          autoClose: 50,
+          autoClose: 500,
           onClose: () => {
-            navigate("/admincontent");
+            navigate("/adminfleetinformation");
           },
         });
+        navigate("/adminmanageorders");
       } else {
         console.error("Login failed", response.data);
       }

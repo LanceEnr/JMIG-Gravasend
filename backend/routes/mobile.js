@@ -834,15 +834,15 @@ router.post("/editTruck", async (req, res) => {
       snapshot.forEach((childSnapshot) => {
         const driverData = childSnapshot.val();
 
-        if (driverData.driverName === current) {
+        if (driverName == current) {
           uid = childSnapshot.key;
 
-          driverData.status = "assigned";
+          //driverData.status = "assigned";
           driverData.UID = uid;
           const driverRef = db.ref(`DriverManagement/${uid}`);
           driverRef.set(driverData, (error) => {
             if (error) {
-              console.error("Firebase set error:", error);
+              console.error("Firebase set error:  ", error);
               res.status(500).json({ message: "Internal server error" });
             }
           });

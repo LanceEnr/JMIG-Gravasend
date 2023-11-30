@@ -119,7 +119,7 @@ export default function EditFleet() {
       });
 
       console.log("Truck edited successfully", response.data);
-      toast.success("Truck added successfully");
+      toast.success("Truck edited successfully");
       navigate("/adminfleetinformation");
     } catch (error) {
       console.error("Truck edit failed", error);
