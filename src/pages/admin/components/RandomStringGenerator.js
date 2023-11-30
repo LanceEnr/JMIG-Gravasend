@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
+import { DataGrid, GridActionsCellItem, gridClasses } from "@mui/x-data-grid";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import {
   TextField,
@@ -8,12 +8,49 @@ import {
   InputAdornment,
   Button,
   Paper,
+  Box,
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import Title from "./Title";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Typography from "../../../components/common/Typography";
+import { alpha, styled } from "@mui/material/styles";
+
+const ODD_OPACITY = 0.2;
+
+const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
+  [`& .${gridClasses.row}.even`]: {
+    backgroundColor: "#EAECEA",
+    "&:hover, &.Mui-hovered": {
+      backgroundColor: alpha(theme.palette.primary.main, ODD_OPACITY),
+      "@media (hover: none)": {
+        backgroundColor: "transparent",
+      },
+    },
+    "&.Mui-selected": {
+      backgroundColor: alpha(
+        theme.palette.primary.main,
+        ODD_OPACITY + theme.palette.action.selectedOpacity
+      ),
+      "&:hover, &.Mui-hovered": {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          ODD_OPACITY +
+            theme.palette.action.selectedOpacity +
+            theme.palette.action.hoverOpacity
+        ),
+        // Reset on touch devices, it doesn't add specificity
+        "@media (hover: none)": {
+          backgroundColor: alpha(
+            theme.palette.primary.main,
+            ODD_OPACITY + theme.palette.action.selectedOpacity
+          ),
+        },
+      },
+    },
+  },
+}));
 
 function getRandomString(length) {
   const characters =
@@ -111,15 +148,56 @@ export default function RandomStringGenerator() {
   };
 
   const columns = [
-    { field: "_codeID", headerName: "ID", flex: 1 },
-    { field: "_adminCode", headerName: "Access Code", flex: 1 },
-    { field: "_isRedeem", headerName: "Redemption Status", flex: 1 },
-    { field: "_dateTime", headerName: "Date and Time Generated", flex: 1 },
+    {
+      field: "_codeID",
+      headerName: "ID",
+      flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "_adminCode",
+      headerName: "Access Code",
+      flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "_isRedeem",
+      headerName: "Redemption Status",
+      flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+    {
+      field: "_dateTime",
+      headerName: "Date and Time Generated",
+      flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
     {
       field: "actions",
       headerName: "Actions",
       sortable: false,
       flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
       renderCell: (params) => (
         <React.Fragment>
           <GridActionsCellItem
@@ -144,43 +222,68 @@ export default function RandomStringGenerator() {
 
   return (
     <div>
-      <Paper sx={{ my: 2, p: 2, display: "flex", flexDirection: "column" }}>
-        <Title>Generate Admin Access Code</Title>
-        <TextField
-          label="Access Code"
-          variant="outlined"
-          value={randomString}
-          sx={{ mt: 2 }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={handleGenerate}>
-                  <RefreshIcon />
-                </IconButton>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleGenerateAndPost} // Handle POST request
-                >
-                  Generate Code
-                </Button>
-              </InputAdornment>
-            ),
-          }}
-          readOnly
-        />
-      </Paper>
-      <Paper sx={{ my: 2, p: 2, display: "flex", flexDirection: "column" }}>
-        <Title>Generated Access Codes</Title>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          pageSize={5}
-          disableColumnFilter
-          disableColumnSelector
-          density="compact"
-        />
-      </Paper>
+      <Box sx={{ my: 12 }}>
+        <Typography
+          variant="h3"
+          marked="left"
+          style={{ fontWeight: "bold", fontSize: "30px" }}
+          gutterBottom
+        >
+          Admin Access Code
+        </Typography>
+
+        <Paper sx={{ mt: 3, p: 2, display: "flex", flexDirection: "column" }}>
+          <TextField
+            label="Access Code"
+            variant="outlined"
+            value={randomString}
+            sx={{ mb: 2 }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleGenerate}>
+                    <RefreshIcon />
+                  </IconButton>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleGenerateAndPost} // Handle POST request
+                  >
+                    Generate Code
+                  </Button>
+                </InputAdornment>
+              ),
+            }}
+            readOnly
+          />
+          <StripedDataGrid
+            sx={{
+              border: 1,
+              borderColor: "primary.light",
+              "& .MuiDataGrid-cell:hover": {
+                fontWeight: "bold",
+              },
+            }}
+            rows={rows}
+            columns={columns}
+            pageSize={5}
+            disableColumnFilter
+            disableColumnSelector
+            density="comfortable"
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 5,
+                },
+              },
+            }}
+            pageSizeOptions={[5, 10, 25]}
+            getRowClassName={(params) =>
+              params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
+            }
+          />
+        </Paper>
+      </Box>
     </div>
   );
 }

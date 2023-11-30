@@ -50,6 +50,7 @@ import EditCurrent from "./pages/admin/components/EditCurrent";
 import AddFaq from "./pages/admin/components/AddFaq";
 import EditFaq from "./pages/admin/components/EditFaq";
 import NewUserManagement from "./pages/admin/components/NewUserManagement";
+import RandomStringGenerator from "./pages/admin/components/RandomStringGenerator";
 
 const initialState = {
   isAuthenticated: !!localStorage.getItem("adminToken"),
@@ -124,6 +125,11 @@ function AdminApp() {
                               <Box sx={{ mx: 3 }}>
                                 <Suspense fallback={<div>Loading...</div>}>
                                   <Routes>
+                                    <Route
+                                      path="/adminaccesscodes"
+                                      exact
+                                      element={<RandomStringGenerator />}
+                                    />
                                     <Route
                                       path="/adminprofileinfo"
                                       exact
