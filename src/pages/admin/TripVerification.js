@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { DataGrid, gridClasses, GridToolbar } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  gridClasses,
+  GridToolbar,
+  GridActionsCellItem,
+} from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
@@ -20,7 +25,6 @@ import { green, red } from "@mui/material/colors";
 import Signature from "../../assets/e-signature.webp";
 import { alpha, styled } from "@mui/material/styles";
 import axios from "axios";
-import GestureIcon from "@mui/icons-material/Gesture";
 
 const ODD_OPACITY = 0.2;
 
@@ -379,6 +383,28 @@ export default function TripVerification() {
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
         </Typography>
+      ),
+    },
+    {
+      field: "actions",
+      headerName: "ACTIONS",
+      sortable: false,
+      flex: 1,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+      renderCell: (params) => (
+        <React.Fragment>
+          <GridActionsCellItem
+            icon={<CheckCircleIcon />}
+            className="textPrimary"
+            color="success"
+          />
+
+          <GridActionsCellItem icon={<CancelIcon />} color="error" />
+        </React.Fragment>
       ),
     },
   ];

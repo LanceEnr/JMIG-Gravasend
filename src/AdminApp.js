@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useReducer, useEffect } from "react";
+import React, { useReducer, useEffect, Suspense } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -50,6 +50,7 @@ import EditCurrent from "./pages/admin/components/EditCurrent";
 import AddFaq from "./pages/admin/components/AddFaq";
 import EditFaq from "./pages/admin/components/EditFaq";
 import NewUserManagement from "./pages/admin/components/NewUserManagement";
+import RandomStringGenerator from "./pages/admin/components/RandomStringGenerator";
 
 const initialState = {
   isAuthenticated: !!localStorage.getItem("adminToken"),
@@ -121,17 +122,24 @@ function AdminApp() {
                           <Toolbar />
                           <Grid container spacing={3}>
                             <Grid item xs={12}>
-                              <Routes>
-                                <Route
-                                  path="/adminprofileinfo"
-                                  exact
-                                  element={<AdminProfileInfo />}
-                                />
-                                <Route
-                                  path="/adminforgotpassword"
-                                  exact
-                                  element={<AdminForgotPassword />}
-                                />
+                              <Box sx={{ mx: 3 }}>
+                                <Suspense fallback={<div>Loading...</div>}>
+                                  <Routes>
+                                    <Route
+                                      path="/adminaccesscodes"
+                                      exact
+                                      element={<RandomStringGenerator />}
+                                    />
+                                    <Route
+                                      path="/adminprofileinfo"
+                                      exact
+                                      element={<AdminProfileInfo />}
+                                    />
+                                    <Route
+                                      path="/adminforgotpassword"
+                                      exact
+                                      element={<AdminForgotPassword />}
+                                    />
 
                                 <Route
                                   path="/adminregister"

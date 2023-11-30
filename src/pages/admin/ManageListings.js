@@ -214,14 +214,14 @@ export default function ManageListings({ onAddClick, onEditClick }) {
             icon={<EditIcon />}
             label="Edit"
             className="textPrimary"
-            color="inherit"
+            color="info"
             onClick={() => onEditClick(params.row)}
           />
 
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
-            color="inherit"
+            color="error"
             onClick={() => handleClickOpen("delete", params.row)}
           />
         </React.Fragment>

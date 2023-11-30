@@ -237,7 +237,7 @@ export default function NewMaintenanceRecords() {
             <GridActionsCellItem
               icon={<EditIcon />}
               className="textPrimary"
-              color="inherit"
+              color="info"
             />
           </Link>
         </React.Fragment>
