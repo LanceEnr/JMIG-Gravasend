@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Chip from "@mui/material/Chip";
 import {
   DataGrid,
@@ -9,7 +9,7 @@ import {
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import { rowsMaintenanceScheduling } from "../helpers/data";
+//import { rowsMaintenanceScheduling } from "../helpers/data";
 import { Link, useNavigate } from "react-router-dom";
 import { alpha, styled } from "@mui/material/styles";
 import Typography from "../../../components/common/Typography";
@@ -26,6 +26,51 @@ import {
   DialogContentText,
   DialogActions,
 } from "@mui/material";
+
+const transformMaintenanceData = (data) => {
+  const transformedData = [];
+  if (data) {
+    for (const uid in data) {
+      if (data.hasOwnProperty(uid)) {
+        const userData = data[uid];
+
+        for (const id in userData) {
+          if (userData.hasOwnProperty(id)) {
+            const maintenanceData = userData[id];
+
+            const mappedData = {
+              uid: uid,
+              id: id,
+              plateNo: maintenanceData.plateNo,
+              service: maintenanceData.service,
+              frequency: maintenanceData.frequency,
+              nextDueMileage: maintenanceData.nextDueMileage,
+              nextMaintenanceDate: new Date(
+                maintenanceData.nextMaintenanceDate
+              ),
+              mileage: maintenanceData.mileage,
+              status: maintenanceData.status,
+            };
+
+            transformedData.push(mappedData);
+          }
+        }
+      }
+    }
+  }
+
+  return transformedData;
+};
+
+const fetchMaintenance = async () => {
+  try {
+    const response = await axios.get("http://localhost:3001/fetch-maintenance");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
 
 const ODD_OPACITY = 0.2;
 
@@ -69,6 +114,9 @@ export default function NewMaintenanceScheduling() {
   const [id, setId] = useState(null);
   const [uid, setUID] = useState(null);
   const navigate = useNavigate();
+  const [rowsMaintenanceScheduling, setrowsMaintenanceScheduling] = useState(
+    []
+  );
 
   const handleClickOpen = (action, row) => {
     setAction(action);
@@ -77,7 +125,19 @@ export default function NewMaintenanceScheduling() {
     setId(row.id);
     setUID(row.uid);
   };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchMaintenance();
+        const transformedData = transformMaintenanceData(data);
+        setrowsMaintenanceScheduling(transformedData);
+      } catch (error) {
+        console.error("Error fetching and transforming data:", error);
+      }
+    };
 
+    fetchData();
+  }, [navigate]);
   const handleClose = () => {
     setOpen(false);
   };

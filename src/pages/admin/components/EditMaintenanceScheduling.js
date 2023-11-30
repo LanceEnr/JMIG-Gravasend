@@ -189,6 +189,7 @@ export default function EditMaintenanceScheduling() {
                       label="Next Due Mileage"
                       name="nextduemileage"
                       type="text"
+                      disabled
                       fullWidth
                       value={formatNumberWithCommas(nextDue)}
                       InputProps={{

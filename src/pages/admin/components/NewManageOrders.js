@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Typography from "../../../components/common/Typography";
 import Chip from "@mui/material/Chip";
 import {
@@ -10,7 +10,6 @@ import {
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import { rowsManageOrders } from "../helpers/data";
 import { Link, useNavigate } from "react-router-dom";
 import { alpha, styled } from "@mui/material/styles";
 import AddIcon from "@mui/icons-material/Add";
@@ -35,6 +34,28 @@ const isValidUrl = (url) => {
   } catch (e) {
     return false;
   }
+};
+const fetchOrderData = async () => {
+  try {
+    const response = await axios.get("http://localhost:3001/get-order");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+const transformOrderData = (data) => {
+  return data.map((item) => ({
+    id: item._orderNum,
+    customerName: item._name,
+    product: item._materialType,
+    price: item._price,
+    quantity: item._quantity,
+    orderDet: item._orderDet,
+    lastUpdated: item._date,
+    status: item._status,
+  }));
 };
 
 const ODD_OPACITY = 0.2;
@@ -73,6 +94,7 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
 }));
 
 export default function NewManageOrders() {
+  const [rowsManageOrders, setRowsManageOrders] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [action, setAction] = React.useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -85,7 +107,19 @@ export default function NewManageOrders() {
     setSelectedRow(row);
     setId(row.id);
   };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchOrderData();
+        const transformedData = transformOrderData(data);
+        setRowsManageOrders(transformedData);
+      } catch (error) {
+        console.error("Error fetching and transforming data:", error);
+      }
+    };
 
+    fetchData();
+  }, [navigate]);
   const handleClose = () => {
     setOpen(false);
   };

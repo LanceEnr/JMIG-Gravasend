@@ -2,33 +2,73 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Box, Grid, Paper, TextField, Button } from "@mui/material";
 import Typography from "../../../components/common/Typography";
 
 export default function EditDriver() {
   const [driver, setDriver] = useState("");
   const [selectedFiles, setSelectedFiles] = useState([]);
-
-  const onDrop = useCallback(
-    (acceptedFiles) => {
-      const remainingSlots = 6 - selectedFiles.length;
-      const filesToAdd = acceptedFiles.slice(0, remainingSlots);
-      setSelectedFiles([...selectedFiles, ...filesToAdd]);
-    },
-    [selectedFiles]
-  );
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  const id = url.searchParams.get("id");
+  const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [contact, setContact] = useState("");
+  const [date, setDate] = useState("");
+  const [email, setEmail] = useState("");
+  const [originalContact, setOriginalContact] = useState("");
+  const [license, setLicense] = useState("");
+  const [status, setStatus] = React.useState("unassigned");
 
   const handleChange = (event) => {
     setDriver(event.target.value);
   };
 
-  const removeFile = (index) => {
-    const updatedFiles = [...selectedFiles];
-    updatedFiles.splice(index, 1);
-    setSelectedFiles(updatedFiles);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3001/fetch-driver2/${id}`
+        );
+        const originalDate = response.data.date;
+        const convertedDate = new Date(originalDate)
+          .toISOString()
+          .split("T")[0];
+
+        setName(response.data.driverName);
+        setContact(response.data.contact);
+        setDate(convertedDate);
+        setEmail(response.data.email);
+        setLicense(response.data.licenseNo);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, [id]);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:3001/editDriver", {
+        driverName: name,
+        contact: contact,
+        date: date,
+        status: status,
+        email: email,
+        licenseNo: license,
+        id: id,
+      });
+
+      toast.success("Dirver edited successfully");
+
+      navigate("/admindrivermanagement");
+    } catch (error) {
+      console.error("Driver edit failed", error);
+
+      toast.error("Driver edit failed!");
+    }
   };
 
   return (
@@ -52,45 +92,16 @@ export default function EditDriver() {
         >
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <Grid container spacing={3} alignItems="center">
-                  <Grid item xs={12}>
-                    <Box
-                      {...getRootProps()}
-                      sx={{
-                        height: 200,
-                        border: "1px dashed gray",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <input {...getInputProps()} />
-                      {selectedFiles.length > 0 ? (
-                        <ul>
-                          {selectedFiles.map((file, index) => (
-                            <li key={index}>
-                              {file.name}{" "}
-                              <button onClick={() => removeFile(index)}>
-                                Remove
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p>
-                          Drag & drop driver picture here, or click to select
-                          driver picture
-                        </p>
-                      )}
-                    </Box>
-                  </Grid>
                   <Grid item xs={6}>
                     <TextField
                       label="Name"
                       name="drivername"
                       type="text"
+                      value={name}
                       fullWidth
+                      onChange={(event) => setName(event.target.value)}
                     />
                   </Grid>
 
@@ -98,8 +109,10 @@ export default function EditDriver() {
                     <TextField
                       label="Contact No."
                       name="contactno"
-                      type="number"
+                      type="text"
+                      value={contact}
                       fullWidth
+                      onChange={(event) => setContact(event.target.value)}
                     />
                   </Grid>
 
@@ -108,7 +121,14 @@ export default function EditDriver() {
                       label="Hire Date"
                       name="hiredate"
                       type="date"
+                      value={date}
                       fullWidth
+                      onChange={(event) => setDate(event.target.value)}
+                      InputProps={{
+                        inputProps: {
+                          max: new Date().toISOString().split("T")[0], // Set max date to today
+                        },
+                      }}
                     />
                   </Grid>
 
@@ -117,6 +137,8 @@ export default function EditDriver() {
                       label="Email"
                       name="email"
                       type="email"
+                      value={email}
+                      disabled
                       fullWidth
                     />
                   </Grid>
@@ -124,7 +146,9 @@ export default function EditDriver() {
                     <TextField
                       label="License No."
                       name="licenseno"
-                      type="number"
+                      type="text"
+                      value={license}
+                      onChange={(event) => setLicense(event.target.value)}
                       fullWidth
                     />
                   </Grid>

@@ -678,6 +678,28 @@ router.get("/fetch-driver", (req, res) => {
       res.status(500).json({ message: "Internal server error" });
     });
 });
+router.get("/fetch-driver2/:id", (req, res) => {
+  const { id } = req.params;
+
+  axios
+    .get(
+      `https://gravasend-965f7-default-rtdb.firebaseio.com/DriverManagement/${id}.json`
+    )
+    .then((response) => {
+      const driverData = response.data;
+
+      if (driverData) {
+        res.json(driverData);
+      } else {
+        console.log(`No data found for truck with ID ${id}.`);
+        res.status(404).json({ message: "Truck not found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
 
 router.get("/fetch-driver-available", (req, res) => {
   axios
@@ -723,6 +745,24 @@ router.get("/generateDriverID", async (req, res) => {
     res.status(500).json({ error: "Failed to generate ID" });
   }
 });
+router.post("/check-email/:email", async (req, res) => {
+  const email = req.params;
+  console.log("email: " + email);
+  try {
+    const user = await admin.auth().getUserByEmail(email);
+
+    if (user) {
+      res.status(200).json({ message: "Driver found" });
+      console.log("found");
+    } else {
+      console.log("User does not exist");
+      res.status(404).json({ message: "Driver not yet registered" });
+    }
+  } catch (error) {
+    console.error("Firebase Authentication error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 router.post("/addDriver", async (req, res) => {
   const email = req.body.email;
   const driverData = req.body;
@@ -754,11 +794,9 @@ router.post("/addDriver", async (req, res) => {
 router.post("/deleteDriverRecord", async (req, res) => {
   const _driverID = req.body._driverID;
   try {
-    // Define a reference to the "DriverManagement" data based on the _driverID
     const db = admin.database();
     const driverRef = db.ref(`DriverManagement/${_driverID}`);
 
-    // Remove the record with the specified driver ID (UID)
     await driverRef.remove();
 
     res.status(200).json({ message: "Driver record deleted successfully" });
@@ -1472,6 +1510,23 @@ router.post("/editInspection", async (req, res) => {
         message: "Inspection updated successfully",
       });
     }
+  } catch (error) {
+    console.error("Firebase Authentication error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/editDriver", async (req, res) => {
+  const driverData = req.body;
+  const id = driverData.id;
+  const db = admin.database();
+  try {
+    const ref = db.ref(`DriverManagement/${id}`);
+    await ref.set(driverData);
+
+    res.status(200).json({
+      message: "Driver updated successfully",
+    });
   } catch (error) {
     console.error("Firebase Authentication error:", error);
     res.status(500).json({ message: "Internal server error" });

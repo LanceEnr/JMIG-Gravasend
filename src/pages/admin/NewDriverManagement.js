@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Typography from "../../components/common/Typography";
 import Chip from "@mui/material/Chip";
 import {
@@ -10,8 +10,8 @@ import {
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import { rowsDriverManagement } from "./helpers/data";
-import { Link } from "react-router-dom";
+//import { rowsDriverManagement } from "./helpers/data";
+import { Link, useNavigate } from "react-router-dom";
 import { alpha, styled } from "@mui/material/styles";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -36,6 +36,43 @@ const isValidUrl = (url) => {
     return true;
   } catch (e) {
     return false;
+  }
+};
+const transformDriverData = (data) => {
+  const transformedData = [];
+  console.log(data);
+  if (data) {
+    for (const uid in data) {
+      if (data.hasOwnProperty(uid)) {
+        const userData = data[uid];
+
+        const mappedData = {
+          id: uid,
+          contact: userData.contact,
+          date: userData.date,
+          driverName: userData.driverName,
+          email: userData.email,
+          licenseNo: userData.licenseNo,
+          plateNo: userData.plateNo,
+          status: userData.status,
+          profilePicture: userData.ProfileImageURL,
+        };
+
+        transformedData.push(mappedData);
+      }
+    }
+  }
+
+  return transformedData;
+};
+
+const fetchDriverInformation = async () => {
+  try {
+    const response = await axios.get("http://localhost:3001/fetch-driver");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
   }
 };
 
@@ -78,27 +115,47 @@ export default function NewDriverManagement() {
   const [open, setOpen] = React.useState(false);
   const [action, setAction] = React.useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [id, setId] = useState(null);
+  const [rowsDriverManagement, setrowsDriverManagement] = useState([]);
+  const navigate = useNavigate();
 
   const handleClickOpen = (action, row) => {
     setAction(action);
     setOpen(true);
     setSelectedRow(row);
+    setId(row.id);
   };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchDriverInformation();
+        const transformedData = transformDriverData(data);
+        setrowsDriverManagement(transformedData);
+      } catch (error) {
+        console.error("Error fetching and transforming data:", error);
+      }
+    };
+
+    fetchData();
+  }, [navigate]);
 
   const handleClose = () => {
     setOpen(false);
   };
+  const handleDialogConfirm = () => {
+    deleteRecord();
+    setOpen(false);
+  };
 
-  const deleteRecord = async (id) => {
+  const deleteRecord = async () => {
     try {
-      const _listingId = parseInt(id, 10);
       const response = await axios.post(
-        "http://localhost:3001/delete-listing",
-        { _listingId }
+        "http://localhost:3001/deleteDriverRecord",
+        { _driverID: id }
       );
 
       if (response.status === 200) {
-        toast.success("Listing deleted successfully");
+        toast.success("Driver deleted successfully");
       } else if (response.status === 404) {
         toast.error("Record not found");
       } else {
@@ -248,7 +305,10 @@ export default function NewDriverManagement() {
       ),
       renderCell: (params) => (
         <React.Fragment>
-          <Link to="/admineditdriver" className="unstyled-link">
+          <Link
+            to={`/admineditdriver?id=${params.row.id}`}
+            className="unstyled-link"
+          >
             <GridActionsCellItem
               icon={<EditIcon />}
               className="textPrimary"
@@ -340,7 +400,7 @@ export default function NewDriverManagement() {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button color="primary" autoFocus>
+            <Button color="primary" onClick={handleDialogConfirm} autoFocus>
               Confirm
             </Button>
           </DialogActions>

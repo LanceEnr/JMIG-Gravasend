@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Chip from "@mui/material/Chip";
 import {
   DataGrid,
@@ -7,15 +7,34 @@ import {
   gridClasses,
 } from "@mui/x-data-grid";
 import axios from "axios";
-
-import {
-  columnsIncomingInventory,
-  rowsIncomingInventory,
-} from "../helpers/data";
+import { Link, useNavigate } from "react-router-dom";
+import { columnsIncomingInventory } from "../helpers/data";
 import { alpha, styled } from "@mui/material/styles";
 import { toast } from "react-toastify";
 
 import { Box } from "@mui/material";
+
+const fetchIncomingInventoryData = async () => {
+  try {
+    const response = await axios.get("http://localhost:3001/incomingInventory");
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+const transformIncomingInventoryData = (data) => {
+  return data.map((item) => ({
+    id: item._inventoryID,
+    itemName: item._materialType,
+    quantity: item._quantity,
+    name: item._name,
+    date: item._date,
+    location: item._location,
+  }));
+};
 
 const ODD_OPACITY = 0.2;
 
@@ -56,12 +75,28 @@ export default function NewIncomingInventory() {
   const [open, setOpen] = React.useState(false);
   const [action, setAction] = React.useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [rowsIncomingInventory, setrowsIncomingInventory] = useState([]);
+  const navigate = useNavigate();
 
   const handleClickOpen = (action, row) => {
     setAction(action);
     setOpen(true);
     setSelectedRow(row);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchIncomingInventoryData();
+        const transformedData = transformIncomingInventoryData(data);
+        setrowsIncomingInventory(transformedData);
+      } catch (error) {
+        console.error("Error fetching and transforming data:", error);
+      }
+    };
+
+    fetchData();
+  }, [navigate]);
 
   const handleClose = () => {
     setOpen(false);

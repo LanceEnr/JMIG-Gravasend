@@ -31,6 +31,46 @@ import {
 import Title from "./components/Title";
 import FleetInformation from "./FleetInformation";
 
+const transformFleetData = (data) => {
+  const transformedData = [];
+
+  if (data) {
+    for (const uid in data) {
+      if (data.hasOwnProperty(uid)) {
+        const userData = data[uid];
+
+        const mappedData = {
+          id: uid,
+          driverName: userData.driverName,
+          bodyNo: userData.bodyNo,
+          plateNo: userData.plateNo,
+          plateNo2: userData.plateNo2,
+          chassisNo: userData.chassisNo,
+          engineNo: userData.engineNo,
+          model: userData.model,
+          mileage: userData.mileage,
+          status: userData.status,
+          location: userData.location,
+        };
+
+        transformedData.push(mappedData);
+      }
+    }
+  }
+
+  return transformedData;
+};
+
+const fetchFleetInformation = async () => {
+  try {
+    const response = await axios.get("http://localhost:3001/fetch-trucks");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
 const ODD_OPACITY = 0.2;
 
 const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
@@ -71,13 +111,29 @@ export default function NewFleetInformation() {
   const [action, setAction] = React.useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
   const [id, setId] = useState(null);
+  const [rowsFleetInformation, setrowsFleetInformation] = useState([]);
   const navigate = useNavigate();
+
   const handleClickOpen = (action, row) => {
     setAction(action);
     setOpen(true);
     setSelectedRow(row);
     setId(row.id);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchFleetInformation();
+        const transformedData = transformFleetData(data);
+        setrowsFleetInformation(transformedData);
+      } catch (error) {
+        console.error("Error fetching and transforming data:", error);
+      }
+    };
+
+    fetchData();
+  }, [navigate]);
 
   const handleClose = () => {
     setOpen(false);
@@ -86,62 +142,6 @@ export default function NewFleetInformation() {
     deleteRecord();
     setOpen(false);
   };
-  const transformFleetData = (data) => {
-    const transformedData = [];
-
-    if (data) {
-      for (const uid in data) {
-        if (data.hasOwnProperty(uid)) {
-          const userData = data[uid];
-
-          const mappedData = {
-            id: uid,
-            driverName: userData.driverName,
-            bodyNo: userData.bodyNo,
-            plateNo: userData.plateNo,
-            plateNo2: userData.plateNo2,
-            chassisNo: userData.chassisNo,
-            engineNo: userData.engineNo,
-            model: userData.model,
-            mileage: userData.mileage,
-            status: userData.status,
-            location: userData.location,
-          };
-
-          transformedData.push(mappedData);
-        }
-      }
-    }
-
-    return transformedData;
-  };
-
-  const fetchFleetInformation = async () => {
-    try {
-      const response = await axios.get("http://localhost:3001/fetch-trucks");
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      return [];
-    }
-  };
-
-  const [rowsFleetInformation, setRowsFleetInformation] = useState([]);
-
-  const fetchData = async () => {
-    try {
-      const response = await axios.get("http://localhost:3001/fetch-trucks");
-      const transformedData = transformFleetData(response.data);
-      setRowsFleetInformation(transformedData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setRowsFleetInformation([]);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const deleteRecord = async () => {
     try {

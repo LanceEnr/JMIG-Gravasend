@@ -2,33 +2,68 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Box, Grid, Paper, TextField, Button } from "@mui/material";
 import Typography from "../../../components/common/Typography";
 
 export default function AddDriver() {
   const [driver, setDriver] = useState("");
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [name, setName] = useState("");
+  const [contact, setContact] = useState("");
+  const [date, setDate] = useState("");
+  const [email, setEmail] = useState("");
+  const [originalContact, setOriginalContact] = useState("");
+  const [license, setLicense] = useState("");
+  const [status, setStatus] = React.useState("unassigned");
 
-  const onDrop = useCallback(
-    (acceptedFiles) => {
-      const remainingSlots = 6 - selectedFiles.length;
-      const filesToAdd = acceptedFiles.slice(0, remainingSlots);
-      setSelectedFiles([...selectedFiles, ...filesToAdd]);
-    },
-    [selectedFiles]
-  );
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const getCurrentDate = () => {
+    const today = new Date();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    const year = today.getFullYear();
+    return `${year}-${month}-${day}`;
+  };
 
   const handleChange = (event) => {
     setDriver(event.target.value);
   };
 
-  const removeFile = (index) => {
-    const updatedFiles = [...selectedFiles];
-    updatedFiles.splice(index, 1);
-    setSelectedFiles(updatedFiles);
+  const handleContactChange = (event) => {
+    setContact(event.target.value);
+  };
+
+  const handleContactBlur = () => {
+    const phoneNumberRegex = /^(09|\+639)\d{9}$/;
+
+    if (contact.match(phoneNumberRegex) || contact === "") {
+      setOriginalContact(contact);
+    } else {
+      toast.error(
+        "Invalid phone number format. Please enter a valid Philippine phone number."
+      );
+      setContact(originalContact);
+    }
+  };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:3001/addDriver", {
+        driverName: name,
+        contact: contact,
+        date: date,
+        status: status,
+        email: email,
+        licenseNo: license,
+      });
+
+      console.log("Driver added successfully", response.data);
+      toast.success("Driver added successfully");
+    } catch (error) {
+      console.error("Driver add failed", error);
+      toast.error("Driver must register first on app!");
+      setEmail("");
+    }
   };
 
   return (
@@ -52,45 +87,16 @@ export default function AddDriver() {
         >
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <Grid container spacing={3} alignItems="center">
-                  <Grid item xs={12}>
-                    <Box
-                      {...getRootProps()}
-                      sx={{
-                        height: 200,
-                        border: "1px dashed gray",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <input {...getInputProps()} />
-                      {selectedFiles.length > 0 ? (
-                        <ul>
-                          {selectedFiles.map((file, index) => (
-                            <li key={index}>
-                              {file.name}{" "}
-                              <button onClick={() => removeFile(index)}>
-                                Remove
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p>
-                          Drag & drop driver picture here, or click to select
-                          driver picture
-                        </p>
-                      )}
-                    </Box>
-                  </Grid>
                   <Grid item xs={6}>
                     <TextField
                       label="Name"
                       name="drivername"
                       type="text"
+                      onChange={(event) => setName(event.target.value)}
                       fullWidth
+                      required
                     />
                   </Grid>
 
@@ -98,7 +104,10 @@ export default function AddDriver() {
                     <TextField
                       label="Contact No."
                       name="contactno"
-                      type="number"
+                      type="text"
+                      value={contact}
+                      onChange={handleContactChange}
+                      onBlur={handleContactBlur}
                       fullWidth
                     />
                   </Grid>
@@ -108,7 +117,11 @@ export default function AddDriver() {
                       label="Hire Date"
                       name="hiredate"
                       type="date"
+                      value={date}
+                      onChange={(event) => setDate(event.target.value)}
+                      inputProps={{ min: getCurrentDate() }}
                       fullWidth
+                      required
                     />
                   </Grid>
 
@@ -117,15 +130,20 @@ export default function AddDriver() {
                       label="Email"
                       name="email"
                       type="email"
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
                       fullWidth
+                      required
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
                       label="License No."
                       name="licenseno"
-                      type="number"
+                      type="text"
+                      onChange={(event) => setLicense(event.target.value)}
                       fullWidth
+                      required
                     />
                   </Grid>
                   <Grid item xs={12}>

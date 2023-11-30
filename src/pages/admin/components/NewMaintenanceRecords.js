@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Chip from "@mui/material/Chip";
 import {
   DataGrid,
@@ -9,13 +9,62 @@ import {
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import { rowsMaintenanceRecords } from "../helpers/data";
-import { Link } from "react-router-dom";
+//import { rowsMaintenanceRecords } from "../helpers/data";
+import { Link, useNavigate } from "react-router-dom";
 import { alpha, styled } from "@mui/material/styles";
 import Typography from "../../../components/common/Typography";
 import { toast } from "react-toastify";
 
 import { Box } from "@mui/material";
+
+const transformMaintenanceRecordData = (data) => {
+  const transformedData = [];
+  if (data) {
+    for (const uid in data) {
+      if (data.hasOwnProperty(uid)) {
+        const userData = data[uid];
+
+        for (const id in userData) {
+          if (userData.hasOwnProperty(id)) {
+            const maintenanceData = userData[id];
+
+            const mappedData = {
+              uid: uid,
+              id: id,
+              plateNo: maintenanceData.plateNo,
+              service: maintenanceData.service,
+              frequency: maintenanceData.frequency,
+              nextDueMileage: maintenanceData.nextDueMileage,
+              nextMaintenanceDate: new Date(
+                maintenanceData.nextMaintenanceDate
+              ),
+              mileage: maintenanceData.mileage,
+              status: maintenanceData.status,
+              provider: maintenanceData.provider,
+              cost: maintenanceData.cost,
+            };
+
+            transformedData.push(mappedData);
+          }
+        }
+      }
+    }
+  }
+
+  return transformedData;
+};
+
+const fetchMaintenanceRecord = async () => {
+  try {
+    const response = await axios.get(
+      "http://localhost:3001/fetch-maintenanceHistory"
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
 
 const ODD_OPACITY = 0.2;
 
@@ -56,6 +105,22 @@ export default function NewMaintenanceRecords() {
   const [open, setOpen] = React.useState(false);
   const [action, setAction] = React.useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [rowsMaintenanceRecords, setrowsMaintenanceRecords] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchMaintenanceRecord();
+        const transformedData = transformMaintenanceRecordData(data);
+        setrowsMaintenanceRecords(transformedData);
+      } catch (error) {
+        console.error("Error fetching and transforming data:", error);
+      }
+    };
+
+    fetchData();
+  }, [navigate]);
 
   const handleClickOpen = (action, row) => {
     setAction(action);
