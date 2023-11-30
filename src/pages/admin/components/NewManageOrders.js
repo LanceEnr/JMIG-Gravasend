@@ -211,7 +211,7 @@ export default function NewManageOrders() {
     {
       field: "status",
       headerName: "STATUS",
-      flex: 1,
+      flex: 3,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -393,7 +393,7 @@ export default function NewManageOrders() {
   ];
 
   return (
-    <Box sx={{ my: 14, mx: 12 }}>
+    <Box sx={{ my: 14 }}>
       <Box
         display="flex"
         justifyContent="space-between"

@@ -277,7 +277,7 @@ const ManageAppointments = () => {
     checkFormFilled();
   }, [newDateTime, rescheduleReason, cancelReason]);
   return (
-    <Box sx={{ my: 4, mx: 12 }}>
+    <Box sx={{ my: 4, mx: 6 }}>
       <Typography
         variant="h3"
         marked="left"

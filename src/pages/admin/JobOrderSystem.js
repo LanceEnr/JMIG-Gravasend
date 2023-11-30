@@ -523,7 +523,7 @@ const JobOrderSystem = () => {
     );
   }
   return (
-    <Box sx={{ my: 4, mx: 12 }}>
+    <Box sx={{ my: 4, mx: 6 }}>
       <Box
         display="flex"
         justifyContent="space-between"
