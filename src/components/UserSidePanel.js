@@ -24,7 +24,7 @@ import { fetchProfilePic } from "../components/cms";
 const storedUsername = localStorage.getItem("userName");
 const valuesData = await fetchProfilePic(storedUsername);
 const imagePath = valuesData._profilePicture;
-//const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 
 const ColoredBadge = withStyles({
   badge: {
@@ -100,7 +100,7 @@ function SidePanel({ setActiveComponent }) {
         <ListItem sx={{ marginBottom: "16px" }}>
           <Avatar
             alt={userName}
-            //  src={require(`../images/profile/${filename}`)}
+            src={require(`../images/profile/${filename}`)}
             sx={{ width: 64, height: 64, marginRight: "16px" }}
           />
           <div>

@@ -32,7 +32,7 @@ import { fetchProfilePic } from "../components/cms";
 const storedUsername = localStorage.getItem("userName");
 const valuesData = await fetchProfilePic(storedUsername);
 const imagePath = valuesData._profilePicture;
-//const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 
 export default function ProfileInfo(props) {
   const isMobile = useMediaQuery("(max-width:600px)");
@@ -347,7 +347,7 @@ export default function ProfileInfo(props) {
                     <Grid item xs={3}>
                       <Avatar
                         alt={profile.name}
-                        // src={require(`../images/profile/${filename}`)}
+                        src={require(`../images/profile/${filename}`)}
                         //src={ProfilePic}
                         sx={{
                           width: 40,

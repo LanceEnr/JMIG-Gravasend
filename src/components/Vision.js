@@ -10,7 +10,7 @@ import VisionImage from "../assets/vision.webp";
 
 const valuesData = await fetchVisionData();
 const imagePath = valuesData.image;
-//const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 
 function Vision() {
   return (
@@ -35,7 +35,7 @@ function Vision() {
           />
           <Box
             component="img"
-            // src={require(`../images/banner/uploads/${filename}`)}
+            src={require(`../images/banner/uploads/${filename}`)}
             alt="call to action"
             sx={{
               position: "absolute",

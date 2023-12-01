@@ -13,16 +13,13 @@ import { toast } from "react-toastify";
 
 const valuesData = await fetchBannerDataFAQ();
 const imagePath = valuesData._image;
-//const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 
 function Faqs() {
   window.scrollTo({ top: 0 });
   return (
     <div>
-      <Banner
-        //  bannerImage={filename}
-        title="FREQUENTLY ASK QUESTIONS"
-      />
+      <Banner bannerImage={filename} title="FREQUENTLY ASK QUESTIONS" />
 
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
         <CustomizedAccordions items={rowsFaqs} />

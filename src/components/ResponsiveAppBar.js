@@ -47,7 +47,7 @@ import Logout from "@mui/icons-material/Logout";
 const storedUsername = localStorage.getItem("userName");
 const valuesData = await fetchProfilePic(storedUsername);
 const imagePath = valuesData._profilePicture;
-//const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 const StyledBox = styled(Box)(({ theme }) => ({
   "&::-webkit-scrollbar": {
     width: "0.2em",
@@ -447,7 +447,7 @@ function ResponsiveAppBar() {
                 <IconButton onClick={handleOpenSettingsMenu} sx={{ p: 0 }}>
                   <Avatar
                     alt={userName}
-                    // src={require(`../images/profile/${filename}`)}
+                    src={require(`../images/profile/${filename}`)}
                   />
                 </IconButton>
               </Tooltip>
