@@ -610,6 +610,12 @@ const ManageAppointments = () => {
                           <MenuItem value="Change in Availability">
                             Change in Availability
                           </MenuItem>
+                          <MenuItem value="Change in Availability">
+                            Holiday
+                          </MenuItem>
+                          <MenuItem value="Change in Availability">
+                            Others
+                          </MenuItem>
                         </Select>
                       </FormControl>
                       <Box sx={{ mb: 2 }}>

@@ -734,6 +734,7 @@ export const columnsOutgoingInventory = [
       </Typography>
     ),
   },
+
   {
     field: "quantity",
     headerName: "QUANTITY",
@@ -746,8 +747,8 @@ export const columnsOutgoingInventory = [
     ),
   },
   {
-    field: "destinationLocation",
-    headerName: "DESTINATION LOCATION",
+    field: "name",
+    headerName: "DRIVER NAME",
     flex: 2,
     renderHeader: (params) => (
       <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
@@ -756,8 +757,18 @@ export const columnsOutgoingInventory = [
     ),
   },
   {
-    field: "dateDispatched",
-    headerName: "DATE DISPATCHED",
+    field: "location",
+    headerName: "LOCATION",
+    flex: 2,
+    renderHeader: (params) => (
+      <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+        {params.colDef.headerName}
+      </Typography>
+    ),
+  },
+  {
+    field: "date",
+    headerName: "DATE ORDERED",
     flex: 2,
     renderHeader: (params) => (
       <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>

@@ -16,7 +16,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Box from "@mui/material/Box";
 import { green, red } from "@mui/material/colors";
-import Signature from "../../assets/e-signature.webp";
+import Signature from "../../assets/white.jpg";
 
 import axios from "axios";
 
@@ -473,31 +473,37 @@ export default function TripVerification() {
             {
               documentName: "Suspension System",
               approved: SafetyChecklistData.suspension,
+              image: SafetyChecklistData.suspensionPic,
             },
             {
               documentName: "Brake System",
               approved: SafetyChecklistData.brake,
+              image: SafetyChecklistData.brakePic,
             },
             {
               documentName: "Steering System",
               approved: SafetyChecklistData.steering,
+              image: SafetyChecklistData.steeringPic,
             },
             ,
             {
               documentName: "Tires and Wheels",
               approved: SafetyChecklistData.tireswheels,
+              image: SafetyChecklistData.tirewheelsPic,
             },
             ,
             {
               documentName: "Safety Equipments",
               approved: SafetyChecklistData.safetyequipment,
+              image: SafetyChecklistData.safetyequipmentPic,
             },
             ,
             {
               documentName: "Lights and Reflectors",
               approved: SafetyChecklistData.lights,
+              image: SafetyChecklistData.lightsPic,
             },
-          ].map(({ documentName, approved }, index) => (
+          ].map(({ documentName, approved, image }, index) => (
             <ListItem key={index}>
               <ListItemAvatar style={{ pointerEvents: "none" }}>
                 <Avatar>
@@ -510,7 +516,7 @@ export default function TripVerification() {
               </ListItemAvatar>
               <ListItemText primary={documentName} />
               <img
-                src={Signature}
+                src={image || Signature}
                 alt="Rectangle Picture"
                 style={{ width: "160px", height: "70px" }}
               />

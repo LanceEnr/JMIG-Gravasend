@@ -84,7 +84,7 @@ export default function EditCurrent() {
       navigate("/admininventory");
     } catch (error) {
       console.error("Inventory edit failed", error);
-      toast.error("Inventory not yet registered!");
+      toast.error("Inventory update failed!");
     }
   };
 

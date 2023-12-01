@@ -76,53 +76,28 @@ function Maintenance() {
                     const mileage2 = parseInt(mileage, 10);
                     const frequency2 = parseInt(frequency, 10);
                     const nextduemileage = mileage2 + frequency2;
-                    console.log("due: " + (mileage2 + frequency2));
-                    fetch("http://localhost:3001/fetch-trucks")
-                      .then((responseTrucks) => responseTrucks.json())
-                      .then((truckData) => {
+
+                    try {
+                      const responseTrucks = await fetch(
+                        "http://localhost:3001/fetch-trucks"
+                      );
+                      if (responseTrucks.ok) {
+                        const truckData = await responseTrucks.json();
+
                         Object.keys(truckData).forEach((truckId) => {
                           const truckItem = truckData[truckId];
                           const currentMileage = parseInt(
                             truckItem.mileage,
                             10
                           );
-                          const plateNo = truckItem.plateNo;
-                          const uidTruck = truckItem.UID;
-
-                          if (
-                            status === "Pending" &&
-                            currentMileage >= nextduemileage
-                          ) {
-                            toast.warning(
-                              `Maintenance (${service}) due for ${plateNo}. Mileage: ${currentMileage}`
-                            );
-                            try {
-                              const response = axios.post(
-                                "http://localhost:3001/maintenance-notif",
-                                {
-                                  plateNo,
-                                  uidMaintenance,
-                                  idMaintenance,
-                                  service,
-                                  currentMileage,
-                                  status,
-                                  date: formattedDate,
-                                }
-                              );
-
-                              console.log(
-                                "Maintenance check successfully",
-                                response.data
-                              );
-                            } catch (error) {
-                              console.error("Maintenance check failed", error);
-                            }
-                          }
+                          console.log(currentMileage + "-" + nextduemileage);
                         });
-                      })
-                      .catch((error) => {
-                        console.error("Error fetching truck data:", error);
-                      });
+                      } else {
+                        console.error("Failed to fetch truck data");
+                      }
+                    } catch (error) {
+                      console.error("Error fetching truck data:", error);
+                    }
                   }
                 }
               }

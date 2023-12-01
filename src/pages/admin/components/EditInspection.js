@@ -178,7 +178,7 @@ export default function EditInspection() {
                       <FormLabel component="legend">Verdict</FormLabel>
                       <RadioGroup
                         aria-label="options"
-                        value={value}
+                        value={verdict}
                         onChange={(event) => {
                           setverdict(event.target.value);
                           setValue(event.target.value);

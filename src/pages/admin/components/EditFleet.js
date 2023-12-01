@@ -59,6 +59,7 @@ export default function EditFleet() {
         setmileage(response.data.mileage);
         setmodel(response.data.model);
         setValue(response.data.location);
+        setdriverName(response.data.driverName);
         setLocation(response.data.location);
         setDriver(response.data.driverName);
       } catch (error) {
@@ -92,6 +93,7 @@ export default function EditFleet() {
   }, []);
   const handleChange = (event) => {
     setDriver(event.target.value);
+    setdriverName(event.targe.value);
   };
 
   const handleLocChange = (event) => {

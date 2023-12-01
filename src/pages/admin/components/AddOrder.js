@@ -118,6 +118,9 @@ export default function AddOrder() {
   const handleLocChange = (event) => {
     setValue(event.target.value);
   };
+  const formatNumberWithCommas = (number) => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -136,7 +139,7 @@ export default function AddOrder() {
       navigate("/adminmanageorders");
     } catch (error) {
       console.error("Order add failed", error);
-      toast.error("Order  already exists!");
+      toast.error("Stocks not enough!");
     }
   };
 
@@ -266,7 +269,7 @@ export default function AddOrder() {
                     <TextField
                       label="Total Price"
                       name="totalPrice"
-                      type="number"
+                      type="text"
                       required
                       fullWidth
                       InputProps={{
@@ -274,7 +277,7 @@ export default function AddOrder() {
                           <InputAdornment position="start">₱</InputAdornment>
                         ),
                       }}
-                      value={totalPrice}
+                      value={formatNumberWithCommas(totalPrice)}
                       readOnly
                     />
                   </Grid>

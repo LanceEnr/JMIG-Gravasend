@@ -33,7 +33,7 @@ export default function AddMaintenanceScheduling() {
   const [frequency, setfrequency] = React.useState("");
   const [startmileage, setStartMileage] = React.useState("");
   const [nextDue, setNextDue] = React.useState(0);
-  const [status, setStatus] = React.useState("");
+  const [status, setStatus] = React.useState("Pending");
 
   const currentUrl = window.location.href;
   const url = new URL(currentUrl);
@@ -94,6 +94,7 @@ export default function AddMaintenanceScheduling() {
           frequency: frequency,
           nextDueMileage: nextDue,
           status: status,
+          mileage: startmileage,
         }
       );
 

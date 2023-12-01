@@ -343,13 +343,6 @@ export default function AdminRegister() {
               Sign Up
             </Button>
           </form>
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              <Link to="/" variant="caption" className="link">
-                Go back to home
-              </Link>
-            </Grid>
-          </Grid>
         </Box>
       </Container>
       {/* Terms and conditions dialog */}
@@ -360,16 +353,16 @@ export default function AdminRegister() {
         <DialogContent>
           <DialogContentText>
             <p style={{ fontSize: "0.9rem" }}>
-              By creating an account with JMIG, you agree to the following terms
-              and conditions:
+              By creating an account with JMIG as an admin, you agree to the
+              following terms and conditions:
             </p>
             <ol style={{ fontSize: "0.9rem" }}>
               <li>
                 <strong>Eligibility:</strong>
                 <ul>
                   <li>
-                    You must be at least 18 years of age to register for an
-                    account on JMIG.
+                    You must be authorized and designated as an administrator by
+                    JMIG to register for an admin account.
                   </li>
                 </ul>
               </li>
@@ -377,11 +370,11 @@ export default function AdminRegister() {
                 <strong>Account Information:</strong>
                 <ul>
                   <li>
-                    You are responsible for providing accurate and complete
-                    information during registration.
+                    Provide accurate and complete information during the admin
+                    registration process.
                   </li>
                   <li>
-                    You must choose a secure password and keep it confidential.
+                    Choose a secure password and maintain its confidentiality.
                   </li>
                 </ul>
               </li>
@@ -389,11 +382,11 @@ export default function AdminRegister() {
                 <strong>User Conduct:</strong>
                 <ul>
                   <li>
-                    You agree not to engage in any unlawful, abusive, or harmful
+                    Admins must not engage in any unlawful, abusive, or harmful
                     behavior on JMIG.
                   </li>
                   <li>
-                    You will not use JMIG for any unauthorized or illegal
+                    Admins will not use JMIG for any unauthorized or illegal
                     purposes.
                   </li>
                 </ul>
@@ -408,15 +401,6 @@ export default function AdminRegister() {
                 </ul>
               </li>
               <li>
-                <strong>Account Termination:</strong>
-                <ul>
-                  <li>
-                    JMIG reserves the right to terminate or suspend your account
-                    at any time for violations of these terms and conditions.
-                  </li>
-                </ul>
-              </li>
-              <li>
                 <strong>Disclaimer:</strong>
                 <ul>
                   <li>
@@ -424,8 +408,8 @@ export default function AdminRegister() {
                     guarantees.
                   </li>
                   <li>
-                    JMIG is not responsible for any user-generated content or
-                    actions.
+                    JMIG is not responsible for any actions taken by
+                    administrators.
                   </li>
                 </ul>
               </li>
@@ -433,8 +417,9 @@ export default function AdminRegister() {
                 <strong>Changes to Terms:</strong>
                 <ul>
                   <li>
-                    JMIG may update these terms and conditions from time to
-                    time. It is your responsibility to review them periodically.
+                    JMIG may update these terms and conditions for admin
+                    accounts from time to time. It is your responsibility to
+                    review them periodically.
                   </li>
                 </ul>
               </li>
@@ -443,7 +428,6 @@ export default function AdminRegister() {
               By clicking "I agree to the terms and conditions," you acknowledge
               that you have read and accept these terms.
             </p>
-            <p style={{ fontSize: "0.9rem" }}>Last Updated: [Date]</p>
           </DialogContentText>
         </DialogContent>
         <DialogActions>

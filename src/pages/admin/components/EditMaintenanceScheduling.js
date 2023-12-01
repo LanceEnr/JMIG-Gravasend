@@ -35,6 +35,7 @@ export default function EditMaintenanceScheduling() {
   const [startmileage, setStartMileage] = React.useState("");
   const [nextDue, setNextDue] = React.useState(0);
   const [status, setStatus] = React.useState("");
+  const [status2, setStatus2] = React.useState("");
 
   const [driver, setDriver] = React.useState("");
 
@@ -64,6 +65,7 @@ export default function EditMaintenanceScheduling() {
         setService(response.data.service);
         setPlateNo(response.data.plateNo);
         setStatus(response.data.status);
+        setStatus2(response.data.status);
         setValue(response.data.status);
         setfrequency(response.data.frequency);
         setDriver(response.data.frequency);
@@ -228,6 +230,7 @@ export default function EditMaintenanceScheduling() {
                           value="Completed"
                           control={<Radio />}
                           label="Completed"
+                          disabled={status2 === "overdue"}
                         />
                       </RadioGroup>
                     </FormControl>

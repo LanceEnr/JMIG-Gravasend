@@ -137,7 +137,7 @@ export default function NewMaintenanceScheduling() {
     };
 
     fetchData();
-  }, [navigate]);
+  }, [navigate, window.location.href]);
   const handleClose = () => {
     setOpen(false);
   };
@@ -156,6 +156,9 @@ export default function NewMaintenanceScheduling() {
       if (response.status === 200) {
         setOpen(false);
         toast.success("Record deleted successfully");
+        setrowsMaintenanceScheduling((prevRows) =>
+          prevRows.filter((row) => row.id !== id && row.uid !== uid)
+        );
         navigate("/adminmaintenance");
       } else if (response.status === 404) {
         toast.error("Record not found");
@@ -248,13 +251,13 @@ export default function NewMaintenanceScheduling() {
               <Typography
                 sx={{
                   fontSize: "10px",
-                  color: "white",
+                  color: "error.dark",
                 }}
               >
                 OverDue
               </Typography>
             }
-            sx={{ bgcolor: "red" }}
+            sx={{ bgcolor: "#f5c9c9" }}
             size="small"
           />
         ) : (
@@ -263,13 +266,13 @@ export default function NewMaintenanceScheduling() {
               <Typography
                 sx={{
                   fontSize: "10px",
-                  color: "warning.main",
+                  color: "info.dark",
                 }}
               >
                 Pending
               </Typography>
             }
-            sx={{ bgcolor: "yellow" }}
+            sx={{ bgcolor: "#90caf9" }}
             size="small"
           />
         );

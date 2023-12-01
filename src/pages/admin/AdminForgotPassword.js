@@ -135,13 +135,7 @@ export default function ForgotPassword() {
           ) : (
             <EnterOTP email={_email} otp={otp} />
           )}
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              <Link to="/" variant="caption" className="link">
-                Go back to home
-              </Link>
-            </Grid>
-          </Grid>
+          <Grid container justifyContent="flex-end"></Grid>
         </Box>
       </Container>
     </div>

@@ -326,7 +326,6 @@ export default function Register() {
                   control={
                     <Checkbox
                       checked={agreeToTerms}
-                      onChange={handleAgreeToTermsChange}
                       value="agreeToTerms"
                       color="primary"
                     />
@@ -446,7 +445,6 @@ export default function Register() {
               By clicking "I agree to the terms and conditions," you acknowledge
               that you have read and accept these terms.
             </p>
-            <p style={{ fontSize: "0.9rem" }}>Last Updated: [Date]</p>
           </DialogContentText>
         </DialogContent>
         <DialogActions>

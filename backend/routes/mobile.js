@@ -4,6 +4,7 @@ const axios = require("axios");
 const admin = require("firebase-admin");
 const Counter = require("../models/counter");
 const IncomingInventory = require("../models/incomingInventory");
+const historyInventory = require("../models/historyInventory");
 const Notification2 = require("../models/adminNotification");
 
 router.get("/fetch-cargo", (req, res) => {
@@ -868,58 +869,68 @@ router.post("/editTruck", async (req, res) => {
   try {
     const db = admin.database();
     const driversRef = db.ref("DriverManagement");
+    const truckRef = db.ref("trucks");
 
-    driversRef.once("value", (snapshot) => {
-      let uid = null;
-
-      snapshot.forEach((childSnapshot) => {
-        const driverData = childSnapshot.val();
-
-        if (driverName == current) {
-          uid = childSnapshot.key;
-
-          //driverData.status = "assigned";
-          driverData.UID = uid;
-          const driverRef = db.ref(`DriverManagement/${uid}`);
-          driverRef.set(driverData, (error) => {
-            if (error) {
-              console.error("Firebase set error:  ", error);
-              res.status(500).json({ message: "Internal server error" });
-            }
-          });
-        }
-
-        if (driverData.driverName === driverName && driverName !== current) {
-          uid = childSnapshot.key;
-
-          driverData.status = "unassigned";
-          driverData.UID = uid;
-          const driverRef = db.ref(`DriverManagement/${uid}`);
-          driverRef.set(driverData, (error) => {
-            if (error) {
-              console.error("Firebase set error:", error);
-              res.status(500).json({ message: "Internal server error" });
-            }
-          });
+    if (driverName == current) {
+      truckRef.child(truckData.id).set(truckData, (error) => {
+        if (error) {
+          console.error("Firebase set error:", error);
+          res.status(500).json({ message: "Internal server error" });
+        } else {
+          res.status(200).json({ message: "Truck updated successfully" });
         }
       });
+    } else {
+      const db = admin.database();
+      const truckRef = db.ref(`trucks/${uid}`);
+      await truckRef.remove();
 
-      if (uid) {
-        truckData.UID = uid;
+      const driversRef = db.ref("DriverManagement");
 
-        const ref = db.ref(`trucks/${uid}`);
-        ref.set(truckData, (error) => {
-          if (error) {
-            console.error("Firebase set error:", error);
-            res.status(500).json({ message: "Internal server error" });
-          } else {
-            res.status(200).json({ message: "Truck added successfully" });
+      driversRef.once("value", (snapshot) => {
+        let uid = null;
+
+        snapshot.forEach((childSnapshot) => {
+          const driverData = childSnapshot.val();
+
+          if (driverData.driverName === driverName) {
+            uid = childSnapshot.key;
+            const truckRef = db.ref(`trucks`);
+            truckRef.child(uid).set(truckData, (error) => {
+              if (error) {
+                console.error("Firebase set error:", error);
+                res.status(500).json({ message: "Internal server error" });
+              } else {
+                res.status(200).json({ message: "Truck updated successfully" });
+              }
+            });
+            driverData.status = "assigned";
+            driverData.UID = uid;
+            const driverRef = db.ref(`DriverManagement/${driverData.UID}`);
+            driverRef.set(driverData, (error) => {
+              if (error) {
+                console.error("Firebase set error:", error);
+                res.status(500).json({ message: "Internal server error" });
+              }
+            });
+          }
+          if (driverData.driverName === current) {
+            uid = childSnapshot.key;
+            driverData.status = "unassigned";
+            driverData.UID = uid;
+            console.log(driverData.UID + " 2");
+            console.log(driverData.status + " 1");
+            const driverRef = db.ref(`DriverManagement/${driverData.UID}`);
+            driverRef.set(driverData, (error) => {
+              if (error) {
+                console.error("Firebase set error:", error);
+                res.status(500).json({ message: "Internal server error" });
+              }
+            });
           }
         });
-      } else {
-        res.status(400).json({ message: "Driver not found" });
-      }
-    });
+      });
+    }
   } catch (error) {
     console.error("Firebase Authentication error:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -1273,47 +1284,43 @@ async function getUIDFromPlate(plateNo) {
 
 router.post("/addMaintenance", async (req, res) => {
   const maintenanceData = req.body;
+  //console.log(maintenanceData);
   const id = await getNextMaintenanceNum();
   maintenanceData.id = id;
 
   try {
     const plateNo = maintenanceData.plateNo;
-    const mileage = await getMileageFromPlate(plateNo);
+    //const mileage = await getMileageFromPlate(plateNo);
     const uid = await getUIDFromPlate(plateNo);
 
-    if (mileage !== null) {
-      const frequency = maintenanceData.frequency;
-      const nextDueMileage = parseInt(mileage) + parseInt(frequency);
+    const frequency = maintenanceData.frequency;
+    //const nextDueMileage = parseInt(startmileage) + parseInt(frequency);
 
-      maintenanceData.mileage = parseInt(mileage);
-      maintenanceData.uid = uid;
+    maintenanceData.uid = uid;
 
-      const db = admin.database();
-      const refReminders = db.ref(
-        `maintenanceReminders/${maintenanceData.uid}/${maintenanceData.id}`
+    const db = admin.database();
+    const refReminders = db.ref(
+      `maintenanceReminders/${maintenanceData.uid}/${maintenanceData.id}`
+    );
+
+    // Check if status is "Completed"
+    if (maintenanceData.status === "Completed") {
+      // Move the record to maintenanceHistory
+      const refHistory = db.ref(
+        `maintenanceHistory/${maintenanceData.uid}/${maintenanceData.actionId}`
       );
+      await refHistory.set(maintenanceData);
 
-      // Check if status is "Completed"
-      if (maintenanceData.status === "Completed") {
-        // Move the record to maintenanceHistory
-        const refHistory = db.ref(
-          `maintenanceHistory/${maintenanceData.uid}/${maintenanceData.actionId}`
-        );
-        await refHistory.set(maintenanceData);
-
-        // Remove the record from maintenanceReminders
-        await refReminders.remove();
-      } else {
-        // Add the record to maintenanceReminders
-        await refReminders.set(maintenanceData);
-      }
-
-      res
-        .status(200)
-        .json({ message: "Maintenance record updated successfully" });
+      // Remove the record from maintenanceReminders
+      await refReminders.remove();
     } else {
-      res.status(404).json({ message: "Plate number not found" });
+      // Add the record to maintenanceReminders
+      await refReminders.set(maintenanceData);
     }
+
+    res
+      .status(200)
+      .json({ message: "Maintenance record updated successfully" });
   } catch (error) {
     console.error("Firebase Authentication error:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -1326,14 +1333,13 @@ router.post("/editMaintenance", async (req, res) => {
   try {
     const plateNo = maintenanceData.plateNo;
     const mileage = await getMileageFromPlate(plateNo);
-    const uid = await getUIDFromPlate(plateNo);
+    //const uid = await getUIDFromPlate(plateNo);
 
     if (mileage !== null) {
       const frequency = maintenanceData.frequency;
       const nextDueMileage = parseInt(mileage) + parseInt(frequency);
 
       maintenanceData.mileage = parseInt(mileage);
-      maintenanceData.uid = uid;
 
       const db = admin.database();
       const refReminders = db.ref(
@@ -1619,6 +1625,7 @@ router.post("/update-maintenanceRecords", async (req, res) => {
 
 router.post("/update-TripHistory", async (req, res) => {
   const data = req.body;
+  console.log(data);
   for (const stockData of data) {
     const uid = stockData[3];
     const id = stockData[4];
@@ -1664,7 +1671,7 @@ router.get("/incomingInventory", async (req, res) => {
     );
 
     const incomingInventoryFiltered = incomingInventoryData.filter((item) => {
-      const incomingInventoryDate = new Date(item.date).toLocaleDateString();
+      const incomingInventoryDate = new Date(item._date).toLocaleDateString();
 
       // Check if the date exists in TripHistory data
       const isDateExists =
@@ -1673,17 +1680,32 @@ router.get("/incomingInventory", async (req, res) => {
 
       return !isDateExists;
     });
-
-    // Delete items from incoming inventory whose dates exist in TripHistory
-    const deletePromises = incomingInventoryData
+    const savePromises = incomingInventoryData
       .filter((item) => {
-        const incomingInventoryDate = new Date(item.date).toLocaleDateString();
+        const incomingInventoryDate = new Date(item._date).toLocaleDateString();
         return hasDateInTripHistory(
           tripHistoryData.data,
           incomingInventoryDate
         );
       })
-      .map((item) => IncomingInventory.findByIdAndDelete(item._id));
+      .map(async (item) => {
+        const newItem = new historyInventory({ ...item._doc, uid: item._id });
+        await newItem.save();
+      });
+
+    // Wait for all items to be saved to historyInventory
+    await Promise.all(savePromises);
+
+    // Delete items from incoming inventory whose dates exist in TripHistory
+    const deletePromises = incomingInventoryData
+      .filter((item) => {
+        const incomingInventoryDate = new Date(item._date).toLocaleDateString();
+        return hasDateInTripHistory(
+          tripHistoryData.data,
+          incomingInventoryDate
+        );
+      })
+      .map(async (item) => await IncomingInventory.findByIdAndDelete(item._id));
 
     await Promise.all(deletePromises);
 
@@ -1693,6 +1715,10 @@ router.get("/incomingInventory", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+function hasDateInTripHistory(tripHistoryData, date) {
+  return tripHistoryData && tripHistoryData[date];
+}
 
 function hasDateInTripHistory(tripHistoryData, dateToCheck) {
   for (const uid in tripHistoryData) {

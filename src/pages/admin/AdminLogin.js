@@ -219,11 +219,6 @@ export default function AdminLogin({ dispatch }) {
                   Forgot password?
                 </Link>
               </Grid>
-              <Grid item>
-                <Link to="/" variant="caption" className="link">
-                  Go back to home
-                </Link>
-              </Grid>
             </Grid>
           </Box>
         </Box>

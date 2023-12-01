@@ -30,8 +30,12 @@ const encryptionKey = crypto.randomBytes(32).toString("hex");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const accountSid = "AC884cb7a63fb7e7784143f86c75d68c71";
-const authToken = "f39a7d524b2617a4fd074986cfd2b53f";
+const historyInventory = require("../models/historyInventory");
+//const accountSid = "AC884cb7a63fb7e7784143f86c75d68c71";
+//const authToken = "f39a7d524b2617a4fd074986cfd2b53f";
+
+const accountSid = "AC5e511e9476e52d8cb06d77a2873a5d54";
+const authToken = "0dcb9f8a1567a4db867974aae24c9f52";
 const client = require("twilio")(accountSid, authToken);
 
 const transporter = nodemailer.createTransport({
@@ -601,6 +605,15 @@ router.get("/get-order", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch order data" });
   }
 });
+router.get("/get-inventoryhistory", async (req, res) => {
+  try {
+    const history = await historyInventory.find(); // Fetch all orders from the database
+    res.json(history);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Failed to fetch order data" });
+  }
+});
 router.get("/get-faq", async (req, res) => {
   try {
     const faq = await FAQ.find();
@@ -629,6 +642,16 @@ router.get("/get-events", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch order data" });
   }
 });
+
+const formatPhoneNumber = (phoneNumber) => {
+  const numericPhoneNumber = phoneNumber.replace(/\D/g, "");
+
+  if (numericPhoneNumber.startsWith("0")) {
+    return `+63${numericPhoneNumber.slice(1)}`;
+  } else {
+    return `+${numericPhoneNumber}`;
+  }
+};
 
 router.post("/update-appointment-admin", async (req, res) => {
   const {
@@ -664,6 +687,32 @@ router.post("/update-appointment-admin", async (req, res) => {
     if (existingAppointment) {
       return res.status(400).json({ error: "Appointment conflict" });
     }
+    const phoneNumber = formatPhoneNumber(user._phone);
+    //const phoneNumber = "+639178982217"; // Replace with the recipient's phone number
+    const message =
+      "Hi " +
+      firstName +
+      " " +
+      lastName +
+      " your appointment number of " +
+      appointmentNum +
+      " was rescheduled " +
+      " on " +
+      _date +
+      " at " +
+      _time;
+
+    client.messages
+      .create({
+        body: message,
+        from: "+12295305097",
+        to: phoneNumber,
+      })
+      .then((message) => console.log(`Message sent: ${message.sid}`))
+      .catch((error) =>
+        console.error(`Error sending message: ${error.message}`)
+      );
+
     const id = await getNextNotifId();
     let customerNotification = new Notification({
       _notifID: id,
@@ -796,6 +845,28 @@ router.post("/cancel-appointment-admin", async (req, res) => {
       _description: "Your appointment was cancelled due to " + _cancelReason,
     });
     await customerNotification.save();
+
+    const phoneNumber = formatPhoneNumber(user._phone);
+    const message =
+      "Hi " +
+      firstName +
+      " " +
+      lastName +
+      " your appointment number of " +
+      appointmentNum +
+      " was canceled. We are sorry for canceling your appointment due to " +
+      _cancelReason;
+
+    client.messages
+      .create({
+        body: message,
+        from: "+12295305097",
+        to: phoneNumber,
+      })
+      .then((message) => console.log(`Message sent: ${message.sid}`))
+      .catch((error) =>
+        console.error(`Error sending message: ${error.message}`)
+      );
     const mailOptions = {
       to: decryptedEmail,
       subject: "Appointment Cancellation Notification",
@@ -1144,19 +1215,23 @@ router.put("/update-testimonials", async (req, res) => {
 router.put("/update-order", async (req, res) => {
   const orderData = req.body;
   const product = req.body.product;
+  const _date = req.body._date;
   const _orderNum = orderData._orderNum;
   const parsedId = parseInt(_orderNum, 10);
+  const _quantity = parseInt(req.body.quantity, 10);
 
   const name = req.body.name;
   const nameParts = name.split("_");
   const [firstName, lastName] = nameParts;
   const materialTypeParts = product.split("_");
   const extractedType = materialTypeParts[0];
+  const location = materialTypeParts[1];
 
   const user = await CustomerUser.findOne({
     _fName: firstName,
     _lName: lastName,
   });
+
   const decryptedEmail = decryptEmail(
     user._email,
     user._iv,
@@ -1165,6 +1240,19 @@ router.put("/update-order", async (req, res) => {
 
   try {
     const order = await Order.findOne({ _orderNum: _orderNum });
+
+    let inventory = await Inventory.findOne({
+      _itemName: extractedType,
+      _location: location,
+    });
+    if (!inventory) {
+      return res.status(404).json({ message: "Inventory item not found" });
+    }
+    const currentInventoryQuantity = parseInt(inventory._quantity, 10);
+
+    inventory._quantity = currentInventoryQuantity + _quantity;
+
+    await inventory.save();
 
     if (!order) {
       return res.status(404).json({ error: "Order not found" });
@@ -1175,6 +1263,45 @@ router.put("/update-order", async (req, res) => {
     order._quantity = orderData.quantity;
 
     await order.save();
+    const phoneNumber = formatPhoneNumber(user._phone);
+    const message =
+      " Your order with order number of " +
+      _orderNum +
+      " has been updated " +
+      extractedType +
+      " - " +
+      _quantity +
+      " cub. mt. (" +
+      orderData.status +
+      ")";
+
+    client.messages
+      .create({
+        body: message,
+        from: "+12295305097",
+        to: phoneNumber,
+      })
+      .then((message) => console.log(`Message sent: ${message.sid}`))
+      .catch((error) =>
+        console.error(`Error sending message: ${error.message}`)
+      );
+
+    const id = await getNextNotifId();
+    let customerNotification = new Notification({
+      _notifID: id,
+      _date: _date,
+      _name: firstName + " " + lastName,
+      _title:
+        "Your order with order number of " + _orderNum + " has been updated",
+      _description:
+        extractedType +
+        " - " +
+        _quantity +
+        " cub. mt. (" +
+        orderData.status +
+        ")",
+    });
+    await customerNotification.save();
 
     const mailOptions = {
       to: decryptedEmail,
@@ -1200,20 +1327,6 @@ router.put("/update-order", async (req, res) => {
         console.log("Email sent successfully.");
       }
     });
-
-    const phoneNumber = "+639762668380"; // Replace with the recipient's phone number
-    const message = "hello!";
-
-    client.messages
-      .create({
-        body: message,
-        from: "+16628454039",
-        to: phoneNumber,
-      })
-      .then((message) => console.log(`Message sent: ${message.sid}`))
-      .catch((error) =>
-        console.error(`Error sending message: ${error.message}`)
-      );
 
     res.json({ message: "Order updated successfully" });
   } catch (error) {
@@ -1749,14 +1862,16 @@ const getNextNotifId = async () => {
 };
 
 router.post("/addOrder", async (req, res) => {
-  const { _name, _materialType, _date, _status, _price, _quantity, _orderDet } =
-    req.body;
+  const { _name, _materialType, _date, _status, _price, _orderDet } = req.body;
   const _orderNum = await getNextOrderNum();
+  const _quantity = parseInt(req.body._quantity, 10);
   const name = req.body._name;
+  const quantity = _quantity;
   const nameParts = name.split("_");
   const [firstName, lastName] = nameParts;
   const materialTypeParts = _materialType.split("_");
   const extractedType = materialTypeParts[0];
+  const location = materialTypeParts[1];
 
   const user = await CustomerUser.findOne({
     _fName: firstName,
@@ -1771,6 +1886,47 @@ router.post("/addOrder", async (req, res) => {
 
   try {
     let order = await Order.findOne({ _orderNum: _orderNum });
+
+    let inventory = await Inventory.findOne({
+      _itemName: extractedType,
+      _location: location,
+    });
+    if (!inventory) {
+      // Handle case where inventory item is not found
+      return res.status(404).json({ message: "Inventory item not found" });
+    }
+    const currentInventoryQuantity = parseInt(inventory._quantity, 10);
+
+    if (currentInventoryQuantity - _quantity < 0) {
+      return res
+        .status(400)
+        .json({ message: "Negative inventory quantity is not allowed." });
+    }
+    // Deduct the order quantity from the inventory quantity
+    inventory._quantity = currentInventoryQuantity - _quantity;
+
+    // Save the updated inventory document
+    await inventory.save();
+    const phoneNumber = formatPhoneNumber(user._phone);
+    const message =
+      " Your order with order number of " +
+      _orderNum +
+      " has been placed " +
+      extractedType +
+      " - " +
+      _quantity +
+      " cub. mt.";
+
+    client.messages
+      .create({
+        body: message,
+        from: "+12295305097",
+        to: phoneNumber,
+      })
+      .then((message) => console.log(`Message sent: ${message.sid}`))
+      .catch((error) =>
+        console.error(`Error sending message: ${error.message}`)
+      );
     const id = await getNextNotifId();
     if (_status == "Pending") {
       let customerNotification = new Notification({

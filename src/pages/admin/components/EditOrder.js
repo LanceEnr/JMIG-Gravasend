@@ -33,6 +33,7 @@ export default function EditOrder() {
   const [quantity, setQuantity] = useState("");
   const [totalPrice, setTotalPrice] = useState("");
   const [status, setStatus] = useState("");
+  const [status2, setStatus2] = useState("");
   const [details, setDetails] = useState("");
   const [name, setName] = useState("");
   const [selectedProduct, setSelectedProduct] = useState("");
@@ -50,6 +51,7 @@ export default function EditOrder() {
         setQuantity(response.data._quantity);
         setSelectedProduct(response.data._materialType);
         setStatus(response.data._status);
+        setStatus2(response.data._status);
         setDriver(response.data._status);
         setTotalPrice(response.data._price * response.data._quantity);
       } catch (error) {
@@ -58,6 +60,20 @@ export default function EditOrder() {
     };
     fetchData();
   }, [id]);
+
+  const currentDate = new Date();
+  const options = {
+    weekday: "short",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short",
+  };
+  const formattedDate = currentDate.toLocaleString("en-US", options);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -68,6 +84,7 @@ export default function EditOrder() {
         quantity: quantity,
         _orderNum: id,
         product: selectedProduct,
+        _date: formattedDate,
       });
 
       console.log("Order edited successfully", response.data);
@@ -75,7 +92,7 @@ export default function EditOrder() {
       navigate("/adminmanageorders");
     } catch (error) {
       console.error("Order edit failed", error);
-      toast.error("Order not yet registered!");
+      toast.error("Order edit failed!");
     }
   };
 
@@ -195,6 +212,7 @@ export default function EditOrder() {
                       type="number"
                       value={quantity}
                       fullWidth
+                      disabled
                       InputProps={{
                         endAdornment: (
                           <InputAdornment position="end">
@@ -236,41 +254,49 @@ export default function EditOrder() {
                           value="Pending"
                           control={<Radio />}
                           label="Pending"
+                          disabled={status2 === "Cancelled"}
                         />
                         <FormControlLabel
                           value="Fetch from quarry"
                           control={<Radio />}
                           label="Fetch from quarry"
+                          disabled={status2 === "Cancelled"}
                         />
                         <FormControlLabel
                           value="Available for pickup-PANDI"
                           control={<Radio />}
                           label="Available for pickup Pandi"
+                          disabled={status2 === "Cancelled"}
                         />
                         <FormControlLabel
                           value="Available for pickup-MindanaoAve."
                           control={<Radio />}
                           label="Available for pickup Mindanao Avenue"
+                          disabled={status2 === "Cancelled"}
                         />
                         <FormControlLabel
                           value="Cancelled"
                           control={<Radio />}
                           label="Cancelled"
+                          disabled={status2 === "Cancelled"}
                         />
                         <FormControlLabel
                           value="Arrived at Pandi"
                           control={<Radio />}
                           label="Arrived at Pandi"
+                          disabled={status2 === "Cancelled"}
                         />
                         <FormControlLabel
                           value="Arrived at MindanaoAve."
                           control={<Radio />}
                           label="Arrived at Mindanao Avenue"
+                          disabled={status2 === "Cancelled"}
                         />
                         <FormControlLabel
                           value="Completed"
                           control={<Radio />}
                           label="Completed"
+                          disabled={status2 === "Cancelled"}
                         />
                       </RadioGroup>
                     </FormControl>
@@ -284,6 +310,7 @@ export default function EditOrder() {
                       fullWidth
                       multiline
                       value={details}
+                      disabled={status2 === "Cancelled"}
                       rows={4}
                     />
                   </Grid>
@@ -301,7 +328,11 @@ export default function EditOrder() {
                     >
                       Go Back
                     </Button>
-                    <Button variant="contained" type="submit">
+                    <Button
+                      variant="contained"
+                      type="submit"
+                      disabled={status2 === "Cancelled"}
+                    >
                       Save changes
                     </Button>
                   </Grid>
