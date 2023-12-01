@@ -70,7 +70,6 @@ const transformTripOngoing = (data, data2, data3, data4) => {
       const userData2 = data2[uid];
       const userData3 = data3[uid];
       const userData4 = data4[uid];
-
       const mappedData = {
         id: uid,
         driver: userData.driverName,
@@ -83,6 +82,25 @@ const transformTripOngoing = (data, data2, data3, data4) => {
       } else {
         mappedData.cargoType = "No Cargo Type";
         mappedData.cargoWeight = "No Cargo Weight";
+      }
+
+      if (
+        userData2 &&
+        userData2.cargoType &&
+        userData2.cargoWeight &&
+        userData3.driversLicenseChecked &&
+        userData3.localTransportPermitChecked &&
+        userData3.orcrChecked &&
+        userData4.brake &&
+        userData4.lights &&
+        userData4.safetyequipment &&
+        userData4.steering &&
+        userData4.suspension &&
+        userData4.tireswheels
+      ) {
+        mappedData.status = "complete";
+      } else {
+        mappedData.status = "incomplete";
       }
 
       transformedData.push(mappedData);
@@ -386,25 +404,14 @@ export default function TripVerification() {
       ),
     },
     {
-      field: "actions",
-      headerName: "ACTIONS",
-      sortable: false,
-      flex: 1,
+      field: "status",
+      headerName: "STATUS",
+      flex: 2,
+      valueFormatter: (params) => `${params.value} `,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
         </Typography>
-      ),
-      renderCell: (params) => (
-        <React.Fragment>
-          <GridActionsCellItem
-            icon={<CheckCircleIcon />}
-            className="textPrimary"
-            color="success"
-          />
-
-          <GridActionsCellItem icon={<CancelIcon />} color="error" />
-        </React.Fragment>
       ),
     },
   ];

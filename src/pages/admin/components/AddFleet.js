@@ -32,7 +32,7 @@ export default function AddFleet() {
   const [chassisNo, setchassisNo] = React.useState("");
   const [engineNo, setengineNo] = React.useState("");
   const [plateNo, setPlateNo] = React.useState("");
-  const [mileage, setmileage] = React.useState("");
+  const [mileage, setmileage] = React.useState(0);
   const [model, setmodel] = React.useState("");
   const [plateNo2, setPlateNo2] = React.useState("");
   const status = "available";

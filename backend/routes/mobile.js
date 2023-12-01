@@ -808,7 +808,9 @@ router.post("/deleteDriverRecord", async (req, res) => {
 
 router.post("/addTruck", async (req, res) => {
   const truckData = req.body;
-  console.log(truckData);
+  const mileageString = truckData.mileage;
+  const mileage = parseInt(mileageString, 10);
+  truckData.mileage = mileage;
   const driverName = truckData.driverName;
   try {
     const db = admin.database();
