@@ -1,11 +1,6 @@
-.userDashboard {
-  width: 100%;
-  overflow: hidden;
-}
-
 .thumbnail {
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   margin-right: 10px;
   cursor: pointer;
   border: 2px solid #fff;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { DataGrid, gridClasses } from "@mui/x-data-grid";
 import axios from "axios";
-import { Button } from "@mui/material";
+import { Button, Chip } from "@mui/material";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import { toast, ToastContainer } from "react-toastify";
 import Typography from "../../components/common/Typography";
@@ -92,7 +92,7 @@ export default function TripOngoing({ onFindClick }) {
     {
       field: "datetime",
       headerName: "DATE AND TIME",
-      flex: 2,
+      flex: 1.5,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -102,7 +102,7 @@ export default function TripOngoing({ onFindClick }) {
     {
       field: "currentSpeed",
       headerName: "CURRENT SPEED",
-      flex: 2,
+      flex: 1.5,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -112,7 +112,7 @@ export default function TripOngoing({ onFindClick }) {
     {
       field: "averageSpeed",
       headerName: "AVG SPEED",
-      flex: 2,
+      flex: 1.5,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -122,7 +122,7 @@ export default function TripOngoing({ onFindClick }) {
     {
       field: "maxSpeed",
       headerName: "MAX SPEED",
-      flex: 2,
+      flex: 1.5,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -132,7 +132,18 @@ export default function TripOngoing({ onFindClick }) {
     {
       field: "harshBraking",
       headerName: "HARSH BRAKING",
-      flex: 2,
+      flex: 1.5,
+      renderHeader: (params) => (
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
+          {params.colDef.headerName}
+        </Typography>
+      ),
+    },
+
+    {
+      field: "suddenAcceleration",
+      headerName: "SUDDEN ACCELERATION",
+      flex: 1.5,
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -140,9 +151,42 @@ export default function TripOngoing({ onFindClick }) {
       ),
     },
     {
-      field: "suddenAcceleration",
-      headerName: "SUDDEN ACCELERATION",
-      flex: 2,
+      field: "dpi",
+      headerName: "DPI",
+      flex: 1,
+      renderCell: (params) => {
+        return params.value === "available" ? (
+          <Chip
+            label={
+              <Typography
+                sx={{
+                  fontSize: "10px",
+                  color: "success.dark",
+                }}
+              >
+                0.6
+              </Typography>
+            }
+            sx={{ bgcolor: "#8dd290" }}
+            size="small"
+          />
+        ) : (
+          <Chip
+            label={
+              <Typography
+                sx={{
+                  fontSize: "10px",
+                  color: "error.dark",
+                }}
+              >
+                0.1
+              </Typography>
+            }
+            sx={{ bgcolor: "#f5c9c9" }}
+            size="small"
+          />
+        );
+      },
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
