@@ -1854,5 +1854,20 @@ router.post("/inspection-notif2", async (req, res) => {
       );
     });
 });
+router.get("/fetch-adminNotifications", async (req, res) => {
+  try {
+    const notif = await Notification2.find().sort({
+      _notifID: -1,
+    });
 
+    const notificationsRef = admin.database().ref("Notifications");
+
+    console.log(notificationArray);
+
+    res.json(notif);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Failed to fetch order data" });
+  }
+});
 module.exports = router;

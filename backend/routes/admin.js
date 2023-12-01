@@ -2128,18 +2128,6 @@ router.get("/get-price", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch order data" });
   }
 });
-router.get("/fetch-adminNotifications", async (req, res) => {
-  try {
-    const notif = await Notification2.find().sort({
-      _notifID: -1,
-    });
-
-    res.json(notif);
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    res.status(500).json({ error: "Failed to fetch order data" });
-  }
-});
 
 router.post("/delete-listing", async (req, res) => {
   try {
