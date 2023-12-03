@@ -693,6 +693,7 @@ export default function TripVerification() {
                     </Typography>
                   )}
                 </div>
+                <Divider />
               </ListItem>
             ))}
           </List>

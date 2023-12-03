@@ -150,49 +150,7 @@ export default function TripOngoing({ onFindClick }) {
         </Typography>
       ),
     },
-    {
-      field: "dpi",
-      headerName: "DPI",
-      flex: 1,
-      renderCell: (params) => {
-        return params.value === "available" ? (
-          <Chip
-            label={
-              <Typography
-                sx={{
-                  fontSize: "10px",
-                  color: "success.dark",
-                }}
-              >
-                0.6
-              </Typography>
-            }
-            sx={{ bgcolor: "#8dd290" }}
-            size="small"
-          />
-        ) : (
-          <Chip
-            label={
-              <Typography
-                sx={{
-                  fontSize: "10px",
-                  color: "error.dark",
-                }}
-              >
-                0.1
-              </Typography>
-            }
-            sx={{ bgcolor: "#f5c9c9" }}
-            size="small"
-          />
-        );
-      },
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
+
     {
       field: "track",
       headerName: "ACTIONS",

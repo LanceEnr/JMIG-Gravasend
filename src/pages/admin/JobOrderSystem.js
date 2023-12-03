@@ -691,13 +691,12 @@ const JobOrderSystem = () => {
         <Typography variant="overline" sx={{ fontWeight: "bold" }}>
           {eventInfo.timeText}
         </Typography>
-        <br />
         <Typography variant="caption"> - {eventInfo.event.title}</Typography>
       </Box>
     );
   }
   return (
-    <Box sx={{ my: 4, mx: 6 }}>
+    <Box sx={{ my: 4 }}>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -730,7 +729,7 @@ const JobOrderSystem = () => {
               p: 2,
               display: "flex",
               flexDirection: "column",
-              height: "75vh",
+              height: "74vh",
             }}
           >
             <Typography
@@ -741,42 +740,78 @@ const JobOrderSystem = () => {
               ONGOING JOB ORDERS
             </Typography>
             <Divider />
-            <List dense={true}>
-              {events.filter((event) => event.status === "order").length > 0 ? (
-                events
-                  .filter((event) => event.status === "order")
-                  .map((event) => (
-                    <ListItem
-                      sx={{
-                        color: "white",
-                        backgroundColor: "info.light",
-                        p: 1,
-                        overflow: "hidden",
-                        borderRadius: 1,
-                        mb: 1,
-                      }}
-                      key={event.id}
-                    >
-                      <ListItemText
-                        primary={event.title}
-                        secondary={new Date(event.start).toLocaleDateString()}
-                        secondaryTypographyProps={{
+            <Box
+              sx={{
+                px: 1,
+                overflow: "auto",
+                "&::-webkit-scrollbar": {
+                  width: "0.5em",
+                },
+                "&::-webkit-scrollbar-track": {
+                  boxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+                  webkitBoxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "rgba(169,169,169,1)", // Default grey color
+                  borderRadius: "10px", // Slightly rounded corners
+                },
+              }}
+            >
+              <List dense={true}>
+                {events.filter((event) => event.status === "order").length >
+                0 ? (
+                  events
+                    .filter((event) => event.status === "order")
+                    .map((event) => (
+                      <ListItem
+                        sx={{
                           color: "white",
-                          fontWeight: "bold",
+                          backgroundColor: "info.light",
+                          p: 1,
+                          overflow: "hidden",
+                          borderRadius: 1,
+                          mb: 1,
                         }}
-                      />
-                    </ListItem>
-                  ))
-              ) : (
-                <Typography
-                  variant="body2"
-                  color="textSecondary"
-                  sx={{ textAlign: "center", mt: 2 }}
-                >
-                  No ongoing job orders
-                </Typography>
-              )}
-            </List>
+                        key={event.id}
+                      >
+                        <ListItemText sx={{ color: "white" }}>
+                          <Box>
+                            <Typography
+                              sx={{ fontWeight: "bold" }}
+                              variant="overline"
+                            >
+                              {event.driverName}
+                            </Typography>
+                          </Box>
+                          <Box mb={1}>
+                            <Typography variant="caption">
+                              {event.weight} cu. mt. of {event.cargo}
+                            </Typography>
+                          </Box>
+                          <Box mb={1}>
+                            <Typography variant="caption">
+                              {event.origin} to {event.destination}
+                            </Typography>
+                          </Box>
+                          <Box>
+                            <Typography variant="caption">
+                              {new Date(event.start).toLocaleDateString()}
+                            </Typography>
+                          </Box>
+                        </ListItemText>
+                      </ListItem>
+                    ))
+                ) : (
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    sx={{ textAlign: "center", mt: 2 }}
+                  >
+                    No ongoing job orders
+                  </Typography>
+                )}
+              </List>
+            </Box>
           </Paper>
         </Grid>
         <Grid item xs={10}>
@@ -818,7 +853,8 @@ const JobOrderSystem = () => {
                 minute: "2-digit",
                 meridiem: "short",
               }}
-              height={"75vh"}
+              height={"74vh"}
+              width={"100%"}
             />
 
             <ValidationDialog

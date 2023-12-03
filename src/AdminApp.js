@@ -52,6 +52,9 @@ import EditFaq from "./pages/admin/components/EditFaq";
 import NewUserManagement from "./pages/admin/components/NewUserManagement";
 import RandomStringGenerator from "./pages/admin/components/RandomStringGenerator";
 import { toast } from "react-toastify";
+import AdminHomepage from "./pages/admin/AdminHomepage";
+import TripMetricsReport from "./pages/admin/components/TripMetricsReport";
+import DriversReport from "./pages/admin/components/DriversReport";
 
 const initialState = {
   isAuthenticated: !!localStorage.getItem("adminToken"),
@@ -125,6 +128,21 @@ function AdminApp() {
                             <Grid item xs={12}>
                               <Box sx={{ mx: 3 }}>
                                 <Routes>
+                                  <Route
+                                    path="/admindriversreport"
+                                    exact
+                                    element={<DriversReport />}
+                                  />
+                                  <Route
+                                    path="/admintripmetricsreport"
+                                    exact
+                                    element={<TripMetricsReport />}
+                                  />
+                                  <Route
+                                    path="/"
+                                    exact
+                                    element={<AdminHomepage />}
+                                  />
                                   <Route
                                     path="/adminaccesscodes"
                                     exact

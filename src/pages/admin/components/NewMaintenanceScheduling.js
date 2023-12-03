@@ -254,7 +254,7 @@ export default function NewMaintenanceScheduling() {
                   color: "error.dark",
                 }}
               >
-                OverDue
+                Overdue
               </Typography>
             }
             sx={{ bgcolor: "#f5c9c9" }}
