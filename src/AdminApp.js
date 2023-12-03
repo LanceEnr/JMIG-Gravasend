@@ -13,6 +13,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
+
 import AdminRegister from "./pages/admin/AdminRegister";
 import AdminForgotPassword from "./pages/admin/AdminForgotPassword";
 import AdminProfileInfo from "./pages/admin/AdminProfileInfo";
@@ -77,7 +78,7 @@ function AdminApp() {
             path="/adminlogin"
             element={
               <React.Fragment>
-                <AdminLogin />
+                <AdminLogin dispatch={authDispatch} />
               </React.Fragment>
             }
           />
@@ -168,7 +169,9 @@ function AdminApp() {
                                   <Route
                                     path="/adminlogin"
                                     exact
-                                    element={<AdminLogin />}
+                                    element={
+                                      <AdminLogin dispatch={authDispatch} />
+                                    }
                                   />
 
                                   <Route
@@ -337,7 +340,7 @@ function AdminApp() {
                     )}
                 </React.Fragment>
               ) : (
-                <Navigate to="/adminlogin" />
+                <Navigate to="/adminlogin" replace />
               )
             }
           />

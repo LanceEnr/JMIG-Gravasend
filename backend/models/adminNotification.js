@@ -11,6 +11,7 @@ const adminNotifSchema = new mongoose.Schema(
     _title: String,
     _description: String,
     _name: String,
+    _status: String,
   },
   { collection: "adminNotification" }
 );

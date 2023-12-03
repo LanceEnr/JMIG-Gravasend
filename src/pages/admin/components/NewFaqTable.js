@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Chip from "@mui/material/Chip";
 import {
   DataGrid,
@@ -9,8 +9,8 @@ import {
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import { rowsFaqs } from "../helpers/data";
-import { Link } from "react-router-dom";
+//import { rowsFaqs } from "../helpers/data";
+import { Link, useNavigate } from "react-router-dom";
 import { alpha, styled } from "@mui/material/styles";
 import Typography from "../../../components/common/Typography";
 import { toast } from "react-toastify";
@@ -61,11 +61,45 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
     },
   },
 }));
+const fetchFAQData = async () => {
+  try {
+    const response = await axios.get("http://localhost:3001/get-faq");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+// Function to transform the data into the desired format
+const transformFAQData = (data) => {
+  return data.map((item) => ({
+    id: item._faqNum,
+    question: item._question,
+    answer: item._answer,
+  }));
+};
 
 export default function NewFaqTable() {
   const [open, setOpen] = React.useState(false);
   const [action, setAction] = React.useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [rowsFaqs, setrowsFaqs] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchFAQData();
+        const transformedData = transformFAQData(data);
+        setrowsFaqs(transformedData);
+      } catch (error) {
+        console.error("Error fetching and transforming data:", error);
+      }
+    };
+
+    fetchData();
+  }, [navigate]);
 
   const handleClickOpen = (action, row) => {
     setAction(action);
@@ -132,7 +166,10 @@ export default function NewFaqTable() {
       ),
       renderCell: (params) => (
         <React.Fragment>
-          <Link to="/admineditfaq" className="unstyled-link">
+          <Link
+            to={`/admineditfaq?id=${params.row.id}`}
+            className="unstyled-link"
+          >
             <GridActionsCellItem
               icon={<EditIcon />}
               className="textPrimary"
