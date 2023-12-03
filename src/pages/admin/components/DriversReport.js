@@ -6,7 +6,6 @@ import { Paper, Button } from "@mui/material";
 import PrintIcon from "@mui/icons-material/Print";
 
 import { Box, Grid } from "@mui/material";
-import MyResponsiveBar from "./ResponsiveBar";
 import MyResponsivePie from "./MyResponsivePie";
 const data = [
   {

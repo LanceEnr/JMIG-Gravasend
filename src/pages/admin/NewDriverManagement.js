@@ -298,45 +298,84 @@ export default function NewDriverManagement() {
       field: "performance",
       headerName: "PERFORMANCE",
       flex: 1.5,
-      renderCell: (params) => {
-        return params.value === "excellent" ? (
-          <Chip
-            label={
-              <Typography
-                sx={{
-                  fontSize: "10px",
-                  color: "success.dark",
-                }}
-              >
-                Satisfactory
-              </Typography>
-            }
-            sx={{ bgcolor: "#8dd290" }}
-            size="small"
-          />
-        ) : (
-          <Chip
-            label={
-              <Typography
-                sx={{
-                  fontSize: "10px",
-                  color: "error.dark",
-                }}
-              >
-                Unsatisfactory
-              </Typography>
-            }
-            sx={{ bgcolor: "#f5c9c9" }}
-            size="small"
-          />
-        );
-      },
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
         </Typography>
       ),
+      renderCell: (params) => {
+        if (params.value === "Excellent") {
+          return (
+            <Chip
+              label={
+                <Typography
+                  sx={{
+                    fontSize: "10px",
+                    color: "success.dark",
+                  }}
+                >
+                  Excellent
+                </Typography>
+              }
+              sx={{ bgcolor: "#8dd290" }}
+              size="small"
+            />
+          );
+        } else if (params.value === "Good") {
+          return (
+            <Chip
+              label={
+                <Typography
+                  sx={{
+                    fontSize: "10px",
+                    color: "info.dark",
+                  }}
+                >
+                  Good
+                </Typography>
+              }
+              sx={{ bgcolor: "#90caf9" }}
+              size="small"
+            />
+          );
+        } else if (params.value === "Average") {
+          return (
+            <Chip
+              label={
+                <Typography
+                  sx={{
+                    fontSize: "10px",
+                    color: "warning.dark",
+                  }}
+                >
+                  Average
+                </Typography>
+              }
+              sx={{ bgcolor: "#ffc890" }}
+              size="small"
+            />
+          );
+        } else {
+          return (
+            <Chip
+              label={
+                <Typography
+                  sx={{
+                    fontSize: "10px",
+                    color: "error.dark",
+                  }}
+                >
+                  Needs Improvement
+                </Typography>
+              }
+              sx={{ bgcolor: "#f5c9c9" }}
+              size="small"
+            />
+          );
+        }
+      },
     },
+
     {
       field: "actions",
       headerName: "ACTIONS",
