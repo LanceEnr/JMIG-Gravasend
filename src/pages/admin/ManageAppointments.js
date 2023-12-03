@@ -286,7 +286,7 @@ const ManageAppointments = () => {
     checkFormFilled();
   }, [newDateTime, rescheduleReason, cancelReason]);
   return (
-    <Box sx={{ my: 4, mx: 6 }}>
+    <Box sx={{ my: 4 }}>
       <Typography
         variant="h3"
         marked="left"
@@ -303,7 +303,7 @@ const ManageAppointments = () => {
               p: 2,
               display: "flex",
               flexDirection: "column",
-              height: "75vh",
+              height: "74vh",
             }}
           >
             <Typography
@@ -314,29 +314,86 @@ const ManageAppointments = () => {
               UPCOMING APPOINTMENTS
             </Typography>
             <Divider />
-            <List dense={true}>
-              {formattedEvents.map((event, index) => (
-                <ListItem
-                  sx={{
-                    color: "white",
-                    backgroundColor: "info.light",
-                    p: 1,
-                    overflow: "hidden",
-                    borderRadius: 1,
-                  }}
-                  key={index}
-                >
-                  <ListItemText
-                    primary={event.title}
-                    secondary={new Date(event.start).toLocaleString()}
-                    secondaryTypographyProps={{
-                      color: "white",
-                      fontweight: "bold",
-                    }} // Add this line
-                  />
-                </ListItem>
-              ))}
-            </List>
+            {formattedEvents.length === 0 ? (
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                sx={{ textAlign: "center", mt: 2 }}
+              >
+                No upcoming appointments
+              </Typography>
+            ) : (
+              <Box
+                sx={{
+                  px: 1,
+                  overflow: "auto",
+                  "&::-webkit-scrollbar": {
+                    width: "0.5em",
+                  },
+                  "&::-webkit-scrollbar-track": {
+                    boxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+                    webkitBoxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "rgba(169,169,169,1)", // Default grey color
+                    borderRadius: "10px", // Slightly rounded corners
+                  },
+                }}
+              >
+                <List dense={true}>
+                  {formattedEvents.map((event, index) => (
+                    <ListItem
+                      sx={{
+                        color: "white",
+                        backgroundColor: "info.light",
+                        p: 1,
+                        overflow: "hidden",
+                        borderRadius: 1,
+                        mb: 1,
+                        cursor: "pointer", // Optionally, change the cursor to indicate it's clickable
+                      }}
+                      key={index}
+                      onClick={() => {
+                        setSelectedEvent({
+                          ...event,
+                          extendedProps: {
+                            _appointmentNum: event._appointmentNum,
+                            _fName: event._fName,
+                            _lName: event._lName,
+                            _phone: event._phone,
+                            _note: event._note,
+                            _dateTime: event._dateTime,
+                            _status: event._status,
+                          },
+                        });
+                        setOpen(true);
+                      }}
+                    >
+                      <ListItemText sx={{ color: "white" }}>
+                        <Box>
+                          <Typography
+                            sx={{ fontWeight: "bold" }}
+                            variant="overline"
+                          >
+                            {new Date(event.start).toLocaleString()}
+                          </Typography>
+                        </Box>
+                        <Box mb={1}>
+                          <Typography variant="caption">
+                            {event._fName} {event._lName}
+                          </Typography>
+                        </Box>
+                        <Box mb={1}>
+                          <Typography variant="caption">
+                            {event._note}
+                          </Typography>
+                        </Box>
+                      </ListItemText>
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
+            )}
           </Paper>
         </Grid>
         <Grid item xs={10}>
@@ -364,7 +421,8 @@ const ManageAppointments = () => {
               events={events}
               eventClick={handleEventClick}
               eventContent={renderEventContent}
-              height={"75vh"}
+              height={"74vh"}
+              width={"100%"}
               eventTimeFormat={{
                 hour: "2-digit",
                 minute: "2-digit",

@@ -120,6 +120,7 @@ export default function AddDriver() {
                       value={date}
                       onChange={(event) => setDate(event.target.value)}
                       inputProps={{ min: getCurrentDate() }}
+                      InputLabelProps={{ shrink: true }}
                       fullWidth
                       required
                     />

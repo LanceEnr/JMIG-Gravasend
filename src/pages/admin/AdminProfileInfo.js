@@ -34,7 +34,7 @@ try {
 
   if (valuesData) {
     const imagePath = valuesData._profilePicture;
-    filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+    //filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
   } else {
     console.error("Error: Unable to fetch profile picture data");
   }

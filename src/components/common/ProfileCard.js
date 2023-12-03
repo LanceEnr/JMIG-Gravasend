@@ -15,7 +15,7 @@ import { fetchProfilePic } from "../../components/cms";
 const storedUsername = localStorage.getItem("userName");
 const valuesData = await fetchProfilePic(storedUsername);
 const imagePath = valuesData._profilePicture;
-const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+//const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 
 const Img = styled("img")({
   height: "140px",
@@ -61,7 +61,7 @@ export default function ProfileCard({ profile }) {
       >
         <Avatar
           alt={profile.name}
-          src={require(`../../images/profile/${filename}`)}
+          // src={require(`../../images/profile/${filename}`)}
           sx={{
             width: 100,
             height: 100,

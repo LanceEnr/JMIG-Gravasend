@@ -265,7 +265,7 @@ export default function AddOrder() {
                       onChange={handleQuantityChange}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
                     <TextField
                       label="Total Price"
                       name="totalPrice"
@@ -281,7 +281,7 @@ export default function AddOrder() {
                       readOnly
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
                     <FormControl component="fieldset">
                       <FormLabel component="legend">Status</FormLabel>
                       <RadioGroup
@@ -303,12 +303,12 @@ export default function AddOrder() {
                         <FormControlLabel
                           value="Available for pickup-PANDI"
                           control={<Radio />}
-                          label="Available for pickup-PANDI"
+                          label="Available for pickup (Pandi)"
                         />
                         <FormControlLabel
                           value="Available for pickup-MindanaoAve."
                           control={<Radio />}
-                          label="Available for pickup-MindanaoAve."
+                          label="Available for pickup (Mindanao Ave.)"
                         />
                       </RadioGroup>
                     </FormControl>

@@ -11,9 +11,10 @@ import { DialogContent, DialogContentText } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Box from "@mui/material/Box";
-import { Paper } from "@mui/material";
+import { Paper, Modal, Divider, TextField } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 import Typography from "../../components/common/Typography";
+import CloseIcon from "@mui/icons-material/Close";
 
 import Title from "./components/Title";
 const ODD_OPACITY = 0.2;
@@ -192,17 +193,62 @@ export default function ManageContactForm() {
               params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
             }
           />
-          <Dialog onClose={handleClose} open={open}>
-            <DialogTitle>User Message</DialogTitle>
-            <DialogContent>
-              <DialogContentText>{message}</DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose} color="primary">
-                Close
-              </Button>
-            </DialogActions>
-          </Dialog>
+          <Modal onClose={handleClose} open={open}>
+            <Box
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: 450,
+                bgcolor: "background.paper",
+                boxShadow: 24,
+                borderRadius: "8px",
+                p: 4,
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  pb: 2,
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{ fontWeight: "bold" }}
+                >
+                  User Message
+                </Typography>
+                <IconButton
+                  edge="end"
+                  color="inherit"
+                  onClick={handleClose}
+                  aria-label="close"
+                >
+                  <CloseIcon />
+                </IconButton>
+              </Box>
+              <Divider
+                style={{ borderStyle: "dashed", borderColor: "#bd8512" }}
+              />
+              <Box sx={{ mt: 2 }}>
+                <TextField
+                  id="modal-description"
+                  multiline
+                  fullWidth
+                  label="Message"
+                  value={message}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                  variant="outlined"
+                />
+              </Box>
+            </Box>
+          </Modal>
         </Box>
       </Paper>
     </Box>

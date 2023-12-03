@@ -751,7 +751,7 @@ export default function AdminDashboard() {
           }}
         >
           <IconButton onClick={toggleDrawer}>
-            <ChevronLeftIcon color="inherit" />
+            <ChevronLeftIcon style={{ color: "white" }} />
           </IconButton>
         </Toolbar>
         <Divider />
@@ -773,8 +773,7 @@ export default function AdminDashboard() {
           }}
         >
           <List component="nav" sx={{ overflowX: "hidden" }}>
-            {" "}
-            <ListItemButton component="a" href="/adminlogin">
+            <ListItemButton component={Link} to="/">
               <ListItemIcon>
                 <DashboardIcon />
               </ListItemIcon>
@@ -793,7 +792,11 @@ export default function AdminDashboard() {
               <ListItemText>
                 <Typography variant="caption">Fleet Management</Typography>
               </ListItemText>
-              {openFleetManagement ? <ExpandLess /> : <ExpandMore />}
+              {openFleetManagement ? (
+                <ExpandLess style={{ color: "white" }} />
+              ) : (
+                <ExpandMore style={{ color: "white" }} />
+              )}
             </ListItemButton>
             <Collapse in={openFleetManagement} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>

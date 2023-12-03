@@ -5,6 +5,7 @@ import {
   Marker,
   InfoWindow,
 } from "@react-google-maps/api";
+import { Link } from "react-router-dom";
 import Typography from "../../components/common/Typography";
 import { DataGrid, GridToolbar, gridClasses } from "@mui/x-data-grid";
 import AdjustIcon from "@mui/icons-material/Adjust";
@@ -17,6 +18,7 @@ import TripRecords from "./TripRecords";
 import TripOngoing from "./TripOngoing";
 import truckIcon from "../../assets/truck.png";
 import { alpha, styled } from "@mui/material/styles";
+import AssessmentIcon from "@mui/icons-material/Assessment";
 
 const ODD_OPACITY = 0.2;
 
@@ -54,7 +56,7 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
 }));
 
 const mapStyles = {
-  height: "450px",
+  height: "75vh",
   width: "100%",
 };
 
@@ -142,7 +144,13 @@ const columns = [
       <img
         src={params.row.signature}
         alt="E-Signature"
-        style={{ width: "100%", height: "auto" }}
+        style={{
+          maxWidth: "100%",
+          maxHeight: "100%",
+          objectFit: "contain",
+          margin: "auto",
+          display: "block",
+        }}
       />
     ),
   },
@@ -309,17 +317,35 @@ function DeliveryMonitoring() {
               >
                 Delivery Monitoring
               </Typography>
-              <Button
-                variant="contained"
-                sx={{ ml: 1 }}
-                startIcon={<AdjustIcon />}
-                onClick={handleCenterMap}
-              >
-                Center Map
-              </Button>
+              <Box display="flex">
+                <Button
+                  variant="contained"
+                  sx={{ ml: 1 }}
+                  color="secondary"
+                  startIcon={<AssessmentIcon />}
+                  component={Link}
+                  to={"/admintripmetricsreport"}
+                >
+                  Generate Report
+                </Button>
+                <Button
+                  variant="contained"
+                  sx={{ ml: 1 }}
+                  startIcon={<AdjustIcon />}
+                  onClick={handleCenterMap}
+                >
+                  Center Map
+                </Button>
+              </Box>
             </Box>
+
             <Paper
-              sx={{ mt: 3, p: 2, display: "flex", flexDirection: "column" }}
+              sx={{
+                mt: 3,
+                p: 2,
+                display: "flex",
+                flexDirection: "column",
+              }}
             >
               <LoadScript
                 googleMapsApiKey="AIzaSyAJf20RDl1D_m5wh6KGdhKPOALFM-pbMFI"

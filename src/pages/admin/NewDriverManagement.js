@@ -14,6 +14,7 @@ import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { Link, useNavigate } from "react-router-dom";
 import { alpha, styled } from "@mui/material/styles";
 import AddIcon from "@mui/icons-material/Add";
+import AssessmentIcon from "@mui/icons-material/Assessment";
 
 import { toast } from "react-toastify";
 
@@ -386,15 +387,27 @@ export default function NewDriverManagement() {
         >
           Driver Management
         </Typography>
-        <Button
-          component={Link}
-          to={"/adminadddriver"}
-          variant="contained"
-          sx={{ ml: 1 }}
-          startIcon={<AddIcon />}
-        >
-          Add a Driver
-        </Button>
+        <Box display="flex">
+          <Button
+            variant="contained"
+            sx={{ ml: 1 }}
+            color="secondary"
+            startIcon={<AssessmentIcon />}
+            component={Link}
+            to={"/admindriversreport"}
+          >
+            Generate Report
+          </Button>
+          <Button
+            component={Link}
+            to={"/adminadddriver"}
+            variant="contained"
+            sx={{ ml: 1 }}
+            startIcon={<AddIcon />}
+          >
+            Add a Driver
+          </Button>
+        </Box>
       </Box>
       <Paper sx={{ mt: 3, p: 2, display: "flex", flexDirection: "column" }}>
         <StripedDataGrid

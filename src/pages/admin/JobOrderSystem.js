@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
 import axios from "axios";
 import Typography from "../../components/common/Typography";
@@ -8,8 +10,13 @@ import AddIcon from "@mui/icons-material/Add";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CloseIcon from "@mui/icons-material/Close";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 import {
+  List,
+  ListItem,
+  ListItemText,
+  Grid,
   Button,
   Dialog,
   DialogTitle,
@@ -228,7 +235,13 @@ const JobOrderModal = ({
           </IconButton>
         </Box>
 
-        <Divider style={{ borderStyle: "dashed", borderColor: "#bd8512" }} />
+        <Divider
+          style={{
+            borderStyle: "dashed",
+            borderColor: "#bd8512",
+            marginBottom: "4px",
+          }}
+        />
 
         <Box sx={{ my: 2 }}>
           <FormControl sx={{ mb: 2 }} fullWidth>
@@ -358,7 +371,7 @@ const JobOrderModal = ({
             />
           </Box>
         </Box>
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+        <Box sx={{ display: "flex", mt: 2 }}>
           <Button
             onClick={handleSubmit}
             variant="contained"
@@ -370,8 +383,12 @@ const JobOrderModal = ({
           {jobOrder && (
             <Button
               onClick={() => onDelete(jobOrder)}
-              color="secondary"
+              color="error"
+              variant="contained"
+              className="MuiButton-error"
+              startIcon={<CancelIcon />}
               disabled={isDeleteDisabled}
+              sx={{ ml: 1 }}
             >
               Delete
             </Button>
@@ -418,11 +435,11 @@ const ValidationDialog = ({
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleConfirm} color="primary">
-          Submit
-        </Button>
         <Button onClick={onCancel} color="secondary">
           Cancel
+        </Button>
+        <Button onClick={handleConfirm} color="primary">
+          Submit
         </Button>
       </DialogActions>
     </Dialog>
@@ -459,15 +476,16 @@ const DeleteValidationDialog = ({
       <DialogTitle>Are you sure?</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Please note, once you proceed, the trip will be deleted.
+          Please note, once you proceed, the job order will be deleted
+          permanently.
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleConfirm2} color="primary">
-          Submit
-        </Button>
         <Button onClick={onCancel2} color="secondary">
           Cancel
+        </Button>
+        <Button onClick={handleConfirm2} color="primary">
+          Submit
         </Button>
       </DialogActions>
     </Dialog>
@@ -527,7 +545,7 @@ const JobOrderSystem = () => {
                 uniqueDateTimes.add(dateTime);
 
                 return {
-                  title: `${driverName} - ${cargo} - ${weight} cu. mt.- (${origin}- ${destination})   `,
+                  title: `${driverName} - ${cargo} - ${weight} cu. mt.- (${origin}- ${destination})`,
                   start: dateTime,
                   status: "order",
                   driverName,
@@ -559,7 +577,7 @@ const JobOrderSystem = () => {
                   uniqueDateTimes.add(dateTime);
 
                   return {
-                    title: `${driverName} - ${cargo} - ${weight} cu. mt.- (${origin}- ${destination}) - ${instructions}   `,
+                    title: `${driverName} - ${cargo} - ${weight} cu. mt.- (${origin}- ${destination})`,
                     start: dateTime,
                     status: "records",
                     driverName,
@@ -655,12 +673,7 @@ const JobOrderSystem = () => {
       eventInfo.event.extendedProps.status === "order"
         ? "info.light"
         : "success.light";
-    const icon =
-      eventInfo.event.extendedProps.status === "order" ? (
-        <LocalShippingIcon fontSize="small" sx={{ fontSize: "16px" }} />
-      ) : (
-        <CheckCircleIcon fontSize="small" sx={{ fontSize: "16px" }} />
-      );
+
     return (
       <Box
         sx={{
@@ -675,16 +688,15 @@ const JobOrderSystem = () => {
           cursor: "pointer",
         }}
       >
-        <Typography variant="h6">
-          {eventInfo.timeText}m {icon}
+        <Typography variant="overline" sx={{ fontWeight: "bold" }}>
+          {eventInfo.timeText}
         </Typography>
-        <br />
-        <Typography variant="caption">{eventInfo.event.title}</Typography>
+        <Typography variant="caption"> - {eventInfo.event.title}</Typography>
       </Box>
     );
   }
   return (
-    <Box sx={{ my: 4, mx: 6 }}>
+    <Box sx={{ my: 4 }}>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -709,51 +721,163 @@ const JobOrderSystem = () => {
           Create Job Order
         </Button>
       </Box>
-      <Paper
-        sx={{
-          mt: 3,
-          p: 2,
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <JobOrderModal
-          isOpen={modalOpen}
-          onClose={() => setModalOpen(false)}
-          onSubmit={handleSubmit}
-          onDelete={handleDelete}
-          jobOrder={selectedEvent}
-          formData={formData}
-          setFormData={setFormData}
-        />
-        <FullCalendar
-          plugins={[dayGridPlugin, interactionPlugin]}
-          initialView="dayGridMonth"
-          events={events}
-          eventClick={handleEventClick}
-          eventContent={renderEventContent}
-          width="100%"
-        />
+      <Grid container spacing={3}>
+        <Grid item xs={2}>
+          <Paper
+            sx={{
+              mt: 1,
+              p: 2,
+              display: "flex",
+              flexDirection: "column",
+              height: "74vh",
+            }}
+          >
+            <Typography
+              variant="caption"
+              sx={{ fontWeight: "bold", py: 1 }}
+              gutterBottom
+            >
+              ONGOING JOB ORDERS
+            </Typography>
+            <Divider />
+            <Box
+              sx={{
+                px: 1,
+                overflow: "auto",
+                "&::-webkit-scrollbar": {
+                  width: "0.5em",
+                },
+                "&::-webkit-scrollbar-track": {
+                  boxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+                  webkitBoxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "rgba(169,169,169,1)", // Default grey color
+                  borderRadius: "10px", // Slightly rounded corners
+                },
+              }}
+            >
+              <List dense={true}>
+                {events.filter((event) => event.status === "order").length >
+                0 ? (
+                  events
+                    .filter((event) => event.status === "order")
+                    .map((event) => (
+                      <ListItem
+                        sx={{
+                          color: "white",
+                          backgroundColor: "info.light",
+                          p: 1,
+                          overflow: "hidden",
+                          borderRadius: 1,
+                          mb: 1,
+                        }}
+                        key={event.id}
+                      >
+                        <ListItemText sx={{ color: "white" }}>
+                          <Box>
+                            <Typography
+                              sx={{ fontWeight: "bold" }}
+                              variant="overline"
+                            >
+                              {event.driverName}
+                            </Typography>
+                          </Box>
+                          <Box mb={1}>
+                            <Typography variant="caption">
+                              {event.weight} cu. mt. of {event.cargo}
+                            </Typography>
+                          </Box>
+                          <Box mb={1}>
+                            <Typography variant="caption">
+                              {event.origin} to {event.destination}
+                            </Typography>
+                          </Box>
+                          <Box>
+                            <Typography variant="caption">
+                              {new Date(event.start).toLocaleDateString()}
+                            </Typography>
+                          </Box>
+                        </ListItemText>
+                      </ListItem>
+                    ))
+                ) : (
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    sx={{ textAlign: "center", mt: 2 }}
+                  >
+                    No ongoing job orders
+                  </Typography>
+                )}
+              </List>
+            </Box>
+          </Paper>
+        </Grid>
+        <Grid item xs={10}>
+          <Paper
+            sx={{
+              mt: 1,
+              p: 2,
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <JobOrderModal
+              isOpen={modalOpen}
+              onClose={() => setModalOpen(false)}
+              onSubmit={handleSubmit}
+              onDelete={handleDelete}
+              jobOrder={selectedEvent}
+              formData={formData}
+              setFormData={setFormData}
+            />
+            <FullCalendar
+              plugins={[
+                dayGridPlugin,
+                timeGridPlugin,
+                listPlugin,
+                interactionPlugin,
+              ]}
+              headerToolbar={{
+                left: "prev,next today",
+                center: "title",
+                right: "dayGridMonth,timeGridWeek,dayGridDay,listWeek",
+              }}
+              initialView="dayGridMonth"
+              events={events}
+              eventClick={handleEventClick}
+              eventContent={renderEventContent}
+              eventTimeFormat={{
+                hour: "2-digit",
+                minute: "2-digit",
+                meridiem: "short",
+              }}
+              height={"74vh"}
+              width={"100%"}
+            />
 
-        <ValidationDialog
-          isOpen={validationDialogOpen}
-          onConfirm={() => {
-            action(formData);
-            setValidationDialogOpen(false);
-          }}
-          onCancel={() => setValidationDialogOpen(false)}
-          formData={formData} // Pass formData as a prop
-        />
-        <DeleteValidationDialog
-          isOpen={deteleteDiaglogOpen}
-          onConfirm2={() => {
-            action(formData);
-            setDeteleteDiaglogOpen(false);
-          }}
-          onCancel2={() => setDeteleteDiaglogOpen(false)}
-          formData={formData} // Pass formData as a prop
-        />
-      </Paper>
+            <ValidationDialog
+              isOpen={validationDialogOpen}
+              onConfirm={() => {
+                action(formData);
+                setValidationDialogOpen(false);
+              }}
+              onCancel={() => setValidationDialogOpen(false)}
+              formData={formData} // Pass formData as a prop
+            />
+            <DeleteValidationDialog
+              isOpen={deteleteDiaglogOpen}
+              onConfirm2={() => {
+                action(formData);
+                setDeteleteDiaglogOpen(false);
+              }}
+              onCancel2={() => setDeteleteDiaglogOpen(false)}
+              formData={formData} // Pass formData as a prop
+            />
+          </Paper>
+        </Grid>
+      </Grid>
     </Box>
   );
 };

@@ -223,7 +223,7 @@ export default function EditOrder() {
                       onChange={handleQuantityChange}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
                     <TextField
                       label="Total Price"
                       name="totalPrice"
@@ -239,7 +239,6 @@ export default function EditOrder() {
                       readOnly
                     />
                   </Grid>
-                  <Grid item xs={6}></Grid>
                   <Grid item xs={12}>
                     <FormControl component="fieldset">
                       <FormLabel component="legend">Status</FormLabel>
@@ -265,13 +264,13 @@ export default function EditOrder() {
                         <FormControlLabel
                           value="Available for pickup-PANDI"
                           control={<Radio />}
-                          label="Available for pickup Pandi"
+                          label="Available for pickup (Pandi)"
                           disabled={status2 === "Cancelled"}
                         />
                         <FormControlLabel
                           value="Available for pickup-MindanaoAve."
                           control={<Radio />}
-                          label="Available for pickup Mindanao Avenue"
+                          label="Available for pickup (Mindanao Ave.)"
                           disabled={status2 === "Cancelled"}
                         />
                         <FormControlLabel
