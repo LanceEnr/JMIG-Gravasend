@@ -1857,7 +1857,7 @@ router.post("/inspection-notif2", async (req, res) => {
 router.get("/fetch-adminNotifications", async (req, res) => {
   try {
     // Fetch data from MongoDB using Mongoose
-    const notif = await Notification2.find({ _status: "unviewed" }).sort({
+    const notif = await Notification2.find().sort({
       _notifID: -1,
     });
 

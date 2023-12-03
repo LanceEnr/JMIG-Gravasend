@@ -447,7 +447,7 @@ function ResponsiveAppBar() {
                 <IconButton onClick={handleOpenSettingsMenu} sx={{ p: 0 }}>
                   <Avatar
                     alt={userName}
-                    src={require(`../images/profile/${filename}`)}
+                    //src={require(`../images/profile/${filename}`)}
                   />
                 </IconButton>
               </Tooltip>
