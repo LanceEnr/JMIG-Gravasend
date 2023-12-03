@@ -1166,6 +1166,18 @@ router.get("/fetch-category-values/:category", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+router.get("/fetch-faq/:_faqNum", async (req, res) => {
+  const { _faqNum } = req.params;
+
+  try {
+    const faq = await FAQ.findOne({ _faqNum: _faqNum });
+
+    res.json(faq);
+  } catch (error) {
+    console.error("Error retrieving banner:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 router.get("/fetch-order/:id", async (req, res) => {
   const { id } = req.params;
@@ -1353,6 +1365,29 @@ router.put("/update-current", async (req, res) => {
 
     console.log(inventory);
     await inventory.save();
+
+    res.json({ message: "Order updated successfully" });
+  } catch (error) {
+    console.error("Error updating order:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.put("/update-faq", async (req, res) => {
+  const faqData = req.body;
+  const _faqNum = faqData._faqNum;
+
+  try {
+    const faq = await FAQ.findOne({ _faqNum: _faqNum });
+
+    if (!faq) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    faq._question = faqData._question;
+    faq._answer = faqData._answer;
+
+    await faq.save();
 
     res.json({ message: "Order updated successfully" });
   } catch (error) {
@@ -1585,7 +1620,8 @@ router.get("/generateFAQId", async (req, res) => {
 });
 
 router.post("/addFAQ", async (req, res) => {
-  const { actionId, question, answer } = req.body;
+  const { question, answer } = req.body;
+  const id = await getNextFAQNum();
   const exisitingName = await FAQ.findOne({
     _question: question,
   });
@@ -1595,7 +1631,7 @@ router.post("/addFAQ", async (req, res) => {
     return res.status(400).json({ error: "Name conflict" });
   }
   const faq = new FAQ({
-    _faqNum: actionId,
+    _faqNum: id,
     _question: question,
     _answer: answer,
   });

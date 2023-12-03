@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import MuiDrawer from "@mui/material/Drawer";
@@ -16,6 +16,11 @@ import { Avatar } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import TripIcon from "@mui/icons-material/LocalShipping";
+import ChecklistIcon from "@mui/icons-material/Checklist";
+import DocumentIcon from "@mui/icons-material/Description";
+import CompleteIcon from "@mui/icons-material/Done";
+import LoadIcon from "@mui/icons-material/ImportExport";
 import PeopleIcon from "@mui/icons-material/People";
 import BuildIcon from "@mui/icons-material/Build";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -176,25 +181,44 @@ const fetchNotifications = async () => {
 };
 
 const transformNotification = (data) => {
-  return data.map((item) => ({
-    icon: item._title.toLowerCase().includes("appointment")
-      ? EventIcon
-      : item._title.toLowerCase().includes("inspection")
-      ? InspectionIcon
-      : BuildIcon,
-    heading: item._title,
-    text: item._description,
-    date: item._date,
-  }));
+  return data.map((item) => {
+    let icon;
+
+    if (item._title.toLowerCase().includes("appointment")) {
+      icon = EventIcon;
+    } else if (item._title.toLowerCase().includes("inspection")) {
+      icon = InspectionIcon;
+    } else if (item._title.toLowerCase().includes("trip")) {
+      icon = TripIcon;
+    } else if (item._title.toLowerCase().includes("check")) {
+      icon = ChecklistIcon;
+    } else if (item._title.toLowerCase().includes("document")) {
+      icon = DocumentIcon;
+    } else if (item._title.toLowerCase().includes("complete")) {
+      icon = CompleteIcon;
+    } else if (item._title.toLowerCase().includes("load")) {
+      icon = LoadIcon;
+    } else {
+      icon = BuildIcon; // Default icon
+    }
+    return {
+      icon,
+      heading: item._title,
+      text: item._description,
+      date: item._date,
+    };
+  });
 };
 
-const notifications = transformNotification(await fetchNotifications());
+//const notifications = transformNotification(await fetchNotifications());
 
 export default function AdminDashboard() {
   const [anchorElSettings, setAnchorElSettings] = React.useState(null);
-
+  const [notifications, setNotifications] = React.useState([]);
+  const [selectedSort, setSelectedSort] = React.useState("all");
   const [anchorElNotifications, setAnchorElNotifications] =
     React.useState(null);
+
   const handleOpenNotificationsMenu = (event) => {
     setAnchorElNotifications(event.currentTarget);
   };
@@ -238,6 +262,148 @@ export default function AdminDashboard() {
 
   const handleCloseSettingsMenu = () => {
     setAnchorElSettings(null);
+  };
+
+  useEffect(() => {
+    const fetchDefaultNotifications = async () => {
+      try {
+        const fetchedNotifications = await fetchNotifications();
+        const transformedNotifications =
+          transformNotification(fetchedNotifications);
+        setNotifications(transformedNotifications);
+      } catch (error) {
+        console.error(
+          "Error fetching or transforming default notifications:",
+          error
+        );
+        setNotifications([]);
+      }
+    };
+
+    fetchDefaultNotifications();
+  }, []);
+
+  const handleSortSelect = async (sortOption) => {
+    setSelectedSort(sortOption);
+
+    if (sortOption === "all") {
+      try {
+        setNotifications([]);
+        const fetchedNotifications = await fetchNotifications();
+        console.log(fetchedNotifications);
+        const transformedNotifications =
+          transformNotification(fetchedNotifications);
+
+        setNotifications(transformedNotifications);
+      } catch (error) {
+        console.error("Error fetching or transforming notifications:", error);
+        setNotifications([]);
+      }
+    }
+    if (sortOption === "appointment") {
+      try {
+        setNotifications([]);
+        const fetchedNotifications = await fetchNotifications();
+        const filteredNotifications = fetchedNotifications.filter(
+          (notification) =>
+            notification._title.toLowerCase().includes("appointment")
+        );
+        const transformedNotifications = transformNotification(
+          filteredNotifications
+        );
+        setNotifications(transformedNotifications);
+      } catch (error) {
+        console.error("Error fetching or transforming notifications:", error);
+        setNotifications([]);
+      }
+    }
+    if (sortOption === "inspection") {
+      try {
+        setNotifications([]);
+        const fetchedNotifications = await fetchNotifications();
+        const filteredNotifications = fetchedNotifications.filter(
+          (notification) =>
+            notification._title.toLowerCase().includes("inspection")
+        );
+        const transformedNotifications = transformNotification(
+          filteredNotifications
+        );
+        setNotifications(transformedNotifications);
+      } catch (error) {
+        console.error("Error fetching or transforming notifications:", error);
+        setNotifications([]);
+      }
+    }
+    if (sortOption === "trip") {
+      try {
+        setNotifications([]);
+        const fetchedNotifications = await fetchNotifications();
+        const filteredNotifications = fetchedNotifications.filter(
+          (notification) => notification._title.toLowerCase().includes("trip")
+        );
+        const transformedNotifications = transformNotification(
+          filteredNotifications
+        );
+        setNotifications(transformedNotifications);
+      } catch (error) {
+        console.error("Error fetching or transforming notifications:", error);
+        setNotifications([]);
+      }
+    }
+    if (sortOption === "check") {
+      try {
+        setNotifications([]);
+        const fetchedNotifications = await fetchNotifications();
+        const filteredNotifications = fetchedNotifications.filter(
+          (notification) =>
+            notification._title.toLowerCase().includes("document") ||
+            notification._title.toLowerCase().includes("safety")
+        );
+        const transformedNotifications = transformNotification(
+          filteredNotifications
+        );
+        setNotifications(transformedNotifications);
+      } catch (error) {
+        console.error("Error fetching or transforming notifications:", error);
+        setNotifications([]);
+      }
+    }
+    if (sortOption === "document") {
+      try {
+        setNotifications([]);
+        const fetchedNotifications = await fetchNotifications();
+        const filteredNotifications = fetchedNotifications.filter(
+          (notification) =>
+            notification._title.toLowerCase().includes("document")
+        );
+        const transformedNotifications = transformNotification(
+          filteredNotifications
+        );
+        setNotifications(transformedNotifications);
+      } catch (error) {
+        console.error("Error fetching or transforming notifications:", error);
+        setNotifications([]);
+      }
+    }
+    if (sortOption === "load") {
+      try {
+        setNotifications([]);
+        const fetchedNotifications = await fetchNotifications();
+        const filteredNotifications = fetchedNotifications.filter(
+          (notification) => notification._title.toLowerCase().includes("load")
+        );
+        const transformedNotifications = transformNotification(
+          filteredNotifications
+        );
+        setNotifications(transformedNotifications);
+      } catch (error) {
+        console.error("Error fetching or transforming notifications:", error);
+        setNotifications([]);
+      }
+    }
+  };
+  const selectedMenuItemStyle = {
+    color: "blue",
   };
 
   return (
@@ -311,7 +477,7 @@ export default function AdminDashboard() {
               id="account-menu"
               open={Boolean(anchorElNotifications)}
               onClose={handleCloseNotificationsMenu}
-              onClick={handleCloseNotificationsMenu}
+              //onClick={handleCloseNotificationsMenu}
               PaperProps={{
                 elevation: 0,
                 sx: {
@@ -349,7 +515,7 @@ export default function AdminDashboard() {
                 sx={{ minWidth: "300px" }}
               >
                 <Typography
-                  variant="subtitle2"
+                  variant="subtitle1"
                   color="textSecondary"
                   sx={{
                     fontWeight: "bold",
@@ -357,15 +523,74 @@ export default function AdminDashboard() {
                 >
                   NOTIFICATIONS
                 </Typography>
-                <Typography
-                  variant="subtitle2"
-                  sx={{
-                    color: "#83948a",
-                    cursor: "pointer",
-                  }}
+              </Box>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                //padding={2}
+                sx={{ minWidth: "300px" }}
+              >
+                <Divider />
+                <MenuItem
+                  onClick={() => handleSortSelect("all")}
+                  selected={selectedSort === "all"}
+                  sx={selectedSort === "all" ? selectedMenuItemStyle : {}}
                 >
-                  CLEAR ALL
-                </Typography>
+                  <Typography variant="body2" sx={{ fontSize: "small" }}>
+                    All
+                  </Typography>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => handleSortSelect("appointment")}
+                  selected={selectedSort === "appointment"}
+                  sx={
+                    selectedSort === "appointment" ? selectedMenuItemStyle : {}
+                  }
+                >
+                  <Typography variant="body2" sx={{ fontSize: "small" }}>
+                    Appointment
+                  </Typography>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => handleSortSelect("inspection")}
+                  selected={selectedSort === "inspection"}
+                  sx={
+                    selectedSort === "inspection" ? selectedMenuItemStyle : {}
+                  }
+                >
+                  <Typography variant="body2" sx={{ fontSize: "small" }}>
+                    Inspection
+                  </Typography>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => handleSortSelect("trip")}
+                  selected={selectedSort === "trip"}
+                  sx={selectedSort === "trip" ? selectedMenuItemStyle : {}}
+                >
+                  <Typography variant="body2" sx={{ fontSize: "small" }}>
+                    Trip
+                  </Typography>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => handleSortSelect("check")}
+                  selected={selectedSort === "check"}
+                  sx={selectedSort === "check" ? selectedMenuItemStyle : {}}
+                >
+                  <Typography variant="body2" sx={{ fontSize: "small" }}>
+                    Safety/Document
+                  </Typography>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => handleSortSelect("load")}
+                  selected={selectedSort === "load"}
+                  sx={selectedSort === "load" ? selectedMenuItemStyle : {}}
+                >
+                  <Typography variant="body2" sx={{ fontSize: "small" }}>
+                    Load
+                  </Typography>
+                </MenuItem>
+                <Divider />
               </Box>
 
               <Divider />
@@ -382,7 +607,7 @@ export default function AdminDashboard() {
                 ) : (
                   notifications.map((notification) => (
                     <div key={notification.heading}>
-                      <MenuItem onClick={handleCloseNotificationsMenu}>
+                      <MenuItem>
                         <ListItemIcon style={{ color: "#bd8512" }}>
                           <notification.icon fontSize="small" />
                         </ListItemIcon>

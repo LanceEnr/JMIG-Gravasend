@@ -1,18 +1,37 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Box, Grid, Paper, TextField, Button } from "@mui/material";
 import Typography from "../../../components/common/Typography";
 
 export default function AddFaq() {
   const [value, setValue] = React.useState("Pandi");
+  const [question, setQuestion] = React.useState("");
+  const [answer, setAnswer] = React.useState("");
+  const navigate = useNavigate();
 
   const handleLocChange = (event) => {
     setValue(event.target.value);
   };
 
-  // Assuming valueOptions is an array of driver names
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:3001/addFAQ", {
+        _question: question,
+        _answer: answer,
+      });
+
+      console.log("FAQ added successfully", response.data);
+      toast.success("FAQ added successfully");
+      navigate("/admincontent");
+    } catch (error) {
+      console.error("Truck add failed", error);
+      toast.error("Truck not yet registered!");
+    }
+  };
+
   return (
     <div>
       <Box sx={{ my: 14 }}>
@@ -34,7 +53,7 @@ export default function AddFaq() {
         >
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <Grid container spacing={3} alignItems="center">
                   <Grid item xs={12}>
                     <TextField
@@ -42,6 +61,7 @@ export default function AddFaq() {
                       name="question"
                       type="text"
                       fullWidth
+                      onChange={(event) => setQuestion(event.target.value)}
                       required
                     />
                   </Grid>
@@ -52,6 +72,7 @@ export default function AddFaq() {
                       name="answer"
                       label="Answer"
                       multiline
+                      onChange={(event) => setAnswer(event.target.value)}
                       required
                       rows={4}
                       variant="outlined"
