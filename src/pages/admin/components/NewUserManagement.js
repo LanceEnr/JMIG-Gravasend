@@ -120,6 +120,9 @@ export default function NewUserManagement() {
       field: "clv",
       headerName: "CUSTOMER LIFETIME VALUE",
       flex: 2,
+      valueFormatter: (params) => {
+        return "₱" + new Intl.NumberFormat().format(params.value);
+      },
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}

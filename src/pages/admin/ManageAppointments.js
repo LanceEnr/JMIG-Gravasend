@@ -314,29 +314,40 @@ const ManageAppointments = () => {
               UPCOMING APPOINTMENTS
             </Typography>
             <Divider />
-            <List dense={true}>
-              {formattedEvents.map((event, index) => (
-                <ListItem
-                  sx={{
-                    color: "white",
-                    backgroundColor: "info.light",
-                    p: 1,
-                    overflow: "hidden",
-                    borderRadius: 1,
-                  }}
-                  key={index}
-                >
-                  <ListItemText
-                    primary={event.title}
-                    secondary={new Date(event.start).toLocaleString()}
-                    secondaryTypographyProps={{
+            {formattedEvents.length === 0 ? (
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                sx={{ textAlign: "center", mt: 2 }}
+              >
+                No upcoming appointments
+              </Typography>
+            ) : (
+              <List dense={true}>
+                {formattedEvents.map((event, index) => (
+                  <ListItem
+                    sx={{
                       color: "white",
-                      fontweight: "bold",
-                    }} // Add this line
-                  />
-                </ListItem>
-              ))}
-            </List>
+                      backgroundColor: "info.light",
+                      p: 1,
+                      overflow: "hidden",
+                      borderRadius: 1,
+                      mb: 1,
+                    }}
+                    key={index}
+                  >
+                    <ListItemText
+                      primary={event.title}
+                      secondary={new Date(event.start).toLocaleString()}
+                      secondaryTypographyProps={{
+                        color: "white",
+                        fontWeight: "bold",
+                      }}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            )}
           </Paper>
         </Grid>
         <Grid item xs={10}>

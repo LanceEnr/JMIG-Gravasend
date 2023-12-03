@@ -13,18 +13,21 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
+
 import Avatar from "@mui/material/Avatar";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Box from "@mui/material/Box";
-import { Typography } from "@mui/material";
+import { Typography, Chip, Divider, Modal } from "@mui/material";
 import { green, red } from "@mui/material/colors";
 import Signature from "../../assets/white.jpg";
 import { alpha, styled } from "@mui/material/styles";
 import axios from "axios";
+import CloseIcon from "@mui/icons-material/Close";
 
 const ODD_OPACITY = 0.2;
 
@@ -406,8 +409,40 @@ export default function TripVerification() {
     {
       field: "status",
       headerName: "STATUS",
-      flex: 2,
-      valueFormatter: (params) => `${params.value} `,
+      flex: 1.5,
+      renderCell: (params) => {
+        return params.value === "complete" ? (
+          <Chip
+            label={
+              <Typography
+                sx={{
+                  fontSize: "10px",
+                  color: "success.dark",
+                }}
+              >
+                Complete
+              </Typography>
+            }
+            sx={{ bgcolor: "#8dd290" }}
+            size="small"
+          />
+        ) : (
+          <Chip
+            label={
+              <Typography
+                sx={{
+                  fontSize: "10px",
+                  color: "error.dark",
+                }}
+              >
+                Incomplete
+              </Typography>
+            }
+            sx={{ bgcolor: "#f5c9c9" }}
+            size="small"
+          />
+        );
+      },
       renderHeader: (params) => (
         <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
           {params.colDef.headerName}
@@ -452,124 +487,217 @@ export default function TripVerification() {
           params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
         }
       />
-      <Dialog onClose={handleClose} open={open}>
-        <DialogTitle>Document Check</DialogTitle>
-        <List>
-          {[
-            {
-              documentName: "Driver's License",
-              approved: documentChecklistData.driversLicenseChecked,
-            },
-            {
-              documentName: "OR/CR",
-              approved: documentChecklistData.orcrChecked,
-            },
-            {
-              documentName: "Local Transport Permit",
-              approved: documentChecklistData.localTransportPermitChecked,
-            },
-          ].map(({ documentName, approved }, index) => (
-            <ListItem key={index}>
-              <ListItemAvatar style={{ pointerEvents: "none" }}>
-                <Avatar>
-                  {approved ? (
-                    <CheckCircleIcon style={{ color: green[500] }} />
-                  ) : (
-                    <CancelIcon style={{ color: red[500] }} />
-                  )}
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary={documentName} />
-            </ListItem>
-          ))}
-          {isLoadingImage ? (
-            <div>Loading...</div>
-          ) : (
-            <Box
-              component="img"
-              sx={{
-                m: 2,
-                height: 233,
-                width: 350,
-                maxWidth: "100%",
-                borderRadius: 1,
-              }}
-              alt="The alt text for your image"
-              src={sign}
-            />
-          )}
-        </List>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <Modal onClose={handleClose} open={open}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 450,
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius: "8px",
 
-      <Dialog onClose={handleDialogClose} open={isDialogOpen}>
-        <DialogTitle>Safety Checks</DialogTitle>
-        <List>
-          {[
-            {
-              documentName: "Suspension System",
-              approved: SafetyChecklistData.suspension,
-              image: SafetyChecklistData.suspensionPic,
-            },
-            {
-              documentName: "Brake System",
-              approved: SafetyChecklistData.brake,
-              image: SafetyChecklistData.brakePic,
-            },
-            {
-              documentName: "Steering System",
-              approved: SafetyChecklistData.steering,
-              image: SafetyChecklistData.steeringPic,
-            },
-            ,
-            {
-              documentName: "Tires and Wheels",
-              approved: SafetyChecklistData.tireswheels,
-              image: SafetyChecklistData.tirewheelsPic,
-            },
-            ,
-            {
-              documentName: "Safety Equipments",
-              approved: SafetyChecklistData.safetyequipment,
-              image: SafetyChecklistData.safetyequipmentPic,
-            },
-            ,
-            {
-              documentName: "Lights and Reflectors",
-              approved: SafetyChecklistData.lights,
-              image: SafetyChecklistData.lightsPic,
-            },
-          ].map(({ documentName, approved, image }, index) => (
-            <ListItem key={index}>
-              <ListItemAvatar style={{ pointerEvents: "none" }}>
-                <Avatar>
-                  {approved ? (
-                    <CheckCircleIcon style={{ color: green[500] }} />
-                  ) : (
-                    <CancelIcon style={{ color: red[500] }} />
-                  )}
-                </Avatar>
-              </ListItemAvatar>
+            p: 4,
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              pb: 2,
+            }}
+          >
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ fontWeight: "bold" }}
+            >
+              Document Check
+            </Typography>
+            <IconButton
+              edge="end"
+              color="inherit"
+              onClick={handleClose}
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <Divider style={{ borderStyle: "dashed", borderColor: "#bd8512" }} />
 
-              <ListItemText primary={documentName} />
-              <img
-                src={image || Signature}
-                alt="Rectangle Picture"
-                style={{ width: "160px", height: "70px" }}
+          <List>
+            {[
+              {
+                documentName: "Driver's License",
+                approved: documentChecklistData.driversLicenseChecked,
+              },
+              {
+                documentName: "OR/CR",
+                approved: documentChecklistData.orcrChecked,
+              },
+              {
+                documentName: "Local Transport Permit",
+                approved: documentChecklistData.localTransportPermitChecked,
+              },
+            ].map(({ documentName, approved }, index) => (
+              <ListItem key={index}>
+                <ListItemIcon style={{ pointerEvents: "none" }}>
+                  {approved ? (
+                    <CheckCircleIcon
+                      style={{ color: green[500], fontSize: "30px" }}
+                    />
+                  ) : (
+                    <CancelIcon style={{ color: red[500], fontSize: "30px" }} />
+                  )}
+                </ListItemIcon>
+                <ListItemText primary={documentName} />
+              </ListItem>
+            ))}
+            {isLoadingImage ? (
+              <div>Loading...</div>
+            ) : sign ? (
+              <Box
+                component="img"
+                sx={{
+                  mt: 2,
+                  height: "150px", // Adjust as needed
+                  width: "450px", // Adjust as needed
+                  border: "1px solid black",
+                  maxWidth: "100%",
+                  borderRadius: 2,
+                }}
+                alt="E-Signature"
+                src={sign}
               />
-            </ListItem>
-          ))}
-        </List>
-        <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
+            ) : (
+              <Typography variant="caption" color="textSecondary">
+                No image available
+              </Typography>
+            )}
+          </List>
+        </Box>
+      </Modal>
+
+      <Modal onClose={handleDialogClose} open={isDialogOpen}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 450,
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            borderRadius: "8px",
+
+            p: 4,
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              pb: 2,
+            }}
+          >
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ fontWeight: "bold" }}
+            >
+              Safety Checklist
+            </Typography>
+            <IconButton
+              edge="end"
+              color="inherit"
+              onClick={handleDialogClose}
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <Divider style={{ borderStyle: "dashed", borderColor: "#bd8512" }} />
+
+          <List>
+            {[
+              {
+                documentName: "Suspension System",
+                approved: SafetyChecklistData.suspension,
+                image: SafetyChecklistData.suspensionPic,
+              },
+              {
+                documentName: "Brake System",
+                approved: SafetyChecklistData.brake,
+                image: SafetyChecklistData.brakePic,
+              },
+              {
+                documentName: "Steering System",
+                approved: SafetyChecklistData.steering,
+                image: SafetyChecklistData.steeringPic,
+              },
+              ,
+              {
+                documentName: "Tires and Wheels",
+                approved: SafetyChecklistData.tireswheels,
+                image: SafetyChecklistData.tirewheelsPic,
+              },
+              ,
+              {
+                documentName: "Safety Equipments",
+                approved: SafetyChecklistData.safetyequipment,
+                image: SafetyChecklistData.safetyequipmentPic,
+              },
+              ,
+              {
+                documentName: "Lights and Reflectors",
+                approved: SafetyChecklistData.lights,
+                image: SafetyChecklistData.lightsPic,
+              },
+            ].map(({ documentName, approved, image }, index) => (
+              <ListItem key={index}>
+                <ListItemIcon style={{ pointerEvents: "none" }}>
+                  {approved ? (
+                    <CheckCircleIcon
+                      style={{ color: green[500], fontSize: "30px" }}
+                    />
+                  ) : (
+                    <CancelIcon style={{ color: red[500], fontSize: "30px" }} />
+                  )}
+                </ListItemIcon>
+                <ListItemText primary={documentName} />
+                <div
+                  style={{
+                    width: "160px",
+                    height: "70px",
+                    border: "1px solid black",
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    overflow: "hidden",
+                  }}
+                >
+                  {image ? (
+                    <img
+                      src={image}
+                      alt="Rectangle Picture"
+                      style={{ width: "100%" }}
+                    />
+                  ) : (
+                    <Typography variant="caption" color="textSecondary">
+                      No image available
+                    </Typography>
+                  )}
+                </div>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      </Modal>
     </Box>
   );
 }
