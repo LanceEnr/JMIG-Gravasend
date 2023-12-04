@@ -771,7 +771,7 @@ export default function AdminDashboard() {
           }}
         >
           <List component="nav" sx={{ overflowX: "hidden" }}>
-            <ListItemButton component={Link} to="/">
+            <ListItemButton component={Link} to="/adminhome">
               <ListItemIcon>
                 <DashboardIcon />
               </ListItemIcon>

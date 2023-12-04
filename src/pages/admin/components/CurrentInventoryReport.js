@@ -7,22 +7,6 @@ import axios from "axios";
 import { Box, Grid } from "@mui/material";
 import InventoryBar from "./InventoryBar";
 
-const data = [
-  {
-    product: "Sand",
-    Sand: 50, // quantity of Sand
-  },
-  {
-    product: "Gravel",
-    Gravel: 30, // quantity of Gravel
-  },
-  {
-    product: "Escombro",
-    Escombro: 20, // quantity of Escombro
-  },
-  // add more products here
-];
-
 function CurrenInventoryReport() {
   return (
     <div>
@@ -71,7 +55,7 @@ function CurrenInventoryReport() {
                 height: "74vh",
               }}
             >
-              <InventoryBar data={data} />
+              <InventoryBar />
             </Paper>
           </Grid>
         </Grid>

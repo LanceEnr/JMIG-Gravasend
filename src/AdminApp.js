@@ -152,7 +152,7 @@ function AdminApp() {
                                     element={<TripMetricsReport />}
                                   />
                                   <Route
-                                    path="/"
+                                    path="/adminhome"
                                     exact
                                     element={<AdminHomepage />}
                                   />

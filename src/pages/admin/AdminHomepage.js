@@ -22,144 +22,8 @@ import {
   Chip,
 } from "@mui/material";
 import MyResponsiveBar from "./components/ResponsiveBar";
-
-const data = [
-  {
-    Driver: "Driver 1",
-    Overspeeding: 65,
-    OverspeedingColor: "hsl(107, 70%, 50%)",
-    "Harsh Braking": 171,
-    "Harsh BrakingColor": "hsl(5, 70%, 50%)",
-    "Sudden Acceleration": 83,
-    "Sudden AccelerationColor": "hsl(88, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 2",
-    Overspeeding: 74,
-    OverspeedingColor: "hsl(71, 70%, 50%)",
-    "Harsh Braking": 185,
-    "Harsh BrakingColor": "hsl(20, 70%, 50%)",
-    "Sudden Acceleration": 151,
-    "Sudden AccelerationColor": "hsl(26, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 3",
-    Overspeeding: 24,
-    OverspeedingColor: "hsl(24, 70%, 50%)",
-    "Harsh Braking": 36,
-    "Harsh BrakingColor": "hsl(140, 70%, 50%)",
-    "Sudden Acceleration": 29,
-    "Sudden AccelerationColor": "hsl(111, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 4",
-    Overspeeding: 173,
-    OverspeedingColor: "hsl(120, 70%, 50%)",
-    "Harsh Braking": 61,
-    "Harsh BrakingColor": "hsl(334, 70%, 50%)",
-    "Sudden Acceleration": 56,
-    "Sudden AccelerationColor": "hsl(92, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 5",
-    Overspeeding: 26,
-    OverspeedingColor: "hsl(80, 70%, 50%)",
-    "Harsh Braking": 107,
-    "Harsh BrakingColor": "hsl(227, 70%, 50%)",
-    "Sudden Acceleration": 46,
-    "Sudden AccelerationColor": "hsl(16, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 6",
-    Overspeeding: 155,
-    OverspeedingColor: "hsl(94, 70%, 50%)",
-    "Harsh Braking": 57,
-    "Harsh BrakingColor": "hsl(271, 70%, 50%)",
-    "Sudden Acceleration": 116,
-    "Sudden AccelerationColor": "hsl(330, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 7",
-    Overspeeding: 136,
-    OverspeedingColor: "hsl(345, 70%, 50%)",
-    "Harsh Braking": 1,
-    "Harsh BrakingColor": "hsl(163, 70%, 50%)",
-    "Sudden Acceleration": 111,
-    "Sudden AccelerationColor": "hsl(196, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 8",
-    Overspeeding: 65,
-    OverspeedingColor: "hsl(107, 70%, 50%)",
-    "Harsh Braking": 171,
-    "Harsh BrakingColor": "hsl(5, 70%, 50%)",
-    "Sudden Acceleration": 83,
-    "Sudden AccelerationColor": "hsl(88, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 9",
-    Overspeeding: 74,
-    OverspeedingColor: "hsl(71, 70%, 50%)",
-    "Harsh Braking": 185,
-    "Harsh BrakingColor": "hsl(20, 70%, 50%)",
-    "Sudden Acceleration": 151,
-    "Sudden AccelerationColor": "hsl(26, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 10",
-    Overspeeding: 24,
-    OverspeedingColor: "hsl(24, 70%, 50%)",
-    "Harsh Braking": 36,
-    "Harsh BrakingColor": "hsl(140, 70%, 50%)",
-    "Sudden Acceleration": 29,
-    "Sudden AccelerationColor": "hsl(111, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 11",
-    Overspeeding: 173,
-    OverspeedingColor: "hsl(120, 70%, 50%)",
-    "Harsh Braking": 61,
-    "Harsh BrakingColor": "hsl(334, 70%, 50%)",
-    "Sudden Acceleration": 56,
-    "Sudden AccelerationColor": "hsl(92, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 12",
-    Overspeeding: 26,
-    OverspeedingColor: "hsl(80, 70%, 50%)",
-    "Harsh Braking": 107,
-    "Harsh BrakingColor": "hsl(227, 70%, 50%)",
-    "Sudden Acceleration": 46,
-    "Sudden AccelerationColor": "hsl(16, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 13",
-    Overspeeding: 155,
-    OverspeedingColor: "hsl(94, 70%, 50%)",
-    "Harsh Braking": 57,
-    "Harsh BrakingColor": "hsl(271, 70%, 50%)",
-    "Sudden Acceleration": 116,
-    "Sudden AccelerationColor": "hsl(330, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 14",
-    Overspeeding: 136,
-    OverspeedingColor: "hsl(345, 70%, 50%)",
-    "Harsh Braking": 1,
-    "Harsh BrakingColor": "hsl(163, 70%, 50%)",
-    "Sudden Acceleration": 111,
-    "Sudden AccelerationColor": "hsl(196, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 15",
-    Overspeeding: 65,
-    OverspeedingColor: "hsl(107, 70%, 50%)",
-    "Harsh Braking": 171,
-    "Harsh BrakingColor": "hsl(5, 70%, 50%)",
-    "Sudden Acceleration": 83,
-    "Sudden AccelerationColor": "hsl(88, 70%, 50%)",
-  },
-];
+import InventoryBar from "./components/InventoryBar";
+import MyResponsivePie from "./components/MyResponsivePie";
 
 function AdminHomepage() {
   return (
@@ -178,7 +42,7 @@ function AdminHomepage() {
             style={{ fontWeight: "bold", fontSize: "30px" }}
             color="secondary"
           >
-            Lance Enriquez
+            Admin
           </Typography>
         </Typography>
         <Grid sx={{ mt: 3 }} container spacing={3}>
@@ -411,6 +275,34 @@ function AdminHomepage() {
                 </CardContent>
               </CardActionArea>
             </Card>{" "}
+          </Grid>
+          <Grid item xs={7}>
+            <Paper
+              sx={{ px: 2, pt: 2, pb: 6, height: "55vh", overflow: "hidden" }}
+            >
+              <Typography
+                color="text.primary"
+                sx={{ fontWeight: "bold" }}
+                variant="overline"
+              >
+                Current Inventory
+              </Typography>
+              <InventoryBar />
+            </Paper>
+          </Grid>
+          <Grid item xs={5}>
+            <Paper
+              sx={{ px: 2, pt: 2, pb: 6, height: "55vh", overflow: "hidden" }}
+            >
+              <Typography
+                color="text.primary"
+                sx={{ fontWeight: "bold" }}
+                variant="overline"
+              >
+                Driver Performance
+              </Typography>
+              <MyResponsivePie />
+            </Paper>
           </Grid>
         </Grid>
       </Box>
