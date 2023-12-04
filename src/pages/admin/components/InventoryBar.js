@@ -2,23 +2,7 @@ import React from "react";
 
 import { ResponsiveBar } from "@nivo/bar";
 
-const data = [
-  {
-    product: "Sand",
-    Sand: 50, // quantity of Sand
-  },
-  {
-    product: "Gravel",
-    Gravel: 30, // quantity of Gravel
-  },
-  {
-    product: "Escombro",
-    Escombro: 20, // quantity of Escombro
-  },
-  // add more products here
-];
-
-const InventoryBar = () => (
+const InventoryBar = ({ data }) => (
   <ResponsiveBar
     data={data}
     keys={[

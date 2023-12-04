@@ -97,15 +97,13 @@ function CurrenInventoryReport() {
             <Paper
               sx={{
                 mt: 3,
-                px: 2,
-                pt: 2,
-                pb: 6,
+                p: 2,
                 display: "flex",
                 flexDirection: "column",
                 height: "74vh",
               }}
             >
-              <InventoryBar />
+              <InventoryBar data={data} />
             </Paper>
           </Grid>
         </Grid>
