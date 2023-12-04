@@ -36,6 +36,57 @@ function AdminHomepage() {
       return [];
     }
   };
+  const fetchOrder = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/get-order");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching order data:", error);
+      return [];
+    }
+  };
+  const fetchEvents = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/get-events");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching order data:", error);
+      return [];
+    }
+  };
+  const fetchTrip = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/fetch-tripDash");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching order data:", error);
+      return [];
+    }
+  };
+
+  const fetchMaintenance = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/fetch-maintenance-overdue"
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching order data:", error);
+      return [];
+    }
+  };
+
+  const fetchInspection = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/fetch-inspection-overdue"
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching order data:", error);
+      return [];
+    }
+  };
 
   const transformInventoryData = (data) => {
     const aggregatedData = {};
@@ -60,6 +111,11 @@ function AdminHomepage() {
   };
   const [data, setData] = useState([]);
   const navigate = useNavigate();
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [events, setEvents] = useState(0);
+  const [trips, setTrips] = useState(0);
+  const [maintenance, setMaintenance] = useState(0);
+  const [inspection, setInspection] = useState(0);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -74,6 +130,100 @@ function AdminHomepage() {
 
     fetchData();
   }, [navigate]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch order data
+        const orderData = await fetchOrder();
+
+        // Calculate the total number of orders
+        const totalOrders = orderData.length;
+
+        // Update the state with the total number of orders
+        setTotalOrders(totalOrders);
+      } catch (error) {
+        console.error("Error fetching order data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch order data
+        const eventData = await fetchEvents();
+
+        // Calculate the total number of orders
+        const totalApp = eventData.length;
+
+        // Update the state with the total number of orders
+        setEvents(totalApp);
+      } catch (error) {
+        console.error("Error fetching order data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch order data
+        const tripData = await fetchTrip();
+
+        // Calculate the total number of orders
+        const totalTrips = Object.keys(tripData).length;
+
+        // Update the state with the total number of orders
+        setTrips(totalTrips);
+      } catch (error) {
+        console.error("Error fetching order data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch order data
+        const maintenanceData = await fetchMaintenance();
+
+        // Calculate the total number of orders
+        const totalMaintenance = Object.keys(maintenanceData).length;
+
+        // Update the state with the total number of orders
+        setMaintenance(totalMaintenance);
+      } catch (error) {
+        console.error("Error fetching order data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch order data
+        const inspectionData = await fetchInspection();
+
+        // Calculate the total number of orders
+        const totalInspection = Object.keys(inspectionData).length;
+
+        // Update the state with the total number of orders
+        setInspection(totalInspection);
+      } catch (error) {
+        console.error("Error fetching order data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <div>
       <Box sx={{ my: 4 }}>
@@ -118,7 +268,7 @@ function AdminHomepage() {
                         color="secondary"
                         sx={{ fontWeight: "bold" }}
                       >
-                        15
+                        {totalOrders}
                       </Typography>
                     </Stack>
                     <Avatar
@@ -160,7 +310,7 @@ function AdminHomepage() {
                         color="secondary"
                         sx={{ fontWeight: "bold" }}
                       >
-                        10
+                        {events}
                       </Typography>
                     </Stack>
                     <Avatar
@@ -200,7 +350,7 @@ function AdminHomepage() {
                         color="secondary"
                         sx={{ fontWeight: "bold" }}
                       >
-                        4
+                        {trips}
                       </Typography>
                     </Stack>
                     <Avatar
@@ -241,7 +391,7 @@ function AdminHomepage() {
                         color="secondary"
                         sx={{ fontWeight: "bold" }}
                       >
-                        4{" "}
+                        {maintenance}
                         <Chip
                           label={
                             <Typography
@@ -295,7 +445,7 @@ function AdminHomepage() {
                         color="secondary"
                         sx={{ fontWeight: "bold" }}
                       >
-                        4{" "}
+                        {inspection}
                         <Chip
                           label={
                             <Typography
