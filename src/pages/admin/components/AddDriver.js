@@ -16,6 +16,7 @@ export default function AddDriver() {
   const [originalContact, setOriginalContact] = useState("");
   const [license, setLicense] = useState("");
   const [status, setStatus] = React.useState("unassigned");
+  const navigate = useNavigate();
 
   const getCurrentDate = () => {
     const today = new Date();
@@ -59,6 +60,7 @@ export default function AddDriver() {
 
       console.log("Driver added successfully", response.data);
       toast.success("Driver added successfully");
+      navigate("/admindrivermanagement");
     } catch (error) {
       console.error("Driver add failed", error);
       toast.error("Driver must register first on app!");
@@ -119,7 +121,7 @@ export default function AddDriver() {
                       type="date"
                       value={date}
                       onChange={(event) => setDate(event.target.value)}
-                      inputProps={{ min: getCurrentDate() }}
+                      inputProps={{ max: getCurrentDate() }}
                       InputLabelProps={{ shrink: true }}
                       fullWidth
                       required

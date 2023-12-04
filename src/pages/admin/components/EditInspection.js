@@ -35,6 +35,7 @@ export default function EditInspection() {
   const [plateNo, setPlateNo] = useState("");
   const [inspectionType, setinspectionType] = useState("");
   const [verdict, setverdict] = useState("");
+  const [verdict2, setverdict2] = useState("");
 
   useEffect(() => {
     async function fetchPlates() {
@@ -70,6 +71,7 @@ export default function EditInspection() {
         setinspectionType(response.data.inspectionType);
         setInspectionDate(convertedDate);
         setverdict(response.data.verdict);
+        setverdict2(response.data.verdict);
         setValue(response.data.verdict);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -185,20 +187,6 @@ export default function EditInspection() {
                         }}
                         row={true}
                       >
-                        {verdict !== "overdue" && (
-                          <>
-                            <FormControlLabel
-                              value="Pending"
-                              control={<Radio />}
-                              label="Pending"
-                            />
-                            <FormControlLabel
-                              value="ongoing"
-                              control={<Radio />}
-                              label="On-Going"
-                            />
-                          </>
-                        )}
                         <FormControlLabel
                           value="Failed"
                           control={<Radio />}
@@ -209,7 +197,7 @@ export default function EditInspection() {
                           control={<Radio />}
                           label="Passed"
                         />
-                        {verdict === "overdue" && (
+                        {verdict2 === "overdue" && (
                           <FormControlLabel
                             value="overdue"
                             control={<Radio />}

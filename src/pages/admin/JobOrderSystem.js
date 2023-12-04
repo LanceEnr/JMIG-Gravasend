@@ -390,7 +390,7 @@ const JobOrderModal = ({
               disabled={isDeleteDisabled}
               sx={{ ml: 1 }}
             >
-              Delete
+              Cancel
             </Button>
           )}
         </Box>
@@ -476,8 +476,7 @@ const DeleteValidationDialog = ({
       <DialogTitle>Are you sure?</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Please note, once you proceed, the job order will be deleted
-          permanently.
+          Please note, once you proceed, the job order will be canceled.
         </DialogContentText>
       </DialogContent>
       <DialogActions>

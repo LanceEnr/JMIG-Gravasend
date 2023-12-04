@@ -274,49 +274,6 @@ export default function NewFleetInformation() {
     },
 
     {
-      field: "status",
-      headerName: "STATUS",
-      flex: 1.5,
-      renderCell: (params) => {
-        return params.value === "available" ? (
-          <Chip
-            label={
-              <Typography
-                sx={{
-                  fontSize: "10px",
-                  color: "success.dark",
-                }}
-              >
-                Available
-              </Typography>
-            }
-            sx={{ bgcolor: "#8dd290" }}
-            size="small"
-          />
-        ) : (
-          <Chip
-            label={
-              <Typography
-                sx={{
-                  fontSize: "10px",
-                  color: "error.dark",
-                }}
-              >
-                Unavailable
-              </Typography>
-            }
-            sx={{ bgcolor: "#f5c9c9" }}
-            size="small"
-          />
-        );
-      },
-      renderHeader: (params) => (
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
-          {params.colDef.headerName}
-        </Typography>
-      ),
-    },
-    {
       field: "actions",
       headerName: "ACTIONS",
       sortable: false,

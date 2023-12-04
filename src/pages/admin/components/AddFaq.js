@@ -19,16 +19,16 @@ export default function AddFaq() {
     event.preventDefault();
     try {
       const response = await axios.post("http://localhost:3001/addFAQ", {
-        _question: question,
-        _answer: answer,
+        question: question,
+        answer: answer,
       });
 
       console.log("FAQ added successfully", response.data);
       toast.success("FAQ added successfully");
       navigate("/admincontent");
     } catch (error) {
-      console.error("Truck add failed", error);
-      toast.error("Truck not yet registered!");
+      console.error("FAQ add failed", error);
+      toast.error("FAQ Question already exists!");
     }
   };
 
