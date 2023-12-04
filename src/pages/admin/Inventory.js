@@ -14,6 +14,7 @@ import {
   rowsOutgoingInventory,
 } from "./helpers/data";
 import Typography from "../../components/common/Typography";
+import AssessmentIcon from "@mui/icons-material/Assessment";
 
 import { Link } from "react-router-dom";
 
@@ -132,17 +133,31 @@ function Inventory() {
           >
             Inventory
           </Typography>
-          {value === 0 && (
-            <Button
-              component={Link}
-              to={"/adminaddcurrent"}
-              variant="contained"
-              sx={{ ml: 1 }}
-              startIcon={<AddIcon />}
-            >
-              Add Inventory
-            </Button>
-          )}
+          <Box display="flex">
+            {value === 0 && (
+              <Button
+                variant="contained"
+                sx={{ ml: 1 }}
+                color="secondary"
+                startIcon={<AssessmentIcon />}
+                component={Link}
+                to={"/admincurrentinventoryreport"}
+              >
+                Generate Report
+              </Button>
+            )}
+            {value === 0 && (
+              <Button
+                component={Link}
+                to={"/adminaddcurrent"}
+                variant="contained"
+                sx={{ ml: 1 }}
+                startIcon={<AddIcon />}
+              >
+                Add Inventory
+              </Button>
+            )}
+          </Box>
         </Box>
         <Paper sx={{ mt: 3, p: 2, display: "flex", flexDirection: "column" }}>
           <Box sx={{ width: "100%" }}>

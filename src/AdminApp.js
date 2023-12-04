@@ -57,6 +57,7 @@ import AdminHomepage from "./pages/admin/AdminHomepage";
 import TripMetricsReport from "./pages/admin/components/TripMetricsReport";
 import DriversReport from "./pages/admin/components/DriversReport";
 import MaintenanceCostReport from "./pages/admin/components/MaintenanceCostReport";
+import CurrenInventoryReport from "./pages/admin/components/CurrentInventoryReport";
 
 const initialState = {
   isAuthenticated: !!localStorage.getItem("adminToken"),
@@ -130,6 +131,11 @@ function AdminApp() {
                             <Grid item xs={12}>
                               <Box sx={{ mx: 3 }}>
                                 <Routes>
+                                  <Route
+                                    path="/admincurrentinventoryreport"
+                                    exact
+                                    element={<CurrenInventoryReport />}
+                                  />
                                   <Route
                                     path="/adminmaintenancecostreport"
                                     exact
