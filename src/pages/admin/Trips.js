@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Paper, Box, Tab, Tabs } from "@mui/material";
 import Typography from "../../components/common/Typography";
-import Title from "./components/Title";
 import TripVerification from "./TripVerification";
 import TripRecords from "./TripRecords";
 function Trips() {

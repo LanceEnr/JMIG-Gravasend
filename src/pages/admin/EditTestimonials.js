@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import Rating from "@mui/material/Rating";
 import { toast } from "react-toastify";
-import Title from "./components/Title";
 
 export default function EditTestimonials() {
   const [value, setValue] = React.useState(0);

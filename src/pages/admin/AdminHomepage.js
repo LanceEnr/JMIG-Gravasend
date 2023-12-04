@@ -136,46 +136,7 @@ function AdminHomepage() {
               </CardActionArea>
             </Card>{" "}
           </Grid>
-          <Grid item xs={2.4}>
-            <Card>
-              <CardActionArea component={Link} to={`/admindeliverymonitoring`}>
-                <CardContent>
-                  <Stack
-                    alignItems="flex-start"
-                    direction="row"
-                    justifyContent="space-between"
-                    spacing={3}
-                  >
-                    <Stack spacing={1}>
-                      <Typography
-                        color="text.primary"
-                        sx={{ fontWeight: "bold" }}
-                        variant="overline"
-                      >
-                        Ongoing Trips
-                      </Typography>
-                      <Typography
-                        variant="h4"
-                        color="secondary"
-                        sx={{ fontWeight: "bold" }}
-                      >
-                        4
-                      </Typography>
-                    </Stack>
-                    <Avatar
-                      sx={{
-                        backgroundColor: "success.main",
-                        height: 85,
-                        width: 85,
-                      }}
-                    >
-                      <LocalShippingIcon sx={{ fontSize: "42px" }} />
-                    </Avatar>
-                  </Stack>
-                </CardContent>
-              </CardActionArea>
-            </Card>{" "}
-          </Grid>
+
           <Grid item xs={2.4}>
             <Card>
               <CardActionArea component={Link} to={`/adminmanageappointments`}>
@@ -211,6 +172,46 @@ function AdminHomepage() {
                       }}
                     >
                       <EventIcon sx={{ fontSize: "42px" }} />
+                    </Avatar>
+                  </Stack>
+                </CardContent>
+              </CardActionArea>
+            </Card>{" "}
+          </Grid>
+          <Grid item xs={2.4}>
+            <Card>
+              <CardActionArea component={Link} to={`/admindeliverymonitoring`}>
+                <CardContent>
+                  <Stack
+                    alignItems="flex-start"
+                    direction="row"
+                    justifyContent="space-between"
+                    spacing={3}
+                  >
+                    <Stack spacing={1}>
+                      <Typography
+                        color="text.primary"
+                        sx={{ fontWeight: "bold" }}
+                        variant="overline"
+                      >
+                        Ongoing Trips
+                      </Typography>
+                      <Typography
+                        variant="h4"
+                        color="secondary"
+                        sx={{ fontWeight: "bold" }}
+                      >
+                        4
+                      </Typography>
+                    </Stack>
+                    <Avatar
+                      sx={{
+                        backgroundColor: "success.main",
+                        height: 85,
+                        width: 85,
+                      }}
+                    >
+                      <LocalShippingIcon sx={{ fontSize: "42px" }} />
                     </Avatar>
                   </Stack>
                 </CardContent>

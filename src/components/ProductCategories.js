@@ -4,16 +4,7 @@ import Box from "@mui/material/Box";
 import ButtonBase from "@mui/material/ButtonBase";
 import Container from "@mui/material/Container";
 import Typography from "../components/common/Typography";
-import Gravel1 from "../assets/Gravel1.webp";
-import Gravel2 from "../assets/Gravel2.webp";
-import Gravel3 from "../assets/Gravel3.webp";
-import Sand1 from "../assets/Sand1.webp";
-import Sand2 from "../assets/Sand2.webp";
-import Sand3 from "../assets/Sand3.webp";
-import backhoe from "../assets/backhoe.webp";
-import trailerbed from "../assets/trailerbed.webp";
-import loader from "../assets/loader.webp";
-import dumptruck from "../assets/dumptruck.webp";
+
 import axios from "axios";
 
 const ImageBackdrop = styled("div")(({ theme }) => ({

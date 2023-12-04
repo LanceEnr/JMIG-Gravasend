@@ -12,7 +12,6 @@ import AdjustIcon from "@mui/icons-material/Adjust";
 
 import axios from "axios";
 import { Grid, Paper, Avatar, Box, Button, Tab, Tabs } from "@mui/material";
-import Title from "./components/Title";
 import TripRecords from "./TripRecords";
 
 import TripOngoing from "./TripOngoing";

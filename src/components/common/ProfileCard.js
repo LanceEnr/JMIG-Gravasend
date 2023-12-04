@@ -7,8 +7,7 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/system";
 import Divider from "@mui/material/Divider";
-import CoverPhoto from "../../assets/coverphoto.png";
-import ProfilePic from "../../assets/formal1x1.webp";
+import CoverPhoto from "../../assets/coverphoto.webp";
 
 import { fetchProfilePic } from "../../components/cms";
 

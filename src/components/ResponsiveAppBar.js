@@ -39,7 +39,6 @@ import RoomServiceIcon from "@mui/icons-material/RoomService";
 import LiveHelpIcon from "@mui/icons-material/LiveHelp";
 import InfoIcon from "@mui/icons-material/Info";
 import MailIcon from "@mui/icons-material/Mail";
-import ProfilePic from "../assets/formal1x1.webp";
 import { fetchProfilePic } from "../components/cms";
 import LogoGravasend from "../assets/LogoGravasend.webp";
 import Logout from "@mui/icons-material/Logout";

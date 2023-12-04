@@ -10,8 +10,6 @@ import {
   Divider,
 } from "@mui/material";
 
-import Title from "./components/Title";
-
 export default function CompanyValues() {
   const [formData, setFormData] = useState({
     _valueHeading1: "",

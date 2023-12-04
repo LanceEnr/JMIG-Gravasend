@@ -1,21 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Paper, Box, Tab, Tabs, Button } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import FullFeaturedCrudGrid from "./components/MaintenanceDataGrid";
-import FullFeaturedCrudGrid2 from "./components/MaintenanceRecordDataGrid";
+
 import Typography from "../../components/common/Typography";
 import { toast } from "react-toastify";
 import axios from "axios";
-import {
-  rowsMaintenanceScheduling,
-  columnsMaintenanceRecords,
-  rowsMaintenanceRecords,
-} from "./helpers/data";
+
 import NewMaintenanceScheduling from "./components/NewMaintenanceScheduling";
 import { Link } from "react-router-dom";
 import NewMaintenanceRecords from "./components/NewMaintenanceRecords";
 import AddIcon from "@mui/icons-material/Add";
-import AssessmentIcon from "@mui/icons-material/Assessment";
 
 function Maintenance() {
   const [value, setValue] = useState(0);
