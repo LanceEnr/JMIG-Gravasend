@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from "react";
-import {
-  GoogleMap,
-  LoadScript,
-  Marker,
-  InfoWindow,
-} from "@react-google-maps/api";
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { Link } from "react-router-dom";
 import Typography from "../../components/common/Typography";
 import { DataGrid, GridToolbar, gridClasses } from "@mui/x-data-grid";
 import AdjustIcon from "@mui/icons-material/Adjust";
 
 import axios from "axios";
-import { Grid, Paper, Avatar, Box, Button, Tab, Tabs } from "@mui/material";
-import TripRecords from "./TripRecords";
+import { Grid, Paper, Box, Button, Tab, Tabs } from "@mui/material";
 
 import TripOngoing from "./TripOngoing";
 import truckIcon from "../../assets/truck.png";

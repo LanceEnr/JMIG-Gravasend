@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
 import Typography from "../../../components/common/Typography";
 import { Link } from "react-router-dom";
 
@@ -7,17 +6,7 @@ import axios from "axios";
 import { Paper, Button } from "@mui/material";
 import PrintIcon from "@mui/icons-material/Print";
 
-import {
-  Avatar,
-  CardActionArea,
-  Card,
-  CardContent,
-  Stack,
-  SvgIcon,
-  Box,
-  Grid,
-  Chip,
-} from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import MyResponsiveBar from "./ResponsiveBar";
 
 function TripMetricsReport() {

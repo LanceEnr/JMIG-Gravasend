@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useDropzone } from "react-dropzone";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
@@ -17,12 +16,8 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
-  InputAdornment,
-  Autocomplete,
 } from "@mui/material";
 import Typography from "../../../components/common/Typography";
-import { idID } from "@mui/material/locale";
-import SearchIcon from "@mui/icons-material/Search";
 
 export default function EditFleet() {
   const [driver, setDriver] = React.useState("");

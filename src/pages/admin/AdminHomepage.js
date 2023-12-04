@@ -21,7 +21,6 @@ import {
   Grid,
   Chip,
 } from "@mui/material";
-import MyResponsiveBar from "./components/ResponsiveBar";
 import InventoryBar from "./components/InventoryBar";
 import MyResponsivePie from "./components/MyResponsivePie";
 
