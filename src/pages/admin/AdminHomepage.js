@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import Typography from "../../components/common/Typography";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import axios from "axios";
 import { Paper } from "@mui/material";
@@ -26,6 +26,55 @@ import InventoryBar from "./components/InventoryBar";
 import MyResponsivePie from "./components/MyResponsivePie";
 
 function AdminHomepage() {
+  const fetchInventoryData = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/currentInventory"
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return [];
+    }
+  };
+
+  const transformInventoryData = (data) => {
+    const aggregatedData = {};
+
+    data.forEach((item) => {
+      const { _itemName, _quantity } = item;
+      const quantity = parseInt(_quantity);
+
+      if (aggregatedData[_itemName]) {
+        aggregatedData[_itemName] += quantity;
+      } else {
+        aggregatedData[_itemName] = quantity;
+      }
+    });
+
+    const transformedData = Object.keys(aggregatedData).map((productName) => ({
+      product: productName,
+      [productName]: aggregatedData[productName],
+    }));
+
+    return transformedData;
+  };
+  const [data, setData] = useState([]);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchInventoryData();
+        const transformedData = transformInventoryData(data);
+        console.log(transformedData);
+        setData(transformedData);
+      } catch (error) {
+        console.error("Error fetching and transforming data:", error);
+      }
+    };
+
+    fetchData();
+  }, [navigate]);
   return (
     <div>
       <Box sx={{ my: 4 }}>
@@ -287,7 +336,7 @@ function AdminHomepage() {
               >
                 Current Inventory
               </Typography>
-              <InventoryBar />
+              <InventoryBar data={data} />
             </Paper>
           </Grid>
           <Grid item xs={5}>
