@@ -864,14 +864,7 @@ export default function AdminDashboard() {
             <ListSubheader component="div" inset>
               MANAGEMENT
             </ListSubheader>
-            <ListItemButton component={Link} to="/adminreports">
-              <ListItemIcon>
-                <AssessmentIcon />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography variant="caption">Reports</Typography>
-              </ListItemText>
-            </ListItemButton>
+
             <ListItemButton component={Link} to="/admindrivermanagement">
               <ListItemIcon>
                 <EngineeringIcon />

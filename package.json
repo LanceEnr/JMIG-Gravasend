@@ -28,6 +28,7 @@
     "@nivo/bar": "^0.84.0",
     "@nivo/line": "^0.84.0",
     "@nivo/pie": "^0.84.0",
+    "@nivo/treemap": "^0.84.0",
     "@nodelib/fs.scandir": "^3.0.0",
     "@react-google-maps/api": "^2.19.2",
     "@react-spring/web": "^9.7.3",

@@ -671,8 +671,8 @@ export default function TripVerification() {
                 <ListItemText primary={documentName} />
                 <div
                   style={{
-                    width: "160px",
-                    height: "70px",
+                    width: "120px",
+                    height: "90px", // Adjusted for 4:3 aspect ratio
                     border: "1px solid black",
                     borderRadius: "8px",
                     display: "flex",
@@ -685,7 +685,11 @@ export default function TripVerification() {
                     <img
                       src={image}
                       alt="Rectangle Picture"
-                      style={{ width: "100%" }}
+                      style={{
+                        width: "100%",
+                        height: "100%", // Added to maintain aspect ratio
+                        objectFit: "cover", // Added to maintain aspect ratio
+                      }}
                     />
                   ) : (
                     <Typography variant="caption" color="textSecondary">
@@ -693,6 +697,7 @@ export default function TripVerification() {
                     </Typography>
                   )}
                 </div>
+
                 <Divider />
               </ListItem>
             ))}
