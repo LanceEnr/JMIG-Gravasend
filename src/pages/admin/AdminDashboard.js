@@ -512,7 +512,6 @@ export default function AdminDashboard() {
                 justifyContent="space-between"
                 alignItems="center"
                 padding={2}
-                sx={{ minWidth: "300px" }}
               >
                 <Typography
                   variant="subtitle1"
@@ -529,7 +528,6 @@ export default function AdminDashboard() {
                 justifyContent="space-between"
                 alignItems="center"
                 //padding={2}
-                sx={{ minWidth: "300px" }}
               >
                 <Divider />
                 <MenuItem
