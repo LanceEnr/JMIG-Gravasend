@@ -58,20 +58,12 @@ const JobOrderModal = ({
   const [instructions, setInstructions] = useState("");
 
   const handleFieldChange = (field, value) => {
-    setFormData({
-      ...formData,
+    setFormData((prevFormData) => ({
+      ...prevFormData,
       [field]: value,
-    });
-    const intValue = parseInt(value, 10);
-    setOrigin(formData.origin);
-    setDestination(formData.destination);
-    setDriverName(formData.driverName);
-    setCargo(formData.productName);
-    setWeight(formData.weight);
-    setProductName(formData.productName);
-    setDateTime(formData.dateTime);
-    setInstructions(formData.instructions);
+    }));
   };
+
   useEffect(() => {
     if (jobOrder) {
       const source = jobOrder;
@@ -355,6 +347,7 @@ const JobOrderModal = ({
               label="Date Time"
               type="datetime-local"
               value={dateTime}
+              required
               disabled={isDeleteDisabled}
               onChange={(event) => {
                 setDateTime(event.target.value);
