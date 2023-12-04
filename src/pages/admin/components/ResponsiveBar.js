@@ -5,7 +5,7 @@ import { ResponsiveBar } from "@nivo/bar";
 const MyResponsiveBar = ({ data }) => (
   <ResponsiveBar
     data={data}
-    keys={["Overspeeding", "Harsh Braking", "Sudden Acceleration"]}
+    keys={["MaxSpeedAvg", "Harsh Braking", "Sudden Acceleration"]}
     indexBy="Driver"
     margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
     padding={0.3}
