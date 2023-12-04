@@ -61,7 +61,7 @@ const transformTripOngoing = (data, data2, data3) => {
             id: uid,
             maxSpeed: userData2.max_speed ?? 0,
             currentSpeed: userData2.current_speed ?? 0,
-            datetime: userData.date,
+            datetime: userData.dateTime,
             averageSpeed: userData2.average_speed ?? 0,
             harshBraking: userData2.harsh_braking_count ?? 0,
             suddenAcceleration: userData2.sudden_acceleration_count ?? 0,

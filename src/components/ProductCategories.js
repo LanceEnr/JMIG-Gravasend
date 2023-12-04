@@ -69,12 +69,11 @@ const fetchListingData = async () => {
 
 const transformListingData2 = (data) => {
   return data.slice(0, 3).map((item, index) => {
-    console.log(item._imgPath[0]);
     const imageFileName =
       item._imgPath && item._imgPath.length > 0
         ? item._imgPath[0].substring(item._imgPath[0].lastIndexOf("\\") + 1)
         : "";
-    console.log(imageFileName);
+
     return {
       url: require(`../images/listings/${imageFileName}`),
       title: item._listingName || `Default Title ${index + 1}`,

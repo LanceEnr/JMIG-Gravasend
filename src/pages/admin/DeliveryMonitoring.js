@@ -76,7 +76,7 @@ const columns = [
   },
   {
     field: "date",
-    headerName: "DATE AND TIME COMPLETED",
+    headerName: "DATE AND TIME",
     flex: 3,
     renderHeader: (params) => (
       <Typography variant="h3" sx={{ fontWeight: "bold", fontSize: "12px" }}>
@@ -172,12 +172,12 @@ function DeliveryMonitoring() {
             const mappedData = {
               id: id,
               driver: userData[id].driverName,
-              date: userData3[id].date + " " + userData3[id].time,
+              date: userData3[id].date,
               signature: userData3[id].esignature,
-              //avgSpeed: userData2[id].average_speed,
-              //maxSpeed: userData2[id].max_speed,
-              //harshBraking: userData2[id].harsh_braking_count,
-              //sua: userData2[id].sudden_acceleration_count,
+              avgSpeed: userData2[id].average_speed || 0,
+              maxSpeed: userData2[id].max_speed,
+              harshBraking: userData2[id].harsh_braking_count,
+              sua: userData2[id].sudden_acceleration_count,
             };
 
             transformedData.push(mappedData);

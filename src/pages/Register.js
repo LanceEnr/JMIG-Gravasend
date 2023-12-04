@@ -326,6 +326,7 @@ export default function Register() {
                   control={
                     <Checkbox
                       checked={agreeToTerms}
+                      onChange={handleAgreeToTermsChange}
                       value="agreeToTerms"
                       color="primary"
                     />
@@ -409,15 +410,7 @@ export default function Register() {
                   </li>
                 </ul>
               </li>
-              <li>
-                <strong>Account Termination:</strong>
-                <ul>
-                  <li>
-                    JMIG reserves the right to terminate or suspend your account
-                    at any time for violations of these terms and conditions.
-                  </li>
-                </ul>
-              </li>
+
               <li>
                 <strong>Disclaimer:</strong>
                 <ul>

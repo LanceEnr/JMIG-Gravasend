@@ -38,6 +38,10 @@ const transformTripOngoing = (data, data2, data3) => {
             datetime: userData[id].dateTime,
             cargoType: userData[id].cargo,
             cargoWeight: userData[id].weight,
+            avgSpeed: userData2[id].average_speed ?? 0,
+            maxSpeed: userData2[id].max_speed ?? 0,
+            harshBraking: userData2[id].harsh_braking_count ?? 0,
+            sua: userData2[id].sudden_acceleration_count ?? 0,
           };
 
           transformedData.push(mappedData);
