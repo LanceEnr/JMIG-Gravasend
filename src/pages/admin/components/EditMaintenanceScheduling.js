@@ -221,16 +221,18 @@ export default function EditMaintenanceScheduling() {
                             />
                           </>
                         )}
-                        <FormControlLabel
-                          value="overdue"
-                          control={<Radio />}
-                          label="Overdue"
-                        />
+
                         <FormControlLabel
                           value="Completed"
                           control={<Radio />}
                           label="Completed"
                           disabled={status2 === "overdue"}
+                        />
+                        <FormControlLabel
+                          value="overdue"
+                          control={<Radio />}
+                          disabled={status2 === "Pending"}
+                          label="Overdue"
                         />
                       </RadioGroup>
                     </FormControl>

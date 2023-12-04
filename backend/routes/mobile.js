@@ -529,6 +529,50 @@ router.get("/fetch-maintenanceReminders2/:uid/:id", (req, res) => {
       res.status(500).json({ message: "Internal server error" });
     });
 });
+
+router.get("/fetch-mileage-plate/:plate", async (req, res) => {
+  try {
+    const { plate } = req.params;
+
+    // Reference to the trucks node in your Firebase Realtime Database
+    const trucksRef = admin.database().ref("trucks");
+
+    // Query the database to find the truck with the specified plate number
+    const querySnapshot = await trucksRef
+      .orderByChild("plateNo")
+      .equalTo(plate)
+      .once("value");
+
+    // Check if any matching truck is found
+    if (querySnapshot.exists()) {
+      // Since there can be multiple results, loop through the results
+      let mileage;
+      querySnapshot.forEach((childSnapshot) => {
+        const truckData = childSnapshot.val();
+        if (truckData && truckData.mileage) {
+          mileage = truckData.mileage;
+        }
+      });
+
+      if (mileage) {
+        res.json({ success: true, mileage });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: "Mileage not found for the specified plate number",
+        });
+      }
+    } else {
+      res.status(404).json({
+        success: false,
+        message: "Truck not found for the specified plate number",
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching mileage:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
 router.get("/fetch-maintenanceHistory2/:uid/:id", (req, res) => {
   const { uid, id } = req.params;
 
@@ -1307,7 +1351,6 @@ async function getUIDFromPlate(plateNo) {
 
 router.post("/addMaintenance", async (req, res) => {
   const maintenanceData = req.body;
-  console.log(maintenanceData.plateNo);
   const id = await getNextMaintenanceNum();
   maintenanceData.id = id;
 
@@ -1329,12 +1372,9 @@ router.post("/addMaintenance", async (req, res) => {
     if (maintenanceData.status === "Completed") {
       // Move the record to maintenanceHistory
       const refHistory = db.ref(
-        `maintenanceHistory/${maintenanceData.uid}/${maintenanceData.actionId}`
+        `maintenanceHistory/${maintenanceData.uid}/${maintenanceData.id}`
       );
       await refHistory.set(maintenanceData);
-
-      // Remove the record from maintenanceReminders
-      await refReminders.remove();
     } else {
       // Add the record to maintenanceReminders
       await refReminders.set(maintenanceData);
@@ -1436,6 +1476,7 @@ router.get("/fetch-mileage", (req, res) => {
       res.status(500).json({ message: "Internal server error" });
     });
 });
+
 router.get("/fetch-documentCheck/:id", async (req, res) => {
   try {
     const { id } = req.params;
