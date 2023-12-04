@@ -16,7 +16,6 @@ import { alpha, styled } from "@mui/material/styles";
 import Typography from "../../components/common/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 
-import Title from "./components/Title";
 const ODD_OPACITY = 0.2;
 
 const StripedDataGrid = styled(DataGrid)(({ theme }) => ({

@@ -4,7 +4,6 @@ import { Button, Box, Hidden } from "@mui/material";
 import Typography from "../components/common/Typography";
 import ProductBannerLayout from "./ProductBannerLayout";
 import { fetchBannerDataProduct } from "../components/cms";
-import productImage from "../assets/excavator.webp";
 
 const valuesData = await fetchBannerDataProduct();
 const imagePath = valuesData._image;

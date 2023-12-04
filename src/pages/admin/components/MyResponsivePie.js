@@ -218,25 +218,25 @@ function MyResponsivePie() {
         const dynamicChartData = [
           {
             id: "Excellent",
-            label: "Excellent (1.0 - 1.25)",
+            label: "Excellent",
             value: gradesCount.excellent,
             color: "hsl(70, 70%, 50%)",
           },
           {
             id: "Good",
-            label: "Good (1.26 - 1.5)",
+            label: "Good",
             value: gradesCount.good,
             color: "hsl(329, 70%, 50%)",
           },
           {
             id: "Average",
-            label: "Average (1.51 - 1.75)",
+            label: "Average",
             value: gradesCount.average,
             color: "hsl(189, 70%, 50%)",
           },
           {
             id: "Needs Improvement",
-            label: "Needs Improvement (1.76 - 2.0)",
+            label: "Needs Improvement",
             value: gradesCount.needsImprovement,
             color: "hsl(214, 70%, 50%)",
           },
@@ -325,7 +325,7 @@ function MyResponsivePie() {
           justify: false,
           translateX: 0,
           translateY: 56,
-          itemsSpacing: 50,
+          itemsSpacing: 10,
           itemWidth: 100,
           itemHeight: 18,
           itemTextColor: "#999",

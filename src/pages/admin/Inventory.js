@@ -1,18 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Paper, Box, Tab, Tabs, Button } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import FullFeaturedCrudGrid from "./components/CustomDataGrid";
-import IncomingDataGrid from "./components/IncomingDataGrid";
-import Title from "./components/Title";
+
 import axios from "axios";
-import {
-  columnsCurrentInventory,
-  rowsCurrentInventory,
-  columnsIncomingInventory,
-  rowsIncomingInventory,
-  columnsOutgoingInventory,
-  rowsOutgoingInventory,
-} from "./helpers/data";
+
 import Typography from "../../components/common/Typography";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 

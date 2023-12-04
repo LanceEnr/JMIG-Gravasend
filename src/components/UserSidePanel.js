@@ -18,7 +18,6 @@ import EventNoteIcon from "@mui/icons-material/EventNote";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import { withStyles } from "@mui/styles";
-import ProfilePic from "../assets/formal1x1.webp";
 import { fetchProfilePic } from "../components/cms";
 
 const storedUsername = localStorage.getItem("userName");

@@ -6,7 +6,6 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import ResponsiveAppBar from "./components/ResponsiveAppBar";
 import { Box, Toolbar, Container, Grid, Paper } from "@mui/material";
 import authReducer from "./store/reducers/authReducer";
 import { ToastContainer } from "react-toastify";
@@ -23,14 +22,9 @@ import Inspection from "./pages/admin/Inspection";
 import Trips from "./pages/admin/Trips";
 import JobOrderSystem from "./pages/admin/JobOrderSystem";
 import DeliveryMonitoring from "./pages/admin/DeliveryMonitoring";
-import Reports from "./pages/admin/Reports";
-import DriverManagement from "./pages/admin/DriverManagement";
 import ManageAppointments from "./pages/admin/ManageAppointments";
-import ManageOrders from "./pages/admin/ManageOrders";
 import Inventory from "./pages/admin/Inventory";
-import ManageListings from "./pages/admin/ManageListings";
 import Content from "./pages/admin/Content";
-import UserManagement from "./pages/admin/UserManagement";
 import ManageContactForm from "./pages/admin/ManageContactForm";
 import Listings from "./pages/admin/Listings";
 import AddFleet from "./pages/admin/components/AddFleet";
@@ -56,7 +50,6 @@ import { toast } from "react-toastify";
 import AdminHomepage from "./pages/admin/AdminHomepage";
 import TripMetricsReport from "./pages/admin/components/TripMetricsReport";
 import DriversReport from "./pages/admin/components/DriversReport";
-import MaintenanceCostReport from "./pages/admin/components/MaintenanceCostReport";
 import CurrenInventoryReport from "./pages/admin/components/CurrentInventoryReport";
 
 const initialState = {
@@ -136,11 +129,7 @@ function AdminApp() {
                                     exact
                                     element={<CurrenInventoryReport />}
                                   />
-                                  <Route
-                                    path="/adminmaintenancecostreport"
-                                    exact
-                                    element={<MaintenanceCostReport />}
-                                  />
+
                                   <Route
                                     path="/admindriversreport"
                                     exact
@@ -298,11 +287,7 @@ function AdminApp() {
                                     exact
                                     element={<DeliveryMonitoring />}
                                   />
-                                  <Route
-                                    path="/adminreports"
-                                    exact
-                                    element={<Reports />}
-                                  />
+
                                   <Route
                                     path="/admindrivermanagement"
                                     exact

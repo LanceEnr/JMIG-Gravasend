@@ -28,8 +28,6 @@ import {
   DialogContentText,
   DialogActions,
 } from "@mui/material";
-import Title from "./components/Title";
-import FleetInformation from "./FleetInformation";
 
 const transformFleetData = (data) => {
   const transformedData = [];
