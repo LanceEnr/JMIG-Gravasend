@@ -2,9 +2,6 @@
   "name": "jmig-gravasend",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": "16.4.0"
-  },
   "dependencies": {
     "@babel/eslint-parser": "^7.22.15",
     "@emotion/react": "^11.11.1",
