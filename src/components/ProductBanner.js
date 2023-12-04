@@ -47,7 +47,7 @@ export default function ProductBanner() {
               variant="subtitle2"
               sx={{
                 marginTop: {
-                  sm: "80px",
+                  sm: "50px",
                 },
                 color: "#83948a",
                 width: "100%",
