@@ -34,6 +34,7 @@ export default function AddMaintenanceScheduling() {
   const [startmileage, setStartMileage] = React.useState("");
   const [nextDue, setNextDue] = React.useState(0);
   const [status, setStatus] = React.useState("Pending");
+  const [isTractorNoUndefined, setIsTractorNoUndefined] = React.useState(true);
 
   const currentUrl = window.location.href;
   const url = new URL(currentUrl);
@@ -106,7 +107,27 @@ export default function AddMaintenanceScheduling() {
       toast.error("Failed to save the record");
     }
   };
+  const handleTractorNoChange = (event, value) => {
+    const plate = value;
+    if (value) {
+      setIsTractorNoUndefined(false);
 
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            `http://localhost:3001/fetch-mileage-plate/${plate}`
+          );
+
+          setStartMileage(response.data.mileage);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+      fetchData();
+    } else {
+      setIsTractorNoUndefined(true);
+    }
+  };
   return (
     <div>
       <Box sx={{ my: 14 }}>
@@ -154,6 +175,7 @@ export default function AddMaintenanceScheduling() {
                         />
                       )}
                       onChange={(event, value) => {
+                        handleTractorNoChange(event, value);
                         if (value) {
                           setPlateNo(value);
                         } else {
@@ -182,6 +204,7 @@ export default function AddMaintenanceScheduling() {
                         id="driver-select"
                         value={driver}
                         label="Driver"
+                        required
                         onChange={handleChange}
                       >
                         {amounts.map((option, index) => (
@@ -197,6 +220,7 @@ export default function AddMaintenanceScheduling() {
                       label="Start Mileage"
                       name="startmileage"
                       type="text"
+                      disabled={isTractorNoUndefined}
                       fullWidth
                       value={formatNumberWithCommas(startmileage)}
                       onChange={(event) => {
