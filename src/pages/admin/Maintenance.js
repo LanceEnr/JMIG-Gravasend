@@ -172,18 +172,6 @@ function Maintenance() {
               Add Maintenance
             </Button>
           )}
-          {value === 1 && (
-            <Button
-              variant="contained"
-              sx={{ ml: 1 }}
-              color="secondary"
-              startIcon={<AssessmentIcon />}
-              component={Link}
-              to={"/adminmaintenancecostreport"}
-            >
-              Generate Report
-            </Button>
-          )}
         </Box>
         <Paper sx={{ mt: 3, p: 2, display: "flex", flexDirection: "column" }}>
           <Box sx={{ width: "100%" }}>

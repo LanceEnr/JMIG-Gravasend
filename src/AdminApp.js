@@ -56,7 +56,6 @@ import { toast } from "react-toastify";
 import AdminHomepage from "./pages/admin/AdminHomepage";
 import TripMetricsReport from "./pages/admin/components/TripMetricsReport";
 import DriversReport from "./pages/admin/components/DriversReport";
-import MaintenanceCostReport from "./pages/admin/components/MaintenanceCostReport";
 import CurrenInventoryReport from "./pages/admin/components/CurrentInventoryReport";
 
 const initialState = {
@@ -136,11 +135,7 @@ function AdminApp() {
                                     exact
                                     element={<CurrenInventoryReport />}
                                   />
-                                  <Route
-                                    path="/adminmaintenancecostreport"
-                                    exact
-                                    element={<MaintenanceCostReport />}
-                                  />
+
                                   <Route
                                     path="/admindriversreport"
                                     exact
