@@ -70,6 +70,13 @@ export default function EditDriver() {
       toast.error("Driver edit failed!");
     }
   };
+  const getCurrentDate = () => {
+    const today = new Date();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    const year = today.getFullYear();
+    return `${year}-${month}-${day}`;
+  };
 
   return (
     <div>
@@ -124,11 +131,7 @@ export default function EditDriver() {
                       value={date}
                       fullWidth
                       onChange={(event) => setDate(event.target.value)}
-                      InputProps={{
-                        inputProps: {
-                          max: new Date().toISOString().split("T")[0], // Set max date to today
-                        },
-                      }}
+                      inputProps={{ max: getCurrentDate() }}
                     />
                   </Grid>
 

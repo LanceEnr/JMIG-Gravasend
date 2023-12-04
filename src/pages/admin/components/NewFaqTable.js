@@ -86,6 +86,7 @@ export default function NewFaqTable() {
   const [selectedRow, setSelectedRow] = useState(null);
   const [rowsFaqs, setrowsFaqs] = useState([]);
   const navigate = useNavigate();
+  const [id, setId] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -105,26 +106,31 @@ export default function NewFaqTable() {
     setAction(action);
     setOpen(true);
     setSelectedRow(row);
+    setId(row.id);
   };
 
   const handleClose = () => {
     setOpen(false);
   };
+  const handleDialogConfirm = () => {
+    deleteRecord();
+    setOpen(false);
+  };
 
-  const deleteRecord = async (id) => {
+  const deleteRecord = async () => {
     try {
-      const _listingId = parseInt(id, 10);
+      const _faqNum = parseInt(id, 10);
+
       const response = await axios.post(
-        "http://localhost:3001/delete-listing",
-        { _listingId }
+        `http://localhost:3001/deleteFAQ/${_faqNum}`
       );
 
       if (response.status === 200) {
-        toast.success("Listing deleted successfully");
+        toast.success("FAQ deleted successfully");
       } else if (response.status === 404) {
         toast.error("Record not found");
       } else {
-        toast.error("Failed to delete the listing");
+        toast.error("Failed to delete the FAQ");
       }
     } catch (error) {
       console.error("Error deleting record", error);
@@ -236,7 +242,7 @@ export default function NewFaqTable() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button color="primary" autoFocus>
+          <Button color="primary" onClick={handleDialogConfirm} autoFocus>
             Confirm
           </Button>
         </DialogActions>

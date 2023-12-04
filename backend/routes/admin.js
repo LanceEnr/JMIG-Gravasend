@@ -1620,14 +1620,13 @@ router.get("/generateFAQId", async (req, res) => {
 });
 
 router.post("/addFAQ", async (req, res) => {
-  const { question, answer } = req.body;
+  console.log(question + " " + answer);
   const id = await getNextFAQNum();
   const exisitingName = await FAQ.findOne({
     _question: question,
   });
 
   if (exisitingName) {
-    // An appointment with the same date and time already exists and is not cancelled
     return res.status(400).json({ error: "Name conflict" });
   }
   const faq = new FAQ({

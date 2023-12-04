@@ -1283,8 +1283,8 @@ async function getUIDFromPlate(plateNo) {
       for (const uid of uidArray) {
         const truck = truckData[uid];
         if (truck.plateNo === plateNo) {
-          if ("plateNo2" in truck) {
-            return truck.UID;
+          if ("plateNo" in truck) {
+            return uid;
           } else {
             console.log(
               `UID property not found in the truck object with plateNo '${plateNo}'`
@@ -1307,7 +1307,7 @@ async function getUIDFromPlate(plateNo) {
 
 router.post("/addMaintenance", async (req, res) => {
   const maintenanceData = req.body;
-  //console.log(maintenanceData);
+  console.log(maintenanceData.plateNo);
   const id = await getNextMaintenanceNum();
   maintenanceData.id = id;
 
@@ -1315,7 +1315,6 @@ router.post("/addMaintenance", async (req, res) => {
     const plateNo = maintenanceData.plateNo;
     //const mileage = await getMileageFromPlate(plateNo);
     const uid = await getUIDFromPlate(plateNo);
-
     const frequency = maintenanceData.frequency;
     //const nextDueMileage = parseInt(startmileage) + parseInt(frequency);
 
@@ -1479,7 +1478,6 @@ router.post("/addInspection", async (req, res) => {
   try {
     const plateNo = inspectionData.plateNo;
     const uid = await getUIDFromPlate(plateNo);
-
     inspectionData.uid = uid;
 
     const db = admin.database();

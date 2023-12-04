@@ -126,7 +126,7 @@ function Inspection() {
                             uid,
                             id,
                             inspectionType,
-                            verdict: "due",
+                            verdict: "overdue",
                             date: formattedDate,
                           }
                         );
@@ -150,7 +150,7 @@ function Inspection() {
                             uid,
                             id,
                             inspectionType,
-                            verdict: "due",
+                            verdict: "Pending",
                             date: formattedDate,
                             duration: "1 week",
                           }
@@ -178,7 +178,7 @@ function Inspection() {
                             uid,
                             id,
                             inspectionType,
-                            verdict: "due",
+                            verdict: "Pending",
                             date: formattedDate,
                             duration: "3 days",
                           }
