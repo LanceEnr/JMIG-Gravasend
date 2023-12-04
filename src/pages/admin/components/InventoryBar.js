@@ -6,9 +6,12 @@ const InventoryBar = ({ data }) => (
   <ResponsiveBar
     data={data}
     keys={[
-      "Sand",
-      "Gravel",
-      "Escombro",
+      "S1",
+      "Vibro Sand",
+      "White Sand",
+      "Gravel 3/4",
+      "G1",
+      "Base Course",
       // add more product names here
     ]}
     indexBy="product"
@@ -28,7 +31,7 @@ const InventoryBar = ({ data }) => (
       tickSize: 5,
       tickPadding: 5,
       tickRotation: 0,
-      legend: "product",
+      legend: "Products",
       legendPosition: "middle",
       legendOffset: 32,
       truncateTickAt: 0,

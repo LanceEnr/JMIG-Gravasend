@@ -7,23 +7,55 @@ import axios from "axios";
 import { Box, Grid } from "@mui/material";
 import InventoryBar from "./InventoryBar";
 
-const data = [
-  {
-    product: "Sand",
-    Sand: 50, // quantity of Sand
-  },
-  {
-    product: "Gravel",
-    Gravel: 30, // quantity of Gravel
-  },
-  {
-    product: "Escombro",
-    Escombro: 20, // quantity of Escombro
-  },
-  // add more products here
-];
+const fetchInventoryData = async () => {
+  try {
+    const response = await axios.get("http://localhost:3001/currentInventory");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+const transformInventoryData = (data) => {
+  const aggregatedData = {};
+
+  data.forEach((item) => {
+    const { _itemName, _quantity } = item;
+    const quantity = parseInt(_quantity);
+
+    if (aggregatedData[_itemName]) {
+      aggregatedData[_itemName] += quantity;
+    } else {
+      aggregatedData[_itemName] = quantity;
+    }
+  });
+
+  const transformedData = Object.keys(aggregatedData).map((productName) => ({
+    product: productName,
+    [productName]: aggregatedData[productName],
+  }));
+
+  return transformedData;
+};
 
 function CurrenInventoryReport() {
+  const [data, setData] = useState([]);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchInventoryData();
+        const transformedData = transformInventoryData(data);
+        console.log(transformedData);
+        setData(transformedData);
+      } catch (error) {
+        console.error("Error fetching and transforming data:", error);
+      }
+    };
+
+    fetchData();
+  }, [navigate]);
   return (
     <div>
       <Box sx={{ my: 4 }}>
