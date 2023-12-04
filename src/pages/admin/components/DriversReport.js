@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Typography from "../../../components/common/Typography";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Paper, Button } from "@mui/material";
 import PrintIcon from "@mui/icons-material/Print";
-import axios from "axios";
 import { Box, Grid } from "@mui/material";
 import MyResponsivePie from "./MyResponsivePie";
 

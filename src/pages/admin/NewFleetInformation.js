@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Typography from "../../components/common/Typography";
-import Chip from "@mui/material/Chip";
 import {
   DataGrid,
   GridActionsCellItem,

@@ -14,7 +14,6 @@ import {
   Avatar,
 } from "@mui/material";
 import UserDrawer from "./common/UserDrawer";
-import EditIcon from "@mui/icons-material/Edit";
 import { toast } from "react-toastify";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";

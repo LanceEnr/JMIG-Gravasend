@@ -7,8 +7,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import axios from "axios";
 import Typography from "../../components/common/Typography";
 import AddIcon from "@mui/icons-material/Add";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+
 import CloseIcon from "@mui/icons-material/Close";
 import CancelIcon from "@mui/icons-material/Cancel";
 

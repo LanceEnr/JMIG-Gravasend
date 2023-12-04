@@ -31,7 +31,6 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import UserDrawer from "./common/UserDrawer";
 import PersonIcon from "@mui/icons-material/Person";
-import EventIcon from "@mui/icons-material/Event";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import InfoIcon from "@mui/icons-material/Info";
 import IconButton from "@mui/material/IconButton";

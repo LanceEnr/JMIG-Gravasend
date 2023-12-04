@@ -1,10 +1,7 @@
 import { ResponsivePie } from "@nivo/pie";
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Paper, Button } from "@mui/material";
-import PrintIcon from "@mui/icons-material/Print";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Box, Grid } from "@mui/material";
 
 function MyResponsivePie() {
   const navigate = useNavigate();

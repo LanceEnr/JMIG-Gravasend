@@ -6,7 +6,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import { Box, Toolbar, Container, Grid, Paper } from "@mui/material";
+import { Box, Toolbar, Grid } from "@mui/material";
 import authReducer from "./store/reducers/authReducer";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
