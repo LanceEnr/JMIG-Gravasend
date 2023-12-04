@@ -56,6 +56,7 @@ import { toast } from "react-toastify";
 import AdminHomepage from "./pages/admin/AdminHomepage";
 import TripMetricsReport from "./pages/admin/components/TripMetricsReport";
 import DriversReport from "./pages/admin/components/DriversReport";
+import MaintenanceCostReport from "./pages/admin/components/MaintenanceCostReport";
 
 const initialState = {
   isAuthenticated: !!localStorage.getItem("adminToken"),
@@ -129,6 +130,11 @@ function AdminApp() {
                             <Grid item xs={12}>
                               <Box sx={{ mx: 3 }}>
                                 <Routes>
+                                  <Route
+                                    path="/adminmaintenancecostreport"
+                                    exact
+                                    element={<MaintenanceCostReport />}
+                                  />
                                   <Route
                                     path="/admindriversreport"
                                     exact

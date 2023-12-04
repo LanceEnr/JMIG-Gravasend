@@ -15,6 +15,7 @@ import NewMaintenanceScheduling from "./components/NewMaintenanceScheduling";
 import { Link } from "react-router-dom";
 import NewMaintenanceRecords from "./components/NewMaintenanceRecords";
 import AddIcon from "@mui/icons-material/Add";
+import AssessmentIcon from "@mui/icons-material/Assessment";
 
 function Maintenance() {
   const [value, setValue] = useState(0);
@@ -144,6 +145,18 @@ function Maintenance() {
               startIcon={<AddIcon />}
             >
               Add Maintenance
+            </Button>
+          )}
+          {value === 1 && (
+            <Button
+              variant="contained"
+              sx={{ ml: 1 }}
+              color="secondary"
+              startIcon={<AssessmentIcon />}
+              component={Link}
+              to={"/adminmaintenancecostreport"}
+            >
+              Generate Report
             </Button>
           )}
         </Box>
