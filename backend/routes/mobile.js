@@ -701,6 +701,28 @@ router.get("/fetch-driver2/:id", (req, res) => {
       res.status(500).json({ message: "Internal server error" });
     });
 });
+router.get("/fetch-DriverName/:uid", (req, res) => {
+  const { uid } = req.params;
+
+  axios
+    .get(
+      `https://gravasend-965f7-default-rtdb.firebaseio.com/DriverManagement/${uid}.json`
+    )
+    .then((response) => {
+      const driverData = response.data;
+
+      if (driverData && driverData.driverName) {
+        res.json({ driverName: driverData.driverName });
+      } else {
+        console.log(`No data found for truck with ID ${uid}.`);
+        res.status(404).json({ message: "Truck not found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
 
 router.get("/fetch-driver-available", (req, res) => {
   axios
@@ -767,6 +789,7 @@ router.post("/check-email/:email", async (req, res) => {
 router.post("/addDriver", async (req, res) => {
   const email = req.body.email;
   const driverData = req.body;
+  driverData.performance = 1.0;
 
   // Add the status field and set it to "unassigned"
   driverData.status = "unassigned";

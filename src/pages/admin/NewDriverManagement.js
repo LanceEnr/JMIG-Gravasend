@@ -41,7 +41,6 @@ const isValidUrl = (url) => {
 };
 const transformDriverData = (data) => {
   const transformedData = [];
-  console.log(data);
   if (data) {
     for (const uid in data) {
       if (data.hasOwnProperty(uid)) {
@@ -57,6 +56,7 @@ const transformDriverData = (data) => {
           plateNo: userData.plateNo,
           status: userData.status,
           profilePicture: userData.ProfileImageURL,
+          performance: userData.performance,
         };
 
         transformedData.push(mappedData);
@@ -119,6 +119,136 @@ export default function NewDriverManagement() {
   const [id, setId] = useState(null);
   const [rowsDriverManagement, setrowsDriverManagement] = useState([]);
   const navigate = useNavigate();
+  const [grades, setGrades] = useState([]);
+
+  const fetchSpeedRecord = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/fetch-SpeedRecord"
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return [];
+    }
+  };
+
+  const calculatePerformanceScore = (
+    averageSpeed,
+    harshBraking,
+    suddenAcceleration
+  ) => {
+    const minMaxNormalize = (value, min, max) => {
+      return (value - min) / (max - min);
+    };
+
+    // You can customize the min and max values based on your specific requirements
+    const minAverageSpeed = 0;
+    const maxAverageSpeed = 80; // Adjust these values as needed
+
+    const minHarshBraking = 0;
+    const maxHarshBraking = 10; // Adjust these values as needed
+
+    const minSuddenAcceleration = 0;
+    const maxSuddenAcceleration = 10; // Adjust these values as needed
+
+    const normalizedAverageSpeed = minMaxNormalize(
+      averageSpeed,
+      minAverageSpeed,
+      maxAverageSpeed
+    );
+    const normalizedHarshBraking = minMaxNormalize(
+      harshBraking,
+      minHarshBraking,
+      maxHarshBraking
+    );
+    const normalizedSuddenAcceleration = minMaxNormalize(
+      suddenAcceleration,
+      minSuddenAcceleration,
+      maxSuddenAcceleration
+    );
+
+    // Adjust weights based on your criteria
+    const weightedAverageSpeed = normalizedAverageSpeed * 0.3; // Adjust weight
+    const weightedHarshBraking = (1 - normalizedHarshBraking) * 0.3; // Invert the value for harsh braking
+    const weightedSuddenAcceleration = (1 - normalizedSuddenAcceleration) * 0.4; // Invert the value for sudden acceleration
+
+    // Sum up the weighted scores
+    const normalizedScore =
+      weightedAverageSpeed + weightedHarshBraking + weightedSuddenAcceleration;
+
+    return normalizedScore;
+  };
+
+  const getGrading = (normalizedScore) => {
+    if (normalizedScore >= 0.8 && normalizedScore <= 1.0) {
+      return "Excellent";
+    } else if (normalizedScore > 0.6 && normalizedScore < 0.8) {
+      return "Good";
+    } else if (normalizedScore >= 0.4 && normalizedScore < 0.6) {
+      return "Average";
+    } else if (normalizedScore >= 0.2 && normalizedScore < 0.4) {
+      return "Needs Improvement";
+    } else {
+      return "Invalid Score";
+    }
+  };
+
+  const calculateGrades = (data) => {
+    const grades = [];
+
+    for (const uid in data) {
+      if (data.hasOwnProperty(uid)) {
+        const idData = data[uid];
+        const numRecords = Object.keys(idData).length;
+
+        if (numRecords > 0) {
+          let totalNormalizedScore = 0;
+
+          for (const id in idData) {
+            if (idData.hasOwnProperty(id)) {
+              const record = idData[id];
+
+              const normalizedScore = calculatePerformanceScore(
+                record.average_speed,
+                record.harsh_braking_count,
+                record.sudden_acceleration_count
+              );
+
+              totalNormalizedScore += normalizedScore;
+            }
+          }
+
+          // Average the normalized scores for the current uid
+          const averageNormalizedScore = totalNormalizedScore / numRecords;
+
+          const grading = getGrading(averageNormalizedScore);
+
+          grades.push({
+            Driver: uid,
+            Grading: grading,
+          });
+        }
+      }
+    }
+
+    return grades;
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchSpeedRecord();
+
+        const grades = calculateGrades(data);
+        setGrades(grades);
+        console.log("Grades:", grades);
+      } catch (error) {
+        console.error("Error fetching and calculating averages:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleClickOpen = (action, row) => {
     setAction(action);
@@ -304,58 +434,83 @@ export default function NewDriverManagement() {
         </Typography>
       ),
       renderCell: (params) => {
-        if (params.value === "Excellent") {
-          return (
-            <Chip
-              label={
-                <Typography
-                  sx={{
-                    fontSize: "10px",
-                    color: "success.dark",
-                  }}
-                >
-                  Excellent
-                </Typography>
-              }
-              sx={{ bgcolor: "#8dd290" }}
-              size="small"
-            />
-          );
-        } else if (params.value === "Good") {
-          return (
-            <Chip
-              label={
-                <Typography
-                  sx={{
-                    fontSize: "10px",
-                    color: "info.dark",
-                  }}
-                >
-                  Good
-                </Typography>
-              }
-              sx={{ bgcolor: "#90caf9" }}
-              size="small"
-            />
-          );
-        } else if (params.value === "Average") {
-          return (
-            <Chip
-              label={
-                <Typography
-                  sx={{
-                    fontSize: "10px",
-                    color: "warning.dark",
-                  }}
-                >
-                  Average
-                </Typography>
-              }
-              sx={{ bgcolor: "#ffc890" }}
-              size="small"
-            />
-          );
+        const driverId = params.row.id;
+        const gradeInfo = grades.find((grade) => grade.Driver === driverId);
+
+        if (gradeInfo) {
+          if (gradeInfo.Grading == "Excellent") {
+            return (
+              <Chip
+                label={
+                  <Typography
+                    sx={{
+                      fontSize: "10px",
+                      color: "success.dark",
+                    }}
+                  >
+                    Excellent
+                  </Typography>
+                }
+                sx={{ bgcolor: "#8dd290" }}
+                size="small"
+              />
+            );
+          } else if (gradeInfo.Grading == "Good") {
+            return (
+              <Chip
+                label={
+                  <Typography
+                    sx={{
+                      fontSize: "10px",
+                      color: "info.dark",
+                    }}
+                  >
+                    Good
+                  </Typography>
+                }
+                sx={{ bgcolor: "#90caf9" }}
+                size="small"
+              />
+            );
+          } else if (gradeInfo.Grading == "Average") {
+            return (
+              <Chip
+                label={
+                  <Typography
+                    sx={{
+                      fontSize: "10px",
+                      color: "warning.dark",
+                    }}
+                  >
+                    Average
+                  </Typography>
+                }
+                sx={{ bgcolor: "#ffc890" }}
+                size="small"
+              />
+            );
+          } else {
+            return (
+              <Chip
+                label={
+                  <Typography
+                    sx={{
+                      fontSize: "10px",
+                      color: "error.dark",
+                    }}
+                  >
+                    Needs Improvement
+                  </Typography>
+                }
+                sx={{ bgcolor: "#f5c9c9" }}
+                size="small"
+              />
+            );
+          }
+
+          // ... (similar grading logic as before)
         } else {
+          // Handle the case when no grading information is available
           return (
             <Chip
               label={
@@ -365,7 +520,7 @@ export default function NewDriverManagement() {
                     color: "error.dark",
                   }}
                 >
-                  Needs Improvement
+                  No Data
                 </Typography>
               }
               sx={{ bgcolor: "#f5c9c9" }}
@@ -376,6 +531,7 @@ export default function NewDriverManagement() {
       },
     },
 
+    ,
     {
       field: "actions",
       headerName: "ACTIONS",

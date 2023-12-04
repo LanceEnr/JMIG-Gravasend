@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import { toast, ToastContainer } from "react-toastify";
 import Typography from "../../../components/common/Typography";
 import { Link } from "react-router-dom";
 
@@ -19,145 +19,125 @@ import {
   Chip,
 } from "@mui/material";
 import MyResponsiveBar from "./ResponsiveBar";
-const data = [
-  {
-    Driver: "Driver 1",
-    Overspeeding: 65,
-    OverspeedingColor: "hsl(107, 70%, 50%)",
-    "Harsh Braking": 171,
-    "Harsh BrakingColor": "hsl(5, 70%, 50%)",
-    "Sudden Acceleration": 83,
-    "Sudden AccelerationColor": "hsl(88, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 2",
-    Overspeeding: 74,
-    OverspeedingColor: "hsl(71, 70%, 50%)",
-    "Harsh Braking": 185,
-    "Harsh BrakingColor": "hsl(20, 70%, 50%)",
-    "Sudden Acceleration": 151,
-    "Sudden AccelerationColor": "hsl(26, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 3",
-    Overspeeding: 24,
-    OverspeedingColor: "hsl(24, 70%, 50%)",
-    "Harsh Braking": 36,
-    "Harsh BrakingColor": "hsl(140, 70%, 50%)",
-    "Sudden Acceleration": 29,
-    "Sudden AccelerationColor": "hsl(111, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 4",
-    Overspeeding: 173,
-    OverspeedingColor: "hsl(120, 70%, 50%)",
-    "Harsh Braking": 61,
-    "Harsh BrakingColor": "hsl(334, 70%, 50%)",
-    "Sudden Acceleration": 56,
-    "Sudden AccelerationColor": "hsl(92, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 5",
-    Overspeeding: 26,
-    OverspeedingColor: "hsl(80, 70%, 50%)",
-    "Harsh Braking": 107,
-    "Harsh BrakingColor": "hsl(227, 70%, 50%)",
-    "Sudden Acceleration": 46,
-    "Sudden AccelerationColor": "hsl(16, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 6",
-    Overspeeding: 155,
-    OverspeedingColor: "hsl(94, 70%, 50%)",
-    "Harsh Braking": 57,
-    "Harsh BrakingColor": "hsl(271, 70%, 50%)",
-    "Sudden Acceleration": 116,
-    "Sudden AccelerationColor": "hsl(330, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 7",
-    Overspeeding: 136,
-    OverspeedingColor: "hsl(345, 70%, 50%)",
-    "Harsh Braking": 1,
-    "Harsh BrakingColor": "hsl(163, 70%, 50%)",
-    "Sudden Acceleration": 111,
-    "Sudden AccelerationColor": "hsl(196, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 8",
-    Overspeeding: 65,
-    OverspeedingColor: "hsl(107, 70%, 50%)",
-    "Harsh Braking": 171,
-    "Harsh BrakingColor": "hsl(5, 70%, 50%)",
-    "Sudden Acceleration": 83,
-    "Sudden AccelerationColor": "hsl(88, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 9",
-    Overspeeding: 74,
-    OverspeedingColor: "hsl(71, 70%, 50%)",
-    "Harsh Braking": 185,
-    "Harsh BrakingColor": "hsl(20, 70%, 50%)",
-    "Sudden Acceleration": 151,
-    "Sudden AccelerationColor": "hsl(26, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 10",
-    Overspeeding: 24,
-    OverspeedingColor: "hsl(24, 70%, 50%)",
-    "Harsh Braking": 36,
-    "Harsh BrakingColor": "hsl(140, 70%, 50%)",
-    "Sudden Acceleration": 29,
-    "Sudden AccelerationColor": "hsl(111, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 11",
-    Overspeeding: 173,
-    OverspeedingColor: "hsl(120, 70%, 50%)",
-    "Harsh Braking": 61,
-    "Harsh BrakingColor": "hsl(334, 70%, 50%)",
-    "Sudden Acceleration": 56,
-    "Sudden AccelerationColor": "hsl(92, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 12",
-    Overspeeding: 26,
-    OverspeedingColor: "hsl(80, 70%, 50%)",
-    "Harsh Braking": 107,
-    "Harsh BrakingColor": "hsl(227, 70%, 50%)",
-    "Sudden Acceleration": 46,
-    "Sudden AccelerationColor": "hsl(16, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 13",
-    Overspeeding: 155,
-    OverspeedingColor: "hsl(94, 70%, 50%)",
-    "Harsh Braking": 57,
-    "Harsh BrakingColor": "hsl(271, 70%, 50%)",
-    "Sudden Acceleration": 116,
-    "Sudden AccelerationColor": "hsl(330, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 14",
-    Overspeeding: 136,
-    OverspeedingColor: "hsl(345, 70%, 50%)",
-    "Harsh Braking": 1,
-    "Harsh BrakingColor": "hsl(163, 70%, 50%)",
-    "Sudden Acceleration": 111,
-    "Sudden AccelerationColor": "hsl(196, 70%, 50%)",
-  },
-  {
-    Driver: "Driver 15",
-    Overspeeding: 65,
-    OverspeedingColor: "hsl(107, 70%, 50%)",
-    "Harsh Braking": 171,
-    "Harsh BrakingColor": "hsl(5, 70%, 50%)",
-    "Sudden Acceleration": 83,
-    "Sudden AccelerationColor": "hsl(88, 70%, 50%)",
-  },
-];
 
 function TripMetricsReport() {
+  const [dynamicData, setDynamicData] = useState([]);
+  const fetchSpeedRecord = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/fetch-SpeedRecord"
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return [];
+    }
+  };
+
+  const fetchDriverName = async (uid) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3001/fetch-DriverName/${uid}`
+      );
+      return response.data.driverName;
+    } catch (error) {
+      console.error(`Error fetching driver name for UID ${uid}:`, error);
+      return null;
+    }
+  };
+
+  const calculateAverages = async (data) => {
+    const averages = {};
+
+    for (const uid in data) {
+      if (data.hasOwnProperty(uid)) {
+        const idData = data[uid];
+
+        for (const id in idData) {
+          if (idData.hasOwnProperty(id)) {
+            const record = idData[id];
+
+            if (!averages[uid]) {
+              averages[uid] = {
+                totalSpeed: 0,
+                totalHarshBraking: 0,
+                totalSuddenAcceleration: 0,
+                count: 0,
+              };
+            }
+
+            averages[uid].totalSpeed += record.average_speed;
+            averages[uid].totalHarshBraking += record.harsh_braking_count;
+            averages[uid].totalSuddenAcceleration +=
+              record.sudden_acceleration_count;
+            averages[uid].count += 1;
+          }
+        }
+
+        const driverName = await fetchDriverName(uid);
+
+        if (driverName) {
+          averages[uid].driverName = driverName;
+        }
+      }
+    }
+
+    for (const uid in averages) {
+      const uidData = averages[uid];
+
+      const averageSpeed = uidData.totalSpeed / uidData.count;
+      const averageHarshBraking = uidData.totalHarshBraking / uidData.count;
+      const averageSuddenAcceleration =
+        uidData.totalSuddenAcceleration / uidData.count;
+
+      averages[uid] = {
+        averageSpeed,
+        averageHarshBraking,
+        averageSuddenAcceleration,
+        driverName: uidData.driverName,
+      };
+    }
+
+    return averages;
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchSpeedRecord();
+        const averages = await calculateAverages(data);
+
+        const newData = Object.entries(averages).map(([uid, values]) => ({
+          Driver: values.driverName,
+          MaxSpeedAvg: values.averageSpeed,
+          OverspeedingColor: calculateColor(values.averageSpeed),
+          "Harsh Braking": values.averageHarshBraking,
+          "Harsh BrakingColor": calculateColor(values.averageHarshBraking),
+          "Sudden Acceleration": values.averageSuddenAcceleration,
+          "Sudden AccelerationColor": calculateColor(
+            values.averageSuddenAcceleration
+          ),
+        }));
+
+        setDynamicData(newData);
+        console.log("Dynamic Data:", newData);
+      } catch (error) {
+        console.error("Error fetching and calculating averages:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Add the calculateColor function here
+  const calculateColor = (value) => {
+    // Your logic for color calculation based on the value
+    // For example, you can use a simple logic like:
+    const hue = (value * 2) % 360;
+    return `hsl(${hue}, 70%, 50%)`;
+  };
+
   return (
     <div>
       <Box sx={{ my: 4 }}>
@@ -206,7 +186,7 @@ function TripMetricsReport() {
                 height: "74vh",
               }}
             >
-              <MyResponsiveBar data={data} />
+              <MyResponsiveBar data={dynamicData} />
             </Paper>
           </Grid>
         </Grid>
