@@ -143,155 +143,151 @@ const ProductDetails = () => {
     .map((path, index) => path || [Sand1, Sand2, Sand3][index]);
 
   return (
-    <div className="userDashboard">
-      <Container>
-        <Box width="80%" m="80px auto">
-          <Paper
-            sx={{
-              p: 3,
-              borderRadius: "8px", // Adjust this value as needed
-            }}
-          >
-            <Box display="flex" flexWrap="wrap" columnGap="40px">
-              <Box flex="1 1 40%" style={{ overflow: "hidden" }}>
-                <Carousel
-                  responsive={responsive}
-                  ref={carouselRef}
-                  beforeChange={(nextSlide) => handleBeforeChange(nextSlide)}
-                  className="carousel"
-                >
-                  {images.map((image, index) => (
-                    <div key={index} className="carousel-slide">
-                      <img
-                        alt={`Sand Image ${index + 1}`}
-                        src={require(`../images/listings/${image.substring(
-                          image.lastIndexOf("\\") + 1
-                        )}`)}
-                        width="100%"
-                        height="100%"
-                        style={{
-                          objectFit: "contain",
-                          transform: "scale(1.1)",
-                        }}
-                      />
-                    </div>
-                  ))}
-                </Carousel>
-                <Box display="flex" justifyContent="center" mt="20px">
-                  {images.map((image, index) => (
-                    <div
-                      key={index}
-                      className={`thumbnail ${
-                        selectedImageIndex === index ? "active" : ""
-                      }`}
-                      onClick={() => handleThumbnailClick(index)}
-                    >
-                      <img
-                        alt={`Thumbnail ${index + 1}`}
-                        src={require(`../images/listings/${image.substring(
-                          image.lastIndexOf("\\") + 1
-                        )}`)}
-                      />
-                    </div>
-                  ))}
-                </Box>
+    <div>
+      <Box width="80%" m="80px auto">
+        <Paper
+          sx={{
+            p: 3,
+            borderRadius: "8px", // Adjust this value as needed
+          }}
+        >
+          <Box display="flex" flexWrap="wrap" columnGap="40px">
+            <Box flex="1 1 40%" style={{ overflow: "hidden" }}>
+              <Carousel
+                responsive={responsive}
+                ref={carouselRef}
+                beforeChange={(nextSlide) => handleBeforeChange(nextSlide)}
+                className="carousel"
+              >
+                {images.map((image, index) => (
+                  <div key={index} className="carousel-slide">
+                    <img
+                      alt={`Sand Image ${index + 1}`}
+                      src={require(`../images/listings/${image.substring(
+                        image.lastIndexOf("\\") + 1
+                      )}`)}
+                      width="100%"
+                      height="100%"
+                      style={{
+                        objectFit: "contain",
+                        transform: "scale(1.1)",
+                      }}
+                    />
+                  </div>
+                ))}
+              </Carousel>
+              <Box display="flex" justifyContent="center" mt="20px">
+                {images.map((image, index) => (
+                  <div
+                    key={index}
+                    className={`thumbnail ${
+                      selectedImageIndex === index ? "active" : ""
+                    }`}
+                    onClick={() => handleThumbnailClick(index)}
+                  >
+                    <img
+                      alt={`Thumbnail ${index + 1}`}
+                      src={require(`../images/listings/${image.substring(
+                        image.lastIndexOf("\\") + 1
+                      )}`)}
+                    />
+                  </div>
+                ))}
               </Box>
+            </Box>
 
-              <Box flex="1 1 50%" mb="40px">
-                <Box m="10px 0 25px 0">
-                  <Breadcrumbs aria-label="breadcrumb">
-                    <Link className="link" color="inherit" to="/">
-                      Home
-                    </Link>
-                    <Link className="link" color="inherit" to="/products">
-                      Products
-                    </Link>
-                    <Typography color="text.primary">
-                      {productDetails && productDetails._listingName}
-                    </Typography>
-                  </Breadcrumbs>
-
-                  <Typography variant="h4" sx={{ fontWeight: "bold", my: 2 }}>
+            <Box flex="1 1 50%" mb="40px">
+              <Box m="10px 0 25px 0">
+                <Breadcrumbs aria-label="breadcrumb">
+                  <Link className="link" color="inherit" to="/">
+                    Home
+                  </Link>
+                  <Link className="link" color="inherit" to="/products">
+                    Products
+                  </Link>
+                  <Typography color="text.primary">
                     {productDetails && productDetails._listingName}
                   </Typography>
-                  <Typography sx={{ mb: 2 }}>Aggregate Materials</Typography>
-                  <Typography sx={{ color: "#bd8512", mb: 2 }}>
-                    ₱{productDetails && productDetails._listingPrice} per cubic
-                    mt.
-                  </Typography>
-                  <Typography variant="subtitle2" sx={{ mt: "20px" }}>
-                    {productDetails && productDetails._listingDescription}
-                  </Typography>
-                </Box>
+                </Breadcrumbs>
+
+                <Typography variant="h4" sx={{ fontWeight: "bold", my: 2 }}>
+                  {productDetails && productDetails._listingName}
+                </Typography>
+                <Typography sx={{ mb: 2 }}>Aggregate Materials</Typography>
+                <Typography sx={{ color: "#bd8512", mb: 2 }}>
+                  ₱{productDetails && productDetails._listingPrice} per cubic
+                  mt.
+                </Typography>
+                <Typography variant="subtitle2" sx={{ mt: "20px" }}>
+                  {productDetails && productDetails._listingDescription}
+                </Typography>
+              </Box>
+              <Box display="flex" flexDirection="column" mt={2}>
+                <Typography variant="body1" color="text.secondary">
+                  Stocks:
+                </Typography>
+
                 <Box display="flex" flexDirection="column" mt={2}>
-                  <Typography variant="body1" color="text.secondary">
-                    Stocks:
+                  <Typography variant="body2" color="text.secondary">
+                    <strong>Pandi:</strong>{" "}
+                    {pandiStocks.map((stock) => stock._quantity) > 0
+                      ? `${pandiStocks.map((stock) => stock._quantity)} cu. mt.`
+                      : "Out of Stock"}
                   </Typography>
-
-                  <Box display="flex" flexDirection="column" mt={2}>
-                    <Typography variant="body2" color="text.secondary">
-                      <strong>Pandi:</strong>{" "}
-                      {pandiStocks.map((stock) => stock._quantity) > 0
-                        ? `${pandiStocks.map(
-                            (stock) => stock._quantity
-                          )} cu. mt.`
-                        : "Out of Stock"}
-                    </Typography>
-                    <ColoredLinearProgress
-                      value={pandiStocks.map((stock) => stock._quantity)}
-                      color={pandiStocks.map((stock) =>
-                        stock._quantity > 0 ? "#bd8512" : "#f5c9c9"
-                      )}
-                      bgcolor="#f5f0e0"
-                    />
-                  </Box>
-
-                  <Box display="flex" flexDirection="column" mt={2}>
-                    <Typography variant="body2" color="text.secondary">
-                      <strong>Mindanao Ave:</strong>{" "}
-                      {mindanaoStocks.map((stock) => stock._quantity) > 0
-                        ? `${mindanaoStocks.map(
-                            (stock) => stock._quantity
-                          )} cu. mt.`
-                        : "Out of Stock"}
-                    </Typography>
-                    <ColoredLinearProgress
-                      value={mindanaoStocks.map((stock) => stock._quantity)}
-                      color={mindanaoStocks.map((stock) =>
-                        stock._quantity > 0 ? "#bd8512" : "#f5c9c9"
-                      )}
-                      bgcolor="#f5f0e0"
-                    />
-                  </Box>
+                  <ColoredLinearProgress
+                    value={pandiStocks.map((stock) => stock._quantity)}
+                    color={pandiStocks.map((stock) =>
+                      stock._quantity > 0 ? "#bd8512" : "#f5c9c9"
+                    )}
+                    bgcolor="#f5f0e0"
+                  />
                 </Box>
 
-                <Box display="flex" alignItems="center" minHeight="50px" mt={2}>
-                  <Button
-                    variant="contained"
-                    component={Link}
-                    to="/dashboard"
-                    sx={{
-                      minWidth: "150px",
-                      padding: "10px 40px",
-                    }}
-                  >
-                    REQUEST ORDER
-                  </Button>
+                <Box display="flex" flexDirection="column" mt={2}>
+                  <Typography variant="body2" color="text.secondary">
+                    <strong>Mindanao Ave:</strong>{" "}
+                    {mindanaoStocks.map((stock) => stock._quantity) > 0
+                      ? `${mindanaoStocks.map(
+                          (stock) => stock._quantity
+                        )} cu. mt.`
+                      : "Out of Stock"}
+                  </Typography>
+                  <ColoredLinearProgress
+                    value={mindanaoStocks.map((stock) => stock._quantity)}
+                    color={mindanaoStocks.map((stock) =>
+                      stock._quantity > 0 ? "#bd8512" : "#f5c9c9"
+                    )}
+                    bgcolor="#f5f0e0"
+                  />
                 </Box>
               </Box>
-            </Box>
-          </Paper>
-          <Box mt="50px" width="100%">
-            <Typography variant="h4" fontWeight="bold">
-              More Products
-            </Typography>
-            <Box mt="20px">
-              {/* Assuming 'MenuList' is an array of more products */}
-              <MoreProducts cards={MenuList} />
+
+              <Box display="flex" alignItems="center" minHeight="50px" mt={2}>
+                <Button
+                  variant="contained"
+                  component={Link}
+                  to="/dashboard"
+                  sx={{
+                    minWidth: "150px",
+                    padding: "10px 40px",
+                  }}
+                >
+                  REQUEST ORDER
+                </Button>
+              </Box>
             </Box>
           </Box>
+        </Paper>
+        <Box mt="50px" width="100%">
+          <Typography variant="h4" fontWeight="bold">
+            More Products
+          </Typography>
+          <Box mt="20px">
+            {/* Assuming 'MenuList' is an array of more products */}
+            <MoreProducts cards={MenuList} />
+          </Box>
         </Box>
-      </Container>
+      </Box>
     </div>
   );
 };
