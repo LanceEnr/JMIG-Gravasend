@@ -266,13 +266,13 @@ export default function NewMaintenanceScheduling() {
               <Typography
                 sx={{
                   fontSize: "10px",
-                  color: "info.dark",
+                  color: "warning.dark",
                 }}
               >
                 Pending
               </Typography>
             }
-            sx={{ bgcolor: "#90caf9" }}
+            sx={{ bgcolor: "#ffc890" }}
             size="small"
           />
         );
