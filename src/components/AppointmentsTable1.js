@@ -356,121 +356,133 @@ export default function AppointmentsTable1(props) {
         )}
       </Box>
 
-      {appointments
-        .slice((page - 1) * itemsPerPage, page * itemsPerPage)
-        .map((item, index) => (
-          <Paper elevation={2} sx={{ my: 1 }}>
-            <ListItem
-              key={item.appointmentNumber}
-              divider={index !== appointments.length - 1}
-              onClick={() =>
-                handleOpenModal(
-                  item._appointmentNum,
-                  item._status,
-                  item._phone,
-                  item._fName,
-                  item._lName,
-                  item._date,
-                  item._note
-                )
-              }
-              sx={{ cursor: "pointer" }} // This line adds the pointer
-            >
-              <ListItemAvatar>
-                <Tooltip title={item._status}>
-                  <Avatar
-                    sx={{
-                      bgcolor: getColor(item._status).lighter,
-                      color: getColor(item._status).main,
-                    }}
-                  >
-                    {item._status === "Completed" && <CheckIcon />}
-                    {item._status === "Cancelled" && <CloseIcon />}
-                    {item._status === "Upcoming" && <AccessTimeIcon />}
-                  </Avatar>
-                </Tooltip>
-              </ListItemAvatar>
+      {appointments.length === 0 ? (
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          sx={{ textAlign: "center", mt: 2 }}
+        >
+          You have no appointments
+        </Typography>
+      ) : (
+        appointments
+          .slice((page - 1) * itemsPerPage, page * itemsPerPage)
+          .map((item, index) => (
+            <Paper elevation={2} sx={{ my: 1 }}>
+              <ListItem
+                key={item.appointmentNumber}
+                divider={index !== appointments.length - 1}
+                onClick={() =>
+                  handleOpenModal(
+                    item._appointmentNum,
+                    item._status,
+                    item._phone,
+                    item._fName,
+                    item._lName,
+                    item._date,
+                    item._note
+                  )
+                }
+                sx={{ cursor: "pointer" }} // This line adds the pointer
+              >
+                <ListItemAvatar>
+                  <Tooltip title={item._status}>
+                    <Avatar
+                      sx={{
+                        bgcolor: getColor(item._status).lighter,
+                        color: getColor(item._status).main,
+                      }}
+                    >
+                      {item._status === "Completed" && <CheckIcon />}
+                      {item._status === "Cancelled" && <CloseIcon />}
+                      {item._status === "Upcoming" && <AccessTimeIcon />}
+                    </Avatar>
+                  </Tooltip>
+                </ListItemAvatar>
 
-              <ListItemText
-                primary={
-                  <Typography
-                    sx={{ fontWeight: "bold" }}
-                    variant="subtitle1"
-                  >{`Appointment #${item._appointmentNum}`}</Typography>
-                }
-                secondary={
-                  <Typography
-                    sx={{ color: "#83948a" }}
-                    variant="body2"
-                  >{`${item._date}`}</Typography>
-                }
-              />
-              {isMobile && (
                 <ListItemText
-                  sx={{ ml: 4 }}
                   primary={
-                    <Typography variant="subtitle1">
-                      {`${item._time}`}
-                    </Typography>
+                    <Typography
+                      sx={{ fontWeight: "bold" }}
+                      variant="subtitle1"
+                    >{`Appointment #${item._appointmentNum}`}</Typography>
+                  }
+                  secondary={
+                    <Typography
+                      sx={{ color: "#83948a" }}
+                      variant="body2"
+                    >{`${item._date}`}</Typography>
                   }
                 />
-              )}
-              <ListItemSecondaryAction>
-                <Box display="flex" alignItems="center">
-                  {!isMobile && (
-                    <Typography
-                      variant="subtitle1"
-                      noWrap
-                      sx={{ marginRight: 2 }}
+                {isMobile && (
+                  <ListItemText
+                    sx={{ ml: 4 }}
+                    primary={
+                      <Typography variant="subtitle1">
+                        {`${item._time}`}
+                      </Typography>
+                    }
+                  />
+                )}
+                <ListItemSecondaryAction>
+                  <Box display="flex" alignItems="center">
+                    {!isMobile && (
+                      <Typography
+                        variant="subtitle1"
+                        noWrap
+                        sx={{ marginRight: 2 }}
+                      >
+                        {`${item._time} `}
+                      </Typography>
+                    )}
+                    <Tooltip
+                      title={item._status === "Upcoming" ? "Actions" : ""}
                     >
-                      {`${item._time} `}
-                    </Typography>
-                  )}
-                  <Tooltip title={item._status === "Upcoming" ? "Actions" : ""}>
-                    <MoreVertIcon
-                      onClick={(event) =>
-                        item._status === "Upcoming"
-                          ? handleClick(event, item._appointmentNum)
-                          : null
-                      }
-                      sx={{
-                        cursor:
-                          item._status === "Upcoming" ? "pointer" : "default",
-                        color:
+                      <MoreVertIcon
+                        onClick={(event) =>
                           item._status === "Upcoming"
-                            ? "text.secondary"
-                            : "text.disabled",
-                        pointerEvents:
-                          item._status === "Upcoming" ? "auto" : "none",
-                      }}
-                    />
-                  </Tooltip>
+                            ? handleClick(event, item._appointmentNum)
+                            : null
+                        }
+                        sx={{
+                          cursor:
+                            item._status === "Upcoming" ? "pointer" : "default",
+                          color:
+                            item._status === "Upcoming"
+                              ? "text.secondary"
+                              : "text.disabled",
+                          pointerEvents:
+                            item._status === "Upcoming" ? "auto" : "none",
+                        }}
+                      />
+                    </Tooltip>
 
-                  <Menu
-                    sx={{ mt: "45px" }}
-                    anchorEl={anchorEl}
-                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                    keepMounted
-                    transformOrigin={{ vertical: "top", horizontal: "right" }}
-                    open={menuOpen}
-                    onClose={handleClose}
-                    elevation={2}
-                  >
-                    <MenuItem onClick={() => handleEditClick(appointmentNum)}>
-                      Edit
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleOpenDialog}
-                      sx={{ color: "error.main" }}
+                    <Menu
+                      sx={{ mt: "45px" }}
+                      anchorEl={anchorEl}
+                      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                      keepMounted
+                      transformOrigin={{ vertical: "top", horizontal: "right" }}
+                      open={menuOpen}
+                      onClose={handleClose}
+                      elevation={2}
                     >
-                      Cancel
-                    </MenuItem>
-                  </Menu>
-                </Box>
-              </ListItemSecondaryAction>
-            </ListItem>
-          </Paper>
-        ))}
+                      <MenuItem onClick={() => handleEditClick(appointmentNum)}>
+                        Edit
+                      </MenuItem>
+                      <MenuItem
+                        onClick={handleOpenDialog}
+                        sx={{ color: "error.main" }}
+                      >
+                        Cancel
+                      </MenuItem>
+                    </Menu>
+                  </Box>
+                </ListItemSecondaryAction>
+              </ListItem>
+            </Paper>
+          ))
+      )}
       <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
         <Pagination
           count={Math.ceil(appointments.length / itemsPerPage)}

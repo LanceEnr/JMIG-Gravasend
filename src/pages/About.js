@@ -42,7 +42,9 @@ function About() {
     <div>
       <Banner bannerImage={filename} title={valuesData._heading} />
       <Mission />
-      <Vision />
+      <Box sx={{ mt: 3 }}>
+        <Vision />
+      </Box>
     </div>
   );
 }

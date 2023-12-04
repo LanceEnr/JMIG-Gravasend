@@ -336,103 +336,114 @@ export default function OrdersTable1(props) {
             />
           )}
         </Box>
-        {orders
-          .slice((page - 1) * itemsPerPage, page * itemsPerPage)
-          .map((item, index) => (
-            <Paper elevation={2} sx={{ my: 1 }} key={item.orderNumber}>
-              <ListItem
-                onClick={() =>
-                  handleListItemClick(
-                    item._orderNum,
-                    item._price,
-                    item._materialType,
-                    item._name,
-                    item._orderDet,
-                    item._quantity,
-                    item._status
-                  )
-                }
-                sx={{ cursor: "pointer" }}
-              >
-                <ListItemAvatar>
-                  <Tooltip title={item._status}>
-                    <Avatar
-                      sx={{
-                        bgcolor: getColor(item._status).lighter,
-                        color: getColor(item._status).main,
-                      }}
-                    >
-                      {item._status === "Available for pickup-PANDI" && (
-                        <CheckIcon sx={{ pointerEvents: "none" }} />
-                      )}
-                      {item._status === "Available for pickup-MindanaoAve." && (
-                        <CheckIcon sx={{ pointerEvents: "none" }} />
-                      )}
-                      {item._status === "Delayed" && (
-                        <CloseIcon sx={{ pointerEvents: "none" }} />
-                      )}
-                      {item._status === "Cancelled" && (
-                        <CloseIcon sx={{ pointerEvents: "none" }} />
-                      )}
-                      {item._status === "Pending" && (
-                        <AccessTimeIcon sx={{ pointerEvents: "none" }} />
-                      )}
-                      {item._status === "Fetch from quarry" && (
-                        <AccessTimeIcon sx={{ pointerEvents: "none" }} />
-                      )}
-                      {item._status === "Arrived at Pandi" && (
-                        <AccessTimeIcon sx={{ pointerEvents: "none" }} />
-                      )}
-                      {item._status === "Arrived at MindanaoAve." && (
-                        <AccessTimeIcon sx={{ pointerEvents: "none" }} />
-                      )}
-                    </Avatar>
-                  </Tooltip>
-                </ListItemAvatar>
-
-                <ListItemText
-                  primary={
-                    <Typography
-                      sx={{ fontWeight: "bold" }}
-                      variant="subtitle1"
-                    >{`Order #${item._orderNum}`}</Typography>
+        {orders.length === 0 ? (
+          <Typography
+            variant="body2"
+            color="textSecondary"
+            sx={{ textAlign: "center", mt: 2 }}
+          >
+            You have no orders
+          </Typography>
+        ) : (
+          orders
+            .slice((page - 1) * itemsPerPage, page * itemsPerPage)
+            .map((item, index) => (
+              <Paper elevation={2} sx={{ my: 1 }} key={item.orderNumber}>
+                <ListItem
+                  onClick={() =>
+                    handleListItemClick(
+                      item._orderNum,
+                      item._price,
+                      item._materialType,
+                      item._name,
+                      item._orderDet,
+                      item._quantity,
+                      item._status
+                    )
                   }
-                  secondary={
-                    <React.Fragment>
+                  sx={{ cursor: "pointer" }}
+                >
+                  <ListItemAvatar>
+                    <Tooltip title={item._status}>
+                      <Avatar
+                        sx={{
+                          bgcolor: getColor(item._status).lighter,
+                          color: getColor(item._status).main,
+                        }}
+                      >
+                        {item._status === "Available for pickup-PANDI" && (
+                          <CheckIcon sx={{ pointerEvents: "none" }} />
+                        )}
+                        {item._status ===
+                          "Available for pickup-MindanaoAve." && (
+                          <CheckIcon sx={{ pointerEvents: "none" }} />
+                        )}
+                        {item._status === "Delayed" && (
+                          <CloseIcon sx={{ pointerEvents: "none" }} />
+                        )}
+                        {item._status === "Cancelled" && (
+                          <CloseIcon sx={{ pointerEvents: "none" }} />
+                        )}
+                        {item._status === "Pending" && (
+                          <AccessTimeIcon sx={{ pointerEvents: "none" }} />
+                        )}
+                        {item._status === "Fetch from quarry" && (
+                          <AccessTimeIcon sx={{ pointerEvents: "none" }} />
+                        )}
+                        {item._status === "Arrived at Pandi" && (
+                          <AccessTimeIcon sx={{ pointerEvents: "none" }} />
+                        )}
+                        {item._status === "Arrived at MindanaoAve." && (
+                          <AccessTimeIcon sx={{ pointerEvents: "none" }} />
+                        )}
+                      </Avatar>
+                    </Tooltip>
+                  </ListItemAvatar>
+
+                  <ListItemText
+                    primary={
+                      <Typography
+                        sx={{ fontWeight: "bold" }}
+                        variant="subtitle1"
+                      >{`Order #${item._orderNum}`}</Typography>
+                    }
+                    secondary={
+                      <React.Fragment>
+                        <Typography
+                          sx={{ color: "#83948a" }}
+                          variant="body2"
+                          noWrap
+                        >
+                          {item._date}
+                        </Typography>
+                      </React.Fragment>
+                    }
+                  />
+                  <ListItemSecondaryAction>
+                    <Stack alignItems="flex-end">
+                      <Typography
+                        variant="subtitle1"
+                        sx={{ color: "#bd8512" }}
+                        noWrap
+                      >
+                        ₱
+                        {Number(item._price * item._quantity).toLocaleString(
+                          "en-US"
+                        )}
+                      </Typography>
                       <Typography
                         sx={{ color: "#83948a" }}
                         variant="body2"
                         noWrap
                       >
-                        {item._date}
+                        {item._materialType} - {item._quantity} cu. mt
                       </Typography>
-                    </React.Fragment>
-                  }
-                />
-                <ListItemSecondaryAction>
-                  <Stack alignItems="flex-end">
-                    <Typography
-                      variant="subtitle1"
-                      sx={{ fontWeight: "bold", color: "#bd8512" }}
-                      noWrap
-                    >
-                      ₱
-                      {Number(item._price * item._quantity).toLocaleString(
-                        "en-US"
-                      )}
-                    </Typography>
-                    <Typography
-                      sx={{ color: "#83948a" }}
-                      variant="body2"
-                      noWrap
-                    >
-                      {item._materialType} - {item._quantity} cu. mt.
-                    </Typography>
-                  </Stack>
-                </ListItemSecondaryAction>
-              </ListItem>
-            </Paper>
-          ))}
+                    </Stack>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              </Paper>
+            ))
+        )}
       </List>
       <Modal
         open={isModalOpen}
