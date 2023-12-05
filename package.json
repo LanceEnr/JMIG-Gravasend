@@ -61,7 +61,7 @@
   },
   "scripts": {
     "start": "node backend/server.js",
-    "build": "cd path-to-react-app && npm install && npm run build",
+    "build": "cd src && npm install && npm run build",
     "heroku-postbuild": "npm run build"
   },
   "eslintConfig": {
