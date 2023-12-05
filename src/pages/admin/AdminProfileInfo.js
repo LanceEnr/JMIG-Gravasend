@@ -33,7 +33,7 @@ try {
   const valuesData = await fetchProfilePic2(storedUsername);
 
   if (valuesData) {
-    const imagePath = valuesData._profilePicture;
+    //const imagePath = valuesData._profilePicture;
     //filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
   } else {
     console.error("Error: Unable to fetch profile picture data");

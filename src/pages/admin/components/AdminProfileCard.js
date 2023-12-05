@@ -19,14 +19,14 @@ import { fetchProfilePic2 } from "../../../components/cms";
 
 const storedUsername = localStorage.getItem("adminUsername");
 const valuesData = await fetchProfilePic2(storedUsername);
-const imagePath = valuesData._profilePicture;
+//const imagePath = valuesData._profilePicture;
 //const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 try {
   const valuesData = await fetchProfilePic2(storedUsername);
   toast.error(valuesData);
 
   if (valuesData) {
-    const imagePath = valuesData._profilePicture;
+    //const imagePath = valuesData._profilePicture;
     //filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
     console.log(valuesData._profilePicture);
   } else {
