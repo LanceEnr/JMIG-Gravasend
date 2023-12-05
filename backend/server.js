@@ -23,7 +23,11 @@ const port = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "https://jmig-gravasend.onrender.com"],
+  })
+);
 app.use(itemsRouter);
 app.use(adminRouter);
 app.use(mobileRouter);
