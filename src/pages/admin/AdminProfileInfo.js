@@ -25,22 +25,22 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
-import { fetchProfilePic2 } from "../../components/cms";
+// import { fetchProfilePic2 } from "../../components/cms";
 
-const filename = "";
-try {
-  const storedUsername = localStorage.getItem("adminUsername");
-  const valuesData = await fetchProfilePic2(storedUsername);
+// const filename = "";
+// try {
+//   const storedUsername = localStorage.getItem("adminUsername");
+//   const valuesData = await fetchProfilePic2(storedUsername);
 
-  if (valuesData) {
-    //const imagePath = valuesData._profilePicture;
-    //filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
-  } else {
-    console.error("Error: Unable to fetch profile picture data");
-  }
-} catch (error) {
-  console.error("Error during fetchProfilePic:", error);
-}
+//   if (valuesData) {
+//     //const imagePath = valuesData._profilePicture;
+//     //filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+//   } else {
+//     console.error("Error: Unable to fetch profile picture data");
+//   }
+// } catch (error) {
+//   console.error("Error during fetchProfilePic:", error);
+// }
 
 export default function AdminProfileInfo(props) {
   const isMobile = useMediaQuery("(max-width:600px)");

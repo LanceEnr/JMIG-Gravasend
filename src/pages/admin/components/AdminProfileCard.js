@@ -21,20 +21,20 @@ const storedUsername = localStorage.getItem("adminUsername");
 const valuesData = await fetchProfilePic2(storedUsername);
 //const imagePath = valuesData._profilePicture;
 //const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
-try {
-  const valuesData = await fetchProfilePic2(storedUsername);
-  toast.error(valuesData);
+// try {
+//   const valuesData = await fetchProfilePic2(storedUsername);
+//   toast.error(valuesData);
 
-  if (valuesData) {
-    //const imagePath = valuesData._profilePicture;
-    //filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
-    console.log(valuesData._profilePicture);
-  } else {
-    console.error("Error: Unable to fetch profile picture data");
-  }
-} catch (error) {
-  console.error("Error during fetchProfilePic:", error);
-}
+//   if (valuesData) {
+//     //const imagePath = valuesData._profilePicture;
+//     //filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
+//     console.log(valuesData._profilePicture);
+//   } else {
+//     console.error("Error: Unable to fetch profile picture data");
+//   }
+// } catch (error) {
+//   console.error("Error during fetchProfilePic:", error);
+// }
 
 const Img = styled("img")({
   height: "140px",
