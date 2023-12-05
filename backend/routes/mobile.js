@@ -1179,6 +1179,73 @@ router.get("/fetch-maintenance", (req, res) => {
       res.status(500).json({ message: "Internal server error" });
     });
 });
+router.get("/fetch-maintenance-overdue", (req, res) => {
+  axios
+    .get(
+      "https://gravasend-965f7-default-rtdb.firebaseio.com/maintenanceReminders.json"
+    )
+    .then((response) => {
+      const maintenanceData = response.data;
+
+      if (maintenanceData) {
+        // Filter maintenance data with a status of "overdue"
+        const overdueMaintenanceData = Object.values(maintenanceData).filter(
+          (maintenance) => maintenance.status === "overdue"
+        );
+
+        // Check if there is any overdue maintenance data
+        if (overdueMaintenanceData.length > 0) {
+          res.json(overdueMaintenanceData);
+        } else {
+          console.log(
+            'No "overdue" status found in the "Maintenance" collection.'
+          );
+          res.status(404).json({ message: "No overdue maintenance found" });
+        }
+      } else {
+        console.log('No data found in the "Maintenance" collection.');
+        res.status(404).json({ message: "No data found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
+
+router.get("/fetch-inspection-overdue", (req, res) => {
+  axios
+    .get(
+      "https://gravasend-965f7-default-rtdb.firebaseio.com/upcomingInspections.json"
+    )
+    .then((response) => {
+      const maintenanceData = response.data;
+
+      if (maintenanceData) {
+        // Filter maintenance data with a status of "overdue"
+        const overdueMaintenanceData = Object.values(maintenanceData).filter(
+          (maintenance) => maintenance.status === "overdue"
+        );
+
+        // Check if there is any overdue maintenance data
+        if (overdueMaintenanceData.length > 0) {
+          res.json(overdueMaintenanceData);
+        } else {
+          console.log(
+            'No "overdue" status found in the "Maintenance" collection.'
+          );
+          res.status(404).json({ message: "No overdue maintenance found" });
+        }
+      } else {
+        console.log('No data found in the "Maintenance" collection.');
+        res.status(404).json({ message: "No data found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Firebase connection error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
+});
 
 const getNextFleetNum = async () => {
   try {
