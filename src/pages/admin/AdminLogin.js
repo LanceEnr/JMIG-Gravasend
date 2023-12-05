@@ -92,7 +92,7 @@ export default function AdminLogin({ dispatch }) {
         toast.success("Login successful", {
           autoClose: 50,
           onClose: () => {
-            navigate("/admincontent");
+            navigate("/adminhome");
           },
         });
         dispatch({ type: "LOGIN" });
