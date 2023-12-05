@@ -83,6 +83,10 @@
       "last 1 safari version"
     ]
   },
+  "engines": {
+    "node": "v16.14.0",
+    "npm": "8.3.1"
+  },
   "devDependencies": {
     "terser-brunch": "^4.1.0"
   },
