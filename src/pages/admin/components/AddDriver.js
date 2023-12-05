@@ -50,7 +50,7 @@ export default function AddDriver() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "${process.env.REACT_APP_API_URL}/addDriver",
+        `${process.env.REACT_APP_API_URL}/addDriver`,
         {
           driverName: name,
           contact: contact,

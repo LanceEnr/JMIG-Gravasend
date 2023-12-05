@@ -84,7 +84,7 @@ export default function RandomStringGenerator() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "${process.env.REACT_APP_API_URL}/accessCodes"
+          `${process.env.REACT_APP_API_URL}/accessCodes`
         );
         const rowsWithIds = response.data.map((row) => ({
           ...row,
@@ -130,7 +130,7 @@ export default function RandomStringGenerator() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "${process.env.REACT_APP_API_URL}/generateCode",
+        `${process.env.REACT_APP_API_URL}/generateCode`,
         {
           accessCode: randomString,
           formattedDate,

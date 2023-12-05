@@ -59,7 +59,7 @@ export default function EditMaintenanceRecord() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "${process.env.REACT_APP_API_URL}/update-maintenanceRecords",
+        `${process.env.REACT_APP_API_URL}/update-maintenanceRecords`,
         {
           id: id,
           uid: uid,

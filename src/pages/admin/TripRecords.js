@@ -79,7 +79,7 @@ export default function TripVerification() {
   const fetchTripOngoing = async () => {
     try {
       const response = await axios.get(
-        "${process.env.REACT_APP_API_URL}/fetch-tripHistory"
+        `${process.env.REACT_APP_API_URL}/fetch-tripHistory`
       );
       return response.data;
     } catch (error) {
@@ -91,7 +91,7 @@ export default function TripVerification() {
   const fetchDocuments = async () => {
     try {
       const response = await axios.get(
-        "${process.env.REACT_APP_API_URL}/fetch-documentCheckRecord"
+        `${process.env.REACT_APP_API_URL}/fetch-documentCheckRecord`
       );
       return response.data;
     } catch (error) {
@@ -102,7 +102,7 @@ export default function TripVerification() {
   const fetchSafetyCheck = async () => {
     try {
       const response = await axios.get(
-        "${process.env.REACT_APP_API_URL}/fetch-schecklistrecord"
+        `${process.env.REACT_APP_API_URL}/fetch-schecklistrecord`
       );
       return response.data;
     } catch (error) {

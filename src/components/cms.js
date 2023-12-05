@@ -4,7 +4,7 @@ import axios from "axios";
 export async function fetchBannerDataHome() {
   try {
     const response = await axios.get(
-      "${process.env.REACT_APP_API_URL}/fetch-category-values/Homepage Full Banner"
+      `${process.env.REACT_APP_API_URL}/fetch-category-values/Homepage Full Banner`
     );
     return response.data;
   } catch (error) {
@@ -15,7 +15,7 @@ export async function fetchBannerDataHome() {
 export async function fetchBannerDataProduct() {
   try {
     const response = await axios.get(
-      "${process.env.REACT_APP_API_URL}/fetch-category-values/Products Page"
+      `${process.env.REACT_APP_API_URL}/fetch-category-values/Products Page`
     );
     return response.data;
   } catch (error) {
@@ -49,7 +49,7 @@ export async function fetchProfilePic2(_userName) {
 export async function fetchTestimonialData() {
   try {
     const response = await axios.get(
-      "${process.env.REACT_APP_API_URL}/fetch-testimonials"
+      `${process.env.REACT_APP_API_URL}/fetch-testimonials`
     );
     return response.data;
   } catch (error) {
@@ -60,7 +60,7 @@ export async function fetchTestimonialData() {
 export async function fetchVisionData() {
   try {
     const response = await axios.get(
-      "${process.env.REACT_APP_API_URL}/fetch-vision"
+      `${process.env.REACT_APP_API_URL}/fetch-vision`
     );
     return response.data;
   } catch (error) {
@@ -72,7 +72,7 @@ export async function fetchVisionData() {
 export async function fetchMissionData() {
   try {
     const response = await axios.get(
-      "${process.env.REACT_APP_API_URL}/fetch-mission"
+      `${process.env.REACT_APP_API_URL}/fetch-mission`
     );
     return response.data;
   } catch (error) {
@@ -84,7 +84,7 @@ export async function fetchMissionData() {
 export async function fetchValuesData() {
   try {
     const response = await axios.get(
-      "${process.env.REACT_APP_API_URL}/fetch-values"
+      `${process.env.REACT_APP_API_URL}/fetch-values`
     );
     return response.data;
   } catch (error) {
@@ -96,7 +96,7 @@ export async function fetchValuesData() {
 export async function fetchAboutData() {
   try {
     const response = await axios.get(
-      "${process.env.REACT_APP_API_URL}/fetch-about"
+      `${process.env.REACT_APP_API_URL}/fetch-about`
     );
     return response.data;
   } catch (error) {
@@ -108,7 +108,7 @@ export async function fetchAboutData() {
 export async function fetchContactData() {
   try {
     const response = await axios.get(
-      "${process.env.REACT_APP_API_URL}/fetch-contact"
+      `${process.env.REACT_APP_API_URL}/fetch-contact`
     );
     return response.data;
   } catch (error) {
@@ -119,7 +119,7 @@ export async function fetchContactData() {
 export async function fetchBannerDataFAQ() {
   try {
     const response = await axios.get(
-      "${process.env.REACT_APP_API_URL}/fetch-category-values/FAQS Page"
+      `${process.env.REACT_APP_API_URL}/fetch-category-values/FAQS Page`
     );
     return response.data;
   } catch (error) {
@@ -131,7 +131,7 @@ export async function fetchBannerDataFAQ() {
 const fetchFAQData = async () => {
   try {
     const response = await axios.get(
-      "${process.env.REACT_APP_API_URL}/get-faq"
+      `${process.env.REACT_APP_API_URL}/get-faq`
     );
     return response.data;
   } catch (error) {

@@ -144,7 +144,7 @@ export default function Register() {
     }
     try {
       const response = await axios.post(
-        "${process.env.REACT_APP_API_URL}/register",
+        `${process.env.REACT_APP_API_URL}/register`,
         formData
       );
       console.log("Registration successful", response.data);

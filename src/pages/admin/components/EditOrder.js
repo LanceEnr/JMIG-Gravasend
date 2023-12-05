@@ -78,7 +78,7 @@ export default function EditOrder() {
     event.preventDefault();
     try {
       const response = await axios.put(
-        "${process.env.REACT_APP_API_URL}/update-order",
+        `${process.env.REACT_APP_API_URL}/update-order`,
         {
           status: status,
           details: details,
@@ -130,7 +130,7 @@ export default function EditOrder() {
     async function fetchProducts() {
       try {
         const response = await fetch(
-          "${process.env.REACT_APP_API_URL}/get-products"
+          `${process.env.REACT_APP_API_URL}/get-products`
         );
         if (response.ok) {
           const data = await response.json();

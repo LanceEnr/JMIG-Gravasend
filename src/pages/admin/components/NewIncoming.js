@@ -17,7 +17,7 @@ import { Box } from "@mui/material";
 const fetchIncomingInventoryData = async () => {
   try {
     const response = await axios.get(
-      "${process.env.REACT_APP_API_URL}/incomingInventory"
+      `${process.env.REACT_APP_API_URL}/incomingInventory`
     );
 
     return response.data;
@@ -108,7 +108,7 @@ export default function NewIncomingInventory() {
     try {
       const _listingId = parseInt(id, 10);
       const response = await axios.post(
-        "${process.env.REACT_APP_API_URL}/delete-listing",
+        `${process.env.REACT_APP_API_URL}/delete-listing`,
         { _listingId }
       );
 

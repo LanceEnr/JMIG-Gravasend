@@ -68,7 +68,7 @@ const useStyles = makeStyles(
 const fetchInventoryData = async () => {
   try {
     const response = await axios.get(
-      "${process.env.REACT_APP_API_URL}/currentInventory"
+      `${process.env.REACT_APP_API_URL}/currentInventory`
     );
     return response.data;
   } catch (error) {

@@ -43,7 +43,7 @@ export default function AddInspection() {
     async function fetchPlates() {
       try {
         const response = await fetch(
-          "${process.env.REACT_APP_API_URL}/fetch-trucks"
+          `${process.env.REACT_APP_API_URL}/fetch-trucks`
         );
         if (response.ok) {
           const data = await response.json();
@@ -73,7 +73,7 @@ export default function AddInspection() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "${process.env.REACT_APP_API_URL}/addInspection",
+        `${process.env.REACT_APP_API_URL}/addInspection`,
         {
           plateNo: plateNo,
           inspectionType: inspectionType,

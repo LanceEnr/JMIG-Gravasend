@@ -91,7 +91,7 @@ export default function EditMaintenanceScheduling() {
 
     try {
       const response = await axios.post(
-        "${process.env.REACT_APP_API_URL}/editMaintenance",
+        `${process.env.REACT_APP_API_URL}/editMaintenance`,
         {
           id: id,
           uid: uid,

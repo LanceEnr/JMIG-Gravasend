@@ -53,7 +53,7 @@ export default function AddOrder() {
     async function fetchCustomerName() {
       try {
         const response = await fetch(
-          "${process.env.REACT_APP_API_URL}/get-customers"
+          `${process.env.REACT_APP_API_URL}/get-customers`
         );
         if (response.ok) {
           const data = await response.json();
@@ -77,7 +77,7 @@ export default function AddOrder() {
     async function fetchProducts() {
       try {
         const response = await fetch(
-          "${process.env.REACT_APP_API_URL}/get-products"
+          `${process.env.REACT_APP_API_URL}/get-products`
         );
         if (response.ok) {
           const data = await response.json();
@@ -129,7 +129,7 @@ export default function AddOrder() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "${process.env.REACT_APP_API_URL}/addOrder",
+        `${process.env.REACT_APP_API_URL}/addOrder`,
         {
           _name: name,
           _materialType: selectedProduct,

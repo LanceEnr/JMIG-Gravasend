@@ -60,7 +60,7 @@ const ImageIconButton = styled(ButtonBase)(({ theme }) => ({
 const fetchListingData = async () => {
   try {
     const response = await axios.get(
-      "${process.env.REACT_APP_API_URL}/get-listing"
+      `${process.env.REACT_APP_API_URL}/get-listing`
     );
     return response.data;
   } catch (error) {

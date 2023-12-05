@@ -36,7 +36,7 @@ function Inspection() {
     async function fetchPlates() {
       try {
         const response = await fetch(
-          "${process.env.REACT_APP_API_URL}/fetch-trucks"
+          `${process.env.REACT_APP_API_URL}/fetch-trucks`
         );
         if (response.ok) {
           const data = await response.json();
@@ -57,7 +57,7 @@ function Inspection() {
     async function fetchUpcomingInspection() {
       try {
         const response = await fetch(
-          "${process.env.REACT_APP_API_URL}/fetch-upcomingInspections"
+          `${process.env.REACT_APP_API_URL}/fetch-upcomingInspections`
         );
         if (response.ok) {
           const data = await response.json();
@@ -95,7 +95,7 @@ function Inspection() {
                       );
                       try {
                         const response = axios.post(
-                          "${process.env.REACT_APP_API_URL}/inspection-notif",
+                          `${process.env.REACT_APP_API_URL}/inspection-notif`,
                           {
                             plateNo,
                             uid,
@@ -122,7 +122,7 @@ function Inspection() {
                       );
                       try {
                         const response = axios.post(
-                          "${process.env.REACT_APP_API_URL}/inspection-notif",
+                          `${process.env.REACT_APP_API_URL}/inspection-notif`,
                           {
                             plateNo,
                             uid,
@@ -146,7 +146,7 @@ function Inspection() {
                     ) {
                       try {
                         const response = axios.post(
-                          "${process.env.REACT_APP_API_URL}/inspection-notif2",
+                          `${process.env.REACT_APP_API_URL}/inspection-notif2`,
                           {
                             plateNo,
                             uid,
@@ -174,7 +174,7 @@ function Inspection() {
                     ) {
                       try {
                         const response = axios.post(
-                          "${process.env.REACT_APP_API_URL}/inspection-notif2",
+                          `${process.env.REACT_APP_API_URL}/inspection-notif2`,
                           {
                             plateNo,
                             uid,

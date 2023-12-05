@@ -76,7 +76,7 @@ function ProductCTA() {
 
     try {
       const response = await axios.post(
-        "${process.env.REACT_APP_API_URL}/inquiry",
+        `${process.env.REACT_APP_API_URL}/inquiry`,
         {
           ...inquiryData,
           _date: formattedDate,

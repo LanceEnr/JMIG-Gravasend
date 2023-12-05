@@ -42,7 +42,7 @@ export default function AddFleet() {
     async function fetchDrivers() {
       try {
         const response = await fetch(
-          "${process.env.REACT_APP_API_URL}/fetch-driver-available"
+          `${process.env.REACT_APP_API_URL}/fetch-driver-available`
         );
         if (response.ok) {
           const data = await response.json();
@@ -73,7 +73,7 @@ export default function AddFleet() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "${process.env.REACT_APP_API_URL}/addTruck",
+        `${process.env.REACT_APP_API_URL}/addTruck`,
         {
           //id: actionId,
           driverName: driverName,

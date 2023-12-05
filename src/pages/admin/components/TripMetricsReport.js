@@ -14,7 +14,7 @@ function TripMetricsReport() {
   const fetchSpeedRecord = async () => {
     try {
       const response = await axios.get(
-        "${process.env.REACT_APP_API_URL}/fetch-SpeedRecord"
+        `${process.env.REACT_APP_API_URL}/fetch-SpeedRecord`
       );
 
       return response.data;

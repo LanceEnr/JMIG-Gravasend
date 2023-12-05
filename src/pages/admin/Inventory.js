@@ -18,14 +18,14 @@ function Inventory() {
     async function fetchProducts() {
       try {
         const response = await fetch(
-          "${process.env.REACT_APP_API_URL}/fetch-add"
+          `${process.env.REACT_APP_API_URL}/fetch-add`
         );
         if (response.ok) {
           const data = await response.json();
 
           // Make a request to /addStocks with the entire data array
           const addStocksResponse = await fetch(
-            "${process.env.REACT_APP_API_URL}/addStocks",
+            `${process.env.REACT_APP_API_URL}/addStocks`,
             {
               method: "POST",
               headers: {
@@ -55,14 +55,14 @@ function Inventory() {
     async function UpdateStatus() {
       try {
         const response = await fetch(
-          "${process.env.REACT_APP_API_URL}/fetch-add"
+          `${process.env.REACT_APP_API_URL}/fetch-add`
         );
         if (response.ok) {
           const data = await response.json();
 
           // Make a request to /addStocks with the entire data array
           const addStocksResponse = await fetch(
-            "${process.env.REACT_APP_API_URL}/update-TripHistory",
+            `${process.env.REACT_APP_API_URL}/update-TripHistory`,
             {
               method: "POST",
               headers: {
@@ -92,7 +92,7 @@ function Inventory() {
     async function fetchTripHistory() {
       try {
         const response = await fetch(
-          "${process.env.REACT_APP_API_URL}/fetch-tripHistory"
+          `${process.env.REACT_APP_API_URL}/fetch-tripHistory`
         );
         if (response.ok) {
           const data = await response.json();

@@ -20,7 +20,7 @@ export default function EditTestimonials() {
 
   useEffect(() => {
     axios
-      .get("${process.env.REACT_APP_API_URL}/fetch-testimonials")
+      .get(`${process.env.REACT_APP_API_URL}/fetch-testimonials`)
       .then((response) => {
         const defaultValues = response.data;
         setFormData(response.data);
@@ -67,7 +67,7 @@ export default function EditTestimonials() {
     // Send data to the server using Axios (update the URL)
     try {
       const response = await axios.put(
-        "${process.env.REACT_APP_API_URL}/update-testimonials",
+        `${process.env.REACT_APP_API_URL}/update-testimonials`,
         testimonialData
       );
       toast.success("Testimonials edited successfully!");

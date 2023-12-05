@@ -31,7 +31,7 @@ function Maintenance() {
     async function fetchPlates() {
       try {
         const response = await fetch(
-          "${process.env.REACT_APP_API_URL}/fetch-trucks"
+          `${process.env.REACT_APP_API_URL}/fetch-trucks`
         );
         if (response.ok) {
           const data = await response.json();
@@ -52,7 +52,7 @@ function Maintenance() {
     async function fetchMaintenance() {
       try {
         const responseMaintenance = await fetch(
-          "${process.env.REACT_APP_API_URL}/fetch-maintenance"
+          `${process.env.REACT_APP_API_URL}/fetch-maintenance`
         );
         if (responseMaintenance.ok) {
           const dataMaintenance = await responseMaintenance.json();
@@ -73,7 +73,7 @@ function Maintenance() {
                     const frequency2 = parseInt(frequency, 10);
                     const nextduemileage = mileage2 + frequency2;
                     console.log("due: " + (mileage2 + frequency2));
-                    fetch("${process.env.REACT_APP_API_URL}/fetch-trucks")
+                    fetch(`${process.env.REACT_APP_API_URL}/fetch-trucks`)
                       .then((responseTrucks) => responseTrucks.json())
                       .then((truckData) => {
                         Object.keys(truckData).forEach((truckId) => {
@@ -94,7 +94,7 @@ function Maintenance() {
                             );
                             try {
                               const response = axios.post(
-                                "${process.env.REACT_APP_API_URL}/maintenance-notif",
+                                `${process.env.REACT_APP_API_URL}/maintenance-notif`,
                                 {
                                   plateNo,
                                   uidMaintenance,

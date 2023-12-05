@@ -70,7 +70,7 @@ export default function AdminProfileInfo(props) {
 
     try {
       const response = await axios.put(
-        "${process.env.REACT_APP_API_URL}/update-user-profilepic2",
+        `${process.env.REACT_APP_API_URL}/update-user-profilepic2`,
         formData
       );
 
@@ -138,7 +138,7 @@ export default function AdminProfileInfo(props) {
     const { CurrentPassword, NewPassword } = userData;
 
     axios
-      .post("${process.env.REACT_APP_API_URL}/changepassword2", {
+      .post(`${process.env.REACT_APP_API_URL}/changepassword2`, {
         userName,
         currentPassword: CurrentPassword,
         newPassword: NewPassword,
@@ -192,7 +192,7 @@ export default function AdminProfileInfo(props) {
     }
 
     axios
-      .post("${process.env.REACT_APP_API_URL}/updatephoneaddress2", {
+      .post(`${process.env.REACT_APP_API_URL}/updatephoneaddress2`, {
         userName,
         phone: Phone,
         address: Address,

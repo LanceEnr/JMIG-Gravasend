@@ -83,7 +83,7 @@ export default function EditBanners() {
     try {
       // Make a POST request to your server
       const response = await axios.put(
-        "${process.env.REACT_APP_API_URL}/update-banner",
+        `${process.env.REACT_APP_API_URL}/update-banner`,
         formData
       );
 

@@ -55,7 +55,7 @@ export default function EditListing({ onBackClick }) {
     });
     try {
       const response = await axios.put(
-        "${process.env.REACT_APP_API_URL}/update-listing",
+        `${process.env.REACT_APP_API_URL}/update-listing`,
         formData,
         {
           headers: {
@@ -83,7 +83,7 @@ export default function EditListing({ onBackClick }) {
     async function fetchProducts() {
       try {
         const response = await fetch(
-          "${process.env.REACT_APP_API_URL}/get-listing"
+          `${process.env.REACT_APP_API_URL}/get-listing`
         );
         if (response.ok) {
           const data = await response.json();

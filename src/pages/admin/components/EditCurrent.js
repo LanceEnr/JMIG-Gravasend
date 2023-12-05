@@ -72,7 +72,7 @@ export default function EditCurrent() {
     event.preventDefault();
     try {
       const response = await axios.put(
-        "${process.env.REACT_APP_API_URL}/update-current",
+        `${process.env.REACT_APP_API_URL}/update-current`,
         {
           _inventoryID: id,
           itemName: item,

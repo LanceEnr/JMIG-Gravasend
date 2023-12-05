@@ -85,7 +85,7 @@ export default function Login({ dispatch }) {
     }
     try {
       const response = await axios.post(
-        "${process.env.REACT_APP_API_URL}/login",
+        `${process.env.REACT_APP_API_URL}/login`,
         loginData
       );
 

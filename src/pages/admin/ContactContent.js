@@ -32,7 +32,7 @@ export default function ContactContent() {
     async function fetchContactData() {
       try {
         const response = await axios.get(
-          "${process.env.REACT_APP_API_URL}/fetch-contact"
+          `${process.env.REACT_APP_API_URL}/fetch-contact`
         );
         const contactData = response.data;
 
@@ -78,7 +78,7 @@ export default function ContactContent() {
 
     try {
       const response = await axios.get(
-        "${process.env.REACT_APP_API_URL}/fetch-contact"
+        `${process.env.REACT_APP_API_URL}/fetch-contact`
       );
       const data = response.data;
     } catch (error) {
@@ -88,7 +88,7 @@ export default function ContactContent() {
 
     try {
       const response = await axios.put(
-        "${process.env.REACT_APP_API_URL}/update-contact",
+        `${process.env.REACT_APP_API_URL}/update-contact`,
         valueData
       );
       toast.success("Contact edited successfully!");

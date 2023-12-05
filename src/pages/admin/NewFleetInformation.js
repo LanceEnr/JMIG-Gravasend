@@ -61,7 +61,7 @@ const transformFleetData = (data) => {
 const fetchFleetInformation = async () => {
   try {
     const response = await axios.get(
-      "${process.env.REACT_APP_API_URL}/fetch-trucks"
+      `${process.env.REACT_APP_API_URL}/fetch-trucks`
     );
     return response.data;
   } catch (error) {
@@ -146,7 +146,7 @@ export default function NewFleetInformation() {
     try {
       const _truckID = id;
       const response = await axios.post(
-        "${process.env.REACT_APP_API_URL}/deleteTruckRecord",
+        `${process.env.REACT_APP_API_URL}/deleteTruckRecord`,
         {
           _truckID: _truckID,
         }

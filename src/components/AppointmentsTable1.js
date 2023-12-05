@@ -131,7 +131,7 @@ export default function AppointmentsTable1(props) {
   const formattedDate = currentDate.toLocaleString("en-US", options);
   const handleCancel = async (appointmentNum) => {
     axios
-      .post("${process.env.REACT_APP_API_URL}/cancel-appointment", {
+      .post(`${process.env.REACT_APP_API_URL}/cancel-appointment`, {
         _appointmentNum: appointmentNum,
         _status: "Cancelled",
         _date: formattedDate,

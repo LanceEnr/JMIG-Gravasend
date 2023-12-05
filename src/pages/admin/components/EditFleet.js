@@ -68,7 +68,7 @@ export default function EditFleet() {
     async function fetchDrivers() {
       try {
         const response = await fetch(
-          "${process.env.REACT_APP_API_URL}/fetch-driver-available"
+          `${process.env.REACT_APP_API_URL}/fetch-driver-available`
         );
         if (response.ok) {
           const data = await response.json();
@@ -101,7 +101,7 @@ export default function EditFleet() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "${process.env.REACT_APP_API_URL}/editTruck",
+        `${process.env.REACT_APP_API_URL}/editTruck`,
         {
           driverName: driverName,
           current: driver,

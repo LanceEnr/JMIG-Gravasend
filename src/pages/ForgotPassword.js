@@ -34,7 +34,7 @@ export default function ForgetPassword() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "${process.env.REACT_APP_API_URL}/check-email",
+        `${process.env.REACT_APP_API_URL}/check-email`,
         {
           _email: _email,
         }
@@ -42,7 +42,7 @@ export default function ForgetPassword() {
 
       if (response.data.exists === true) {
         const otpResponse = await axios.post(
-          "${process.env.REACT_APP_API_URL}/send-otp",
+          `${process.env.REACT_APP_API_URL}/send-otp`,
           {
             _email: _email,
           }

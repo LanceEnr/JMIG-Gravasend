@@ -60,7 +60,7 @@ export default function AdminProfileCard({ profile }) {
 
     try {
       const response = await axios.put(
-        "${process.env.REACT_APP_API_URL}/update-user-profilepic2",
+        `${process.env.REACT_APP_API_URL}/update-user-profilepic2`,
         formData
       );
 

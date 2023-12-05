@@ -85,7 +85,7 @@ const ProductDetails = () => {
     async function fetchProductDetails() {
       try {
         const response = await axios.get(
-          "${process.env.REACT_APP_API_URL}/get-listing-details",
+          `${process.env.REACT_APP_API_URL}/get-listing-details`,
           {
             params: { productName }, // Use the 'params' property to pass parameters
           }
@@ -107,7 +107,7 @@ const ProductDetails = () => {
     async function fetchStocks() {
       try {
         const response = await axios.get(
-          "${process.env.REACT_APP_API_URL}/get-listing-stocks",
+          `${process.env.REACT_APP_API_URL}/get-listing-stocks`,
           {
             params: { productName },
           }

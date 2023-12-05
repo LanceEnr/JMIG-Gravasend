@@ -60,7 +60,7 @@ const transformUpcomingInspectionData = (data) => {
 const fetchUpcomingInspection = async () => {
   try {
     const response = await axios.get(
-      "${process.env.REACT_APP_API_URL}/fetch-upcominginspection"
+      `${process.env.REACT_APP_API_URL}/fetch-upcominginspection`
     );
     return response.data;
   } catch (error) {
@@ -146,7 +146,7 @@ export default function NewInspectionScheduling() {
   const deleteRecord = async () => {
     try {
       const response = await axios.post(
-        "${process.env.REACT_APP_API_URL}/deleteInspection",
+        `${process.env.REACT_APP_API_URL}/deleteInspection`,
         { id, uid }
       );
 

@@ -52,7 +52,7 @@ export default function EditDriver() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "${process.env.REACT_APP_API_URL}/editDriver",
+        `${process.env.REACT_APP_API_URL}/editDriver`,
         {
           driverName: name,
           contact: contact,

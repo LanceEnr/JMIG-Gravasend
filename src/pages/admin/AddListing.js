@@ -49,7 +49,7 @@ export default function AddListing({ onBackClick }) {
     });
     try {
       const response = await axios.post(
-        "${process.env.REACT_APP_API_URL}/add-listing",
+        `${process.env.REACT_APP_API_URL}/add-listing`,
         formData,
         {
           headers: {
@@ -75,7 +75,7 @@ export default function AddListing({ onBackClick }) {
     async function fetchProducts() {
       try {
         const response = await fetch(
-          "${process.env.REACT_APP_API_URL}/get-products2"
+          `${process.env.REACT_APP_API_URL}/get-products2`
         );
         if (response.ok) {
           const data = await response.json();

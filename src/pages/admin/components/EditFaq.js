@@ -43,7 +43,7 @@ export default function EditFaq() {
     event.preventDefault();
     try {
       const response = await axios.put(
-        "${process.env.REACT_APP_API_URL}/update-faq",
+        `${process.env.REACT_APP_API_URL}/update-faq`,
         {
           _faqNum: id,
           _question: question,

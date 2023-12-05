@@ -92,7 +92,7 @@ export default function SetAppointmentForm(props) {
     const formattedTime2 = moment(time, "HH:mm").format("HH:mm");
     const dateTime = `${formattedSchedule}T${formattedTime2}`;
     axios
-      .post("${process.env.REACT_APP_API_URL}/save-appointment", {
+      .post(`${process.env.REACT_APP_API_URL}/save-appointment`, {
         _userName: userName,
         _note: userData.Agenda,
         _date: formattedSchedule,

@@ -180,7 +180,7 @@ export default function TripOngoing({ onFindClick }) {
   const fetchTripOngoing = async () => {
     try {
       const response = await axios.get(
-        "${process.env.REACT_APP_API_URL}/fetch-tripDash"
+        `${process.env.REACT_APP_API_URL}/fetch-tripDash`
       );
       return response.data;
     } catch (error) {
@@ -192,7 +192,7 @@ export default function TripOngoing({ onFindClick }) {
   const fetchTripOngoingSpeed = async () => {
     try {
       const response = await axios.get(
-        "${process.env.REACT_APP_API_URL}/fetch-speed"
+        `${process.env.REACT_APP_API_URL}/fetch-speed`
       );
       return response.data;
     } catch (error) {
@@ -204,7 +204,7 @@ export default function TripOngoing({ onFindClick }) {
   const fetchTripOngoingLocation = async () => {
     try {
       const response = await axios.get(
-        "${process.env.REACT_APP_API_URL}/fetch-location"
+        `${process.env.REACT_APP_API_URL}/fetch-location`
       );
       return response.data;
     } catch (error) {
