@@ -29,7 +29,7 @@ export default function EditDriver() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/fetch-driver2/${id}`
+          `${process.env.REACT_APP_API_URL}/fetch-driver2/${id}`
         );
         const originalDate = response.data.date;
         const convertedDate = new Date(originalDate)
@@ -51,15 +51,18 @@ export default function EditDriver() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3001/editDriver", {
-        driverName: name,
-        contact: contact,
-        date: date,
-        status: status,
-        email: email,
-        licenseNo: license,
-        id: id,
-      });
+      const response = await axios.post(
+        "${process.env.REACT_APP_API_URL}/editDriver",
+        {
+          driverName: name,
+          contact: contact,
+          date: date,
+          status: status,
+          email: email,
+          licenseNo: license,
+          id: id,
+        }
+      );
 
       toast.success("Dirver edited successfully");
 

@@ -33,14 +33,20 @@ export default function ForgetPassword() {
   const handleEmailSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3001/check-email", {
-        _email: _email,
-      });
+      const response = await axios.post(
+        "${process.env.REACT_APP_API_URL}/check-email",
+        {
+          _email: _email,
+        }
+      );
 
       if (response.data.exists === true) {
-        const otpResponse = await axios.post("http://localhost:3001/send-otp", {
-          _email: _email,
-        });
+        const otpResponse = await axios.post(
+          "${process.env.REACT_APP_API_URL}/send-otp",
+          {
+            _email: _email,
+          }
+        );
 
         if (otpResponse.data.success) {
           toast.success("OTP sent to your email.");

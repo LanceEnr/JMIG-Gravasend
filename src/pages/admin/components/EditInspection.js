@@ -40,7 +40,9 @@ export default function EditInspection() {
   useEffect(() => {
     async function fetchPlates() {
       try {
-        const response = await fetch("http://localhost:3001/fetch-trucks");
+        const response = await fetch(
+          "${process.env.REACT_APP_API_URL}/fetch-trucks"
+        );
         if (response.ok) {
           const data = await response.json();
           const plates = Object.keys(data).map((key) => data[key].plateNo);
@@ -60,7 +62,7 @@ export default function EditInspection() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/fetch-inspections2/${uid}/${id}`
+          `${process.env.REACT_APP_API_URL}/fetch-inspections2/${uid}/${id}`
         );
         const originalDate = response.data.nextInspectionDate;
         const convertedDate = new Date(originalDate)
@@ -88,7 +90,7 @@ export default function EditInspection() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:3001/editInspection",
+        "${process.env.REACT_APP_API_URL}/editInspection",
         {
           plateNo: plateNo,
           inspectionType: inspectionType,

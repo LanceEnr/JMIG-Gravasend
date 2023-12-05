@@ -35,9 +35,12 @@ export default function EnterOTP({
 
   const handleResendOTP = async () => {
     try {
-      const response = await axios.post("http://localhost:3001/send-otp", {
-        _email: email,
-      });
+      const response = await axios.post(
+        "${process.env.REACT_APP_API_URL}/send-otp",
+        {
+          _email: email,
+        }
+      );
       if (response.data.success) {
         setMessage("OTP sent to your email. Check your spam folder too.");
         setOTP(response.data.otp);

@@ -42,7 +42,9 @@ export default function AddInspection() {
   useEffect(() => {
     async function fetchPlates() {
       try {
-        const response = await fetch("http://localhost:3001/fetch-trucks");
+        const response = await fetch(
+          "${process.env.REACT_APP_API_URL}/fetch-trucks"
+        );
         if (response.ok) {
           const data = await response.json();
           const plates = Object.keys(data).map((key) => data[key].plateNo);
@@ -70,12 +72,15 @@ export default function AddInspection() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3001/addInspection", {
-        plateNo: plateNo,
-        inspectionType: inspectionType,
-        nextInspectionDate: inspectionDate,
-        verdict: "Pending",
-      });
+      const response = await axios.post(
+        "${process.env.REACT_APP_API_URL}/addInspection",
+        {
+          plateNo: plateNo,
+          inspectionType: inspectionType,
+          nextInspectionDate: inspectionDate,
+          verdict: "Pending",
+        }
+      );
 
       toast.success(response.data.message);
       navigate("/admininspection");

@@ -192,7 +192,7 @@ function DeliveryMonitoring() {
   const fetchTripHistory = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/fetch-tripHistory"
+        "${process.env.REACT_APP_API_URL}/fetch-tripHistory"
       );
       return response.data;
     } catch (error) {
@@ -203,7 +203,7 @@ function DeliveryMonitoring() {
   const fetchSpeedRecord = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/fetch-SpeedRecord"
+        "${process.env.REACT_APP_API_URL}/fetch-SpeedRecord"
       );
       return response.data;
     } catch (error) {
@@ -214,7 +214,7 @@ function DeliveryMonitoring() {
   const fetchProofRecords = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/fetch-ProofRecords"
+        "${process.env.REACT_APP_API_URL}/fetch-ProofRecords"
       );
       return response.data;
     } catch (error) {
@@ -242,7 +242,9 @@ function DeliveryMonitoring() {
 
   const fetchTruckLocations = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/fetch-location");
+      const response = await axios.get(
+        "${process.env.REACT_APP_API_URL}/fetch-location"
+      );
       return response.data;
     } catch (error) {
       console.error("Error fetching truck locations:", error);

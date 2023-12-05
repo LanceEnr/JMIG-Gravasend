@@ -43,7 +43,7 @@ export default function EditOrder() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/fetch-order/${id}`
+          `${process.env.REACT_APP_API_URL}/fetch-order/${id}`
         );
         setName(response.data._name);
         setDetails(response.data._orderDet);
@@ -77,15 +77,18 @@ export default function EditOrder() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.put("http://localhost:3001/update-order", {
-        status: status,
-        details: details,
-        name: name,
-        quantity: quantity,
-        _orderNum: id,
-        product: selectedProduct,
-        _date: formattedDate,
-      });
+      const response = await axios.put(
+        "${process.env.REACT_APP_API_URL}/update-order",
+        {
+          status: status,
+          details: details,
+          name: name,
+          quantity: quantity,
+          _orderNum: id,
+          product: selectedProduct,
+          _date: formattedDate,
+        }
+      );
 
       console.log("Order edited successfully", response.data);
       toast.success("Order added successfully");
@@ -126,7 +129,9 @@ export default function EditOrder() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const response = await fetch("http://localhost:3001/get-products");
+        const response = await fetch(
+          "${process.env.REACT_APP_API_URL}/get-products"
+        );
         if (response.ok) {
           const data = await response.json();
           const productNames = data.map(

@@ -6,7 +6,9 @@ import { Typography, Chip } from "@mui/material";
 
 const fetchInventoryData = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/currentInventory");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/currentInventory"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -30,7 +32,9 @@ export { rowsCurrentInventory };
 
 const fetchIncomingInventoryData = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/incomingInventory");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/incomingInventory"
+    );
 
     return response.data;
   } catch (error) {
@@ -58,7 +62,9 @@ export { rowsIncomingInventory };
 
 const fetchOutgoingInventoryData = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/outgoingInventory");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/outgoingInventory"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -114,7 +120,9 @@ const transformFleetData = (data) => {
 
 const fetchFleetInformation = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/fetch-trucks");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/fetch-trucks"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -156,7 +164,9 @@ const transformDriverData = (data) => {
 
 const fetchDriverInformation = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/fetch-driver");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/fetch-driver"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -246,7 +256,7 @@ const transformUpcomingInspectionData = (data) => {
 const fetchUpcomingInspection = async () => {
   try {
     const response = await axios.get(
-      "http://localhost:3001/fetch-upcominginspection"
+      "${process.env.REACT_APP_API_URL}/fetch-upcominginspection"
     );
     return response.data;
   } catch (error) {
@@ -294,7 +304,7 @@ const transformInspectionRecordsData = (data) => {
 const fetchInspectionRecords = async () => {
   try {
     const response = await axios.get(
-      "http://localhost:3001/fetch-inspectionrecords"
+      "${process.env.REACT_APP_API_URL}/fetch-inspectionrecords"
     );
     return response.data;
   } catch (error) {
@@ -473,7 +483,9 @@ const transformMaintenanceData = (data) => {
 
 const fetchMaintenance = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/fetch-maintenance");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/fetch-maintenance"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -565,7 +577,7 @@ const transformMaintenanceRecordData = (data) => {
 const fetchMaintenanceRecord = async () => {
   try {
     const response = await axios.get(
-      "http://localhost:3001/fetch-maintenanceHistory"
+      "${process.env.REACT_APP_API_URL}/fetch-maintenanceHistory"
     );
     return response.data;
   } catch (error) {
@@ -780,7 +792,9 @@ export const columnsOutgoingInventory = [
 
 const fetchOrderData = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/get-order");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/get-order"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -810,7 +824,9 @@ export { rowsManageOrders };
 
 const fetchFAQData = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/get-faq");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/get-faq"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -842,7 +858,9 @@ export const columnsUserManagement = [
 
 const fetchUsers = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/get-customers");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/get-customers"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -852,7 +870,9 @@ const fetchUsers = async () => {
 
 const fetchOrders = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/get-order");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/get-order"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching orders:", error);

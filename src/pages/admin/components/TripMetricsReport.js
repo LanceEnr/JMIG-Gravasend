@@ -14,7 +14,7 @@ function TripMetricsReport() {
   const fetchSpeedRecord = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/fetch-SpeedRecord"
+        "${process.env.REACT_APP_API_URL}/fetch-SpeedRecord"
       );
 
       return response.data;
@@ -27,7 +27,7 @@ function TripMetricsReport() {
   const fetchDriverName = async (uid) => {
     try {
       const response = await axios.get(
-        `http://localhost:3001/fetch-DriverName/${uid}`
+        `${process.env.REACT_APP_API_URL}/fetch-DriverName/${uid}`
       );
       return response.data.driverName;
     } catch (error) {

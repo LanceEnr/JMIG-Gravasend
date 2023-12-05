@@ -85,7 +85,7 @@ export default function Login({ dispatch }) {
     }
     try {
       const response = await axios.post(
-        "http://localhost:3001/login",
+        "${process.env.REACT_APP_API_URL}/login",
         loginData
       );
 

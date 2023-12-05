@@ -52,7 +52,9 @@ export default function AddOrder() {
   useEffect(() => {
     async function fetchCustomerName() {
       try {
-        const response = await fetch("http://localhost:3001/get-customers");
+        const response = await fetch(
+          "${process.env.REACT_APP_API_URL}/get-customers"
+        );
         if (response.ok) {
           const data = await response.json();
           const customerNames = data.map(
@@ -74,7 +76,9 @@ export default function AddOrder() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const response = await fetch("http://localhost:3001/get-products");
+        const response = await fetch(
+          "${process.env.REACT_APP_API_URL}/get-products"
+        );
         if (response.ok) {
           const data = await response.json();
           const productNames = data.map(
@@ -124,15 +128,18 @@ export default function AddOrder() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3001/addOrder", {
-        _name: name,
-        _materialType: selectedProduct,
-        _date: formattedDate,
-        _status: status,
-        _price: parseInt(price, 10) * parseInt(quantity, 10),
-        _quantity: quantity,
-        _orderDet: details,
-      });
+      const response = await axios.post(
+        "${process.env.REACT_APP_API_URL}/addOrder",
+        {
+          _name: name,
+          _materialType: selectedProduct,
+          _date: formattedDate,
+          _status: status,
+          _price: parseInt(price, 10) * parseInt(quantity, 10),
+          _quantity: quantity,
+          _orderDet: details,
+        }
+      );
 
       console.log("Order added successfully", response.data);
       toast.success(response.data.message);

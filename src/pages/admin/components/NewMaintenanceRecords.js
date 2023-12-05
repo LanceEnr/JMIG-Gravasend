@@ -57,7 +57,7 @@ const transformMaintenanceRecordData = (data) => {
 const fetchMaintenanceRecord = async () => {
   try {
     const response = await axios.get(
-      "http://localhost:3001/fetch-maintenanceHistory"
+      "${process.env.REACT_APP_API_URL}/fetch-maintenanceHistory"
     );
     return response.data;
   } catch (error) {
@@ -136,7 +136,7 @@ export default function NewMaintenanceRecords() {
     try {
       const _listingId = parseInt(id, 10);
       const response = await axios.post(
-        "http://localhost:3001/delete-listing",
+        "${process.env.REACT_APP_API_URL}/delete-listing",
         { _listingId }
       );
 

@@ -29,7 +29,7 @@ function MyResponsivePie() {
   const fetchSpeedRecord = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/fetch-SpeedRecord"
+        "${process.env.REACT_APP_API_URL}/fetch-SpeedRecord"
       );
       return response.data;
     } catch (error) {
@@ -197,7 +197,9 @@ function MyResponsivePie() {
 
   const fetchDriverInformation = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/fetch-driver");
+      const response = await axios.get(
+        "${process.env.REACT_APP_API_URL}/fetch-driver"
+      );
       return response.data;
     } catch (error) {
       console.error("Error fetching data:", error);

@@ -19,14 +19,16 @@ export default function EditTestimonials() {
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
-    axios.get("http://localhost:3001/fetch-testimonials").then((response) => {
-      const defaultValues = response.data;
-      setFormData(response.data);
-      setValue(defaultValues._rating);
-      setValue2(defaultValues._rating2);
-      setValue3(defaultValues._rating3);
-      console.log(formData._fullName);
-    });
+    axios
+      .get("${process.env.REACT_APP_API_URL}/fetch-testimonials")
+      .then((response) => {
+        const defaultValues = response.data;
+        setFormData(response.data);
+        setValue(defaultValues._rating);
+        setValue2(defaultValues._rating2);
+        setValue3(defaultValues._rating3);
+        console.log(formData._fullName);
+      });
   }, []);
   const handleFormChange = (event) => {
     const { name, value } = event.target;
@@ -65,7 +67,7 @@ export default function EditTestimonials() {
     // Send data to the server using Axios (update the URL)
     try {
       const response = await axios.put(
-        "http://localhost:3001/update-testimonials",
+        "${process.env.REACT_APP_API_URL}/update-testimonials",
         testimonialData
       );
       toast.success("Testimonials edited successfully!");

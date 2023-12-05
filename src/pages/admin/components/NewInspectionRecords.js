@@ -71,7 +71,7 @@ export default function NewInspectionRecords() {
     try {
       const _listingId = parseInt(id, 10);
       const response = await axios.post(
-        "http://localhost:3001/delete-listing",
+        "${process.env.REACT_APP_API_URL}/delete-listing",
         { _listingId }
       );
 

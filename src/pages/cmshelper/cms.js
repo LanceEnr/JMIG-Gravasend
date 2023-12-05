@@ -3,7 +3,9 @@ import axios from "axios";
 
 export async function fetchBannerData() {
   try {
-    const response = await axios.get("http://localhost:3001/fetch-banner");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/fetch-banner"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching banner:", error);
@@ -14,7 +16,7 @@ export async function fetchBannerData() {
 export async function fetchTestimonialData() {
   try {
     const response = await axios.get(
-      "http://localhost:3001/fetch-testimonials"
+      "${process.env.REACT_APP_API_URL}/fetch-testimonials"
     );
     return response.data;
   } catch (error) {
@@ -25,7 +27,9 @@ export async function fetchTestimonialData() {
 
 export async function fetchValuesData() {
   try {
-    const response = await axios.get("http://localhost:3001/fetch-values");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/fetch-values"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching values:", error);
@@ -35,7 +39,9 @@ export async function fetchValuesData() {
 
 export async function fetchAboutData() {
   try {
-    const response = await axios.get("http://localhost:3001/fetch-about");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/fetch-about"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching about:", error);
@@ -45,7 +51,9 @@ export async function fetchAboutData() {
 
 export async function fetchContactData() {
   try {
-    const response = await axios.get("http://localhost:3001/fetch-contact");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/fetch-contact"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching contact:", error);
@@ -55,7 +63,9 @@ export async function fetchContactData() {
 
 const fetchFAQData = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/get-faq");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/get-faq"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -82,7 +92,7 @@ export { rowsFaqs };
 export async function fetchBannerDataFAQ() {
   try {
     const response = await axios.get(
-      "http://localhost:3001/fetch-category-values/FAQS Page"
+      "${process.env.REACT_APP_API_URL}/fetch-category-values/FAQS Page"
     );
     return response.data;
   } catch (error) {
@@ -94,7 +104,7 @@ export async function fetchBannerDataFAQ() {
 export async function fetchBannerDataAbout() {
   try {
     const response = await axios.get(
-      "http://localhost:3001/fetch-category-values/About Page"
+      "${process.env.REACT_APP_API_URL}/fetch-category-values/About Page"
     );
     return response.data;
   } catch (error) {
@@ -106,7 +116,7 @@ export async function fetchBannerDataAbout() {
 export async function fetchBannerDataContact() {
   try {
     const response = await axios.get(
-      "http://localhost:3001/fetch-category-values/Contact Page"
+      "${process.env.REACT_APP_API_URL}/fetch-category-values/Contact Page"
     );
     return response.data;
   } catch (error) {

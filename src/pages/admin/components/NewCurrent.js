@@ -67,7 +67,9 @@ const useStyles = makeStyles(
 
 const fetchInventoryData = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/currentInventory");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/currentInventory"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -184,7 +186,7 @@ export default function NewCurrent() {
     try {
       const _inventoryID = id;
       const response = await axios.post(
-        `http://localhost:3001/deleteInventory/${_inventoryID}`
+        `${process.env.REACT_APP_API_URL}/deleteInventory/${_inventoryID}`
       );
 
       if (response.status === 200) {

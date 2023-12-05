@@ -3,7 +3,9 @@ import axios from "axios";
 
 const fetchListingData = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/get-listing");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/get-listing"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -14,7 +16,7 @@ const fetchListingData = async () => {
 const fetchStocks = async (productName) => {
   try {
     const response = await axios.get(
-      "http://localhost:3001/get-listing-stocks",
+      "${process.env.REACT_APP_API_URL}/get-listing-stocks",
       {
         params: { productName },
       }

@@ -49,14 +49,17 @@ export default function AddDriver() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3001/addDriver", {
-        driverName: name,
-        contact: contact,
-        date: date,
-        status: status,
-        email: email,
-        licenseNo: license,
-      });
+      const response = await axios.post(
+        "${process.env.REACT_APP_API_URL}/addDriver",
+        {
+          driverName: name,
+          contact: contact,
+          date: date,
+          status: status,
+          email: email,
+          licenseNo: license,
+        }
+      );
 
       console.log("Driver added successfully", response.data);
       toast.success("Driver added successfully");

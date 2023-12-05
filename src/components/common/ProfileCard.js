@@ -32,7 +32,9 @@ export default function ProfileCard({ profile }) {
   useEffect(() => {
     const storedUsername = localStorage.getItem("userName");
     axios
-      .get(`http://localhost:3001/get-counts?userName=${storedUsername}`)
+      .get(
+        `${process.env.REACT_APP_API_URL}/get-counts?userName=${storedUsername}`
+      )
       .then((response) => {
         setCounts(response.data);
 

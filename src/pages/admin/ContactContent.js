@@ -31,7 +31,9 @@ export default function ContactContent() {
   useEffect(() => {
     async function fetchContactData() {
       try {
-        const response = await axios.get("http://localhost:3001/fetch-contact");
+        const response = await axios.get(
+          "${process.env.REACT_APP_API_URL}/fetch-contact"
+        );
         const contactData = response.data;
 
         // Set the formData state with the fetched values
@@ -75,7 +77,9 @@ export default function ContactContent() {
     };
 
     try {
-      const response = await axios.get("http://localhost:3001/fetch-contact");
+      const response = await axios.get(
+        "${process.env.REACT_APP_API_URL}/fetch-contact"
+      );
       const data = response.data;
     } catch (error) {
       console.error("Error fetching contact:", error);
@@ -84,7 +88,7 @@ export default function ContactContent() {
 
     try {
       const response = await axios.put(
-        "http://localhost:3001/update-contact",
+        "${process.env.REACT_APP_API_URL}/update-contact",
         valueData
       );
       toast.success("Contact edited successfully!");

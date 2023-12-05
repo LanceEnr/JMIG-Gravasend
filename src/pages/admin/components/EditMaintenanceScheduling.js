@@ -60,7 +60,7 @@ export default function EditMaintenanceScheduling() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/fetch-maintenanceReminders2/${uid}/${id}`
+          `${process.env.REACT_APP_API_URL}/fetch-maintenanceReminders2/${uid}/${id}`
         );
         setService(response.data.service);
         setPlateNo(response.data.plateNo);
@@ -91,7 +91,7 @@ export default function EditMaintenanceScheduling() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3001/editMaintenance",
+        "${process.env.REACT_APP_API_URL}/editMaintenance",
         {
           id: id,
           uid: uid,

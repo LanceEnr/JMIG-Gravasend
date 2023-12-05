@@ -42,7 +42,7 @@ export default function AddFleet() {
     async function fetchDrivers() {
       try {
         const response = await fetch(
-          "http://localhost:3001/fetch-driver-available"
+          "${process.env.REACT_APP_API_URL}/fetch-driver-available"
         );
         if (response.ok) {
           const data = await response.json();
@@ -72,19 +72,22 @@ export default function AddFleet() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3001/addTruck", {
-        //id: actionId,
-        driverName: driverName,
-        bodyNo: bodyNo,
-        chassisNo: chassisNo,
-        engineNo: engineNo,
-        plateNo: plateNo,
-        plateNo2: plateNo2,
-        mileage: mileage,
-        model: model,
-        status: status,
-        location: location,
-      });
+      const response = await axios.post(
+        "${process.env.REACT_APP_API_URL}/addTruck",
+        {
+          //id: actionId,
+          driverName: driverName,
+          bodyNo: bodyNo,
+          chassisNo: chassisNo,
+          engineNo: engineNo,
+          plateNo: plateNo,
+          plateNo2: plateNo2,
+          mileage: mileage,
+          model: model,
+          status: status,
+          location: location,
+        }
+      );
 
       console.log("Truck added successfully", response.data);
       toast.success("Truck added successfully");

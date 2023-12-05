@@ -69,7 +69,7 @@ export default function ManageContactForm() {
   useEffect(() => {
     // Fetch data from the API using Axios
     axios
-      .get("http://localhost:3001/get-inquiry")
+      .get("${process.env.REACT_APP_API_URL}/get-inquiry")
       .then((response) => {
         setRows(response.data);
       })

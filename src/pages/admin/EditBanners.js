@@ -32,7 +32,7 @@ export default function EditBanners() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/fetch-category-values/${category}`
+          `${process.env.REACT_APP_API_URL}/fetch-category-values/${category}`
         );
 
         setHeading(response.data._heading);
@@ -83,7 +83,7 @@ export default function EditBanners() {
     try {
       // Make a POST request to your server
       const response = await axios.put(
-        "http://localhost:3001/update-banner",
+        "${process.env.REACT_APP_API_URL}/update-banner",
         formData
       );
 

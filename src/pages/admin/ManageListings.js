@@ -64,7 +64,9 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
 
 const fetchListingData = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/get-listing2");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/get-listing2"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -118,7 +120,7 @@ export default function ManageListings({ onAddClick, onEditClick }) {
     try {
       const _listingId = parseInt(id, 10);
       const response = await axios.post(
-        "http://localhost:3001/delete-listing",
+        "${process.env.REACT_APP_API_URL}/delete-listing",
         { _listingId }
       );
 

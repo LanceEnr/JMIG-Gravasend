@@ -79,7 +79,7 @@ export default function TripVerification() {
   const fetchTripOngoing = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/fetch-tripHistory"
+        "${process.env.REACT_APP_API_URL}/fetch-tripHistory"
       );
       return response.data;
     } catch (error) {
@@ -91,7 +91,7 @@ export default function TripVerification() {
   const fetchDocuments = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/fetch-documentCheckRecord"
+        "${process.env.REACT_APP_API_URL}/fetch-documentCheckRecord"
       );
       return response.data;
     } catch (error) {
@@ -102,7 +102,7 @@ export default function TripVerification() {
   const fetchSafetyCheck = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/fetch-schecklistrecord"
+        "${process.env.REACT_APP_API_URL}/fetch-schecklistrecord"
       );
       return response.data;
     } catch (error) {
@@ -119,7 +119,7 @@ export default function TripVerification() {
       });
 
       const response = await axios.get(
-        `http://localhost:3001/fetch-documentCheckRecord/${id}/${driver}`
+        `${process.env.REACT_APP_API_URL}/fetch-documentCheckRecord/${id}/${driver}`
       );
       const checklistData = response.data;
 
@@ -148,7 +148,7 @@ export default function TripVerification() {
       });
 
       const response = await axios.get(
-        `http://localhost:3001/fetch-sCheckRecord/${id}/${driver}`
+        `${process.env.REACT_APP_API_URL}/fetch-sCheckRecord/${id}/${driver}`
       );
       const checklistData = response.data;
       setSafetyChecklistData((prevState) => ({
@@ -170,7 +170,7 @@ export default function TripVerification() {
   const fetchSignatureImage = async (id, driver) => {
     try {
       const response = await axios.get(
-        `http://localhost:3001/fetch-signaturerecord/${id}/${driver}`
+        `${process.env.REACT_APP_API_URL}/fetch-signaturerecord/${id}/${driver}`
       );
       return response.data;
     } catch (error) {

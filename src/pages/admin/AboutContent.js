@@ -55,9 +55,9 @@ export default function AboutContent() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/fetch-vision");
+        const response = await axios.get("${process.env.REACT_APP_API_URL}/fetch-vision");
         const response2 = await axios.get(
-          "http://localhost:3001/fetch-mission"
+          "${process.env.REACT_APP_API_URL}/fetch-mission"
         );
 
         setVision(response.data._vision);
@@ -85,11 +85,11 @@ export default function AboutContent() {
 
     try {
       const response = await axios.put(
-        "http://localhost:3001/update-about",
+        "${process.env.REACT_APP_API_URL}/update-about",
         formData
       );
       const response2 = await axios.put(
-        "http://localhost:3001/update-about2",
+        "${process.env.REACT_APP_API_URL}/update-about2",
         formData2
       );
 

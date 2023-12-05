@@ -28,7 +28,7 @@ function AdminHomepage() {
   const fetchInventoryData = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/currentInventory"
+        "${process.env.REACT_APP_API_URL}/currentInventory"
       );
       return response.data;
     } catch (error) {
@@ -38,7 +38,9 @@ function AdminHomepage() {
   };
   const fetchOrder = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/get-order");
+      const response = await axios.get(
+        "${process.env.REACT_APP_API_URL}/get-order"
+      );
       return response.data;
     } catch (error) {
       console.error("Error fetching order data:", error);
@@ -47,7 +49,9 @@ function AdminHomepage() {
   };
   const fetchEvents = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/get-events");
+      const response = await axios.get(
+        "${process.env.REACT_APP_API_URL}/get-events"
+      );
       return response.data;
     } catch (error) {
       console.error("Error fetching order data:", error);
@@ -56,7 +60,9 @@ function AdminHomepage() {
   };
   const fetchTrip = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/fetch-tripDash");
+      const response = await axios.get(
+        "${process.env.REACT_APP_API_URL}/fetch-tripDash"
+      );
       return response.data;
     } catch (error) {
       console.error("Error fetching order data:", error);
@@ -67,7 +73,7 @@ function AdminHomepage() {
   const fetchMaintenance = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/fetch-maintenance-overdue"
+        "${process.env.REACT_APP_API_URL}/fetch-maintenance-overdue"
       );
       return response.data;
     } catch (error) {
@@ -79,7 +85,7 @@ function AdminHomepage() {
   const fetchInspection = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/fetch-inspection-overdue"
+        "${process.env.REACT_APP_API_URL}/fetch-inspection-overdue"
       );
       return response.data;
     } catch (error) {

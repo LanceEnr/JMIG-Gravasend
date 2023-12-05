@@ -17,13 +17,15 @@ function Inventory() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const response = await fetch("http://localhost:3001/fetch-add");
+        const response = await fetch(
+          "${process.env.REACT_APP_API_URL}/fetch-add"
+        );
         if (response.ok) {
           const data = await response.json();
 
           // Make a request to /addStocks with the entire data array
           const addStocksResponse = await fetch(
-            "http://localhost:3001/addStocks",
+            "${process.env.REACT_APP_API_URL}/addStocks",
             {
               method: "POST",
               headers: {
@@ -52,13 +54,15 @@ function Inventory() {
   useEffect(() => {
     async function UpdateStatus() {
       try {
-        const response = await fetch("http://localhost:3001/fetch-add");
+        const response = await fetch(
+          "${process.env.REACT_APP_API_URL}/fetch-add"
+        );
         if (response.ok) {
           const data = await response.json();
 
           // Make a request to /addStocks with the entire data array
           const addStocksResponse = await fetch(
-            "http://localhost:3001/update-TripHistory",
+            "${process.env.REACT_APP_API_URL}/update-TripHistory",
             {
               method: "POST",
               headers: {
@@ -87,7 +91,9 @@ function Inventory() {
   useEffect(() => {
     async function fetchTripHistory() {
       try {
-        const response = await fetch("http://localhost:3001/fetch-tripHistory");
+        const response = await fetch(
+          "${process.env.REACT_APP_API_URL}/fetch-tripHistory"
+        );
         if (response.ok) {
           const data = await response.json();
         } else {

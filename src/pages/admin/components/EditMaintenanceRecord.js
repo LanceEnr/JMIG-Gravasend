@@ -43,7 +43,7 @@ export default function EditMaintenanceRecord() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/fetch-maintenanceHistory2/${uid}/${id}`
+          `${process.env.REACT_APP_API_URL}/fetch-maintenanceHistory2/${uid}/${id}`
         );
         setService(response.data.service);
         setPlateNo(response.data.plateNo);
@@ -59,7 +59,7 @@ export default function EditMaintenanceRecord() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:3001/update-maintenanceRecords",
+        "${process.env.REACT_APP_API_URL}/update-maintenanceRecords",
         {
           id: id,
           uid: uid,

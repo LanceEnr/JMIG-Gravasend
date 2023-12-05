@@ -73,7 +73,7 @@ export default function AdminLogin({ dispatch }) {
     }
     try {
       const response = await axios.post(
-        "http://localhost:3001/adminLogin",
+        "${process.env.REACT_APP_API_URL}/adminLogin",
         loginData
       );
 

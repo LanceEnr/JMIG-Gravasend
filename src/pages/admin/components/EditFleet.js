@@ -43,7 +43,7 @@ export default function EditFleet() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/fetch-trucks2/${id}`
+          `${process.env.REACT_APP_API_URL}/fetch-trucks2/${id}`
         );
 
         setbodyNo(response.data.bodyNo);
@@ -68,7 +68,7 @@ export default function EditFleet() {
     async function fetchDrivers() {
       try {
         const response = await fetch(
-          "http://localhost:3001/fetch-driver-available"
+          "${process.env.REACT_APP_API_URL}/fetch-driver-available"
         );
         if (response.ok) {
           const data = await response.json();
@@ -100,20 +100,23 @@ export default function EditFleet() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3001/editTruck", {
-        driverName: driverName,
-        current: driver,
-        bodyNo: bodyNo,
-        chassisNo: chassisNo,
-        engineNo: engineNo,
-        plateNo: plateNo,
-        plateNo2: plateNo2,
-        mileage: mileage,
-        model: model,
-        status: status,
-        location: location,
-        id: id,
-      });
+      const response = await axios.post(
+        "${process.env.REACT_APP_API_URL}/editTruck",
+        {
+          driverName: driverName,
+          current: driver,
+          bodyNo: bodyNo,
+          chassisNo: chassisNo,
+          engineNo: engineNo,
+          plateNo: plateNo,
+          plateNo2: plateNo2,
+          mileage: mileage,
+          model: model,
+          status: status,
+          location: location,
+          id: id,
+        }
+      );
 
       console.log("Truck edited successfully", response.data);
       toast.success("Truck edited successfully");

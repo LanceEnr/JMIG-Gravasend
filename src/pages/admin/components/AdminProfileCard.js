@@ -60,7 +60,7 @@ export default function AdminProfileCard({ profile }) {
 
     try {
       const response = await axios.put(
-        "http://localhost:3001/update-user-profilepic2",
+        "${process.env.REACT_APP_API_URL}/update-user-profilepic2",
         formData
       );
 
@@ -88,7 +88,9 @@ export default function AdminProfileCard({ profile }) {
   useEffect(() => {
     const storedUsername = localStorage.getItem("adminUsername");
     axios
-      .get(`http://localhost:3001/get-counts?userName=${storedUsername}`)
+      .get(
+        `${process.env.REACT_APP_API_URL}/get-counts?userName=${storedUsername}`
+      )
       .then((response) => {
         setCounts(response.data);
 

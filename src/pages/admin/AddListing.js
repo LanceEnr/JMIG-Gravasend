@@ -49,7 +49,7 @@ export default function AddListing({ onBackClick }) {
     });
     try {
       const response = await axios.post(
-        "http://localhost:3001/add-listing",
+        "${process.env.REACT_APP_API_URL}/add-listing",
         formData,
         {
           headers: {
@@ -74,7 +74,9 @@ export default function AddListing({ onBackClick }) {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const response = await fetch("http://localhost:3001/get-products2");
+        const response = await fetch(
+          "${process.env.REACT_APP_API_URL}/get-products2"
+        );
         if (response.ok) {
           const data = await response.json();
           setProducts(data);

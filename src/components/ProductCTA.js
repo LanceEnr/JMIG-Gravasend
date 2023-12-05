@@ -75,10 +75,13 @@ function ProductCTA() {
     const { _name, _email, _message } = inquiryData;
 
     try {
-      const response = await axios.post("http://localhost:3001/inquiry", {
-        ...inquiryData,
-        _date: formattedDate,
-      });
+      const response = await axios.post(
+        "${process.env.REACT_APP_API_URL}/inquiry",
+        {
+          ...inquiryData,
+          _date: formattedDate,
+        }
+      );
       console.log("Inquiry submitted successfully", response.data);
       toast.success("Inquiry submitted successfully");
       resetForm();

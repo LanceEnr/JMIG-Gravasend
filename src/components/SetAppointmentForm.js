@@ -45,7 +45,7 @@ export default function SetAppointmentForm(props) {
   useEffect(() => {
     const storedUsername = localStorage.getItem("userName");
     axios
-      .get(`http://localhost:3001/user?userName=${storedUsername}`)
+      .get(`${process.env.REACT_APP_API_URL}/user?userName=${storedUsername}`)
       .then((response) => {
         if (response.data.length > 0) {
           const user = response.data[0];
@@ -92,7 +92,7 @@ export default function SetAppointmentForm(props) {
     const formattedTime2 = moment(time, "HH:mm").format("HH:mm");
     const dateTime = `${formattedSchedule}T${formattedTime2}`;
     axios
-      .post("http://localhost:3001/save-appointment", {
+      .post("${process.env.REACT_APP_API_URL}/save-appointment", {
         _userName: userName,
         _note: userData.Agenda,
         _date: formattedSchedule,

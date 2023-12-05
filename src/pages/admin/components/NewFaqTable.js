@@ -63,7 +63,9 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
 }));
 const fetchFAQData = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/get-faq");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/get-faq"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -122,7 +124,7 @@ export default function NewFaqTable() {
       const _faqNum = parseInt(id, 10);
 
       const response = await axios.post(
-        `http://localhost:3001/deleteFAQ/${_faqNum}`
+        `${process.env.REACT_APP_API_URL}/deleteFAQ/${_faqNum}`
       );
 
       if (response.status === 200) {

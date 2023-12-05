@@ -21,7 +21,9 @@ export default function EditFaq() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const response = await fetch(`http://localhost:3001/fetch-faq/${id}`);
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/fetch-faq/${id}`
+        );
         if (response.ok) {
           const data = await response.json();
           setQuestion(data._question);
@@ -40,11 +42,14 @@ export default function EditFaq() {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.put("http://localhost:3001/update-faq", {
-        _faqNum: id,
-        _question: question,
-        _answer: answer,
-      });
+      const response = await axios.put(
+        "${process.env.REACT_APP_API_URL}/update-faq",
+        {
+          _faqNum: id,
+          _question: question,
+          _answer: answer,
+        }
+      );
 
       console.log("FAQ edited successfully", response.data);
       toast.success("FAQ edited successfully");

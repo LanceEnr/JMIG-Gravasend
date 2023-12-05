@@ -68,7 +68,9 @@ export default function AddMaintenanceScheduling() {
   useEffect(() => {
     async function fetchPlates() {
       try {
-        const response = await fetch("http://localhost:3001/fetch-trucks");
+        const response = await fetch(
+          "${process.env.REACT_APP_API_URL}/fetch-trucks"
+        );
         if (response.ok) {
           const data = await response.json();
           const plates = Object.keys(data).map((key) => data[key].plateNo);
@@ -88,7 +90,7 @@ export default function AddMaintenanceScheduling() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:3001/addMaintenance",
+        "${process.env.REACT_APP_API_URL}/addMaintenance",
         {
           plateNo: plateNo,
           service: service,
@@ -115,7 +117,7 @@ export default function AddMaintenanceScheduling() {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:3001/fetch-mileage-plate/${plate}`
+            `${process.env.REACT_APP_API_URL}/fetch-mileage-plate/${plate}`
           );
 
           setStartMileage(response.data.mileage);

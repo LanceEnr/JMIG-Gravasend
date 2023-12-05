@@ -60,7 +60,9 @@ const transformFleetData = (data) => {
 
 const fetchFleetInformation = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/fetch-trucks");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/fetch-trucks"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -144,7 +146,7 @@ export default function NewFleetInformation() {
     try {
       const _truckID = id;
       const response = await axios.post(
-        "http://localhost:3001/deleteTruckRecord",
+        "${process.env.REACT_APP_API_URL}/deleteTruckRecord",
         {
           _truckID: _truckID,
         }

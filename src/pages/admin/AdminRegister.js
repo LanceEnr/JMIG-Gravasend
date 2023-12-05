@@ -135,7 +135,7 @@ export default function AdminRegister() {
     }
     try {
       const response = await axios.post(
-        "http://localhost:3001/adminRegister",
+        "${process.env.REACT_APP_API_URL}/adminRegister",
         formData
       );
       console.log("Registration successful", response.data);

@@ -23,7 +23,9 @@ export default function CompanyValues() {
   useEffect(() => {
     async function fetchValues() {
       try {
-        const response = await axios.get("http://localhost:3001/fetch-values");
+        const response = await axios.get(
+          "${process.env.REACT_APP_API_URL}/fetch-values"
+        );
         const valuesData = response.data;
 
         // Set the formData state with the fetched values
@@ -65,7 +67,7 @@ export default function CompanyValues() {
     // Send data to the server using Axios (update the URL)
     try {
       const response = await axios.put(
-        "http://localhost:3001/update-values",
+        "${process.env.REACT_APP_API_URL}/update-values",
         valueData
       );
       toast.success("Values edited successfully!");

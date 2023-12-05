@@ -117,7 +117,9 @@ const JobOrderModal = ({
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const response = await fetch("http://localhost:3001/get-products3");
+        const response = await fetch(
+          "${process.env.REACT_APP_API_URL}/get-products3"
+        );
         if (response.ok) {
           const data = await response.json();
           setProducts(data);
@@ -134,7 +136,9 @@ const JobOrderModal = ({
   useEffect(() => {
     async function fetchDrivers() {
       try {
-        const response = await fetch("http://localhost:3001/fetch-trucks");
+        const response = await fetch(
+          "${process.env.REACT_APP_API_URL}/fetch-trucks"
+        );
         if (response.ok) {
           const data = await response.json();
           const driverNames = Object.keys(data).map(
@@ -400,7 +404,7 @@ const ValidationDialog = ({
   const handleConfirm = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:3001/addJob",
+        "${process.env.REACT_APP_API_URL}/addJob",
         formData
       );
       if (response.status === 200) {
@@ -446,7 +450,7 @@ const DeleteValidationDialog = ({
   const handleConfirm2 = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:3001/deleteJob",
+        "${process.env.REACT_APP_API_URL}/deleteJob",
         formData
       );
       if (response.status === 200) {
@@ -505,10 +509,10 @@ const JobOrderSystem = () => {
     async function fetchJobOrders() {
       try {
         const jobOrdersResponse = await axios.get(
-          "http://localhost:3001/fetch-job-orders"
+          "${process.env.REACT_APP_API_URL}/fetch-job-orders"
         );
         const jobRecordsResponse = await axios.get(
-          "http://localhost:3001/fetch-job-records"
+          "${process.env.REACT_APP_API_URL}/fetch-job-records"
         );
 
         if (

@@ -37,7 +37,9 @@ const isValidUrl = (url) => {
 };
 const fetchOrderData = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/get-order");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/get-order"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -132,7 +134,7 @@ export default function NewManageOrders() {
     try {
       const _orderNum = id;
       const response = await axios.post(
-        `http://localhost:3001/deleteOrder/${_orderNum}`
+        `${process.env.REACT_APP_API_URL}/deleteOrder/${_orderNum}`
       );
 
       if (response.status === 200) {

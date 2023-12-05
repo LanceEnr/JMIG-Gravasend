@@ -54,7 +54,7 @@ export default function ChangePassword({ email }) {
 
     try {
       const response = await axios.post(
-        "http://localhost:3001/admin-reset-password",
+        "${process.env.REACT_APP_API_URL}/admin-reset-password",
         {
           email,
           newPassword,

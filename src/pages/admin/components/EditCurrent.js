@@ -49,7 +49,7 @@ export default function EditCurrent() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/fetch-inventory/${id}`
+          `${process.env.REACT_APP_API_URL}/fetch-inventory/${id}`
         );
         setItem(response.data._itemName);
         setLocation(response.data._location);
@@ -71,13 +71,16 @@ export default function EditCurrent() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.put("http://localhost:3001/update-current", {
-        _inventoryID: id,
-        itemName: item,
-        quantity: quantity,
-        location: location,
-        lastUpdated: formattedDate,
-      });
+      const response = await axios.put(
+        "${process.env.REACT_APP_API_URL}/update-current",
+        {
+          _inventoryID: id,
+          itemName: item,
+          quantity: quantity,
+          location: location,
+          lastUpdated: formattedDate,
+        }
+      );
 
       console.log("Inventory edited successfully", response.data);
       toast.success("Inventory edited successfully");

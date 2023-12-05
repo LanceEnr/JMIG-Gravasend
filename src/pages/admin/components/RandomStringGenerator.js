@@ -83,7 +83,9 @@ export default function RandomStringGenerator() {
     // Fetch data from your database and update the rows state
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/accessCodes");
+        const response = await axios.get(
+          "${process.env.REACT_APP_API_URL}/accessCodes"
+        );
         const rowsWithIds = response.data.map((row) => ({
           ...row,
           id: row._codeID,
@@ -110,7 +112,7 @@ export default function RandomStringGenerator() {
   const handleDeleteRow = async (adminCode) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3001/accessCodes/${adminCode}`
+        `${process.env.REACT_APP_API_URL}/accessCodes/${adminCode}`
       );
       if (response.status === 204) {
         setRows((prevRows) =>
@@ -127,10 +129,13 @@ export default function RandomStringGenerator() {
   const handleGenerateAndPost = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3001/generateCode", {
-        accessCode: randomString,
-        formattedDate,
-      });
+      const response = await axios.post(
+        "${process.env.REACT_APP_API_URL}/generateCode",
+        {
+          accessCode: randomString,
+          formattedDate,
+        }
+      );
 
       const generatedCode = response.data;
       const newRow = {

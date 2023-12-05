@@ -32,7 +32,7 @@ export default function ForgotPassword() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:3001/admin-check-email",
+        "${process.env.REACT_APP_API_URL}/admin-check-email",
         {
           _email: _email,
         }
@@ -40,7 +40,7 @@ export default function ForgotPassword() {
 
       if (response.data.exists === true) {
         const otpResponse = await axios.post(
-          "http://localhost:3001/admin-send-otp",
+          "${process.env.REACT_APP_API_URL}/admin-send-otp",
           {
             _email: _email,
           }

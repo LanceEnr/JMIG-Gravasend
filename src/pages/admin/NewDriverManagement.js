@@ -68,7 +68,9 @@ const transformDriverData = (data) => {
 
 const fetchDriverInformation = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/fetch-driver");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/fetch-driver"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -123,7 +125,7 @@ export default function NewDriverManagement() {
   const fetchSpeedRecord = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/fetch-SpeedRecord"
+        "${process.env.REACT_APP_API_URL}/fetch-SpeedRecord"
       );
       return response.data;
     } catch (error) {
@@ -280,7 +282,7 @@ export default function NewDriverManagement() {
   const deleteRecord = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:3001/deleteDriverRecord",
+        "${process.env.REACT_APP_API_URL}/deleteDriverRecord",
         { _driverID: id }
       );
 

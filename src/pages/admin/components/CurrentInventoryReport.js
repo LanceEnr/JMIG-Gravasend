@@ -9,7 +9,9 @@ import InventoryBar from "./InventoryBar";
 
 const fetchInventoryData = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/currentInventory");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/currentInventory"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);

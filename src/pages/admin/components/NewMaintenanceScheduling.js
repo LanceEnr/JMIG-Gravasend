@@ -64,7 +64,9 @@ const transformMaintenanceData = (data) => {
 
 const fetchMaintenance = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/fetch-maintenance");
+    const response = await axios.get(
+      "${process.env.REACT_APP_API_URL}/fetch-maintenance"
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -149,7 +151,7 @@ export default function NewMaintenanceScheduling() {
     try {
       const _maintenanceId = parseInt(id, 10);
       const response = await axios.post(
-        "http://localhost:3001/deleteMaintenanceRecord",
+        "${process.env.REACT_APP_API_URL}/deleteMaintenanceRecord",
         { _maintenanceId, uid }
       );
 

@@ -49,12 +49,15 @@ export default function AddCurrent() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3001/addInventory", {
-        itemName: item,
-        quantity: quantity,
-        location: location,
-        lastUpdated: formattedDate,
-      });
+      const response = await axios.post(
+        "${process.env.REACT_APP_API_URL}/addInventory",
+        {
+          itemName: item,
+          quantity: quantity,
+          location: location,
+          lastUpdated: formattedDate,
+        }
+      );
 
       console.log("Order added successfully", response.data);
       toast.success(response.data.message);

@@ -82,7 +82,7 @@ const ManageAppointments = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3001/get-events")
+      .get("${process.env.REACT_APP_API_URL}/get-events")
       .then((response) => {
         const allEvents = response.data.map((event) => ({
           ...event,
@@ -111,7 +111,7 @@ const ManageAppointments = () => {
 
   const handleComplete = (appointmentNum, dateTime, fname, lname) => {
     axios
-      .post("http://localhost:3001/complete-appointment-admin", {
+      .post("${process.env.REACT_APP_API_URL}/complete-appointment-admin", {
         appointmentNum: appointmentNum,
         dateTime: dateTime,
         date: formattedDate,
@@ -151,7 +151,7 @@ const ManageAppointments = () => {
     const formattedTime2 = moment(time, "HH:mm").format("HH:mm");
     const dateTime = `${formattedSchedule}T${formattedTime2}`;
     axios
-      .post("http://localhost:3001/update-appointment-admin", {
+      .post("${process.env.REACT_APP_API_URL}/update-appointment-admin", {
         appointmentNum: appointmentNum,
         _date: formattedSchedule,
         _time: formattedTime,
@@ -246,7 +246,7 @@ const ManageAppointments = () => {
         (event) => event._appointmentNum !== selectedEvent._appointmentNum
       );
       axios
-        .post("http://localhost:3001/cancel-appointment-admin", {
+        .post("${process.env.REACT_APP_API_URL}/cancel-appointment-admin", {
           appointmentNum: appointmentNum,
           _status: "Cancelled",
           _cancelReason: cancelReason,

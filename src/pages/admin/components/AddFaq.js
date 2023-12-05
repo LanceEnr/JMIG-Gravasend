@@ -18,10 +18,13 @@ export default function AddFaq() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3001/addFAQ", {
-        question: question,
-        answer: answer,
-      });
+      const response = await axios.post(
+        "${process.env.REACT_APP_API_URL}/addFAQ",
+        {
+          question: question,
+          answer: answer,
+        }
+      );
 
       console.log("FAQ added successfully", response.data);
       toast.success("FAQ added successfully");

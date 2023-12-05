@@ -37,7 +37,7 @@ export default function ProfileInfo(props) {
   useEffect(() => {
     const storedUsername = localStorage.getItem("userName");
     axios
-      .get(`http://localhost:3001/user?userName=${storedUsername}`)
+      .get(`${process.env.REACT_APP_API_URL}/user?userName=${storedUsername}`)
       .then((response) => {
         setUsers(response.data);
 
