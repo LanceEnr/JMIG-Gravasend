@@ -43,7 +43,7 @@ import Logout from "@mui/icons-material/Logout";
 
 const storedUsername = localStorage.getItem("userName");
 const valuesData = await fetchProfilePic(storedUsername);
-const imagePath = valuesData._profilePicture;
+//const imagePath = valuesData._profilePicture;
 //const filename = imagePath.substring(imagePath.lastIndexOf("\\") + 1);
 const StyledBox = styled(Box)(({ theme }) => ({
   "&::-webkit-scrollbar": {
