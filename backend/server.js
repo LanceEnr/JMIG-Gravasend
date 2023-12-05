@@ -14,7 +14,6 @@ const User = require("./models/user");
 const Order = require("./models/order");
 const AdminUser = require("./models/adminUser");
 const Inventory = require("./models/inventory");
-
 const Appointment = require("./models/appointment");
 const { Tune } = require("@mui/icons-material");
 
@@ -29,20 +28,16 @@ app.use(itemsRouter);
 app.use(adminRouter);
 app.use(mobileRouter);
 
+// Connect to MongoDB
 mongoose.connect(process.env.URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
-const db = mongoose.connection;
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
-
 mongoose.connection.on("connected", () => {
-  const connectedDatabaseName = mongoose.connection.db.databaseName;
-  console.log(`Connected to MongoDB database: ${connectedDatabaseName}`);
+  console.log(
+    `Connected to MongoDB database: ${mongoose.connection.db.databaseName}`
+  );
 });
 
 mongoose.connection.on("error", (error) => {
@@ -52,22 +47,30 @@ mongoose.connection.on("error", (error) => {
 mongoose.connection.on("disconnected", () => {
   console.log("Disconnected from MongoDB");
 });
-const serviceAccount = require("./gravasend-965f7-firebase-adminsdk-ts4oz-eebc1a8275.json"); // Replace with the actual path to your service account key
-const firebaseAdminConfig = {
+
+// Firebase setup
+const serviceAccount = require("./gravasend-965f7-firebase-adminsdk-ts4oz-eebc1a8275.json");
+admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://gravasend-965f7-default-rtdb.firebaseio.com", // Replace with your Firebase Realtime Database URL
-};
+  databaseURL: "https://gravasend-965f7-default-rtdb.firebaseio.com",
+});
 
-admin.initializeApp(firebaseAdminConfig);
 const firebasedb = admin.database();
-
-const ref = firebasedb.ref("/");
-ref
+firebasedb
+  .ref("/")
   .once("value")
-  .then((snapshot) => {
-    console.log("Connected to Firebase");
-    // You can perform operations on Firebase data here.
-  })
-  .catch((error) => {
-    console.error("Firebase connection error:", error);
-  });
+  .then(() => console.log("Connected to Firebase"))
+  .catch((error) => console.error("Firebase connection error:", error));
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, "../build")));
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back the index.html file.
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../build", "index.html"));
+});
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
