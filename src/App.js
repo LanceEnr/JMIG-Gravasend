@@ -1,7 +1,7 @@
 import "./App.css";
 import React, { useReducer, useEffect } from "react";
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Route,
   Routes,
   Navigate,
