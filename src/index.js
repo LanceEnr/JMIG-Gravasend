@@ -133,7 +133,7 @@ ReactDOM.render(
   <Provider store={store}>
     <React.StrictMode>
       <ThemeProvider theme={theme}>
-        <App />
+        {shouldRenderAdminApp ? <AdminApp /> : <App />}
       </ThemeProvider>
     </React.StrictMode>
   </Provider>,
