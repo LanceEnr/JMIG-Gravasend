@@ -1,6 +1,6 @@
 import React from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-
+import { BrowserRouter as Router } from "react-router-dom";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { createStore, combineReducers } from "redux";
@@ -133,7 +133,7 @@ ReactDOM.render(
   <Provider store={store}>
     <React.StrictMode>
       <ThemeProvider theme={theme}>
-        {shouldRenderAdminApp ? <AdminApp /> : <App />}
+        <Router>{shouldRenderAdminApp ? <AdminApp /> : <App />}</Router>
       </ThemeProvider>
     </React.StrictMode>
   </Provider>,

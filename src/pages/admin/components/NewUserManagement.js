@@ -1,11 +1,7 @@
-import React, { useState } from "react";
 import { DataGrid, GridToolbar, gridClasses } from "@mui/x-data-grid";
-import axios from "axios";
 import Typography from "../../../components/common/Typography";
 import { rowsUserManagement } from "../helpers/data";
 import { alpha, styled } from "@mui/material/styles";
-
-import { toast } from "react-toastify";
 
 import { Paper, Box } from "@mui/material";
 

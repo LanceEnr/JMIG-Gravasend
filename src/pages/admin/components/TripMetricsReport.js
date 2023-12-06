@@ -117,7 +117,7 @@ function TripMetricsReport() {
     };
 
     fetchData();
-  }, []);
+  }, [calculateAverages]);
 
   // Add the calculateColor function here
   const calculateColor = (value) => {

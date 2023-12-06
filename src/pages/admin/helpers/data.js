@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import image from "../helpers/images/blank.webp";
 import { Typography, Chip } from "@mui/material";
 
 const fetchInventoryData = async () => {
@@ -136,7 +135,6 @@ export { rowsFleetInformation };
 
 const transformDriverData = (data) => {
   const transformedData = [];
-  console.log(data);
   if (data) {
     for (const uid in data) {
       if (data.hasOwnProperty(uid)) {

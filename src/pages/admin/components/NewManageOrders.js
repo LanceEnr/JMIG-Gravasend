@@ -17,7 +17,6 @@ import AddIcon from "@mui/icons-material/Add";
 import { toast } from "react-toastify";
 
 import {
-  Switch,
   Paper,
   Button,
   Box,
@@ -27,14 +26,7 @@ import {
   DialogContentText,
   DialogActions,
 } from "@mui/material";
-const isValidUrl = (url) => {
-  try {
-    new URL(url);
-    return true;
-  } catch (e) {
-    return false;
-  }
-};
+
 const fetchOrderData = async () => {
   try {
     const response = await axios.get(

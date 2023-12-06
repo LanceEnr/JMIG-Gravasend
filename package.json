@@ -89,6 +89,7 @@
     "npm": "8.3.1"
   },
   "devDependencies": {
-    "terser-brunch": "^4.1.0"
+    "terser-brunch": "^4.1.0",
+    "@babel/plugin-proposal-private-property-in-object": "^1.0.6"
   }
 }

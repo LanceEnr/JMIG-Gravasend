@@ -63,7 +63,6 @@ function getRandomString(length) {
 }
 
 export default function RandomStringGenerator() {
-  const navigate = useNavigate();
   const [randomString, setRandomString] = useState(getRandomString(6));
   const [rows, setRows] = useState([]);
   const currentDate = new Date();

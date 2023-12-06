@@ -16,8 +16,6 @@ import Typography from "../../../components/common/Typography";
 import { toast } from "react-toastify";
 
 import {
-  Switch,
-  Paper,
   Button,
   Box,
   Dialog,
@@ -139,7 +137,7 @@ export default function NewMaintenanceScheduling() {
     };
 
     fetchData();
-  }, [navigate, window.location.href]);
+  }, [navigate]);
   const handleClose = () => {
     setOpen(false);
   };

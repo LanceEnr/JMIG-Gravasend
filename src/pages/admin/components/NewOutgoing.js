@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Chip from "@mui/material/Chip";
-import {
-  DataGrid,
-  GridActionsCellItem,
-  GridToolbar,
-  gridClasses,
-} from "@mui/x-data-grid";
+
+import { DataGrid, GridToolbar, gridClasses } from "@mui/x-data-grid";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { columnsOutgoingInventory } from "../helpers/data";
 import { alpha, styled } from "@mui/material/styles";
 import { toast } from "react-toastify";
@@ -92,37 +87,6 @@ export default function NewOutgoingInventory() {
 
     fetchData();
   }, [navigate]);
-
-  const handleClickOpen = (action, row) => {
-    setAction(action);
-    setOpen(true);
-    setSelectedRow(row);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const deleteRecord = async (id) => {
-    try {
-      const _listingId = parseInt(id, 10);
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/delete-listing`,
-        { _listingId }
-      );
-
-      if (response.status === 200) {
-        toast.success("Listing deleted successfully");
-      } else if (response.status === 404) {
-        toast.error("Record not found");
-      } else {
-        toast.error("Failed to delete the listing");
-      }
-    } catch (error) {
-      console.error("Error deleting record", error);
-      toast.error("An error occurred while deleting the record");
-    }
-  };
 
   return (
     <Box>
