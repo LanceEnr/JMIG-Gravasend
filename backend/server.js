@@ -17,7 +17,6 @@ const Inventory = require("./models/inventory");
 const Appointment = require("./models/appointment");
 
 const app = express();
-const port = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
@@ -69,6 +68,8 @@ firebasedb
 // app.get("*", (req, res) => {
 //   res.sendFile(path.join(__dirname, "../build", "index.html"));
 // });
+
+const port = process.env.PORT || 3001;
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
