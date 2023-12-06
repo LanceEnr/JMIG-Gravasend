@@ -1,6 +1,6 @@
 import React from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { BrowserRouter as Router } from "react-router-dom";
+
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { createStore, combineReducers } from "redux";
@@ -128,12 +128,12 @@ const theme = createTheme({
 
 document.title = "JMIG Gravel and Sand Supply";
 const shouldRenderAdminApp = window.location.pathname.startsWith("/admin");
-
+<h1>WORKING</h1>;
 ReactDOM.render(
   <Provider store={store}>
     <React.StrictMode>
       <ThemeProvider theme={theme}>
-        <Router>{shouldRenderAdminApp ? <AdminApp /> : <App />}</Router>
+        {shouldRenderAdminApp ? <AdminApp /> : <App />}
       </ThemeProvider>
     </React.StrictMode>
   </Provider>,
