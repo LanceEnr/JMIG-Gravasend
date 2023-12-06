@@ -128,6 +128,8 @@ const theme = createTheme({
 
 document.title = "JMIG Gravel and Sand Supply";
 const shouldRenderAdminApp = window.location.pathname.startsWith("/admin");
+console.log("shouldRenderAdminApp:", shouldRenderAdminApp);
+console.log("working");
 
 ReactDOM.render(
   <Provider store={store}>
