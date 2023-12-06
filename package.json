@@ -1,7 +1,7 @@
 {
   "name": "jmig-gravasend",
   "version": "0.1.0",
-  "homepage": "https://jmig-gravasend-frontend.onrender.com/",
+  "homepage": ".",
   "private": true,
   "dependencies": {
     "@babel/eslint-parser": "^7.22.15",
@@ -84,7 +84,6 @@
       "last 1 safari version"
     ]
   },
-  "main": "src/index.js",
   "engines": {
     "node": "v16.14.0",
     "npm": "8.3.1"
