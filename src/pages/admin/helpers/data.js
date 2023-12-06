@@ -135,6 +135,7 @@ export { rowsFleetInformation };
 
 const transformDriverData = (data) => {
   const transformedData = [];
+  console.log(data);
   if (data) {
     for (const uid in data) {
       if (data.hasOwnProperty(uid)) {
