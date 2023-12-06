@@ -1,6 +1,6 @@
 import React from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { createStore, combineReducers } from "redux";
@@ -128,7 +128,12 @@ const theme = createTheme({
 
 document.title = "JMIG Gravel and Sand Supply";
 const shouldRenderAdminApp = window.location.pathname.startsWith("/admin");
-<h1>WORKING</h1>;
+<Routes>
+  <Route path="/" exact element={<Home />} />
+
+  <Route path="/products" exact element={<Products />} />
+</Routes>;
+
 ReactDOM.render(
   <Provider store={store}>
     <React.StrictMode>
