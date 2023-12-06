@@ -5,9 +5,14 @@ const app = express();
 // Serve static files from the 'build' directory
 app.use(express.static(path.join(__dirname, "build")));
 
-// Serve 'index.html' for any other requests
+// Serve 'index.js' as the entry point
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.js"));
+});
+
+// Handle other routes by serving 'index.js' as well
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
+  res.sendFile(path.join(__dirname, "build", "index.js"));
 });
 
 const PORT = process.env.PORT || 3000;
