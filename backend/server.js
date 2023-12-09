@@ -19,10 +19,7 @@ const Appointment = require("./models/appointment");
 const app = express();
 
 app.use(
-   cors({
-      credentials: true,
-      origin: ["http://localhost:3000", "https://jmigfrontend-gravasend.vercel.app"],
-   })
+   cors()
 );
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
