@@ -19,16 +19,22 @@ const path = require("path");
 const fs = require("fs");
 const admin = require("firebase-admin");
 
-const serviceAccount = require("./gravasend-965f7-firebase-adminsdk-ts4oz-eebc1a8275.json");
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://gravasend-965f7-default-rtdb.firebaseio.com",
-  storageBucket: "gravasend-965f7.appspot.com",
+const storage = multer.diskStorage({
+  destination: "../src/images/profile/",
+  filename: function (req, file, cb) {
+    const username = req.body._userName;
+    const extname = path.extname(file.originalname);
+    const filename = username + extname;
+    cb(null, filename);
+  },
 });
-const bucket = admin.storage().bucket();
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 10000000,
+  },
+});
 
 const transporter = nodemailer.createTransport({
   service: "Gmail", // Use a valid email service (e.g., Gmail, Outlook, etc.)
@@ -709,26 +715,20 @@ router.put(
   upload.single("image"),
   async (req, res) => {
     try {
-      let image;
+      let image = req.body.image;
 
-      // Check if image was uploaded
       if (req.file) {
-        image = req.file.buffer;
+        image = req.file.path;
 
         const existingCategory = req.body._userName;
-        const extname = path.extname(req.file.originalname);
-        const oldImagePath = `images/profile/${existingCategory}${extname}`;
 
-        // Delete old image if exists
-        try {
-          await bucket.file(oldImagePath).delete();
-        } catch (err) {
-          console.error("Error deleting old image:", err);
+        const extname = path.extname(image);
+
+        const oldImagePath = "images/profile/" + existingCategory + extname;
+
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
         }
-
-        // Upload new image
-        const newImagePath = `images/profile/${existingCategory}${extname}`;
-        await bucket.file(newImagePath).createWriteStream().end(image);
       }
 
       const existingUser = await User.findOne();
