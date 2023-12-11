@@ -13,7 +13,10 @@ const userSchema = new mongoose.Schema(
     _address: String,
     _iv: String,
     _encryptionKey: String,
-    _profilePicture: String,
+    _profilePicture: {
+      data: Buffer, // Store binary image data
+      contentType: String, // Store content type (e.g., 'image/png', 'image/jpeg')
+    },
   },
   { collection: "user" }
 );

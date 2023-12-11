@@ -17,24 +17,8 @@ const encryptionKey = crypto.randomBytes(32).toString("hex");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const admin = require("firebase-admin");
 
-const storage = multer.diskStorage({
-  destination: "../src/images/profile/",
-  filename: function (req, file, cb) {
-    const username = req.body._userName;
-    const extname = path.extname(file.originalname);
-    const filename = username + extname;
-    cb(null, filename);
-  },
-});
-
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 10000000,
-  },
-});
+const upload = multer({ dest: "uploads/" });
 
 const transporter = nodemailer.createTransport({
   service: "Gmail", // Use a valid email service (e.g., Gmail, Outlook, etc.)
@@ -710,29 +694,45 @@ router.get("/fetch-notifications", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch order data" });
   }
 });
-router.post("/update-user-profilepic", async (req, res) => {
-  try {
-    let image = req.body.image;
+router.post(
+  "/update-user-profilepic",
+  upload.single("image"),
+  async (req, res) => {
+    try {
+      let image = req.body.image;
 
-    if (req.file) {
-      image = req.file.path;
+      if (req.file) {
+        const path = req.file.path;
 
-      const existingCategory = req.body._userName;
-      console.log(req.body);
+        // Read the image file as binary data
+        const imageBuffer = fs.readFileSync(path);
 
-      const extname = path.extname(image);
+        // Save the image data to MongoDB
+        const existingUser = await User.findOne();
 
-      const oldImagePath = "images/profile/" + existingCategory + extname;
+        if (!existingUser) {
+          return res.status(404).json({ error: "User not found" });
+        }
+
+        existingUser._profilePicture = {
+          data: imageBuffer,
+          contentType: req.file.mimetype,
+        };
+
+        await existingUser.save();
+
+        res
+          .status(200)
+          .json({ message: "Profile picture updated successfully" });
+      } else {
+        // Handle the case where there is no file
+      }
+    } catch (error) {
+      console.error("Error updating profile picture:", error);
+      res.status(500).json({ error: "Profile picture update failed" });
     }
-
-    const existingUser = await User.findOne();
-
-    res.status(200).json({ message: "Banner updated successfully" });
-  } catch (error) {
-    console.error("Error updating banner:", error);
-    res.status(500).json({ error: "Banner update failed" });
   }
-});
+);
 
 router.get("/fetch-profile-pic/:_userName", async (req, res) => {
   const { _userName } = req.params;
