@@ -126,7 +126,7 @@ const theme = createTheme({
   },
 });
 
-document.title = "JMIG Gravel and Sand Supply";
+document.title = "Gravasend";
 const shouldRenderAdminApp = window.location.pathname.startsWith("/admin");
 console.log("shouldRenderAdminApp:", shouldRenderAdminApp);
 console.log("working");
