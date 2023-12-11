@@ -710,44 +710,6 @@ router.get("/fetch-notifications", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch order data" });
   }
 });
-router.put(
-  "/update-user-profilepic",
-  upload.single("image"),
-  async (req, res) => {
-    try {
-      let image = req.body.image;
-
-      if (req.file) {
-        image = req.file.path;
-
-        const existingCategory = req.body._userName;
-
-        const extname = path.extname(image);
-
-        const oldImagePath = "images/profile/" + existingCategory + extname;
-
-        if (fs.existsSync(oldImagePath)) {
-          fs.unlinkSync(oldImagePath);
-        }
-      }
-
-      const existingUser = await User.findOne();
-
-      if (!existingUser) {
-        return res.status(404).json({ error: "Banner not found" });
-      }
-
-      existingUser._profilePicture = image;
-
-      await existingUser.save();
-
-      res.status(200).json({ message: "Banner updated successfully" });
-    } catch (error) {
-      console.error("Error updating banner:", error);
-      res.status(500).json({ error: "Banner update failed" });
-    }
-  }
-);
 
 router.get("/fetch-profile-pic/:_userName", async (req, res) => {
   const { _userName } = req.params;

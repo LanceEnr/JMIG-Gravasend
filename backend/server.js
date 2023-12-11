@@ -9,6 +9,9 @@ const cors = require("cors");
 const itemsRouter = require("./routes/items");
 const adminRouter = require("./routes/admin");
 const mobileRouter = require("./routes/mobile");
+const router = express.Router();
+const multer = require("multer");
+const fs = require("fs");
 
 const User = require("./models/user");
 const Order = require("./models/order");
@@ -55,15 +58,53 @@ admin.initializeApp({
 });
 const bucket = admin.storage().bucket();
 
-// Example: List files in the bucket
-bucket
-  .getFiles()
-  .then((files) => {
-    console.log("Files:", files);
-  })
-  .catch((error) => {
-    console.error("Error listing files:", error);
-  });
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+router.put(
+  "/update-user-profilepic",
+  upload.single("image"),
+  async (req, res) => {
+    try {
+      let image;
+
+      // Check if image was uploaded
+      if (req.file) {
+        image = req.file.buffer;
+
+        const existingCategory = req.body._userName;
+        const extname = path.extname(req.file.originalname);
+        const oldImagePath = `images/profile/${existingCategory}${extname}`;
+
+        // Delete old image if exists
+        try {
+          await bucket.file(oldImagePath).delete();
+        } catch (err) {
+          console.error("Error deleting old image:", err);
+        }
+
+        // Upload new image
+        const newImagePath = `images/profile/${existingCategory}${extname}`;
+        await bucket.file(newImagePath).createWriteStream().end(image);
+      }
+
+      const existingUser = await User.findOne();
+
+      if (!existingUser) {
+        return res.status(404).json({ error: "Banner not found" });
+      }
+
+      existingUser._profilePicture = image;
+
+      await existingUser.save();
+
+      res.status(200).json({ message: "Banner updated successfully" });
+    } catch (error) {
+      console.error("Error updating banner:", error);
+      res.status(500).json({ error: "Banner update failed" });
+    }
+  }
+);
 
 const firebasedb = admin.database();
 firebasedb
