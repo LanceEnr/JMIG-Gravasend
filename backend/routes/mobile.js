@@ -1340,7 +1340,7 @@ router.get("/fetch-job-records", (req, res) => {
         res.json(jobData);
       } else {
         console.log('No data found in the "Trip History" collection.');
-        res.status(404).json({ message: "No data found" });
+        //res.status(404).json({ message: "No data found" });
       }
     })
     .catch((error) => {
