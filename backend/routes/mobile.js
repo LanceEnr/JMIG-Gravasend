@@ -7,18 +7,6 @@ const IncomingInventory = require("../models/incomingInventory");
 const historyInventory = require("../models/historyInventory");
 const Notification2 = require("../models/adminNotification");
 
-const bucket = admin.storage().bucket();
-
-// Example: List files in the bucket
-bucket
-  .getFiles()
-  .then((files) => {
-    console.log("Files:", files);
-  })
-  .catch((error) => {
-    console.error("Error listing files:", error);
-  });
-
 router.get("/fetch-cargo", (req, res) => {
   axios
     .get("https://gravasend-965f7-default-rtdb.firebaseio.com/Cargo.json")
