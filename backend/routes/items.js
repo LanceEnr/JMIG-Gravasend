@@ -18,7 +18,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const admin = require("firebase-admin");
-//const bucket = admin.storage().bucket();
+const bucket = admin.storage().bucket();
 
 const storage = multer.diskStorage({
   destination: "../src/images/profile/",
