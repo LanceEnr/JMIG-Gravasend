@@ -17,6 +17,8 @@ const encryptionKey = crypto.randomBytes(32).toString("hex");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const admin = require("firebase-admin");
+const bucket = admin.storage().bucket();
 
 const storage = multer.diskStorage({
   destination: "../src/images/profile/",
@@ -717,30 +719,36 @@ router.put(
       let image = req.body.image;
 
       if (req.file) {
-        image = req.file.path;
+        const fileBuffer = fs.readFileSync(req.file.path);
 
         const existingCategory = req.body._userName;
 
-        const extname = path.extname(image);
+        const extname = path.extname(req.file.originalname);
 
-        const oldImagePath = "images/profile/" + existingCategory + extname;
+        const storagePath = `images/profile/${existingCategory}${extname}`;
 
-        if (fs.existsSync(oldImagePath)) {
-          fs.unlinkSync(oldImagePath);
+        // Upload the image to Firebase Storage
+        await bucket.file(storagePath).save(fileBuffer);
+
+        // Delete the local file after successful upload
+        fs.unlinkSync(req.file.path);
+
+        // Get the public URL of the uploaded file
+        const imageUrl = `https://storage.googleapis.com/${bucket.name}/${storagePath}`;
+
+        // Update the user profile picture in the database with the imageUrl
+        const existingUser = await User.findOne();
+
+        if (!existingUser) {
+          return res.status(404).json({ error: "Banner not found" });
         }
+
+        existingUser._profilePicture = imageUrl;
+
+        await existingUser.save();
+
+        res.status(200).json({ message: "Banner updated successfully" });
       }
-
-      const existingUser = await User.findOne();
-
-      if (!existingUser) {
-        return res.status(404).json({ error: "Banner not found" });
-      }
-
-      existingUser._profilePicture = image;
-
-      await existingUser.save();
-
-      res.status(200).json({ message: "Banner updated successfully" });
     } catch (error) {
       console.error("Error updating banner:", error);
       res.status(500).json({ error: "Banner update failed" });
