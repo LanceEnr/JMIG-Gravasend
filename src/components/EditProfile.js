@@ -60,7 +60,7 @@ export default function ProfileInfo(props) {
     formData.append("image", uploadedImage);
 
     try {
-      const response = await axios.put(
+      const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/update-user-profilepic`,
         formData
       );

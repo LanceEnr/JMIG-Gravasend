@@ -61,7 +61,7 @@ const bucket = admin.storage().bucket();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-router.put(
+router.post(
   "/update-user-profilepic",
   upload.single("image"),
   async (req, res) => {
@@ -75,6 +75,8 @@ router.put(
         const existingCategory = req.body._userName;
         const extname = path.extname(req.file.originalname);
         const oldImagePath = `images/profile/${existingCategory}${extname}`;
+
+        console.log(req.body);
 
         // Delete old image if exists
         try {
