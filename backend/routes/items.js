@@ -712,7 +712,8 @@ router.get("/fetch-notifications", async (req, res) => {
   }
 });
 router.put(
-  "/update-user-profilepic"
+  "/update-user-profilepic",
+  upload.single("image"),
   async (req, res) => {
     try {
       let image = req.body.image;
