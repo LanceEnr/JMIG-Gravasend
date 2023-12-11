@@ -20,11 +20,6 @@ const fs = require("fs");
 const admin = require("firebase-admin");
 const serviceAccount = require("../gravasend-965f7-firebase-adminsdk-ts4oz-eebc1a8275.json");
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  storageBucket: "gravasend-965f7.appspot.com",
-});
-
 const bucket = admin.storage().bucket();
 
 const upload = multer({ dest: "temp/" });
