@@ -18,8 +18,8 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const admin = require("firebase-admin");
-const serviceAccount = require("../gravasend-965f7-firebase-adminsdk-ts4oz-eebc1a8275.json");
 
+console.log(admin);
 const bucket = admin.storage().bucket();
 
 const upload = multer({ dest: "temp/" });
