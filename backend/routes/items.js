@@ -18,17 +18,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const admin = require("firebase-admin");
-const bucket = admin.storage().bucket();
 
-// Example: List files in the bucket
-bucket
-  .getFiles()
-  .then((files) => {
-    console.log("Files:", files);
-  })
-  .catch((error) => {
-    console.error("Error listing files:", error);
-  });
 const storage = multer.diskStorage({
   destination: "../src/images/profile/",
   filename: function (req, file, cb) {
