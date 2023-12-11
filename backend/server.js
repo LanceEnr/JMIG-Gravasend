@@ -54,6 +54,16 @@ admin.initializeApp({
   storageBucket: "gs://gravasend-965f7.appspot.com",
 });
 
+// Example: List files in the bucket
+bucket
+  .getFiles()
+  .then((files) => {
+    console.log("Files:", files);
+  })
+  .catch((error) => {
+    console.error("Error listing files:", error);
+  });
+
 const firebasedb = admin.database();
 firebasedb
   .ref("/")
