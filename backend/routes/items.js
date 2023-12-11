@@ -18,7 +18,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const admin = require("firebase-admin");
-const bucket = admin.storage().bucket();
+//const bucket = admin.storage().bucket();
 
 const storage = multer.diskStorage({
   destination: "../src/images/profile/",
@@ -719,33 +719,40 @@ router.put(
       let image = req.body.image;
 
       if (req.file) {
-        image = req.file.path;
+        const localFilePath = req.file.path;
+        const fileName = req.file.originalname;
 
-        const existingCategory = req.body._userName;
+        // Specify the destination path in Firebase Storage
+        const destinationPath = `images/profile/${fileName}`;
 
-        const extname = path.extname(image);
+        // Upload the image to Firebase Storage
+        await bucket.upload(localFilePath, {
+          destination: destinationPath,
+          metadata: {
+            contentType: req.file.mimetype,
+          },
+        });
 
-        const oldImagePath = "images/profile/" + existingCategory + extname;
+        image = `gs://${bucket.name}/${destinationPath}`;
 
-        if (fs.existsSync(oldImagePath)) {
-          fs.unlinkSync(oldImagePath);
-        }
+        // Remove the local file after successful upload
+        fs.unlinkSync(localFilePath);
       }
 
       const existingUser = await User.findOne();
 
       if (!existingUser) {
-        return res.status(404).json({ error: "Banner not found" });
+        return res.status(404).json({ error: "User not found" });
       }
 
       existingUser._profilePicture = image;
 
       await existingUser.save();
 
-      res.status(200).json({ message: "Banner updated successfully" });
+      res.status(200).json({ message: "Profile picture updated successfully" });
     } catch (error) {
-      console.error("Error updating banner:", error);
-      res.status(500).json({ error: "Banner update failed" });
+      console.error("Error updating profile picture:", error);
+      res.status(500).json({ error: "Profile picture update failed" });
     }
   }
 );
