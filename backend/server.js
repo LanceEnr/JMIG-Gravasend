@@ -58,15 +58,52 @@ admin.initializeApp({
 });
 const bucket = admin.storage().bucket();
 
-// Example: List files in the bucket
-bucket
-  .getFiles()
-  .then((files) => {
-    console.log("Files:", files);
-  })
-  .catch((error) => {
-    console.error("Error listing files:", error);
-  });
+const storage = multer.memoryStorage(); // Store the file in memory
+const upload = multer({ storage: storage });
+
+router.put(
+  "/update-user-profilepic",
+  upload.single("image"),
+  async (req, res) => {
+    try {
+      let image = req.body.image;
+
+      if (req.file) {
+        // Upload the image to Firebase Storage
+        const fileBuffer = req.file.buffer;
+        const originalname = req.file.originalname;
+        const extname = path.extname(originalname);
+        const username = req.body._userName;
+        const filename = `${username}${extname}`;
+        const filePath = `images/profile/${filename}`;
+
+        await bucket.file(filePath).save(fileBuffer, {
+          metadata: {
+            contentType: req.file.mimetype,
+          },
+        });
+
+        // Delete the local file if it exists
+        const existingCategory = req.body._userName;
+        const oldImagePath = `./src/images/profile/${existingCategory}${extname}`;
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+
+        // Your code to update the user profile picture in the database (MongoDB) goes here
+
+        res
+          .status(200)
+          .json({ message: "Profile picture updated successfully" });
+      } else {
+        res.status(400).json({ error: "No file provided" });
+      }
+    } catch (error) {
+      console.error("Error updating profile picture:", error);
+      res.status(500).json({ error: "Profile picture update failed" });
+    }
+  }
+);
 
 const firebasedb = admin.database();
 firebasedb
