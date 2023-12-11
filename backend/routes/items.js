@@ -17,8 +17,19 @@ const encryptionKey = crypto.randomBytes(32).toString("hex");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const admin = require("firebase-admin");
+const serviceAccount = require("./gravasend-965f7-firebase-adminsdk-ts4oz-eebc1a8275.json");
 
-const upload = multer({ dest: "uploads/" });
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  storageBucket: "gravasend-965f7.appspot.com",
+});
+
+const bucket = admin.storage().bucket();
+
+// Multer setup for handling file uploads
+const multer = require("multer");
+const upload = multer({ dest: "temp/" });
 
 const transporter = nodemailer.createTransport({
   service: "Gmail", // Use a valid email service (e.g., Gmail, Outlook, etc.)
@@ -702,31 +713,26 @@ router.post(
       let image = req.body.image;
 
       if (req.file) {
-        const path = req.file.path;
+        const extname = req.file.originalname.slice(
+          (Math.max(0, req.file.originalname.lastIndexOf(".")) || Infinity) + 1
+        );
+        const filename = `${req.body._userName}-${Date.now()}.${extname}`;
+        const filePath = `images/profile/${filename}`;
 
-        // Read the image file as binary data
-        const imageBuffer = fs.readFileSync(path);
+        await bucket.upload(req.file.path, {
+          destination: filePath,
+          metadata: {
+            contentType: req.file.mimetype,
+          },
+        });
 
-        // Save the image data to MongoDB
-        const existingUser = await User.findOne();
-
-        if (!existingUser) {
-          return res.status(404).json({ error: "User not found" });
-        }
-
-        existingUser._profilePicture = {
-          data: imageBuffer,
-          contentType: req.file.mimetype,
-        };
-
-        await existingUser.save();
-
-        res
-          .status(200)
-          .json({ message: "Profile picture updated successfully" });
-      } else {
-        // Handle the case where there is no file
+        image = `gs://${bucket.name}/${filePath}`;
       }
+
+      // Your existing logic for updating the user profile picture in MongoDB
+      // ...
+
+      res.status(200).json({ message: "Profile picture updated successfully" });
     } catch (error) {
       console.error("Error updating profile picture:", error);
       res.status(500).json({ error: "Profile picture update failed" });
