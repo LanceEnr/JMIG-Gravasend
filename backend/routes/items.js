@@ -17,23 +17,15 @@ const encryptionKey = crypto.randomBytes(32).toString("hex");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const cloudinary = require("cloudinary").v2;
 
-const storage = multer.diskStorage({
-  destination: "../src/images/profile/",
-  filename: function (req, file, cb) {
-    const username = req.body._userName;
-    const extname = path.extname(file.originalname);
-    const filename = username + extname;
-    cb(null, filename);
-  },
+cloudinary.config({
+  cloud_name: "dh1q6xzsg",
+  api_key: "371522446396728",
+  api_secret: "jZaM8ooW_6dtoF8e8p8LVpTQFyY",
 });
-
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 10000000,
-  },
-});
+const storage = multer.memoryStorage(); // Store the file in memory
+const upload = multer({ storage: storage });
 
 const transporter = nodemailer.createTransport({
   service: "Gmail", // Use a valid email service (e.g., Gmail, Outlook, etc.)
@@ -709,41 +701,48 @@ router.get("/fetch-notifications", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch order data" });
   }
 });
-router.put(
+router.post(
   "/update-user-profilepic",
   upload.single("image"),
   async (req, res) => {
     try {
-      let image = req.body.image;
+      // Assuming "_userName" is sent in the request body
+      const { _userName } = req.body;
 
-      if (req.file) {
-        image = req.file.path;
-
-        const existingCategory = req.body._userName;
-
-        const extname = path.extname(image);
-
-        const oldImagePath = "images/profile/" + existingCategory + extname;
-
-        if (fs.existsSync(oldImagePath)) {
-          fs.unlinkSync(oldImagePath);
-        }
+      if (!req.file) {
+        return res.status(400).json({ error: "No image provided" });
       }
 
-      const existingUser = await User.findOne();
+      // Decode base64 and upload image to Cloudinary
+      const result = await cloudinary.uploader.upload(
+        `data:${req.file.mimetype};base64,${req.file.buffer.toString(
+          "base64"
+        )}`,
+        {
+          folder: "profile-pictures", // Optional: specify a folder in Cloudinary
+          public_id: _userName, // Optional: specify a public ID in Cloudinary
+        }
+      );
+
+      const existingUser = await User.findOne({ _userName: _userName });
 
       if (!existingUser) {
-        return res.status(404).json({ error: "Banner not found" });
+        return res.status(404).json({ error: "user not found" });
       }
 
-      existingUser._profilePicture = image;
+      existingUser._profilePicture = result.secure_url;
 
       await existingUser.save();
 
-      res.status(200).json({ message: "Banner updated successfully" });
+      // You can now save the Cloudinary URL or other information in your database
+      console.log("Cloudinary Upload Result:", result);
+
+      return res
+        .status(200)
+        .json({ message: "Profile picture changed successfully!" });
     } catch (error) {
-      console.error("Error updating banner:", error);
-      res.status(500).json({ error: "Banner update failed" });
+      console.error("Error uploading picture:", error);
+      return res.status(500).json({ error: "Internal server error" });
     }
   }
 );

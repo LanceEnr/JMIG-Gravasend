@@ -81,7 +81,7 @@ export default function ProductBanner() {
           <Hidden mdDown>
             <Box>
               <img
-                src={require(`../images/banner/uploads/${filename}`)}
+                src={imagePath}
                 alt="Product"
                 style={{
                   maxWidth: 500,

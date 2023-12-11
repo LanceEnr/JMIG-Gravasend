@@ -33,10 +33,17 @@ const fs = require("fs");
 const historyInventory = require("../models/historyInventory");
 const accountSid = "AC884cb7a63fb7e7784143f86c75d68c71";
 const authToken = "4c88bf8aff4554273c705411dfa324a6";
+const cloudinary = require("cloudinary").v2;
 
-//const accountSid = "AC5e511e9476e52d8cb06d77a2873a5d54";
-//const authToken = "0dcb9f8a1567a4db867974aae24c9f52";
 const client = require("twilio")(accountSid, authToken);
+cloudinary.config({
+  cloud_name: "dh1q6xzsg",
+  api_key: "371522446396728",
+  api_secret: "jZaM8ooW_6dtoF8e8p8LVpTQFyY",
+});
+
+const storage = multer.memoryStorage(); // Store the file in memory
+const upload = multer({ storage: storage });
 
 const transporter = nodemailer.createTransport({
   service: "Gmail", // Use a valid email service (e.g., Gmail, Outlook, etc.)
@@ -77,73 +84,6 @@ const registeredUsers = [];
 const sanitizeFilename = (filename) => {
   return filename.replace(/[^\w\s.-]/g, "").replace(/\s+/g, "_");
 };
-const storage = multer.diskStorage({
-  destination: "../src/images/banner/uploads/",
-  filename: function (req, file, cb) {
-    const category = sanitizeFilename(req.body.category);
-    console.log(category);
-    const extname = path.extname(file.originalname);
-    const filename = category + extname;
-    cb(null, filename);
-  },
-});
-
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 100000000,
-  },
-});
-
-const storageVision = multer.diskStorage({
-  destination: "../src/images/banner/uploads/",
-  filename: function (req, file, cb) {
-    const category = req.body.v;
-    const extname = path.extname(file.originalname);
-    const filename = category + extname;
-    cb(null, filename);
-  },
-});
-
-const uploadVision = multer({
-  storage: storageVision,
-  limits: {
-    fileSize: 100000000,
-  },
-});
-
-const storageMission = multer.diskStorage({
-  destination: "../src/images/banner/uploads/",
-  filename: function (req, file, cb) {
-    const category = req.body.m;
-    const extname = path.extname(file.originalname);
-    const filename = category + extname;
-    cb(null, filename);
-  },
-});
-
-const uploadMission = multer({
-  storage: storageMission,
-  limits: {
-    fileSize: 100000000,
-  },
-});
-const storageProfile = multer.diskStorage({
-  destination: "../src/images/profile/",
-  filename: function (req, file, cb) {
-    const username = req.body._userName;
-    const extname = path.extname(file.originalname);
-    const filename = username + extname;
-    cb(null, filename);
-  },
-});
-
-const uploadProfile = multer({
-  storage: storageProfile,
-  limits: {
-    fileSize: 10000000,
-  },
-});
 
 router.post("/adminRegister", async (req, res) => {
   const {
@@ -317,39 +257,48 @@ router.post("/updatephoneaddress2", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-router.put(
+router.post(
   "/update-user-profilepic2",
-  uploadProfile.single("image"),
+  upload.single("image"),
   async (req, res) => {
-    const uname = req.body._userName;
     try {
-      let image = req.body.image;
+      // Assuming "_userName" is sent in the request body
+      const { _userName } = req.body;
 
-      if (req.file) {
-        image = req.file.path;
+      if (!req.file) {
+        return res.status(400).json({ error: "No image provided" });
+      }
 
-        const extname = path.extname(image);
-
-        const oldImagePath = "images/profile/" + uname + extname;
-
-        if (fs.existsSync(oldImagePath)) {
-          fs.unlinkSync(oldImagePath);
+      // Decode base64 and upload image to Cloudinary
+      const result = await cloudinary.uploader.upload(
+        `data:${req.file.mimetype};base64,${req.file.buffer.toString(
+          "base64"
+        )}`,
+        {
+          folder: "profile-pictures", // Optional: specify a folder in Cloudinary
+          public_id: _userName, // Optional: specify a public ID in Cloudinary
         }
-      }
+      );
 
-      const existingUser = await User.findOne({ _userName: uname });
+      const existingUser = await User.findOne({ _userName: _userName });
+
       if (!existingUser) {
-        return res.status(404).json({ error: "Banner not found" });
+        return res.status(404).json({ error: "user not found" });
       }
 
-      existingUser._profilePicture = image;
+      existingUser._profilePicture = result.secure_url;
 
       await existingUser.save();
 
-      res.status(200).json({ message: "Banner updated successfully" });
+      // You can now save the Cloudinary URL or other information in your database
+      console.log("Cloudinary Upload Result:", result);
+
+      return res
+        .status(200)
+        .json({ message: "Profile picture changed successfully!" });
     } catch (error) {
-      console.error("Error updating banner:", error);
-      res.status(500).json({ error: "Banner update failed" });
+      console.error("Error uploading picture:", error);
+      return res.status(500).json({ error: "Internal server error" });
     }
   }
 );
@@ -705,7 +654,7 @@ router.post("/update-appointment-admin", async (req, res) => {
     client.messages
       .create({
         body: message,
-        from: "+12295305097",
+        from: "+16628454039",
         to: phoneNumber,
       })
       .then((message) => console.log(`Message sent: ${message.sid}`))
@@ -860,7 +809,7 @@ router.post("/cancel-appointment-admin", async (req, res) => {
     client.messages
       .create({
         body: message,
-        from: "+12295305097",
+        from: "+16628454039",
         to: phoneNumber,
       })
       .then((message) => console.log(`Message sent: ${message.sid}`))
@@ -1100,22 +1049,19 @@ router.put("/update-banner", upload.single("image"), async (req, res) => {
   const subheading = req.body.subheading;
 
   try {
-    let image = req.body.image;
-
-    if (req.file) {
-      image = req.file.path;
-
-      const existingCategory = req.body.existingCategory;
-      if (category !== existingCategory) {
-        const extname = path.extname(image);
-
-        const oldImagePath =
-          "images/banner/uploads/" + existingCategory + extname;
-        if (fs.existsSync(oldImagePath)) {
-          fs.unlinkSync(oldImagePath);
-        }
-      }
+    // Use req.file instead of req.body.image
+    if (!req.file) {
+      return res.status(400).json({ error: "No image provided" });
     }
+
+    // Decode base64 and upload image to Cloudinary
+    const result = await cloudinary.uploader.upload(
+      `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
+      {
+        folder: "banners", // Optional: specify a folder in Cloudinary
+        public_id: category, // Optional: specify a public ID in Cloudinary
+      }
+    );
 
     // Find and update the existing banner by category
     const existingBanner = await Banner.findOne({ _bannerType: category });
@@ -1128,10 +1074,12 @@ router.put("/update-banner", upload.single("image"), async (req, res) => {
     existingBanner._bannerType = category;
     existingBanner._heading = heading;
     existingBanner._subheading = subheading;
-    existingBanner._image = image; // Update the image path
+    existingBanner._image = result.secure_url; // Update the image path
 
     // Save the updated banner
     await existingBanner.save();
+
+    console.log("Cloudinary Upload Result:", result);
 
     res.status(200).json({ message: "Banner updated successfully" });
   } catch (error) {
@@ -1290,7 +1238,7 @@ router.put("/update-order", async (req, res) => {
     client.messages
       .create({
         body: message,
-        from: "+12295305097",
+        from: "+16628454039",
         to: phoneNumber,
       })
       .then((message) => console.log(`Message sent: ${message.sid}`))
@@ -1448,27 +1396,29 @@ router.get("/fetch-values", async (req, res) => {
 
 router.put(
   "/update-about",
-  uploadVision.single("image"),
+  upload.single("image"),
 
   async (req, res) => {
     const _vision = req.body._vision;
+    const name = "vision";
 
     try {
       let image = req.body.image;
 
-      if (req.file) {
-        image = req.file.path;
-
-        const existingCategory = req.body.v;
-
-        const extname = path.extname(image);
-
-        const oldImagePath =
-          "images/banner/uploads/" + existingCategory + extname;
-        if (fs.existsSync(oldImagePath)) {
-          fs.unlinkSync(oldImagePath);
-        }
+      if (!req.file) {
+        return res.status(400).json({ error: "No image provided" });
       }
+
+      // Decode base64 and upload image to Cloudinary
+      const result = await cloudinary.uploader.upload(
+        `data:${req.file.mimetype};base64,${req.file.buffer.toString(
+          "base64"
+        )}`,
+        {
+          folder: "about", // Optional: specify a folder in Cloudinary
+          public_id: name, // Optional: specify a public ID in Cloudinary
+        }
+      );
 
       const existingAbout = await Vision.findOne();
 
@@ -1477,10 +1427,10 @@ router.put(
       }
 
       existingAbout._vision = _vision;
-      existingAbout.image = image;
+      existingAbout.image = result.secure_url;
 
       await existingAbout.save();
-
+      console.log("Cloudinary Upload Result:", result);
       res.status(200).json({ message: "Banner updated successfully" });
     } catch (error) {
       console.error("Error updating banner:", error);
@@ -1490,7 +1440,7 @@ router.put(
 );
 router.put(
   "/update-about2",
-  uploadMission.single("image"),
+  upload.single("image"),
 
   async (req, res) => {
     const _mission = req.body._mission;
@@ -1498,19 +1448,20 @@ router.put(
     try {
       let image = req.body.image;
 
-      if (req.file) {
-        image = req.file.path;
-
-        const existingCategory = req.body.m;
-
-        const extname = path.extname(image);
-
-        const oldImagePath =
-          "images/banner/uploads/" + existingCategory + extname;
-        if (fs.existsSync(oldImagePath)) {
-          fs.unlinkSync(oldImagePath);
-        }
+      if (!req.file) {
+        return res.status(400).json({ error: "No image provided" });
       }
+
+      // Decode base64 and upload image to Cloudinary
+      const result = await cloudinary.uploader.upload(
+        `data:${req.file.mimetype};base64,${req.file.buffer.toString(
+          "base64"
+        )}`,
+        {
+          folder: "about", // Optional: specify a folder in Cloudinary
+          public_id: "mission", // Optional: specify a public ID in Cloudinary
+        }
+      );
 
       const existingAbout = await Mission.findOne();
 
@@ -1519,7 +1470,7 @@ router.put(
       }
 
       existingAbout._mission = _mission;
-      existingAbout.image = image;
+      existingAbout.image = result.secure_url;
 
       await existingAbout.save();
 
@@ -1798,56 +1749,113 @@ const upload2 = multer({
     fileSize: 10000000,
   },
 });
-router.post("/add-listing", upload2.array("image", 6), async (req, res) => {
-  const productName = req.body._listingName;
-  const category = req.body._listingCategory;
-  const price = req.body._listingPrice;
-  const description = req.body._isPublished;
-  const images = req.files.map((file) => file.path);
-  console.log(description);
-  const id = await getNextListingNum();
-  if (images.length === 0) {
-    return res.status(400).json({ error: "No images were uploaded" });
-  }
+router.post("/add-listing", upload.array("image", 6), async (req, res) => {
+  try {
+    const productName = req.body._listingName;
+    const category = req.body._listingCategory;
+    const price = req.body._listingPrice;
+    const description = req.body._listingDescription; // Fixing the property name
+    const id = await getNextListingNum();
 
-  const newListing = new Listing({
-    _listingID: id,
-    _listingName: productName,
-    _listingCategory: category,
-    _listingPrice: price,
-    _listingDescription: description,
-    _isPublished: true,
-    _imgPath: images,
-  });
-  await newListing.save();
-  res.status(200).json({ message: "Listing added successfully" });
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ error: "No images provided" });
+    }
+
+    if (req.files.length > 6) {
+      return res.status(400).json({ error: "You can upload up to six images" });
+    }
+
+    const uploadPromises = req.files.map(async (file) => {
+      const result = await cloudinary.uploader.upload(
+        `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
+        {
+          folder: "listing-images",
+          public_id: `${productName}_${Date.now()}`, // You might want to generate a unique public_id for each image
+        }
+      );
+
+      return result.secure_url;
+    });
+
+    const uploadedImageUrls = await Promise.all(uploadPromises);
+
+    const newListing = new Listing({
+      _listingID: id,
+      _listingName: productName,
+      _listingCategory: category,
+      _listingPrice: price,
+      _listingDescription: description,
+      _isPublished: true,
+      _imgPath: uploadedImageUrls,
+    });
+
+    await newListing.save();
+    res.status(200).json({ message: "Listing added successfully" });
+  } catch (error) {
+    console.error("Error adding listing:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
-router.put("/update-listing", upload2.array("image", 6), async (req, res) => {
+
+router.put("/update-listing", upload.array("image", 6), async (req, res) => {
   try {
     const listingName = req.body._listingName;
     const price = req.body._listingPrice;
     const description = req.body._listingDescription;
     const isPublished = req.body._isPublished;
     const images = req.files.map((file) => file.path);
+
     if (images.length === 0) {
       return res.status(400).json({ error: "No images were uploaded" });
     }
 
+    // Fetch the existing listing
+    const existingListing = await Listing.findOne({
+      _listingName: listingName,
+    });
+
+    if (!existingListing) {
+      return res.status(404).json({ error: "Listing not found" });
+    }
+
+    // Get the current image URLs
+    const currentImageUrls = existingListing._imgPath || [];
+
+    // Delete current images from Cloudinary
+    await Promise.all(
+      currentImageUrls.map(async (imageUrl) => {
+        const publicId = imageUrl.split("/").pop().split(".")[0];
+        await cloudinary.uploader.destroy(publicId);
+      })
+    );
+
+    // Upload new images to Cloudinary
+    const uploadPromises = req.files.map(async (file) => {
+      const result = await cloudinary.uploader.upload(
+        `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
+        {
+          folder: "listing-images",
+          public_id: `${listingName}_${Date.now()}`, // You might want to generate a unique public_id for each image
+        }
+      );
+
+      return result.secure_url;
+    });
+
+    const uploadedImageUrls = await Promise.all(uploadPromises);
+
+    // Update the listing with new image URLs
     const updatedListing = await Listing.findOneAndUpdate(
       { _listingName: listingName },
       {
         _listingName: listingName,
         _listingPrice: price,
         _listingDescription: description,
-        _imgPath: images,
+        _imgPath: uploadedImageUrls,
         _isPublished: isPublished,
       },
       { new: true }
     );
-
-    if (!updatedListing) {
-      return res.status(404).json({ error: "Listing not found" });
-    }
 
     res.status(200).json({ message: "Listing updated successfully" });
   } catch (error) {
@@ -1955,7 +1963,7 @@ router.post("/addOrder", async (req, res) => {
     client.messages
       .create({
         body: message,
-        from: "+12295305097",
+        from: "+16628454039",
         to: phoneNumber,
       })
       .then((message) => console.log(`Message sent: ${message.sid}`))

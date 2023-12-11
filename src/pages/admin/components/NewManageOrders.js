@@ -280,6 +280,23 @@ export default function NewManageOrders() {
               size="small"
             />
           );
+        } else if (params.value === "Completed") {
+          return (
+            <Chip
+              label={
+                <Typography
+                  sx={{
+                    fontSize: "10px",
+                    color: "success.dark",
+                  }}
+                >
+                  Completed
+                </Typography>
+              }
+              sx={{ bgcolor: "#8dd290" }}
+              size="small"
+            />
+          );
         } else if (params.value === "Arrived at Pandi") {
           return (
             <Chip
