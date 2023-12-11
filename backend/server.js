@@ -71,10 +71,10 @@ router.put(
       if (req.file) {
         // Upload the image to Firebase Storage
         const fileBuffer = req.file.buffer;
+        console.log("File Buffer:", fileBuffer);
         const originalname = req.file.originalname;
         const extname = path.extname(originalname);
         const username = req.body._userName;
-        console.log(username);
         const filename = `${username}${extname}`;
         const filePath = `images/profile/${filename}`;
 
