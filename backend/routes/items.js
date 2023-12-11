@@ -27,8 +27,6 @@ admin.initializeApp({
 
 const bucket = admin.storage().bucket();
 
-// Multer setup for handling file uploads
-const multer = require("multer");
 const upload = multer({ dest: "temp/" });
 
 const transporter = nodemailer.createTransport({
