@@ -710,6 +710,29 @@ router.get("/fetch-notifications", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch order data" });
   }
 });
+router.post("/update-user-profilepic", async (req, res) => {
+  try {
+    let image = req.body.image;
+
+    if (req.file) {
+      image = req.file.path;
+
+      const existingCategory = req.body._userName;
+      console.log(req.body);
+
+      const extname = path.extname(image);
+
+      const oldImagePath = "images/profile/" + existingCategory + extname;
+    }
+
+    const existingUser = await User.findOne();
+
+    res.status(200).json({ message: "Banner updated successfully" });
+  } catch (error) {
+    console.error("Error updating banner:", error);
+    res.status(500).json({ error: "Banner update failed" });
+  }
+});
 
 router.get("/fetch-profile-pic/:_userName", async (req, res) => {
   const { _userName } = req.params;
