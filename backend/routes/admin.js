@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
+const admin = require("firebase-admin");
 const User = require("../models/adminUser");
 const CustomerUser = require("../models/user");
 const Counter = require("../models/counter");
@@ -31,11 +31,12 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const historyInventory = require("../models/historyInventory");
-//const accountSid = "AC884cb7a63fb7e7784143f86c75d68c71";
-//const authToken = "f39a7d524b2617a4fd074986cfd2b53f";
+const accountSid = "AC884cb7a63fb7e7784143f86c75d68c71";
+const authToken = "f39a7d524b2617a4fd074986cfd2b53f";
+const bucket = admin.storage().bucket();
 
-const accountSid = "AC5e511e9476e52d8cb06d77a2873a5d54";
-const authToken = "0dcb9f8a1567a4db867974aae24c9f52";
+//const accountSid = "AC5e511e9476e52d8cb06d77a2873a5d54";
+//const authToken = "0dcb9f8a1567a4db867974aae24c9f52";
 const client = require("twilio")(accountSid, authToken);
 
 const transporter = nodemailer.createTransport({

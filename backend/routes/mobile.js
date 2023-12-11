@@ -7,6 +7,7 @@ const IncomingInventory = require("../models/incomingInventory");
 const historyInventory = require("../models/historyInventory");
 const Notification2 = require("../models/adminNotification");
 
+
 router.get("/fetch-cargo", (req, res) => {
   axios
     .get("https://gravasend-965f7-default-rtdb.firebaseio.com/Cargo.json")
