@@ -17,12 +17,23 @@ const encryptionKey = crypto.randomBytes(32).toString("hex");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const admin = require("firebase-admin");
 
-console.log(admin);
-const bucket = admin.storage().bucket();
+const storage = multer.diskStorage({
+  destination: "../src/images/profile/",
+  filename: function (req, file, cb) {
+    const username = req.body._userName;
+    const extname = path.extname(file.originalname);
+    const filename = username + extname;
+    cb(null, filename);
+  },
+});
 
-const upload = multer({ dest: "temp/" });
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 10000000,
+  },
+});
 
 const transporter = nodemailer.createTransport({
   service: "Gmail", // Use a valid email service (e.g., Gmail, Outlook, etc.)
@@ -698,7 +709,7 @@ router.get("/fetch-notifications", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch order data" });
   }
 });
-router.post(
+router.put(
   "/update-user-profilepic",
   upload.single("image"),
   async (req, res) => {
@@ -706,29 +717,33 @@ router.post(
       let image = req.body.image;
 
       if (req.file) {
-        const extname = req.file.originalname.slice(
-          (Math.max(0, req.file.originalname.lastIndexOf(".")) || Infinity) + 1
-        );
-        const filename = `${req.body._userName}-${Date.now()}.${extname}`;
-        const filePath = `images/profile/${filename}`;
+        image = req.file.path;
 
-        await bucket.upload(req.file.path, {
-          destination: filePath,
-          metadata: {
-            contentType: req.file.mimetype,
-          },
-        });
+        const existingCategory = req.body._userName;
 
-        image = `gs://${bucket.name}/${filePath}`;
+        const extname = path.extname(image);
+
+        const oldImagePath = "images/profile/" + existingCategory + extname;
+
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
       }
 
-      // Your existing logic for updating the user profile picture in MongoDB
-      // ...
+      const existingUser = await User.findOne();
 
-      res.status(200).json({ message: "Profile picture updated successfully" });
+      if (!existingUser) {
+        return res.status(404).json({ error: "Banner not found" });
+      }
+
+      existingUser._profilePicture = image;
+
+      await existingUser.save();
+
+      res.status(200).json({ message: "Banner updated successfully" });
     } catch (error) {
-      console.error("Error updating profile picture:", error);
-      res.status(500).json({ error: "Profile picture update failed" });
+      console.error("Error updating banner:", error);
+      res.status(500).json({ error: "Banner update failed" });
     }
   }
 );
