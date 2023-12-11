@@ -74,6 +74,7 @@ router.put(
         const originalname = req.file.originalname;
         const extname = path.extname(originalname);
         const username = req.body._userName;
+        console.log(username);
         const filename = `${username}${extname}`;
         const filePath = `images/profile/${filename}`;
 
@@ -82,15 +83,6 @@ router.put(
             contentType: req.file.mimetype,
           },
         });
-
-        // Delete the local file if it exists
-        const existingCategory = req.body._userName;
-        const oldImagePath = `./src/images/profile/${existingCategory}${extname}`;
-        if (fs.existsSync(oldImagePath)) {
-          fs.unlinkSync(oldImagePath);
-        }
-
-        // Your code to update the user profile picture in the database (MongoDB) goes here
 
         res
           .status(200)
