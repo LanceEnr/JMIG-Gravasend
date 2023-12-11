@@ -51,6 +51,7 @@ const serviceAccount = require("./gravasend-965f7-firebase-adminsdk-ts4oz-eebc1a
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://gravasend-965f7-default-rtdb.firebaseio.com",
+  storageBucket: "gravasend-965f7.appspot.com",
 });
 
 const firebasedb = admin.database();
