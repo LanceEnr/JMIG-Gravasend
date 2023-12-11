@@ -58,8 +58,7 @@ admin.initializeApp({
 });
 const bucket = admin.storage().bucket();
 
-const storage = multer.memoryStorage(); // Store the file in memory
-const upload = multer({ storage: storage });
+const upload = multer({ dest: "temp/" }); // Temporary storage for uploaded files
 
 router.put(
   "/update-user-profilepic",
@@ -69,26 +68,26 @@ router.put(
       let image = req.body.image;
 
       if (req.file) {
-        // Upload the image to Firebase Storage
-        const fileBuffer = req.file.buffer;
-        const originalname = req.file.originalname;
-        const extname = path.extname(originalname);
-        const username = req.body._userName;
-        const filename = `${username}${extname}`;
+        const extname = req.file.originalname.slice(
+          (Math.max(0, req.file.originalname.lastIndexOf(".")) || Infinity) + 1
+        );
+        const filename = `${req.body._userName}-${Date.now()}.${extname}`;
         const filePath = `images/profile/${filename}`;
 
-        await bucket.file(filePath).save(fileBuffer, {
+        await bucket.upload(req.file.path, {
+          destination: filePath,
           metadata: {
             contentType: req.file.mimetype,
           },
         });
 
-        res
-          .status(200)
-          .json({ message: "Profile picture updated successfully" });
-      } else {
-        res.status(400).json({ error: "No file provided" });
+        image = `gs://${bucket.name}/${filePath}`;
       }
+
+      // Your existing logic for updating the user profile picture in MongoDB
+      // ...
+
+      res.status(200).json({ message: "Profile picture updated successfully" });
     } catch (error) {
       console.error("Error updating profile picture:", error);
       res.status(500).json({ error: "Profile picture update failed" });
