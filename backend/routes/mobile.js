@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 const admin = require("firebase-admin");
+const bucket = admin.storage().bucket();
 const Counter = require("../models/counter");
 const IncomingInventory = require("../models/incomingInventory");
 const historyInventory = require("../models/historyInventory");
