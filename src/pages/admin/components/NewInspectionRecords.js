@@ -7,15 +7,58 @@ import {
   gridClasses,
 } from "@mui/x-data-grid";
 import axios from "axios";
-
-import {
-  columnsInspectionRecords,
-  rowsInspectionRecords,
-} from "../helpers/data";
+import { Link, useNavigate } from "react-router-dom";
+import { columnsInspectionRecords } from "../helpers/data";
 import { alpha, styled } from "@mui/material/styles";
 import { toast } from "react-toastify";
 
 import { Box } from "@mui/material";
+
+const transformInspectionRecordsData = (data) => {
+  const transformedData = [];
+  if (data) {
+    for (const uid in data) {
+      if (data.hasOwnProperty(uid)) {
+        const userData = data[uid];
+
+        for (const id in userData) {
+          if (userData.hasOwnProperty(id)) {
+            const inspectionData = userData[id];
+
+            const mappedData = {
+              uid: uid,
+              id: id,
+              plateNo: inspectionData.plateNo,
+              inspectionType: inspectionData.inspectionType,
+              nextInspectionDate: new Date(inspectionData.nextInspectionDate),
+              verdict: inspectionData.verdict,
+            };
+
+            transformedData.push(mappedData);
+          }
+        }
+      }
+    }
+  }
+
+  return transformedData;
+};
+
+const fetchInspectionRecords = async () => {
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/fetch-inspectionrecords`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+const rowsInspectionRecords = transformInspectionRecordsData(
+  await fetchInspectionRecords()
+);
 
 const ODD_OPACITY = 0.2;
 
@@ -56,6 +99,21 @@ export default function NewInspectionRecords() {
   const [open, setOpen] = React.useState(false);
   const [action, setAction] = React.useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [rowsInspectionRecords, setrowsInspectionRecords] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchInspectionRecords();
+        const transformedData = transformInspectionRecordsData(data);
+        setrowsInspectionRecords(transformedData);
+      } catch (error) {
+        console.error("Error fetching and transforming data:", error);
+      }
+    };
+
+    fetchData();
+  }, [navigate]);
 
   const handleClickOpen = (action, row) => {
     setAction(action);

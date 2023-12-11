@@ -2,8 +2,43 @@ import { DataGrid, GridToolbar, gridClasses } from "@mui/x-data-grid";
 import Typography from "../../../components/common/Typography";
 import { rowsUserManagement } from "../helpers/data";
 import { alpha, styled } from "@mui/material/styles";
-
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 import { Paper, Box } from "@mui/material";
+
+const fetchUsers = async () => {
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/get-customers`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+const transformUsersData = async () => {
+  const users = await fetchUsers();
+  const orders = await fetchOrders();
+  const usersWithOrders = users.map((user) => {
+    const userOrders = orders.filter(
+      (order) => order._name === `${user._fName}_${user._lName}`
+    );
+    const clv = userOrders.reduce((totalCLV, order) => {
+      const orderValue = order._price * order._quantity;
+      return totalCLV + orderValue;
+    }, 0);
+    return {
+      id: user._userName,
+      name: `${user._fName} ${user._lName}`,
+      contact: user._phone,
+      orderCount: userOrders.length,
+      clv,
+    };
+  });
+  return usersWithOrders;
+};
 
 const isValidUrl = (url) => {
   try {
@@ -126,6 +161,22 @@ export default function NewUserManagement() {
       ),
     },
   ];
+
+  const [rowsUserManagement, setrowsUserManagement] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchUsers();
+        const transformedData = transformUsersData(data);
+        setrowsUserManagement(transformedData);
+      } catch (error) {
+        console.error("Error fetching and transforming data:", error);
+      }
+    };
+
+    fetchData();
+  }, [navigate]);
 
   return (
     <Box sx={{ my: 14 }}>

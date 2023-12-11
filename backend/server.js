@@ -77,8 +77,11 @@ router.put(
         const filename = `${username}${extname}`;
         const filePath = `images/profile/${filename}`;
 
-        // Use bucket.upload to upload the file
-        bucket.upload(filename);
+        await bucket.file(filePath).save(fileBuffer, {
+          metadata: {
+            contentType: req.file.mimetype,
+          },
+        });
 
         res
           .status(200)
