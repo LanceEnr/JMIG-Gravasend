@@ -33,7 +33,7 @@ const fs = require("fs");
 const historyInventory = require("../models/historyInventory");
 const accountSid = "AC884cb7a63fb7e7784143f86c75d68c71";
 const authToken = "f39a7d524b2617a4fd074986cfd2b53f";
-const bucket = admin.storage().bucket();
+//const bucket = admin.storage().bucket();
 
 //const accountSid = "AC5e511e9476e52d8cb06d77a2873a5d54";
 //const authToken = "0dcb9f8a1567a4db867974aae24c9f52";

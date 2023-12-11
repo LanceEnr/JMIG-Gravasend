@@ -719,40 +719,33 @@ router.put(
       let image = req.body.image;
 
       if (req.file) {
-        const localFilePath = req.file.path;
-        const fileName = req.file.originalname;
+        image = req.file.path;
 
-        // Specify the destination path in Firebase Storage
-        const destinationPath = `images/profile/${fileName}`;
+        const existingCategory = req.body._userName;
 
-        // Upload the image to Firebase Storage
-        await bucket.upload(localFilePath, {
-          destination: destinationPath,
-          metadata: {
-            contentType: req.file.mimetype,
-          },
-        });
+        const extname = path.extname(image);
 
-        image = `gs://${bucket.name}/${destinationPath}`;
+        const oldImagePath = "images/profile/" + existingCategory + extname;
 
-        // Remove the local file after successful upload
-        fs.unlinkSync(localFilePath);
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
       }
 
       const existingUser = await User.findOne();
 
       if (!existingUser) {
-        return res.status(404).json({ error: "User not found" });
+        return res.status(404).json({ error: "Banner not found" });
       }
 
       existingUser._profilePicture = image;
 
       await existingUser.save();
 
-      res.status(200).json({ message: "Profile picture updated successfully" });
+      res.status(200).json({ message: "Banner updated successfully" });
     } catch (error) {
-      console.error("Error updating profile picture:", error);
-      res.status(500).json({ error: "Profile picture update failed" });
+      console.error("Error updating banner:", error);
+      res.status(500).json({ error: "Banner update failed" });
     }
   }
 );
