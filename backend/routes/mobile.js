@@ -2072,7 +2072,7 @@ router.get("/fetch-adminNotifications", async (req, res) => {
 
     const combinedData = [...notif, ...transformedData];
 
-    res.json(combinedData);
+    res.json(notif);
   } catch (error) {
     console.error("Error fetching data:", error);
     res.status(500).json({ error: "Failed to fetch notification data" });
