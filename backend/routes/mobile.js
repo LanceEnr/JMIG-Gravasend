@@ -6,6 +6,18 @@ const Counter = require("../models/counter");
 const IncomingInventory = require("../models/incomingInventory");
 const historyInventory = require("../models/historyInventory");
 const Notification2 = require("../models/adminNotification");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: "dh1q6xzsg",
+  api_key: "371522446396728",
+  api_secret: "jZaM8ooW_6dtoF8e8p8LVpTQFyY",
+});
+const storage = multer.memoryStorage(); // Store the file in memory
+const upload = multer({ storage: storage });
 
 router.get("/fetch-cargo", (req, res) => {
   axios
@@ -151,6 +163,41 @@ router.get("/fetch-tripDash", (req, res) => {
       console.error("Firebase connection error:", error);
       res.status(500).json({ message: "Internal server error" });
     });
+});
+router.get("/fetch-driver-trip/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const firebaseUrl = `https://gravasend-965f7-default-rtdb.firebaseio.com/Trip Dashboard/${id}.json`;
+
+    const response = await axios.get(firebaseUrl);
+
+    if (response.data) {
+      res.json(response.data);
+    } else {
+      res.status(404).json({ error: "Data not found" });
+    }
+  } catch (error) {
+    console.error("Firebase connection error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+router.get("/fetch-safetychecklist/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const firebaseUrl = `https://gravasend-965f7-default-rtdb.firebaseio.com/Safety%20Checklist/${id}.json`;
+
+    const response = await axios.get(firebaseUrl);
+
+    if (response.data) {
+      res.json(response.data);
+    } else {
+      res.status(404).json({ error: "Data not found" });
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 router.get("/fetch-tripHistory", (req, res) => {
@@ -830,12 +877,24 @@ router.post("/check-email/:email", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-router.post("/addDriver", async (req, res) => {
+router.post("/addDriver", upload.single("image"), async (req, res) => {
   const email = req.body.email;
   const driverData = req.body;
-  driverData.performance = 1.0;
 
-  // Add the status field and set it to "unassigned"
+  if (!req.file) {
+    return res.status(400).json({ error: "No image provided" });
+  }
+
+  // Decode base64 and upload image to Cloudinary
+  const result = await cloudinary.uploader.upload(
+    `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
+    {
+      folder: "driver_photo", // Optional: specify a folder in Cloudinary
+      public_id: email, // Optional: specify a public ID in Cloudinary
+    }
+  );
+  driverData.imageURL = result.secure_url;
+
   driverData.status = "unassigned";
 
   try {
@@ -843,10 +902,11 @@ router.post("/addDriver", async (req, res) => {
 
     if (user) {
       const uid = user.uid;
-
       const db = admin.database();
       const ref = db.ref(`DriverManagement/${uid}`);
-      await ref.set(driverData);
+      const dataToSave = JSON.parse(JSON.stringify(driverData));
+
+      await ref.set(dataToSave);
 
       res.status(200).json({ message: "Driver added successfully" });
     } else {
@@ -1654,14 +1714,24 @@ router.post("/editInspection", async (req, res) => {
   }
 });
 
-router.post("/editDriver", async (req, res) => {
+router.post("/editDriver", upload.single("image"), async (req, res) => {
   const driverData = req.body;
+  const email = req.body.email;
   const id = driverData.id;
   const db = admin.database();
   try {
+    const result = await cloudinary.uploader.upload(
+      `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
+      {
+        folder: "driver_photo", // Optional: specify a folder in Cloudinary
+        public_id: email, // Optional: specify a public ID in Cloudinary
+      }
+    );
+    driverData.imageURL = result.secure_url;
     const ref = db.ref(`DriverManagement/${id}`);
-    await ref.set(driverData);
+    const dataToSave = JSON.parse(JSON.stringify(driverData));
 
+    await ref.set(dataToSave);
     res.status(200).json({
       message: "Driver updated successfully",
     });

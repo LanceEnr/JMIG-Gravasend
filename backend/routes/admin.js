@@ -308,7 +308,7 @@ router.get("/fetch-profile-pic2/:_userName", async (req, res) => {
 
   try {
     const user = await User.findOne({ _userName: _userName });
-    res.json(user);
+    res.json(user._profilePicture);
   } catch (error) {
     console.error("Error retrieving banner:", error);
     res.status(500).json({ error: "Internal server error" });
