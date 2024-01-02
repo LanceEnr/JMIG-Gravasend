@@ -2079,7 +2079,7 @@ router.get("/fetch-adminNotifications", async (req, res) => {
             if (userData.hasOwnProperty(id)) {
               const maintenanceData = userData[id];
 
-              if (maintenanceData._status === "unviewed") {
+              if (maintenanceData._status === "unview") {
                 const mappedData = {
                   _notifID: id,
                   _date: maintenanceData._date || "",
