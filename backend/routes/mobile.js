@@ -2069,10 +2069,35 @@ router.get("/fetch-adminNotifications", async (req, res) => {
 
     // Transform the data into the desired format
     const transformedData = [];
+    if (data) {
+      for (const uid in data) {
+        if (data.hasOwnProperty(uid)) {
+          const userData = data[uid];
+
+          for (const id in userData) {
+            if (userData.hasOwnProperty(id)) {
+              const maintenanceData = userData[id];
+
+              if (maintenanceData._status === "unviewed") {
+                const mappedData = {
+                  _notifID: id,
+                  _date: maintenanceData._date || "",
+                  _title: maintenanceData._title || "",
+                  _description: maintenanceData._description || "",
+                  _name: maintenanceData._title || "",
+                };
+
+                transformedData.push(mappedData);
+              }
+            }
+          }
+        }
+      }
+    }
 
     const combinedData = [...notif, ...transformedData];
 
-    res.json(notif);
+    res.json(combinedData);
   } catch (error) {
     console.error("Error fetching data:", error);
     res.status(500).json({ error: "Failed to fetch notification data" });
